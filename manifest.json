@@ -1,0 +1,21 @@
+{
+    "name": "ChromeEdit",
+    "description": "Lightweight text editing for Chrome",
+    "version": "0.0.0",
+    "manifest_version": 2,
+
+    "app": {
+        "background": {
+            "scripts": [ "background.js" ]
+        }
+    },
+    
+    "permissions": [
+      "clipboardRead",
+      "clipboardWrite",
+      "contextMenus",
+      {
+        "fileSystem": [ "write", "retainEntries" ]
+      }
+    ]
+}
