@@ -19,30 +19,38 @@ define(["editor", "command", "file"], function(editor, command, File) {
     var tabContainer = document.querySelector(".tabs");
     var contents = "";
     tabs.forEach(function(tab, index) {
-      contents += "<a command='session:raise-tab' argument='" + index + "'>" + index + "</a>";
+      // add close button
+      // add "active" state
+      contents += "<a command='session:raise-tab' argument='" + index + "'>" + tab.fileName + "</a>";
     });
     tabContainer.innerHTML = contents;
   }
   
-  var addTab = function() {
-    var session = ace.createEditSession("", "ace/mode/text");
+  var addTab = function(contents, file) {
+    var session = ace.createEditSession(contents);
+    session.fileName = file.entry.name;
+    session.file = file;
     tabs.push(session);
     current = session;
     renderTabs();
     return session;
   };
   
+  var removeTab = function(index) {
+    
+  };
+  
   var raiseTab = function(index) {
     var tab = tabs[index];
+    current = tab;
     editor.setSession(tab);
-  }
+  };
   
   var openFile = function() {
     var f = new File();
     f.open(function(file) {
       f.read(function(err, data) {
-        var session = addTab();
-        session.setValue(data);
+        var session = addTab(data, file);
         editor.setSession(session);
       });
     });

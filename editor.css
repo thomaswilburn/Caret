@@ -22,9 +22,12 @@ body {
 .tabs a {
   display: inline-block;
   height: 100%;
-  min-width: 150px;
+  min-width: 100px;
+  line-height: 30px;
+  padding: 0 4px;
   margin-right: 3px;
   background: white;
+  border-radius: 3px 3px 0 0;
 }
 
 .editor-container {
