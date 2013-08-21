@@ -26,8 +26,8 @@ define(function() {
       };
       chrome.fileSystem.chooseEntry({
         type: modes[mode]
-        //acceptsMultiple: false
       }, function(entry) {
+        if (!entry) return;
         self.entry = entry;
         c(self)
       });

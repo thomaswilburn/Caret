@@ -1,6 +1,6 @@
 {
-    "name": "ChromeEdit",
-    "description": "Lightweight text editing for Chrome",
+    "name": "Caret",
+    "description": "Sublime text editing for Chrome",
     "version": "0.0.0",
     "manifest_version": 2,
 

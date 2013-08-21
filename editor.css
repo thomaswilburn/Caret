@@ -7,9 +7,29 @@ body {
   padding: 0;
 }
 
+.toolbar {
+  height: 30px;
+  width: 100%;
+  background: blue;
+}
+
+.tabs {
+  height: 30px;
+  width: 100%;
+  background: grey;
+}
+
+.tabs a {
+  display: inline-block;
+  height: 100%;
+  min-width: 150px;
+  margin-right: 3px;
+  background: white;
+}
+
 .editor-container {
    position: absolute;
-   top: 0;
+   top: 60px;
    bottom: 0;
    left: 0;
    right: 0;
