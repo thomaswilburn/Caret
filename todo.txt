@@ -1,17 +1,19 @@
 TODO
 ====
 
+- build menus out using JSON instead of HTML (menu module)
+- write require plugin for loading JSON settings either from app or from synch storage
 - enable sublime keymappings
-- build menus out using JSON instead of HTML
-- add command palette using menu JSON as source
+- add command palette to menu module
 - add settings module with editable config file in synchronized storage
+- remember window size/position, always reload in the same position (background.js)
 - enable command events on selectboxes/inputs
 - add syntax/theme choosers
 - add indentation chooser
 - add line/column display
 - write dialog box module for confirm/alert
 - enable opening files from the file browser
-- revise session management to be less ad-hoc
+- refactor session management to be less ad-hoc
 - clean up the file API a bit
 - check for runtime.lastError, possibly skip annoying "canceled chooseEntry" messages
-- can runtime.sendNativeMessage be used for a build system? Probably not accessible without chroot.
+- can runtime.sendNativeMessage be used for a build system? Probably crosh only.
