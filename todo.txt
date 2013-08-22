@@ -1,0 +1,17 @@
+TODO
+====
+
+- enable sublime keymappings
+- build menus out using JSON instead of HTML
+- add command palette using menu JSON as source
+- add settings module with editable config file in synchronized storage
+- enable command events on selectboxes/inputs
+- add syntax/theme choosers
+- add indentation chooser
+- add line/column display
+- write dialog box module for confirm/alert
+- enable opening files from the file browser
+- revise session management to be less ad-hoc
+- clean up the file API a bit
+- check for runtime.lastError, possibly skip annoying "canceled chooseEntry" messages
+- can runtime.sendNativeMessage be used for a build system? Probably not accessible without chroot.
