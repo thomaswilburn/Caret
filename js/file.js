@@ -44,10 +44,12 @@ define(function() {
         reader.readAsText(f);
       });
     },
-    write: function(data, options, c) {
+    write: function(data, c) {
       var self = this;
+      c = c || function() {};
       this.entry.createWriter(function(writer) {
         writer.onerror = function(err) {
+          console.error(err);
           c(err, self);
         }
         writer.onwriteend = function() {
@@ -55,10 +57,10 @@ define(function() {
           writer.onwriteend = function() {
             c(null, self);
           }
-          var blob = new Blob(data);
+          var blob = new Blob([data]);
           writer.write(blob);
         };
-        writer.trunctate(0);
+        writer.truncate(0);
       });
     },
     stat: function(c) {

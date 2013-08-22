@@ -2,13 +2,40 @@
 <html>
   <head>
     <title>Caret</title>
-    <link rel="stylesheet" type="text/css" href="editor.css">
+    <link rel="stylesheet" type="text/css" href="css/editor.css">
   </head>
   <body>
     
-    <div class="toolbar">
-      <button command="session:open-file">OPEN</button>
-    </div>
+    <ul class="toolbar">
+      <li>File
+        <ul class="menu">
+          <li command="session:new-file"><u>N</u>ew</li>
+          <li command="session:open-file"><u>O</u>pen</li>
+          <li command="session:save-file"><u>S</u>ave</li>
+          <li command="session:save-file-as">Save <u>A</u>s</li>
+        </ul>
+      </li>
+      <li>Edit
+        <ul class="menu">
+          
+        </ul>
+      </li>
+      <li>View
+        <ul class="menu">
+          
+        </ul>
+      </li>
+      <li>Tools
+        <ul class="menu">
+          
+        </ul>
+      </li>
+      <li>Preferences
+        <ul class="menu">
+          
+        </ul>
+      </li>
+    </ul>
     <div class="tabs"></div>
     
     <div class="editor-container">
