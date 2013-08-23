@@ -6,7 +6,16 @@ define(["json!config/menus.json","dom2"], function(cfg) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < list.length; i++) {
       var entry = list[i];
-      console.log(entry);
+      if (typeof entry == "string") {
+        var preset;
+        switch (entry) {
+          case "divider":
+            preset = document.createElement("hr");
+            break;
+        }
+        fragment.appendChild(preset);
+        continue;
+      }
       var li = document.createElement("li");
       li.innerHTML = entry.label;
       if (entry.command) li.setAttribute("command", entry.command);
