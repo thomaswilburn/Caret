@@ -1,4 +1,4 @@
-define(["editor", "command", "file"], function(editor, command, File) {
+define(["editor", "command", "file", "json!config/ace.json"], function(editor, command, File, cfg) {
 
   /*
   
@@ -110,6 +110,19 @@ define(["editor", "command", "file"], function(editor, command, File) {
   addTab("");
   
   renderTabs();
+  
+  var syntax = document.querySelector(".syntax");
+  cfg.modes.forEach(function(mode) {
+    var option = document.createElement("option");
+    option.innerHTML = mode.label;
+    option.value = mode.name;
+    syntax.append(option);
+  });
+  
+  syntax.value = "javascript";
+  command.on("session:syntax", function(mode) {
+    editor.getSession().setMode("ace/mode/" + mode);
+  });
   
   command.on("session:new-file", function() { addTab() });
   command.on("session:open-file", openFile);

@@ -1,4 +1,4 @@
-define(["file", "dom2"], function(File) {
+define(["file", "command", "json!config/ace.json", "dom2"], function(File, command, cfg) {
   /*
   Module for loading the editor, adding window resizing and other events. Returns the editor straight from Ace.
   */
@@ -19,6 +19,20 @@ define(["file", "dom2"], function(File) {
     editor.resize();
   });
   window.dispatchEvent(new Event("resize"));
+  
+  var themes = document.querySelector(".theme");
+  cfg.themes.forEach(function(theme) {
+    var option = document.createElement("option");
+    option.innerHTML = theme.alt || theme.label;
+    option.setAttribute("value", theme.name);
+    themes.append(option);
+  });
+  
+  themes.value = "chrome";
+  
+  command.on("editor:theme", function(theme) {
+    editor.setTheme("ace/theme/" + theme);
+  });
   
   return editor;
 

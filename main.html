@@ -6,39 +6,16 @@
   </head>
   <body>
     
-    <ul class="toolbar">
-      <!--<li>Edit
-        <ul class="menu">
-          <li command="editor:cut">Cut</li>
-          <li command="editor:copy">Copy</li>
-          <li command="editor:paste">Paste</li>
-          <li command="editor:paste-indented">Paste and Indent</li>
-          <hr>
-          <li command="editor:toggle-comment">Toggle Comment</li>
-          <li command="editor:toggle-block-comment">Toggle Block Comment</li>
-          <li command="editor:upper-case">Convert to Upper Case</li>
-          <li command="editor:lower-case">Convert to Lower Case</li>
-          <hr>
-          <li command="editor:find">Find</li>
-          <li command="editor:find-replace">Replace</li>
-        </ul>
-      </li>
-      <li>Tools
-        <ul class="menu">
-          <li command="palette:goto">Go To</li>
-          <li command="palette:goto-symbol"> ...Symbol</li>
-          <li command="palette:goto-line"> ...Line</li>
-          <li command="palette:command">Command Palette</li>
-          <li command="app:settings">Settings</li>
-          <hr>
-          <li command="app:about">About Caret</li>
-        </ul>
-      </li>-->
-    </ul>
+    <ul class="toolbar"></ul>
     <div class="tabs"></div>
     
     <div class="editor-container">
       <div id="editor"></div>
+    </div>
+    
+    <div class="bottom-bar">
+      <select class="syntax" command="session:syntax"></select>
+      <select class="theme" command="editor:theme"></select>
     </div>
     
     <script src="js/ace/ace.js"></script>

@@ -17,6 +17,7 @@
       "clipboardRead",
       "clipboardWrite",
       "contextMenus",
+      "storage",
       {
         "fileSystem": [ "write", "retainEntries" ]
       }

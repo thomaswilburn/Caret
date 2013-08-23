@@ -32,10 +32,20 @@ define(["dom2"], function() {
   //delegate for all elements that have a command attribute
   //may want to add more listeners for other UI elements (select)
   document.body.on("click", function(e) {
+    //cancel on inputs, selectboxes
+    if (["input", "select"].indexOf(e.target.tagName.toLowerCase()) >= 0) return;
     //delegate all items with a command attribute
     if (e.target.hasAttribute("command")) {
       var command = e.target.getAttribute("command");
       var arg = e.target.getAttribute("argument");
+      fire(command, arg);
+    }
+  });
+  
+  document.body.on("change", function(e) {
+    if (e.target.hasAttribute("command")) {
+      var command = e.target.getAttribute("command");
+      var arg = e.target.value;
       fire(command, arg);
     }
   });
