@@ -1,0 +1,13 @@
+[
+  {
+    "label": "File",
+    "sub": [
+      { "label": "New File", "command": "session:new-file" },
+      { "label": "Open File", "command": "session:open-file" },
+      { "label": "Save", "command": "session:save-file" },
+      { "label": "Save As", "command": "session:save-file-as" },
+      { "label": "Exit", "command": "app:exit" }
+    ]
+  }
+
+]

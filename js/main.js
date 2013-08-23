@@ -1,3 +1,3 @@
-require(["sessions"], function() {
+require(["sessions", "menus"], function() {
   
 });
