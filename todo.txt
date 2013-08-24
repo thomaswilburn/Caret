@@ -1,16 +1,16 @@
 TODO
 ====
 
-- enable sublime keymappings
-- add command palette to menu module
+- enable sublime, standard keymappings
+- write dialog box module for confirm/alert
 - add settings module with editable config file in synchronized storage
-- enable command events on selectboxes/inputs
 - add indentation chooser
 - add line/column display
-- write dialog box module for confirm/alert
 - enable opening files from the file browser
+- use custom attributes to trigger commands?
+- redesign tabs, look-and-feel, more like google cards/holo
+- add command palette to menu module
 - refactor session management to be less ad-hoc
 - clean up the file API a bit
-- check for runtime.lastError, possibly skip annoying "canceled chooseEntry" messages
 - can runtime.sendNativeMessage be used for a build system? Probably crosh only.
 - menus should probably have real click behavior, not just hover
