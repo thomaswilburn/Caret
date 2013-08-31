@@ -41,7 +41,8 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
     contents = contents || "";
     var current = editor.getSession();
     var session;
-    if (tabs.length >= 1 && !current.file && !current.modified) {
+    //reuse tab if opening a file into an empty tab
+    if (file && !current.file && !current.modified) {
       session = current;
       session.setValue(contents);
     } else {
@@ -73,6 +74,7 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
       session.modified = true;
       renderTabs();
     });
+    editor.focus();
     renderTabs();
   };
   
@@ -97,6 +99,7 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
     var tab = tabs[index];
     editor.setSession(tab);
     renderTabs();
+    editor.focus();
   };
   
   var openFile = function() {

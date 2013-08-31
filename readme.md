@@ -9,4 +9,4 @@ Caret is a serious, graphical programmer's editor running as a Chrome Packaged A
 * Editor themes and syntax highlighting
 * Smart Go To and Command Palette
 
-The goal of Caret is to fill a gap that currently stymies web developers working on Chrome OS, offering a pleasant graphical editing environment without needing to run a second windowing system via Crouton.
+It's not there yet, but we'll be there soon. The ultimate goal of Caret is to fill a gap that currently stymies web developers working on Chrome OS, offering a pleasant graphical editing environment without needing to run a second windowing system via Crouton.

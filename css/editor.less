@@ -65,40 +65,39 @@ body {
 .tabs {
   height: 32px;
   width: 100%;
-  background: #BBB;
+  background: #EEE;
   padding-top: 2px;
+  border-bottom: 4px solid white;
   
   span {
     display: inline-block;
     height: 100%;
     min-width: 100px;
-    line-height: 30px;
-    padding: 0 30px 0 4px;
+    line-height: 26px;
+    padding: 0 20px 0 4px;
     margin-right: 3px;
-    background: #BBB;
-    border-radius: 3px 3px 0 0;
+    background: white;
     position: relative;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, .2);
+    color: #666;
     
     &.active {
-      background: #EEE;
+      border-top: 4px solid #808;
+      color: black;
     }
     
     .close {
-      background: rgba(0, 0, 0, .2);
-      box-shadow: inset 2px 2px 8px rgba(0, 0, 0, .1);
       border-radius: 4px;
       position: absolute;
       top: 6px;
       right: 6px;
-      width: 18px;
       height: 18px;
       line-height: 18px;
       font-size: 18px;
       text-align: center;
+      color: #808;
       
       &:hover {
-        box-shadow: inset 2px 2px 8px rgba(0, 0, 0, .5);
+        color: black;
       }
     }
   }
