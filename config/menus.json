@@ -6,6 +6,7 @@
       { "label": "Open File", "command": "session:open-file" },
       { "label": "Save", "command": "session:save-file" },
       { "label": "Save As", "command": "session:save-file-as" },
+      { "label": "Close", "command": "session:close-tab" },
       { "label": "Exit", "command": "app:exit" }
     ]
   }/*,

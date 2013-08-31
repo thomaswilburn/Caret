@@ -12,7 +12,6 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
   */
   
   var tabs = [];
-  var current;
   var Session = ace.require("ace/edit_session").EditSession;
   
   var renderTabs = function() {
@@ -42,7 +41,7 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
     contents = contents || "";
     var current = editor.getSession();
     var session;
-    if (tabs.length == 1 && !current.file && !current.modified) {
+    if (tabs.length >= 1 && !current.file && !current.modified) {
       session = current;
       session.setValue(contents);
     } else {
@@ -78,22 +77,24 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
   };
   
   var removeTab = function(index) {
+    if (!index) {
+      index = tabs.indexOf(editor.getSession());
+    }
     tabs = tabs.filter(function(tab, i) {
       if (i == index) {
         //tab.save();
         return false;
       }
       return true;
-    });
+    }); 
     if (tabs.length == 0) {
       return addTab();
     }
-    renderTabs();
+    return raiseTab(index - 1);
   };
   
   var raiseTab = function(index) {
     var tab = tabs[index];
-    current = tab;
     editor.setSession(tab);
     renderTabs();
   };
