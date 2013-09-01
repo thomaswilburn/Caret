@@ -17,15 +17,16 @@ define(["dom2"], function() {
 
     var clickButton = function() {
       modal.remove();
-      callback(this.value);
-    }
+      var value = JSON.parse(this.value);
+      callback(value);
+    };
 
     buttons.forEach(function(options) {
       var button = document.createElement("button");
       if (typeof options == "string") {
         options = {
           label: options,
-          value: options
+          value: JSON.stringify(options)
         }
       }
       button.innerHTML = options.label;

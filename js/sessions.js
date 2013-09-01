@@ -62,14 +62,17 @@ define([
   };
   
   var saveFile = function(as) {
+    debugger;
     if (this.modified || as) {
       var content = this.getValue();
       if (!this.file) {
         var file = this.file = new File();
-        file.open("save", function() {
+        var self = this;
+        return file.open("save", function() {
           file.write(content);
-          this.file = file;
-          this.fileName = file.entry.name;
+          self.file = file;
+          self.fileName = file.entry.name;
+          self.modified = false;
           renderTabs();
         });
       } else {
@@ -110,21 +113,39 @@ define([
     if (!index) {
       index = tabs.indexOf(editor.getSession());
     }
-    tabs = tabs.filter(function(tab, i) {
-      if (i == index) {
-        //tab.save();
-        return false;
+    var tab = tabs[index];
+
+    var continuation = function() {
+      tabs = tabs.filter(function(tab, i) {
+        if (i == index) {
+          //tab.save();
+          return false;
+        }
+        return true;
+      }); 
+      if (tabs.length == 0) {
+        return addTab();
       }
-      return true;
-    }); 
-    if (tabs.length == 0) {
-      return addTab();
+      var next = index - 1;
+      if (next < 0) {
+        next = 0;
+      }
+      raiseTab(next);
     }
-    var next = index - 1;
-    if (next < 0) {
-      next = 0;
+
+    if (tab.modified) {
+      dialog(
+        tab.file.entry.name + "has been modified. Do you want to save changes?",
+        [{label: "Save", value: true}, {label: "Don't save", value: false}],
+        function(confirm) {
+          if (confirm) {
+            tab.save();
+          }
+          continuation();
+        })
+    } else {
+      continuation();
     }
-    return raiseTab(next);
   };
   
   var raiseTab = function(index) {
