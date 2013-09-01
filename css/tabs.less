@@ -1,0 +1,42 @@
+.tabs {
+  height: 32px;
+  width: 100%;
+  background: #EEE;
+  padding: 2px;
+  display: flex;
+  justify-content: flex-start;
+  
+  span {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 300px;
+    padding: 0px 4px;
+    margin-right: 3px;
+    background: white;
+    color: #666;
+    border-bottom: 4px solid white;
+    flex: 0 1 auto;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    
+    &.active {
+      border-bottom: 4px solid #808;
+      color: black;
+    }
+    
+    .close {
+      font-size: 18px;
+      text-align: center;
+      color: #808;
+      position: relative;
+      top: -2px;
+      margin-left: 4px;
+      
+      &:hover {
+        color: black;
+      }
+    }
+  }
+}

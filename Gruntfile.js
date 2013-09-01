@@ -9,7 +9,14 @@ module.exports = function(grunt) {
     less: {
       all: {
         files: {
-          "css/editor.css": "css/editor.less"
+          "css/editor.css": [
+            "css/values.less",
+            "css/base.less",
+            "css/editor.less",
+            "css/ui.less",
+            "css/tabs.less",
+            "css/dialog.less"
+          ]
         }
       }
     },
