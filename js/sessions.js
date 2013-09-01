@@ -14,6 +14,19 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
   var tabs = [];
   var Session = ace.require("ace/edit_session").EditSession;
   
+  var syntax = document.querySelector(".syntax");
+  cfg.modes.forEach(function(mode) {
+    var option = document.createElement("option");
+    option.innerHTML = mode.label;
+    option.value = mode.name;
+    syntax.append(option);
+  });
+  
+  syntax.value = "javascript";
+  command.on("session:syntax", function(mode) {
+    editor.getSession().setMode("ace/mode/" + mode);
+  });
+  
   var renderTabs = function() {
     var tabContainer = document.querySelector(".tabs");
     var contents = "";
@@ -42,18 +55,26 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
     if (tab.file) {
       var extension = tab.file.entry.name.split(".").pop();
       console.log(extension);
+      for (var i = 0; i < cfg.modes.length; i++) {
+        var mode = cfg.modes[i];
+        if (mode.extensions.indexOf(extension) > -1) {
+          tab.setMode("ace/mode/" + mode.name);
+          syntax.value = mode.name;
+          break;
+        }
+      }
     }
   };
   
   var saveFile = function(as) {
-    if (session.modified || as) {
+    if (this.modified || as) {
       var content = this.getValue();
       if (!this.file) {
         var file = this.file = new File();
         file.open("save", function() {
           file.write(content);
-          session.file = file;
-          session.fileName = file.entry.name;
+          this.file = file;
+          this.fileName = file.entry.name;
           renderTabs();
         });
       } else {
@@ -134,19 +155,6 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
   addTab("");
   
   renderTabs();
-  
-  var syntax = document.querySelector(".syntax");
-  cfg.modes.forEach(function(mode) {
-    var option = document.createElement("option");
-    option.innerHTML = mode.label;
-    option.value = mode.name;
-    syntax.append(option);
-  });
-  
-  syntax.value = "javascript";
-  command.on("session:syntax", function(mode) {
-    editor.getSession().setMode("ace/mode/" + mode);
-  });
   
   command.on("session:new-file", function() { addTab() });
   command.on("session:open-file", openFile);
