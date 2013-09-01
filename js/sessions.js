@@ -50,7 +50,6 @@ define([
     tab.setTabSize(2);
     if (tab.file) {
       var extension = tab.file.entry.name.split(".").pop();
-      console.log(extension);
       for (var i = 0; i < cfg.modes.length; i++) {
         var mode = cfg.modes[i];
         if (mode.extensions.indexOf(extension) > -1) {

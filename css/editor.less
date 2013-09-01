@@ -66,35 +66,37 @@ body {
   height: 32px;
   width: 100%;
   background: #EEE;
-  padding-top: 2px;
-  border-bottom: 4px solid white;
+  padding: 2px;
+  display: flex;
+  justify-content: flex-start;
   
   span {
-    display: inline-block;
-    height: 100%;
-    min-width: 100px;
-    line-height: 26px;
-    padding: 0 20px 0 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 300px;
+    padding: 0px 4px;
     margin-right: 3px;
     background: white;
-    position: relative;
     color: #666;
+    border-bottom: 4px solid white;
+    flex: 0 1 auto;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     
     &.active {
-      border-top: 4px solid #808;
+      border-bottom: 4px solid #808;
       color: black;
     }
     
     .close {
-      border-radius: 4px;
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      height: 18px;
-      line-height: 18px;
       font-size: 18px;
       text-align: center;
       color: #808;
+      position: relative;
+      top: -2px;
+      margin-left: 4px;
       
       &:hover {
         color: black;
