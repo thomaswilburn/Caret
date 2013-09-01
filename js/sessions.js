@@ -120,7 +120,11 @@ define([
     if (tabs.length == 0) {
       return addTab();
     }
-    return raiseTab(index - 1);
+    var next = index - 1;
+    if (next < 0) {
+      next = 0;
+    }
+    return raiseTab(next);
   };
   
   var raiseTab = function(index) {
