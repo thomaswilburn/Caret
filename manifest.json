@@ -1,7 +1,7 @@
 {
     "name": "Caret",
     "description": "Sublime text editing for Chrome",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "manifest_version": 2,
     "icons": {
       "128": "icon.png"
