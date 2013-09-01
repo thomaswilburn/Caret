@@ -16,14 +16,18 @@ var el = Element.prototype;
 var doc = Document.prototype;
 var win = Window.prototype;
 
-el.query = doc.query = function(selector) {
+el.find = doc.find = function(selector) {
+    return this.querySelector(selector);
+};
+
+el.findAll = doc.findAll = function(selector) {
     var a = [];
     a.push.apply(a, this.querySelectorAll(selector));
     return a;
 };
 
 el.remove = function() {
-    this.parent.removeChild(this);
+    this.parentElement.removeChild(this);
 };
 
 el.append = function(element) {

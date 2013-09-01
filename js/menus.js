@@ -1,6 +1,6 @@
 define(["json!config/menus.json","dom2"], function(cfg) {
   
-  var menubar = document.querySelector(".toolbar");
+  var menubar = document.find(".toolbar");
   
   var walker = function(list) {
     var fragment = document.createDocumentFragment();

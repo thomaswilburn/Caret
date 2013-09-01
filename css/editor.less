@@ -124,3 +124,46 @@ body {
     height: 20px;
   }
 }
+
+.dialog {
+  position: fixed;
+  width: 250px;
+  left: ~"calc(50% - 100px)";
+  top: 200px;
+  background: white;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, .2);
+  z-index: 999;
+  padding: 10px;
+  border: 2px solid #AAA;
+
+  .button-row {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    font-size: 16px;
+
+    button {
+      padding: 8px;
+      border: 1px solid #888;
+      text-align: center;
+      background: white;
+      min-width: 75px;
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, .1);
+
+      &:hover {
+        border: 1px solid black;
+      }
+    }
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  content: "";
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, .8);
+  z-index: 99;
+}

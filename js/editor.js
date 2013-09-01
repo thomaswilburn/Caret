@@ -8,12 +8,12 @@ define(["file", "command", "json!config/ace.json", "dom2"], function(File, comma
   session.setMode("ace/mode/javascript");
   editor.setTheme("ace/theme/chrome");
   
-  var container = document.body.query(".editor-container").pop();
+  var container = document.body.find(".editor-container");
   var containerSize = container.getBoundingClientRect();
   
   window.on("resize", function() {
     var size = container.getBoundingClientRect();
-    var editorDiv = document.body.query("#editor").pop();
+    var editorDiv = document.body.find("#editor");
     editorDiv.style.width = size.width + "px";
     editorDiv.style.height = size.height + "px";
     editor.resize();

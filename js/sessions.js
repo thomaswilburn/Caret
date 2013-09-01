@@ -1,20 +1,16 @@
-define(["editor", "command", "file", "json!config/ace.json"], function(editor, command, File, cfg) {
-
-  /*
-  
-  - test loading a session from an external file
-  - test loading two sessions, switching between them
-  - get tabs up and running
-  - get/set/display theme per tab
-  - expose API for creating/get/set/dropSession
-  - retain file handles after shutdown
-  
-  */
+define([
+    "editor",
+    "dialog",
+    "command",
+    "file",
+    "json!config/ace.json"
+  ], 
+  function(editor, dialog, command, File, cfg) {
   
   var tabs = [];
   var Session = ace.require("ace/edit_session").EditSession;
   
-  var syntax = document.querySelector(".syntax");
+  var syntax = document.find(".syntax");
   cfg.modes.forEach(function(mode) {
     var option = document.createElement("option");
     option.innerHTML = mode.label;
@@ -28,7 +24,7 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
   });
   
   var renderTabs = function() {
-    var tabContainer = document.querySelector(".tabs");
+    var tabContainer = document.find(".tabs");
     var contents = "";
     var current = editor.getSession();
     tabContainer.innerHTML = "";
