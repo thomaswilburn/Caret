@@ -1,16 +1,26 @@
 define(["json!config/keys.json", "command", "editor", "dom2"], function(keyConfig, command, editor) {
 
   /*
-  
-  - assign standard keys: open, save, save as, close
-  - set Sublime keybindings
-  
+  Still need to set Sublime keybindings
   */
   
-  //we need to cancel some keys on keydown to prevent Chrome from passing them to the WM
+  var keycodes = {
+    9: "tab",
+    13: "return",
+    32: "space",
+    37: "left",
+    39: "right",
+    38: "up",
+    40: "down"
+  }
+  
+  //we have to listen on keydown, because keypress will get caught by the window manager
   window.on("keydown", function(e) {
     var char = String.fromCharCode(e.keyCode);
     if (!e.shiftKey) char = char.toLowerCase();
+    if (e.keyCode in keycodes) {
+      char = keycodes[e.keyCode];
+    }
     var combo = 
       e.ctrlKey ? "^-" + char :
       e.metaKey ? "M-" + char :

@@ -37,6 +37,33 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
     });
   }
   
+  var setTabSyntax = function(tab) {
+    tab.setTabSize(2);
+    if (tab.file) {
+      var extension = tab.file.entry.name.split(".").pop();
+      console.log(extension);
+    }
+  };
+  
+  var saveFile = function(as) {
+    if (session.modified || as) {
+      var content = this.getValue();
+      if (!this.file) {
+        var file = this.file = new File();
+        file.open("save", function() {
+          file.write(content);
+          session.file = file;
+          session.fileName = file.entry.name;
+          renderTabs();
+        });
+      } else {
+        this.file.write(content);
+      }
+      this.modified = false;
+      renderTabs();
+    }
+  };
+  
   var addTab = function(contents, file) {
     contents = contents || "";
     var current = editor.getSession();
@@ -52,23 +79,8 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
     }
     session.fileName = file ? file.entry.name : "untitled.txt";
     session.file = file;
-    session.save = function(as) {
-      if (session.modified || as) {
-        var content = this.getValue();
-        if (!this.file) {
-          var file = this.file = new File();
-          file.open("save", function() {
-            file.write(content);
-            session.file = file;
-            session.fileName = file.entry.name;
-            renderTabs();
-          });
-        } else {
-          this.file.write(content);
-        }
-        this.modified = false;
-      }
-    }
+    setTabSyntax(session);
+    session.save = saveFile;
     session.modified = false;
     session.once("change", function() {
       session.modified = true;
@@ -102,6 +114,14 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
     editor.focus();
   };
   
+  var switchTab = function(shift) {
+    shift = shift || 1;
+    var current = editor.getSession();
+    var currentIndex = tabs.indexOf(current);
+    var shifted = (currentIndex + shift) % tabs.length;
+    raiseTab(shifted);
+  }
+  
   var openFile = function() {
     var f = new File();
     f.open(function(file) {
@@ -109,7 +129,7 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
         addTab(data, file);
       });
     });
-  }
+  };
   
   addTab("");
   
@@ -134,5 +154,6 @@ define(["editor", "command", "file", "json!config/ace.json"], function(editor, c
   command.on("session:save-file", function() { editor.getSession().save() });
   command.on("session:save-file-as", function() { editor.getSession().save(true) });
   command.on("session:close-tab", removeTab);
+  command.on("session:change-tab", switchTab);
 
 });

@@ -1,5 +1,8 @@
 {
   "^-o": "session:open-file",
   "^-w": "session:close-tab",
-  "^-n": "session:new-file"
+  "^-s": "session:save-file",
+  "^-S": "session:save-file-as",
+  "^-n": "session:new-file",
+  "^-tab": "session:change-tab"
 }
