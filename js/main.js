@@ -12,6 +12,7 @@ require(["command", "keys", "sessions", "menus"], function(command) {
     frame.close();
   });
   
+  //the settings manager may also fire init:restart to re-init components after startup
   command.fire("init:startup");
   
 });
