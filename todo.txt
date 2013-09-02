@@ -2,8 +2,9 @@ TODO
 ====
 
 - add sublime keymappings
-- write dialog box module for confirm/alert
 - add settings module with editable config file in synchronized storage
+ - module should be a RequireJS plugin that loads the JSON, stores it, and then returns a file API
+ - modules should respond to init:first and init:restart events, for live settings reload
 - add indentation chooser
 - add line/column display
 - enable opening files from the file browser
