@@ -62,7 +62,6 @@ define([
   };
   
   var saveFile = function(as) {
-    debugger;
     if (this.modified || as) {
       var content = this.getValue();
       if (!this.file) {

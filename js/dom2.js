@@ -14,13 +14,14 @@ Yes, you're not supposed to extend native prototypes. But in ChromeOS, who cares
 
 var el = Element.prototype;
 var doc = Document.prototype;
+var frag = DocumentFragment.prototype;
 var win = Window.prototype;
 
-el.find = doc.find = function(selector) {
+el.find = doc.find = frag.find = function(selector) {
     return this.querySelector(selector);
 };
 
-el.findAll = doc.findAll = function(selector) {
+el.findAll = doc.findAll = frag.findAll = function(selector) {
     var a = [];
     a.push.apply(a, this.querySelectorAll(selector));
     return a;

@@ -5,7 +5,7 @@ define(["dom2"], function() {
       callback = buttons;
       buttons = ["ok", "cancel"];
     }
-    var modal = document.createElement("div");
+    /*var modal = document.createElement("div");
     modal.className = "modal-overlay";
     var dialog = document.createElement("div");
     dialog.className = "dialog";
@@ -13,7 +13,15 @@ define(["dom2"], function() {
     var buttonRow = document.createElement("div");
     buttonRow.className = "button-row";
     modal.append(dialog);
-    dialog.append(buttonRow);
+    dialog.append(buttonRow);*/
+    
+    var modal = document.find("template#dialog").content.cloneNode(true).find(".modal-overlay");
+    
+    var buttonRow = modal.find(".button-row");
+    var message = modal.find(".text");
+    message.innerHTML = text;
+    
+    document.body.append(modal);
 
     var clickButton = function() {
       modal.remove();
@@ -34,7 +42,6 @@ define(["dom2"], function() {
       buttonRow.append(button);
       button.on("click", clickButton);
     });
-    document.body.append(modal);
   }
 
 });
