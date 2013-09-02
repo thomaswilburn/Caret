@@ -1,4 +1,4 @@
-require(["keys", "sessions", "menus"], function() {
+require(["command", "keys", "sessions", "menus"], function(command) {
   
   var frame = chrome.app.window.current();
   
@@ -7,5 +7,11 @@ require(["keys", "sessions", "menus"], function() {
     var bounds = frame.getBounds();
     chrome.storage.local.set({bounds: bounds});
   });
+  
+  command.on("app:exit", function() {
+    frame.close();
+  });
+  
+  command.fire("init:startup");
   
 });

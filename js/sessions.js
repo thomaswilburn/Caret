@@ -10,19 +10,6 @@ define([
   var tabs = [];
   var Session = ace.require("ace/edit_session").EditSession;
   
-  var syntax = document.find(".syntax");
-  cfg.modes.forEach(function(mode) {
-    var option = document.createElement("option");
-    option.innerHTML = mode.label;
-    option.value = mode.name;
-    syntax.append(option);
-  });
-  
-  syntax.value = "javascript";
-  command.on("session:syntax", function(mode) {
-    editor.getSession().setMode("ace/mode/" + mode);
-  });
-  
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
     var contents = "";
@@ -172,9 +159,30 @@ define([
     });
   };
   
-  addTab("");
+  var syntax = document.find(".syntax");
   
-  renderTabs();
+  var init = function() {
+    cfg.modes.forEach(function(mode) {
+      var option = document.createElement("option");
+      option.innerHTML = mode.label;
+      option.value = mode.name;
+      syntax.append(option);
+    });
+    addTab("");
+    reset();
+  };
+  
+  var reset = function() {
+    syntax.value = "javascript";
+    editor.getSession().setMode("ace/mode/" + syntax.value);
+  };
+  
+  command.on("init:startup", init);
+  command.on("init:restart", reset);
+  
+  command.on("session:syntax", function(mode) {
+    editor.getSession().setMode("ace/mode/" + mode);
+  });
   
   command.on("session:new-file", function() { addTab() });
   command.on("session:open-file", openFile);

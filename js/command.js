@@ -10,13 +10,12 @@ define(["dom2"], function() {
   
   var fire = function(command, argument) {
     if (!commands[command]) return;
-    var registry = commands[command];
-    for (var i = 0; i < registry.length; i++) {
-      var entry = registry[i];
+    var registry = commands[command].slice();
+    registry.forEach(function(entry) {
       setTimeout(function() {
         entry.callback.call(entry.scope || null, argument);
       });
-    }
+    });
   }
   
   var register = function(command, listener, scope) {

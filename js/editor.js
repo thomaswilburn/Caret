@@ -21,14 +21,26 @@ define(["file", "command", "json!config/ace.json", "dom2"], function(File, comma
   window.dispatchEvent(new Event("resize"));
   
   var themes = document.querySelector(".theme");
-  cfg.themes.forEach(function(theme) {
-    var option = document.createElement("option");
-    option.innerHTML = theme.alt || theme.label;
-    option.setAttribute("value", theme.name);
-    themes.append(option);
-  });
   
-  themes.value = "chrome";
+  //one-time startup
+  var init = function() {
+    cfg.themes.forEach(function(theme) {
+      var option = document.createElement("option");
+      option.innerHTML = theme.alt || theme.label;
+      option.setAttribute("value", theme.name);
+      themes.append(option);
+    });
+    reset();
+  };
+  
+  //reloaded when settings change
+  var reset = function() {
+    themes.value = "chrome";
+    editor.setTheme("ace/theme/" + themes.value);
+  }
+  
+  command.on("init:startup", init);
+  command.on("init:restart", reset);
   
   command.on("editor:theme", function(theme) {
     editor.setTheme("ace/theme/" + theme);
