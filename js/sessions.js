@@ -48,6 +48,7 @@ define([
   
   var setTabSyntax = function(tab) {
     tab.setTabSize(2);
+    tab.setUseWrapMode(true);
     if (tab.file) {
       var extension = tab.file.entry.name.split(".").pop();
       for (var i = 0; i < cfg.modes.length; i++) {
