@@ -1,7 +1,7 @@
 {
     "name": "Caret",
-    "description": "Sublime text editing for Chrome",
-    "version": "0.0.5",
+    "description": "Professional text editing for Chrome and Chrome OS",
+    "version": "0.0.6",
     "manifest_version": 2,
     "icons": {
       "128": "icon.png"
@@ -21,5 +21,9 @@
       {
         "fileSystem": [ "write", "retainEntries" ]
       }
-    ]
+    ],
+
+    "default_locale": "en",
+    "kiosk_enabled": false,
+    "offline_enabled": true
 }
