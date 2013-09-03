@@ -22,8 +22,7 @@
         "fileSystem": [ "write", "retainEntries" ]
       }
     ],
-
-    "default_locale": "en",
+    
     "kiosk_enabled": false,
     "offline_enabled": true
 }
