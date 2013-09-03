@@ -1,4 +1,4 @@
-define(["json!config/keys.json", "command", "editor", "dom2"], function(keyConfig, command, editor) {
+define(["settings!keys", "command", "editor", "dom2"], function(Settings, command, editor) {
 
   /*
   Still need to set Sublime keybindings
@@ -12,7 +12,7 @@ define(["json!config/keys.json", "command", "editor", "dom2"], function(keyConfi
     39: "right",
     38: "up",
     40: "down"
-  }
+  };
   
   //we have to listen on keydown, because keypress will get caught by the window manager
   window.on("keydown", function(e) {
@@ -25,6 +25,7 @@ define(["json!config/keys.json", "command", "editor", "dom2"], function(keyConfi
       e.ctrlKey ? "^-" + char :
       e.metaKey ? "M-" + char :
       char;
+    var keyConfig = Settings.get("keys");
     if (combo in keyConfig) {
       e.preventDefault();
       command.fire(keyConfig[combo]);

@@ -3,12 +3,13 @@ define([
     "dialog",
     "command",
     "file",
-    "json!config/ace.json"
+    "settings!ace"
   ], 
-  function(editor, dialog, command, File, cfg) {
+  function(editor, dialog, command, File, Settings) {
   
   var tabs = [];
   var Session = ace.require("ace/edit_session").EditSession;
+  var cfg = Settings.get("ace");
   
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
@@ -173,6 +174,7 @@ define([
   };
   
   var reset = function() {
+    cfg = Settings.get("ace");
     syntax.value = "javascript";
     editor.getSession().setMode("ace/mode/" + syntax.value);
   };
@@ -191,5 +193,17 @@ define([
   command.on("session:save-file-as", function() { editor.getSession().save(true) });
   command.on("session:close-tab", removeTab);
   command.on("session:change-tab", switchTab);
+
+  command.on("session:open-settings-file", function(name) {
+    Settings.load(name, function() {
+      var data = JSON.stringify(Settings.get(name), null, 2);
+      var file = Settings.getAsFile(name);
+      addTab(data, file);
+    });
+  });
+  
+  return {
+    addFile: addTab
+  }
 
 });

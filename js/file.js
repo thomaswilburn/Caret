@@ -3,9 +3,7 @@ define(function() {
   /*
   
   Unfortunately, mimicking Node isn't really feasible given the Chrome OS security model, but we still don't want to deal with the annoying Chrome filesystem APIs. This module wraps those in a more usable File object.
-  
-  We should make 
-  
+    
   */
   
   var File = function() {

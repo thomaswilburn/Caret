@@ -1,4 +1,6 @@
-define(["json!config/menus.json","dom2"], function(cfg) {
+define(["settings!menus","dom2"], function(Settings) {
+  
+  var cfg = Settings.get("menus");
   
   var menubar = document.find(".toolbar");
   

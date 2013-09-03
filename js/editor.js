@@ -1,12 +1,13 @@
-define(["file", "command", "json!config/ace.json", "dom2"], function(File, command, cfg) {
+define(["file", "command", "settings!ace,user", "dom2"], function(File, command, Settings) {
   /*
   Module for loading the editor, adding window resizing and other events. Returns the editor straight from Ace.
   */
+  var userConfig = Settings.get("user");
+  var aceConfig = Settings.get("ace");
 
   var editor = window.editor = ace.edit("editor");
   var session = window.session = editor.getSession();
   session.setMode("ace/mode/javascript");
-  editor.setTheme("ace/theme/chrome");
   
   var container = document.body.find(".editor-container");
   var containerSize = container.getBoundingClientRect();
@@ -24,7 +25,7 @@ define(["file", "command", "json!config/ace.json", "dom2"], function(File, comma
   
   //one-time startup
   var init = function() {
-    cfg.themes.forEach(function(theme) {
+    aceConfig.themes.forEach(function(theme) {
       var option = document.createElement("option");
       option.innerHTML = theme.alt || theme.label;
       option.setAttribute("value", theme.name);
@@ -35,7 +36,7 @@ define(["file", "command", "json!config/ace.json", "dom2"], function(File, comma
   
   //reloaded when settings change
   var reset = function() {
-    themes.value = "chrome";
+    themes.value = userConfig.defaultTheme;
     editor.setTheme("ace/theme/" + themes.value);
   }
   
