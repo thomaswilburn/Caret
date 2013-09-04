@@ -29,6 +29,7 @@ define(["command"], function(command) {
       data[this.name] = content;
       var self = this;
       chrome.storage.sync.set(data, function() {
+        command.fire("settings:change-local");
         if (c) c(null, self);
       });
     },
@@ -80,6 +81,22 @@ define(["command"], function(command) {
     key += ".json";
     local[key] = defaults[key];
     chrome.storage.sync.remove(key);
+  });
+
+  command.on("settings:change-local", function() {
+    //reload anything that's been used
+    var keys = Object.keys(defaults).map(function(n) { return n.replace(".json", "")});
+    local = {};
+    defaults = {};
+    var completed = 0;
+    keys.forEach(function(key) {
+      Settings.load(key, function() {
+        completed++;
+        if (completed == keys.length) {
+          command.fire("init:restart");
+        }
+      });
+    });
   });
   
   return {

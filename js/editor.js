@@ -47,6 +47,7 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
   
   //reloaded when settings change
   var reset = function() {
+    userConfig = Settings.get("user");
     themes.value = userConfig.defaultTheme;
     editor.setTheme("ace/theme/" + themes.value);
   }

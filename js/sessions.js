@@ -39,14 +39,20 @@ define([
     tab.setTabSize(userConfig.indentation || 2);
     tab.setUseWrapMode(userConfig.wordWrap);
     if (tab.file) {
+      var found = false;
       var extension = tab.file.entry.name.split(".").pop();
       for (var i = 0; i < cfg.modes.length; i++) {
         var mode = cfg.modes[i];
         if (mode.extensions.indexOf(extension) > -1) {
           tab.setMode("ace/mode/" + mode.name);
           syntax.value = mode.name;
+          found = true;
           break;
         }
+      }
+      if (!found) {
+        syntax.value = "plain_text";
+        tab.setMode("ace/mode/plain_text");
       }
     }
   };
@@ -54,21 +60,27 @@ define([
   var saveFile = function(as) {
     if (this.modified || as) {
       var content = this.getValue();
-      if (!this.file) {
-        var file = this.file = new File();
-        var self = this;
-        return file.open("save", function() {
-          file.write(content);
-          self.file = file;
-          self.fileName = file.entry.name;
-          self.modified = false;
+      var self = this;
+
+      var whenOpen = function() {
+        self.file.write(content);
+        self.modified = false;
+        self.once("change", function() {
+          self.modified = true;
           renderTabs();
         });
-      } else {
-        this.file.write(content);
+        renderTabs();
       }
-      this.modified = false;
-      renderTabs();
+
+      if (!this.file) {
+        var file = this.file = new File();
+        return file.open("save", function() {
+          self.fileName = file.entry.name;
+          whenOpen();
+        });
+      }
+
+      whenOpen();
     }
   };
   
@@ -176,8 +188,10 @@ define([
   
   var reset = function() {
     cfg = Settings.get("ace");
+    userConfig = Settings.get("user");
     syntax.value = "javascript";
     editor.getSession().setMode("ace/mode/" + syntax.value);
+    tabs.forEach(setTabSyntax);
   };
   
   command.on("init:startup", init);
