@@ -21,6 +21,17 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
   });
   window.dispatchEvent(new Event("resize"));
   
+  var cursorPosition = document.find(".cursor-position");
+  editor.on("changeSelection", function() {
+    var selection = editor.getSelection();
+    var displayText = "";
+    if (!selection.inMultiSelectMode) {
+      var cursor = selection.getCursor();
+      displayText = cursor.row + ":" + cursor.column;
+      cursorPosition.innerHTML = displayText;
+    }
+  });
+  
   var themes = document.querySelector(".theme");
   
   //one-time startup

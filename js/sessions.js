@@ -3,13 +3,14 @@ define([
     "dialog",
     "command",
     "file",
-    "settings!ace"
+    "settings!ace,user"
   ], 
   function(editor, dialog, command, File, Settings) {
   
   var tabs = [];
   var Session = ace.require("ace/edit_session").EditSession;
   var cfg = Settings.get("ace");
+  var userConfig = Settings.get("user");
   
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
@@ -35,8 +36,8 @@ define([
   }
   
   var setTabSyntax = function(tab) {
-    tab.setTabSize(2);
-    tab.setUseWrapMode(true);
+    tab.setTabSize(userConfig.indentation || 2);
+    tab.setUseWrapMode(userConfig.wordWrap);
     if (tab.file) {
       var extension = tab.file.entry.name.split(".").pop();
       for (var i = 0; i < cfg.modes.length; i++) {
