@@ -12,6 +12,89 @@ define([
   var Session = ace.require("ace/edit_session").EditSession;
   var cfg = Settings.get("ace");
   var userConfig = Settings.get("user");
+
+  var augmentTab = function(session, file) {
+    
+    if (file) {
+      session.file = file;
+      session.fileName = file.entry.name;
+      setTabSyntax(session);
+    } else {
+      session.fileName = "untitled.txt";
+    }
+
+    if (session.isTab) {
+      session.retain();
+      session.setUnmodified();
+      return;
+    };
+    session.isTab = true;
+    
+    session.save = function(as) {
+      if (this.modified || as) {
+        var content = this.getValue();
+        var self = this;
+
+        var whenOpen = function() {
+          self.file.write(content);
+          self.setUnmodified();
+          renderTabs();
+        }
+
+        if (!this.file) {
+          var file = this.file = new File();
+          return file.open("save", function() {
+            self.fileName = file.entry.name;
+            self.retain();
+            whenOpen();
+          });
+        }
+
+        whenOpen();
+      }
+    };
+    
+    session.raise = function() {
+      editor.setSession(session);
+      renderTabs();
+      editor.focus();
+    };
+    
+    session.retain = function() {
+      if (!this.file || !chrome.fileSystem.retainEntry) return;
+      var id = this.file.retain();
+      if (!id) return;
+      chrome.storage.local.get("retained", function(data) {
+        data.retained = data.retained || [];
+        if (data.retained.indexOf(id) == -1) {
+          data.retained.push(id);
+          chrome.storage.local.set({ retained: data.retained });
+        }
+      });
+    };
+    session.retain();
+    
+    session.drop = function() {
+      if (!this.file || !chrome.fileSystem.retainEntry) return;
+      var id = this.file.retain();
+      if (!id) return;
+      chrome.storage.local.get("retained", function(data) {
+        var filtered = data.retained.filter(function(item) { return item != id });
+        chrome.storage.local.set({ retained: filtered });
+      });
+    };
+    
+    session.setUnmodified = function() {
+      var self = this;
+      this.modified = false;
+      this.once("change", function() {
+        self.modified = true;
+        renderTabs();
+      });
+    };
+    session.setUnmodified();
+  
+  };
   
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
@@ -34,7 +117,7 @@ define([
       span.append(close);
       tabContainer.append(span);
     });
-  }
+  };
   
   var setTabSyntax = function(tab) {
     tab.setTabSize(userConfig.indentation || 2);
@@ -58,33 +141,6 @@ define([
     }
   };
   
-  var saveFile = function(as) {
-    if (this.modified || as) {
-      var content = this.getValue();
-      var self = this;
-
-      var whenOpen = function() {
-        self.file.write(content);
-        self.modified = false;
-        self.once("change", function() {
-          self.modified = true;
-          renderTabs();
-        });
-        renderTabs();
-      }
-
-      if (!this.file) {
-        var file = this.file = new File();
-        return file.open("save", function() {
-          self.fileName = file.entry.name;
-          whenOpen();
-        });
-      }
-
-      whenOpen();
-    }
-  };
-  
   var addTab = function(contents, file) {
     contents = contents || "";
     var current = editor.getSession();
@@ -96,19 +152,9 @@ define([
     } else {
       session = new Session(contents);
       tabs.push(session);
-      editor.setSession(session);
     }
-    session.fileName = file ? file.entry.name : "untitled.txt";
-    session.file = file;
-    setTabSyntax(session);
-    session.save = saveFile;
-    session.modified = false;
-    session.once("change", function() {
-      session.modified = true;
-      renderTabs();
-    });
-    editor.focus();
-    renderTabs();
+    augmentTab(session, file);
+    session.raise();
   };
   
   var removeTab = function(index) {
@@ -118,13 +164,14 @@ define([
     var tab = tabs[index];
 
     var continuation = function() {
+      tab.drop();
       tabs = tabs.filter(function(tab, i) {
         if (i == index) {
           //tab.save();
           return false;
         }
         return true;
-      }); 
+      });
       if (tabs.length == 0) {
         return addTab();
       }
@@ -152,9 +199,7 @@ define([
   
   var raiseTab = function(index) {
     var tab = tabs[index];
-    editor.setSession(tab);
-    renderTabs();
-    editor.focus();
+    tab.raise();
   };
   
   var switchTab = function(shift) {
@@ -184,15 +229,24 @@ define([
       syntax.append(option);
     });
     addTab("");
-    reset();
+    chrome.storage.local.get("retained", function(data) {
+      if (data.retained && data.retained.length) {
+        data.retained.forEach(function(id) {
+          var file = new File();
+          file.restore(id, function() {
+            file.read(function(err, contents) {
+              addTab(contents, file);
+            });
+          });
+        });
+      }
+      reset();
+    });
   };
   
   var reset = function() {
     cfg = Settings.get("ace");
     userConfig = Settings.get("user");
-    syntax.value = "javascript";
-    editor.getSession().setMode("ace/mode/" + syntax.value);
-    tabs.forEach(setTabSyntax);
   };
   
   command.on("init:startup", init);

@@ -32,10 +32,11 @@ define(function() {
     },
     read: function(c) {
       var reader = new FileReader();
-      reader.onload = function(data) {
+      reader.onload = function() {
         c(null, reader.result);
       };
-      reader.onerror = function(err) {
+      reader.onerror = function() {
+        console.error("File read error!");
         c(err, null);
       };
       this.entry.file(function(f) {
