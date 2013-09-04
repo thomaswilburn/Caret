@@ -9,18 +9,7 @@
       { "label": "Close", "command": "session:close-tab" },
       { "label": "Exit", "command": "app:exit" }
     ]
-  }/*,
-  {
-    "label": "Edit",
-    "sub": [
-      { "label": "Cut", "command": "editor:cut" },
-      { "label": "Copy", "command": "editor:copy" },
-      { "label": "Paste", "command": "editor:paste" },
-      { "label": "Paste and Indent", "command": "editor:paste-indented" },
-      "divider",
-      { "label": "To Upper Case", "command": "editor:upper-case" }
-    ]
-  }*/,
+  },
   {
     "label": "Settings",
     "sub": [

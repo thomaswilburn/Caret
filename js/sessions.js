@@ -3,7 +3,8 @@ define([
     "dialog",
     "command",
     "file",
-    "settings!ace,user"
+    "settings!ace,user",
+    "aceBindings"
   ], 
   function(editor, dialog, command, File, Settings) {
   
