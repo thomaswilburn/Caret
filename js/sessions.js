@@ -18,10 +18,11 @@ define([
     if (file) {
       session.file = file;
       session.fileName = file.entry.name;
-      setTabSyntax(session);
     } else {
       session.fileName = "untitled.txt";
     }
+    
+    setTabSyntax(session);
 
     if (session.isTab) {
       session.retain();

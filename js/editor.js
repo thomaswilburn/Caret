@@ -58,6 +58,9 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
   command.on("editor:theme", function(theme) {
     editor.setTheme("ace/theme/" + theme);
   });
+
+  //disable focusing on the editor except by program
+  document.find("textarea").setAttribute("tabindex", -1);
   
   return editor;
 
