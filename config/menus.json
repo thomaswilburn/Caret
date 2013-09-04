@@ -26,7 +26,15 @@
     "sub": [
       { "label": "User Settings", "command": "session:open-settings-file", "argument": "user" },
       { "label": "Keyboard", "command": "session:open-settings-file", "argument": "keys" },
-      { "label": "Menus", "command": "session:open-settings-file", "argument": "menus" }
+      { "label": "Menus", "command": "session:open-settings-file", "argument": "menus" },
+      "divider",
+      { "label": "Reset to Default",
+        "sub": [
+          { "label": "User Settings", "command": "settings:delete-local", "argument": "user" },
+          { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys" },
+          { "label": "Menus", "command": "settings:delete-local", "argument": "menus" },
+        ]
+      }
     ]
   }
 

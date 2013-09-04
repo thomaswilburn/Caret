@@ -12,7 +12,6 @@
     { "name": "eclipse", "label": "Eclipse" },
     { "name": "github", "label": "GitHub" },
     { "name": "idle_fingers", "label": "Idle Fingers" },
-    { "name": "kr", "label": "KR", "alt": "Knight Rider" },
     { "name": "merbivore", "label": "Merbivore" },
     { "name": "merbivore_soft", "label": "Merbivore (soft)" },
     { "name": "mono_industrial", "label": "Mono Industrial" },
