@@ -1,8 +1,40 @@
 * {
   box-sizing: border-box;
 }
+
+html, body {
+    height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: "Droid Sans";
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+//MACRO-LEVEL POSITIONING
+
+.toolbar {
+  flex-basis: 30px;
+  width: 100%;
+}
+
+.tabs {
+  flex-basis: 32px;
+  width: 100%;
+}
+
+.editor-container {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.bottom-bar {
+  flex-basis: 30px;
+  align-self: flex-end;
+  width: 100%;
 }
