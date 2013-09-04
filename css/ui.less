@@ -10,45 +10,48 @@
     border: 1px solid rgba(0, 0, 0, .2);
     margin: 4px 8px;
   }
-  
-  & > li {
-    display: inline-block;
-    padding: 0 8px;
-    line-height: initial;
-    
+
+  //nested menus (default)
+  li {
+    display: block;
+    padding: 4px 8px;
+
     &:hover {
+
       background: #EEE;
+
+      & > .menu {
+        display: block;
+      }
+
     }
-    
+
     .menu {
       display: none;
       min-width: 150px;
       position: absolute;
+      margin-left: 80%;
+      margin-top: -2em;
       z-index: 999;
       background: white;
       padding: 0;
-      margin-left: -8px;
       box-shadow: 4px 8px 16px rgba(0, 0, 0, .1);
-      
-      li {
-        display: block;
-        padding: 4px 8px;
-        
-        &:hover {
-          background: #EEE;
-        }
-      }
     }
-    
-    &:hover {
-     
-     .menu {
-       display: block;
-     }
-     
-    }
-    
+
   }
+
+  //base-level menus
+  & > li {
+    display: inline-block;
+    padding: 0 8px;
+    line-height: initial;
+
+    & > .menu {
+      margin-left: -8px;
+      margin-top: 0;
+    }
+  }
+  
 }
 
 .bottom-bar {

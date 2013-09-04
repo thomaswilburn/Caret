@@ -28,11 +28,11 @@
       { "label": "Keyboard", "command": "session:open-settings-file", "argument": "keys" },
       { "label": "Menus", "command": "session:open-settings-file", "argument": "menus" },
       "divider",
-      { "label": "Reset to Default",
+      { "label": "Reset to Default &#x25B6;",
         "sub": [
           { "label": "User Settings", "command": "settings:delete-local", "argument": "user" },
           { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys" },
-          { "label": "Menus", "command": "settings:delete-local", "argument": "menus" },
+          { "label": "Menus", "command": "settings:delete-local", "argument": "menus" }
         ]
       }
     ]

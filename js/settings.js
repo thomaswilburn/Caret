@@ -75,6 +75,12 @@ define(["command"], function(command) {
       xhr.send();
     }
   };
+
+  command.on("settings:delete-local", function(key) {
+    key += ".json";
+    local[key] = defaults[key];
+    chrome.storage.sync.remove(key);
+  });
   
   return {
     load: function(name, parentRequire, onLoad, config) {
