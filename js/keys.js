@@ -5,22 +5,22 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
   */
   
   var keycodes = {
-    9: "tab",
-    13: "return",
-    32: "space",
-    37: "left",
-    39: "right",
-    38: "up",
-    40: "down"
+    9: "TAB",
+    13: "RETURN",
+    32: "SPACE",
+    37: "LEFT",
+    39: "RIGHT",
+    38: "UP",
+    40: "DOWN"
   };
   
   //we have to listen on keydown, because keypress will get caught by the window manager
   window.on("keydown", function(e) {
     var char = String.fromCharCode(e.keyCode);
-    if (!e.shiftKey) char = char.toLowerCase();
     if (e.keyCode in keycodes) {
       char = keycodes[e.keyCode];
     }
+    if (!e.shiftKey) char = char.toLowerCase();
     var combo = 
       e.ctrlKey ? "^-" + char :
       e.metaKey ? "M-" + char :
@@ -28,7 +28,13 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
     var keyConfig = Settings.get("keys");
     if (combo in keyConfig) {
       e.preventDefault();
-      command.fire(keyConfig[combo]);
+      var action = keyConfig[combo];
+      if (typeof action == "string") {
+        action = {
+          command: action
+        };
+      }
+      command.fire(action.command, action.argument);
     }
   });
 

@@ -209,6 +209,9 @@ define([
     var current = editor.getSession();
     var currentIndex = tabs.indexOf(current);
     var shifted = (currentIndex + shift) % tabs.length;
+    if (shifted < 0) {
+      shifted = tabs.length + shifted;
+    }
     raiseTab(shifted);
   }
   

@@ -4,5 +4,6 @@
   "^-s": "session:save-file",
   "^-S": "session:save-file-as",
   "^-n": "session:new-file",
-  "^-tab": "session:change-tab"
+  "^-tab": "session:change-tab",
+  "^-TAB": { "command": "session:change-tab", "argument": -1}
 }
