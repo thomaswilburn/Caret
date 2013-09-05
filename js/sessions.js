@@ -57,6 +57,7 @@ define([
     
     session.raise = function() {
       editor.setSession(session);
+      syntax.value = session.syntaxMode || "plain_text";
       renderTabs();
       editor.focus();
     };
@@ -123,6 +124,7 @@ define([
   var setTabSyntax = function(tab) {
     tab.setTabSize(userConfig.indentation || 2);
     tab.setUseWrapMode(userConfig.wordWrap);
+    var syntaxValue = "plain_text";
     if (tab.file) {
       var found = false;
       var extension = tab.file.entry.name.split(".").pop();
@@ -130,16 +132,13 @@ define([
         var mode = cfg.modes[i];
         if (mode.extensions.indexOf(extension) > -1) {
           tab.setMode("ace/mode/" + mode.name);
-          syntax.value = mode.name;
-          found = true;
+          syntaxValue = mode.name;
           break;
         }
       }
-      if (!found) {
-        syntax.value = "plain_text";
-        tab.setMode("ace/mode/plain_text");
-      }
     }
+    syntax.value = syntaxValue;
+    tab.syntaxMode = syntaxValue;
   };
   
   var addTab = function(contents, file) {
@@ -220,6 +219,18 @@ define([
     });
   };
   
+  var openFromLaunchData = function() {
+    if (window.launchData) {
+      window.launchData.items.forEach(function(file) {
+        var f = new File();
+        f.entry = file.entry;
+        f.read(function(err, contents) {
+          addTab(contents, f);
+        })
+      })
+    }
+  }
+  
   var syntax = document.find(".syntax");
   
   var init = function() {
@@ -230,18 +241,34 @@ define([
       syntax.append(option);
     });
     addTab("");
+    openFromLaunchData();
     chrome.storage.local.get("retained", function(data) {
+      var failures = [];
       if (data.retained && data.retained.length) {
         data.retained.forEach(function(id) {
           var file = new File();
-          file.restore(id, function() {
+          file.restore(id, function(err, f) {
+            if (err) {
+              //add failures to be removed asynchronously
+              failures.push(id);
+              return;
+            }
             file.read(function(err, contents) {
               addTab(contents, file);
             });
+            return id;
           });
         });
       }
       reset();
+      //after a reasonable delay, filter failures out of retention
+      setTimeout(function() {
+        chrome.storage.local.get("retained", function(data) {
+          chrome.storage.local.set({
+            retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
+          });
+        });
+      }, 500);
     });
   };
   
@@ -272,6 +299,8 @@ define([
       addTab(data, file);
     });
   });
+  
+  command.on("session:open-launch", openFromLaunchData);
   
   return {
     addFile: addTab

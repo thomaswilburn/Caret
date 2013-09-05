@@ -82,7 +82,7 @@ define(function() {
             c(null, self);
           });
         } else {
-          c("Could not restore file");
+          c("Could not restore file", null);
         }
       });
     }

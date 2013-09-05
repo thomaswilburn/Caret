@@ -25,5 +25,13 @@
     ],
 
     "kiosk_enabled": false,
-    "offline_enabled": true
+    "offline_enabled": true,
+    
+    "file_handlers": {
+      "text": {
+         "extensions": [ "as", "as3", "asm", "c", "cpp", "coffee", "conf", "cs", "csh", "css", "csv", "diff", "el", "ejs", "for", "g", "go", "h", "htm", "html", "htmls", "java", "js", "json", "log", "lua", "man", "manifest", "md", "mdoc", "me", "patch", "pl", "py", "rake", "rb", "sh", "shtml", "text", "tsv", "txt", "vcf", "vcs", "wml", "wmls", "wsc", "xml", "yaml", "yml", "zsh" ],
+         "title": "Caret",
+         "types": [ "application/javascript", "application/json", "application/x-shellscript", "application/xml", "text/*" ]
+      }
+   }
 }
