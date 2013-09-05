@@ -31,6 +31,8 @@ define([
     };
     session.isTab = true;
     
+    session.setUndoManager(new ace.UndoManager());
+    
     session.save = function(as) {
       if (this.modified || as) {
         var content = this.getValue();
