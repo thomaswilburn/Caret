@@ -57,6 +57,7 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
   
   command.on("editor:theme", function(theme) {
     editor.setTheme("ace/theme/" + theme);
+    editor.focus();
   });
 
   //disable focusing on the editor except by program

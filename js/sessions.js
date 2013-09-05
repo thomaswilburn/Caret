@@ -287,6 +287,7 @@ define([
   
   command.on("session:syntax", function(mode) {
     editor.getSession().setMode("ace/mode/" + mode);
+    editor.focus();
   });
   
   command.on("session:new-file", function() { addTab() });
