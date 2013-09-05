@@ -14,6 +14,8 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
     40: "DOWN"
   };
   
+  //need to remove existing Ace conflicts on init:start
+  
   //we have to listen on keydown, because keypress will get caught by the window manager
   window.on("keydown", function(e) {
     var char = String.fromCharCode(e.keyCode);
@@ -33,6 +35,9 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
         action = {
           command: action
         };
+      }
+      if (action.ace) {
+        return editor.execCommand(action.ace);
       }
       command.fire(action.command, action.argument);
     }
