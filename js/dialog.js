@@ -24,7 +24,7 @@ define(["dom2"], function() {
     var clickButton = function() {
       modal.remove();
       var value = JSON.parse(this.value);
-      callback(value);
+      if (callback) callback(value);
     };
 
     buttons.forEach(function(options) {

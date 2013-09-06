@@ -7,7 +7,8 @@
   z-index: 99;
   
   hr {
-    border: 1px solid rgba(0, 0, 0, .2);
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, .2);
     margin: 4px 8px;
   }
 
@@ -16,9 +17,11 @@
     display: block;
     padding: 4px 8px;
 
-    &:hover {
-
+    &:hover, &.active {
       background: #EEE;
+    }
+
+    &.parent:hover, &.active {
 
       & > .menu {
         display: block;
@@ -38,17 +41,25 @@
       box-shadow: 4px 8px 16px rgba(0, 0, 0, .1);
     }
 
+    &.parent::after {
+      content: "►";
+      font-family: serif;
+      position: absolute;
+      right: 4px;
+      color: rgba(0, 0, 0, .5);
+    }
+
   }
 
   //base-level menus
   & > li {
     display: inline-block;
-    padding: 0 8px;
+    padding: 4px 8px;
     line-height: initial;
 
     & > .menu {
       margin-left: -8px;
-      margin-top: 0;
+      margin-top: 4px;
     }
   }
   

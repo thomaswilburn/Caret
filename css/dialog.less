@@ -8,6 +8,7 @@
   z-index: 999;
   padding: 10px;
   border: 2px solid #AAA;
+  line-height: 170%;
 
   .button-row {
     display: flex;
@@ -39,4 +40,32 @@
   right: 0;
   background: rgba(255, 255, 255, .8);
   z-index: 99;
+}
+
+.credits {
+  text-align: justify;
+
+  h2 {
+    font-size: 18px;
+    font-weight: normal;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+
+  a, a:visited {
+    color: @accent;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: inside circle;
+
+    li {
+      padding: 0;
+      margin: 0;
+    }
+  }
 }

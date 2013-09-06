@@ -14,8 +14,8 @@
     "label": "Edit",
     "sub": [
       { "label": "Redo", "command": "ace:command", "argument": "redo" },
-      { "label": "Record Macro", "command": "ace:command", "argument": "togglerecording" },
-      { "label": "Reply Macro", "command": "ace:command", "argument": "replaymacro" },
+      { "label": "Start/stop Macro Recording", "command": "ace:command", "argument": "togglerecording" },
+      { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
       "divider",
       { "label": "Toggle Comment", "command": "ace:command", "argument": "togglecomment" },
       { "label": "Block Comment", "command": "ace:command", "argument": "toggleBlockComment" },
@@ -37,13 +37,15 @@
       { "label": "Keyboard", "command": "session:open-settings-file", "argument": "keys" },
       { "label": "Menus", "command": "session:open-settings-file", "argument": "menus" },
       "divider",
-      { "label": "Reset to Default &#x25B6;",
+      { "label": "Reset to Default",
         "sub": [
           { "label": "User Settings", "command": "settings:delete-local", "argument": "user" },
           { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys" },
           { "label": "Menus", "command": "settings:delete-local", "argument": "menus" }
         ]
-      }
+      },
+      "divider",
+      { "label": "About Caret", "command": "app:about" }
     ]
   }
 

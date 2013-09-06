@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Caret</title>
+    <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="css/editor.css">
   </head>
   <body>
@@ -25,12 +26,26 @@
     <script data-main="./js/main.js" src="require.js"></script>
 
     <template id="dialog">
-      <div class="modal-overlay">
-        <div class="dialog">
-          <span class="text"></span>
-          <div class="button-row"></div>
-        </div>
-      </div>
+<div class="modal-overlay">
+  <div class="dialog">
+    <span class="text"></span>
+    <div class="button-row"></div>
+  </div>
+</div>
+    </template>
+
+    <template id="about">
+<div>
+  <span class="credits">
+    <h2>Caret</h2>
+    <ul>
+      <li>Written by <a href="http://thomaswilburn.net" target=_blank>Thomas Wilburn</a>
+      <li>Based on the <a href="http://ace.c9.io" target=_blank>Ace editing component</a>
+      <li><a href="http://github.com/thomaswilburn/Caret" target=_blank>Caret Source</a>
+      <li>Thanks for your support!
+    </ul>
+  </span>
+</div>
     </template>
   </body>
 </html>
