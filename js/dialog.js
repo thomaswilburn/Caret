@@ -17,6 +17,11 @@ define(["dom2"], function() {
     var onKey = function(e) {
       e.stopPropagation();
       e.stopImmediatePropagation();
+      //check escape
+      if (e.keyCode == 27) {
+        modal.remove();
+        if (callback) callback();
+      }
     };
 
     modal.onkeydown = onKey;

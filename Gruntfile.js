@@ -1,7 +1,5 @@
 module.exports = function(grunt) {
   
-  //need to install less and watch modules
-  
   grunt.loadNpmTasks("grunt-contrib-less");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-contrib-compress");
