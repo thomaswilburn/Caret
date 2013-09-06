@@ -7,4 +7,10 @@ define(["command", "editor"], function(command, editor) {
       editor.execCommand("selecttolineend");
     });
 
+    //we also add a command redirect for firing Ace commands via regular command attributes
+
+    command.on("ace:command", function(cmd) {
+      editor.execCommand(cmd);
+    });
+
 });
