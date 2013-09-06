@@ -1,9 +1,14 @@
 {
+  //basic navigation/application keys
   "^-o": "session:open-file",
   "^-w": "session:close-tab",
   "^-s": "session:save-file",
   "^-S": "session:save-file-as",
   "^-n": "session:new-file",
   "^-tab": "session:change-tab",
-  "^-TAB": { "command": "session:change-tab", "argument": -1}
+  "^-TAB": { "command": "session:change-tab", "argument": -1},
+  "^-q": "app:exit",
+  
+  //Sublime compatibility
+  "^-d": { "ace": "selectMoreAfter" }
 }

@@ -15,6 +15,20 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
   };
   
   //need to remove existing Ace conflicts on init:start
+  var bindAce = function() {
+    var handler = editor.getKeyboardHandler();
+    var bindings = Settings.get("keys");
+    for (var k in bindings) {
+      var action = bindings[k];
+      if (!action.ace) continue;
+      k = k.replace("^", "Ctrl").replace("M", "Alt");
+      console.log(k);
+      handler.bindKey(k, action.ace);
+    }
+  };
+  command.on("init:startup", bindAce);
+  command.on("init:restart", bindAce);
+  
   
   //we have to listen on keydown, because keypress will get caught by the window manager
   window.on("keydown", function(e) {
@@ -37,7 +51,9 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
         };
       }
       if (action.ace) {
-        return editor.execCommand(action.ace);
+        //we're going to bind these directly on startup
+        //so we shouldn't act on them
+        return;// editor.execCommand(action.ace);
       }
       command.fire(action.command, action.argument);
     }
