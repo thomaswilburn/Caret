@@ -10,5 +10,6 @@
   "^-q": "app:exit",
   
   //Sublime compatibility
+  "^-l": "sublime:expand-to-line",
   "^-d": { "ace": "selectMoreAfter" }
 }

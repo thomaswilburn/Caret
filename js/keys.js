@@ -22,7 +22,6 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
       var action = bindings[k];
       if (!action.ace) continue;
       k = k.replace("^", "Ctrl").replace("M", "Alt");
-      console.log(k);
       handler.bindKey(k, action.ace);
     }
   };
@@ -37,10 +36,14 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
       char = keycodes[e.keyCode];
     }
     if (!e.shiftKey) char = char.toLowerCase();
-    var combo = 
-      e.ctrlKey ? "^-" + char :
-      e.metaKey ? "M-" + char :
-      char;
+    var prefix = "";
+    if (e.ctrlKey) {
+      prefix += "^";
+    }
+    if (e.altKey) {
+      prefix += "M";
+    }
+    var combo = prefix + "-" + char;
     var keyConfig = Settings.get("keys");
     if (combo in keyConfig) {
       e.preventDefault();
