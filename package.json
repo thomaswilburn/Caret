@@ -4,6 +4,7 @@
   "dependencies": {
     "grunt": "*",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-less": "*"
+    "grunt-contrib-less": "*",
+    "grunt-contrib-compress": "*"
   }
 }
