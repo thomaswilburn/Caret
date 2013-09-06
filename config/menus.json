@@ -25,7 +25,9 @@
       { "label": "Sort Lines", "command": "ace:command", "argument": "sortlines" },
       { "label": "Split Line", "command": "ace:command", "argument": "splitline" },
       { "label": "To Uppercase", "command": "ace:command", "argument": "touppercase" },
-      { "label": "To Lowercase", "command": "ace:command", "argument": "tolowercase" }
+      { "label": "To Lowercase", "command": "ace:command", "argument": "tolowercase" },
+      { "label": "Move Lines Up", "command": "ace:command", "argument": "movelinesup" },
+      { "label": "Move Lines Down", "command": "ace:command", "argument": "movelinesdown" }
     ]
   },
   {
