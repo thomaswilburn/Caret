@@ -1,7 +1,7 @@
 {
     "name": "Caret",
     "description": "Professional text editing for Chrome and Chrome OS",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "manifest_version": 2,
     "icons": {
       "128": "icon-128-2.png"
@@ -28,9 +28,60 @@
     
     "file_handlers": {
       "text": {
-         "extensions": [ "as", "as3", "asm", "c", "cpp", "coffee", "conf", "cs", "csh", "css", "csv", "diff", "el", "ejs", "for", "g", "go", "h", "htm", "html", "htmls", "java", "js", "json", "log", "lua", "man", "manifest", "md", "mdoc", "me", "patch", "pl", "py", "rake", "rb", "sh", "shtml", "text", "tsv", "txt", "vcf", "vcs", "wml", "wmls", "wsc", "xml", "yaml", "yml", "zsh" ],
-         "title": "Caret",
-         "types": [ "application/javascript", "application/json", "application/x-shellscript", "application/xml", "text/*" ]
+        "extensions": [
+          "as",
+          "as3",
+          "asm",
+          "c",
+          "cpp",
+          "coffee",
+          "conf",
+          "cs",
+          "csh",
+          "css",
+          "csv",
+          "diff",
+          "el",
+          "ejs",
+          "go",
+          "h",
+          "htm",
+          "html",
+          "htmls",
+          "java",
+          "js",
+          "json",
+          "log",
+          "lua",
+          "man",
+          "manifest",
+          "md",
+          "mdoc",
+          "me",
+          "patch",
+          "pl",
+          "py",
+          "rake",
+          "rb",
+          "sh",
+          "shtml",
+          "text",
+          "tsv",
+          "txt",
+          "vcf",
+          "xml",
+          "yaml",
+          "yml",
+          "zsh"
+        ],
+        "title": "Caret",
+        "types": [ 
+          "application/javascript",
+          "application/json",
+          "application/x-shellscript",
+          "application/xml",
+          "text/*"
+        ]
       }
    }
 }
