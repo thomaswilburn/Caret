@@ -1,4 +1,4 @@
-require(["command", "keys", "sessions", "menus"], function(command) {
+require(["command", "keys", "sessions", "menus", "palette"], function(command) {
   
   var frame = chrome.app.window.current();
   

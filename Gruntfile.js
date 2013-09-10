@@ -22,7 +22,7 @@ module.exports = function(grunt) {
       }
     },
     compress: {
-      package: {
+      pack: {
         options: {
           archive: "build/caret.zip",
           pretty: true

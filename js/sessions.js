@@ -309,7 +309,24 @@ define([
   command.on("session:open-launch", openFromLaunchData);
   
   return {
-    addFile: addTab
+    addFile: addTab,
+    getCurrent: function() {
+      return editor.getSession();
+    },
+    getTabByIndex: function(index) {
+      return tabs[index];
+    },
+    getTabByName: function(name) {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].fileName == name) {
+          return tabs[i];
+        }
+      }
+      return null;
+    },
+    getFilenames: function() {
+      return tabs.map(function(t) { return t.fileName });
+    }
   }
 
 });

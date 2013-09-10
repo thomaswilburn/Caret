@@ -1,0 +1,45 @@
+.palette {
+  display: none;
+  width: 300px;
+  position: fixed;
+  top: 20px;
+  left: ~"calc(50% - 150px)";
+  background: #333;
+  color: #AAA;
+  z-index: 999;
+  padding: 4px 12px;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, .2);
+  text-size: 16px;
+  
+  &.active {
+    display: block;
+  }
+  
+  h1 {
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  input {
+    width: 100%;
+    border: 2px solid #555;
+    border-radius: 4px;
+    padding: 8px;
+    background: transparent;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .results {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    
+    li {
+      border-top: 1px solid #555;
+      display: block;
+    }
+  }
+}

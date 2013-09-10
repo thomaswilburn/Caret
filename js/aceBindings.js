@@ -12,5 +12,8 @@ define(["command", "editor"], function(command, editor) {
     command.on("ace:command", function(cmd) {
       editor.execCommand(cmd);
     });
+    
+    //unbind the key for the palette, whatever it does.
+    editor.commands.bindKey("Ctrl-P", null);
 
 });

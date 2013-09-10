@@ -6,9 +6,6 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
   var aceConfig = Settings.get("ace");
 
   var editor = window.editor = ace.edit("editor");
-  var session = window.session = editor.getSession();
-  session.setMode("ace/mode/javascript");
-  
   var container = document.body.find(".editor-container");
   var containerSize = container.getBoundingClientRect();
   
