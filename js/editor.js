@@ -50,7 +50,9 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
     userConfig = Settings.get("user");
     themes.value = userConfig.defaultTheme;
     editor.setTheme("ace/theme/" + themes.value);
-  }
+    editor.container.style.fontSize = userConfig.fontSize ? userConfig.fontSize + "px" : null;
+    editor.container.style.fontFamily = userConfig.fontFamily || null;
+  };
   
   command.on("init:startup", init);
   command.on("init:restart", reset);

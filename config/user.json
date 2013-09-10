@@ -1,6 +1,7 @@
 {
-  "defaultTheme": "chrome",
+  "defaultTheme": "chrome", //AKA "Native"
   "indentation": 2,
   "wordWrap": true,
-  "wrapLimit": 100
+  "fontFamily": "", //only fixed-width fonts are currently supported
+  "fontSize": 13
 }
