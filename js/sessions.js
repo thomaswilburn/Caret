@@ -303,7 +303,8 @@ define([
     Settings.load(name, function() {
       var data = Settings.getAsString(name);
       var file = Settings.getAsFile(name);
-      addTab(data, file).setUseWorker(false);
+      //since we allow comments, it's a good idea to tweak the display to JS mode
+      addTab(data, file).setMode("ace/mode/javascript");
     });
   });
   
