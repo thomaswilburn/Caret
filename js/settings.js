@@ -38,11 +38,16 @@ define(["command"], function(command) {
 
   var Settings = {
     get: function(name) {
-      if (!name) {
-        return local;
-      }
       name = name + ".json";
-      return local[name];
+      try {
+        return JSON.parse(local[name].replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ""));
+      } catch (e) {
+        return JSON.parse(defaults[name].replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ""));
+      }
+    },
+    getAsString: function(name) {
+      name = name + ".json";
+      return local[name] || defaults[name];
     },
     getAsFile: function(name) {
       return new SyncFile(name + ".json");
@@ -54,15 +59,11 @@ define(["command"], function(command) {
       }
       
       var onload = function() {
-        var raw = this.responseText.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
-        defaults[name] = JSON.parse(raw);
+        var raw = this.responseText.replace();
+        defaults[name] = raw;
         chrome.storage.sync.get(name, function(data) {
           if (data[name]) {
-            try {
-              local[name] = JSON.parse(data[name]);
-            } catch (e) {
-              local[name] = defaults[name];
-            }
+            local[name] = data[name];
           } else {
             local[name] = defaults[name];
           }
@@ -81,6 +82,7 @@ define(["command"], function(command) {
     key += ".json";
     local[key] = defaults[key];
     chrome.storage.sync.remove(key);
+    command.fire("init:restart");
   });
 
   command.on("settings:change-local", function() {

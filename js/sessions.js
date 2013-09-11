@@ -157,6 +157,7 @@ define([
     }
     augmentTab(session, file);
     session.raise();
+    return session;
   };
   
   var removeTab = function(index) {
@@ -300,9 +301,10 @@ define([
 
   command.on("session:open-settings-file", function(name) {
     Settings.load(name, function() {
-      var data = JSON.stringify(Settings.get(name), null, 2);
+      var data = Settings.getAsString(name);
       var file = Settings.getAsFile(name);
-      addTab(data, file);
+      //since we allow comments, it's a good idea to tweak the display to JS mode
+      addTab(data, file).setMode("ace/mode/javascript");
     });
   });
   
