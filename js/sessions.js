@@ -308,6 +308,8 @@ define([
   
   command.on("session:open-launch", openFromLaunchData);
   
+  var locationMemory = null;
+  
   return {
     addFile: addTab,
     getCurrent: function() {
@@ -326,6 +328,21 @@ define([
     },
     getFilenames: function() {
       return tabs.map(function(t) { return t.fileName });
+    },
+    setCurrent: function(tab) {
+      tab.raise();
+    },
+    saveLocation: function() {
+      var session = editor.getSession();
+      var position = editor.getCursorPosition();
+      locationMemory = {
+        tab: session,
+        cursor: position
+      }
+    },
+    restoreLocation: function() {
+      locationMemory.tab.raise();
+      editor.moveCursorToPosition(locationMemory.cursor);
     }
   }
 
