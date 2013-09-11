@@ -2,11 +2,11 @@ define(["sessions", "command", "editor", "dom2"], function(sessions, command, ed
   
   /*
   
-  Palette's going to need some refactoring:
-    - when querying, set the results list. Results are attached to the element via JSON.
-    - need separate method for handing a result over to be located, so it can be done from query and from list
-    - should probably separate out parsing for commands and for content into two methods.
-    - all in all, needs to be more of a component, less of dom spaghetti
+  TODO:
+    - add reference mode
+    - add command support
+    - add results list/navigation
+  
   */
   
   var palette = document.find(".palette");
@@ -49,7 +49,7 @@ define(["sessions", "command", "editor", "dom2"], function(sessions, command, ed
     
       //search through files for query results
       var file = re.file.test(query) && re.file.exec(query)[1];
-      var line = re.line.test(query) && Number(re.line.exec(query)[1]);
+      var line = re.line.test(query) && Number(re.line.exec(query)[1]) - 1;
       var search = re.search.test(query) && re.search.exec(query)[1];
       var reference = re.reference.test(query) && re.reference.exec(query)[1];
       
@@ -61,23 +61,13 @@ define(["sessions", "command", "editor", "dom2"], function(sessions, command, ed
         var matches = openFileNames.filter(function(name) {
           return fuzzyFile.test(name);
         });
-        tabs = matches.map(sessions.getTabByName);
-        results.push(matches.join(", "));
+        results = matches.map(sessions.getTabByName);
       } else {
-        results.push("File: current file");
-        tabs = [ sessions.getCurrent() ];
-      }
-      
-      if (line) {
-        results.push("Line: " + line);
+        results = [ sessions.getCurrent() ];
       }
       
       if (search) {
-        results.push("Search: " + search);
-      }
-      
-      if (reference) {
-        results.push("Reference: " + reference);
+        results = results.filter(function(t) { return t.getValue().indexOf(search) > -1 });
       }
       
     }
@@ -85,17 +75,20 @@ define(["sessions", "command", "editor", "dom2"], function(sessions, command, ed
     resultList.innerHTML = "";
     results.forEach(function(r, i) {
       var element = resultTemplate.cloneNode(true).find("li");
-      element.innerHTML = r;
+      element.innerHTML = r.fileName;
       if (!i) {
         element.classList.add("current");
       }
-      element.setAttribute("data-result", JSON.stringify(r));
       resultList.appendChild(element);
     });
     
     var firstResult = results[0];
     if (firstResult) {
-      //goto tab, location selected
+      firstResult.raise(true);
+      if (line) {
+        firstResult.selection.clearSelection();
+        firstResult.selection.moveCursorTo(line, 0);
+      }
     }
   };
   
@@ -123,6 +116,14 @@ define(["sessions", "command", "editor", "dom2"], function(sessions, command, ed
   input.on("keydown", function(e) {
     if (e.keyCode == 27) {
       return input.blur();
+    }
+    if (e.keyCode == 13) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      palette.classList.remove("active");
+      editor.focus();
+      //perform command if in command mode
+      return;
     }
     if (e.keyCode == 38 || e.keyCode == 40) {
       navigateList(e.keyCode == 38 ? "up" : "down");

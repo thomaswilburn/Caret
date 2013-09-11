@@ -57,11 +57,13 @@ define([
       }
     };
     
-    session.raise = function() {
+    session.raise = function(backgrounded) {
       editor.setSession(session);
       syntax.value = session.syntaxMode || "plain_text";
       renderTabs();
-      editor.focus();
+      if (!backgrounded) {
+        editor.focus();
+      }
     };
     
     session.retain = function() {
