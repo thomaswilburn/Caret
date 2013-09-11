@@ -1,8 +1,13 @@
 module.exports = function(grunt) {
+
+  var exec = require("child_process").exec;
+  var path = require("path");
+  var fs = require("fs");
   
   grunt.loadNpmTasks("grunt-contrib-less");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-contrib-compress");
+  grunt.loadNpmTasks("grunt-contrib-copy");
   
   grunt.initConfig({
     less: {
@@ -31,10 +36,30 @@ module.exports = function(grunt) {
           "/": ["config/**", "js/**", "css/*.css", "*.html", "manifest.json", "require.js", "background.js", "*.png"]
         }
       }
+    },
+    copy: {
+      unpacked: {
+        dest: "build/unpacked/",
+        src: ["config/**", "js/**", "css/*.css", "*.html", "manifest.json", "require.js", "background.js", "*.png"]
+      }
     }
   });
   
   grunt.registerTask("default", ["less", "watch"]);
-  grunt.registerTask("package", ["less:all", "compress:pack"]);
+  grunt.registerTask("package", ["less:all", "compress:pack", "copy:unpacked", "crx"]);
+
+  grunt.registerTask("crx", "Makes a new CRX package", function() {
+    var c = this.async();
+    var here = fs.realpathSync(__dirname);
+    var cmd = ['"%LOCALAPPDATA%/Google/Chrome SxS/Application/chrome.exe"'];
+    cmd.push("--pack-extension=" + path.join(here, "build/unpacked"));
+    cmd.push("--pack-extension-key=" + path.join(here, "../Caret.pem"));
+    var fullPath = 
+    exec(cmd.join(" "),function(err, out, stderr) {
+      fs.renameSync("./build/unpacked.crx", "./build/Caret.crx");
+      exec("rm -rf ./build/unpacked");
+      c();
+    });
+  });
   
 };
