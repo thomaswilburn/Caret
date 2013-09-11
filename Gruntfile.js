@@ -35,6 +35,6 @@ module.exports = function(grunt) {
   });
   
   grunt.registerTask("default", ["less", "watch"]);
-  grunt.registerTask("package", ["less:all", "compress:package"]);
+  grunt.registerTask("package", ["less:all", "compress:pack"]);
   
 };
