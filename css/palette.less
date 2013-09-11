@@ -7,7 +7,7 @@
   background: #333;
   color: #AAA;
   z-index: 999;
-  padding: 4px 12px;
+  padding: 4px 0px;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, .2);
   text-size: 16px;
   
@@ -18,14 +18,16 @@
   h1 {
     font-size: 12px;
     padding: 0;
-    margin: 0;
+    margin: 0 12px;
   }
   
   input {
-    width: 100%;
+    width: 90%;
+    display: block;
     border: 2px solid #555;
     border-radius: 4px;
     padding: 8px;
+    margin: 8px auto;
     background: transparent;
     color: white;
     font-weight: bold;
@@ -40,6 +42,12 @@
     li {
       border-top: 1px solid #555;
       display: block;
+      padding: 8px;
+
+      &.current {
+        background: #444;
+        font-weight: bold;
+      }
     }
   }
 }

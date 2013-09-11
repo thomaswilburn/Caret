@@ -57,14 +57,18 @@ define([
       }
     };
     
-    session.raise = function(backgrounded) {
+    session.raise = function() {
+      editor.setSession(session);
+      syntax.value = session.syntaxMode || "plain_text";
+      editor.focus();
+      renderTabs();
+    };
+
+    session.raiseBlurred = function() {
       editor.setSession(session);
       syntax.value = session.syntaxMode || "plain_text";
       renderTabs();
-      if (!backgrounded) {
-        editor.focus();
-      }
-    };
+    }
     
     session.retain = function() {
       if (!this.file || !chrome.fileSystem.retainEntry) return;
@@ -342,9 +346,10 @@ define([
       locationMemory = {
         tab: session,
         cursor: position
-      }
+      };
     },
     restoreLocation: function() {
+      if (!locationMemory) return;
       locationMemory.tab.raise();
       editor.moveCursorToPosition(locationMemory.cursor);
     }

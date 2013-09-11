@@ -13,7 +13,8 @@ define(["command", "editor"], function(command, editor) {
       editor.execCommand(cmd);
     });
     
-    //unbind the key for the palette, whatever it does.
+    //unbind the keys for the palette, whatever it does.
     editor.commands.bindKey("Ctrl-P", null);
+    editor.commands.bindKey("Ctrl-Shift-P", null);
 
 });

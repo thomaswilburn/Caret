@@ -116,6 +116,6 @@ define([
       document.find("#about").content.cloneNode(true).find("div").innerHTML,
       ["ok"]
     );
-  })
+  });
   
 });

@@ -13,7 +13,7 @@
   "^-l": "sublime:expand-to-line",
   "^-d": { "ace": "selectMoreAfter" },
   "^-p": { "command": "palette:open" },
-  //"^-P": { "command": "palette:open", "argument": "command" },
+  "^-P": { "command": "palette:open", "argument": "command" },
   //"^-r": { "command": "palette:open", "argument": "reference" },
   "^-g": { "command": "palette:open", "argument": "goto" }
 }
