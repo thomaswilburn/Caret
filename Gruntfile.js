@@ -56,10 +56,20 @@ module.exports = function(grunt) {
     //perform the Chrome packaging
     var c = this.async();
     var here = fs.realpathSync(__dirname);
-    var cmd = ['"%LOCALAPPDATA%/Google/Chrome SxS/Application/chrome.exe"'];
+
+    var chrome = {
+      win32: '"%LOCALAPPDATA%/Google/Chrome SxS/Application/chrome.exe"',
+      linux: "",
+      osx: ""
+    }
+
+    var cmd = [ chrome[process.platform] ];
     cmd.push("--pack-extension=" + path.join(here, "build/unpacked"));
     cmd.push("--pack-extension-key=" + path.join(here, "../Caret.pem"));
     exec(cmd.join(" "),function(err, out, stderr) {
+      if (err) {
+        console.log(stderr);
+      }
       fs.renameSync("./build/unpacked.crx", "./build/Caret.crx");
       exec("rm -rf ./build/unpacked");
       c();
