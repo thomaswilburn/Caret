@@ -1,13 +1,12 @@
 Caret
 =====
 
-Caret is a serious, graphical programmer's editor running as a Chrome Packaged App. Inspired by Sublime and built on top of the Ace editing component, it will offer:
+Caret is a serious, graphical programmer's editor running as a Chrome Packaged App. Inspired by Sublime and built on top of the Ace editing component, it offers powerful features like:
 
-* Tabbed multi-document editing
-* Multiple selections with Sublime-like keystrokes
-* Retained file handles (you can close and re-open it without disrupting your setup)
-* Editor themes and syntax highlighting
-* Smart Go To and Command Palette
-* Hackable settings stored in JSON and synchronized through Chrome
+* multiple cursors
+* tabbed editing and retained files
+* syntax highlighting and themes
+* command palette/smart go to
+* hackable configuration files
 
-It's not there yet, but we'll be there soon. The ultimate goal of Caret is to fill a gap that currently stymies web developers working on Chrome OS, offering a pleasant graphical editing environment without needing to run a second windowing system via Crouton.
+More information, links to Caret in the Chrome Web Store, and an external package file are available at http://thomaswilburn.net/caret.
