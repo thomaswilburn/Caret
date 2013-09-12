@@ -49,12 +49,16 @@ module.exports = function(grunt) {
   grunt.registerTask("package", ["less:all", "compress:pack", "copy:unpacked", "crx"]);
 
   grunt.registerTask("crx", "Makes a new CRX package", function() {
+    var manifest = JSON.parse(fs.readFileSync("./build/unpacked/manifest.json"));
+    manifest.icons["128"] = "icon-128-inverted.png";
+    fs.writeFileSync("./build/unpacked/manifest.json", JSON.stringify(manifest, null, 2));
+
+    //perform the Chrome packaging
     var c = this.async();
     var here = fs.realpathSync(__dirname);
     var cmd = ['"%LOCALAPPDATA%/Google/Chrome SxS/Application/chrome.exe"'];
     cmd.push("--pack-extension=" + path.join(here, "build/unpacked"));
     cmd.push("--pack-extension-key=" + path.join(here, "../Caret.pem"));
-    var fullPath = 
     exec(cmd.join(" "),function(err, out, stderr) {
       fs.renameSync("./build/unpacked.crx", "./build/Caret.crx");
       exec("rm -rf ./build/unpacked");
