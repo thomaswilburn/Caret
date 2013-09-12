@@ -7,6 +7,8 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     mainWindow.contentWindow.require(["command"], function(c) {
       c.fire("session:open-launch");
     });
+    mainWindow.focus();
+    mainWindow.drawAttention();
     return;
   }
 
