@@ -1,5 +1,5 @@
 .tabs {
-  background: #AAA;
+  background: @faded;
   padding: 2px;
   display: flex;
   justify-content: flex-start;
@@ -11,9 +11,9 @@
     max-width: 300px;
     padding: 0px 4px;
     margin-right: 3px;
-    background: white;
-    color: #666;
-    border-bottom: 4px solid white;
+    background: @background;
+    color: fade(@foreground, 50%);
+    border-bottom: 4px solid @background;
     flex: 0 1 auto;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -21,7 +21,7 @@
     
     &.active {
       border-bottom: 4px solid @accent;
-      color: black;
+      color: @foreground;
     }
     
     .close {
@@ -32,7 +32,7 @@
       margin-left: 4px;
       
       &:hover {
-        color: black;
+        color: @foreground;
       }
     }
   }

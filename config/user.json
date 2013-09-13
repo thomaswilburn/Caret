@@ -19,7 +19,8 @@ make sure you don't have any syntax errors.
 
 {
   //This should be any of the supported Ace themes
-  "defaultTheme": "chrome", //AKA "Native"
+  "defaultTheme": "chrome", //AKA "Native",
+  "uiTheme": "light", //dark or light, your pick
   
   //indentation only in spaces, as God intended
   "indentation": 2,

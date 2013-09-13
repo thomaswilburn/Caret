@@ -1,7 +1,8 @@
 .toolbar {
   padding: 0;
   margin: 0;
-  background: white;
+  background: @background;
+  color: @foreground;
   line-height: 30px;
   list-style-type: none;
   z-index: 99;
@@ -13,7 +14,7 @@
   }
 
   .shortcut {
-    color: #AAA;
+    color: fade(@foreground, 50%);
     margin-left: 1em;
   }
 
@@ -24,7 +25,7 @@
     justify-content: space-between;
 
     &:hover, &.active {
-      background: #EEE;
+      background: fade(@foreground, 20%);
     }
 
     &.parent:hover, &.active {
@@ -42,7 +43,7 @@
       margin-left: 80%;
       margin-top: -2em;
       z-index: 999;
-      background: white;
+      background: @background;
       padding: 0;
       box-shadow: 4px 8px 16px rgba(0, 0, 0, .1);
     }
@@ -52,7 +53,7 @@
       font-family: serif;
       position: absolute;
       right: 4px;
-      color: rgba(0, 0, 0, .5);
+      color: fade(@foreground, 50%);
     }
 
   }
@@ -85,6 +86,7 @@
     margin: 0;
     border: none;
     width: 100px;
-    background: white;
+    background: @background;
+    color: @foreground;
   }
 }

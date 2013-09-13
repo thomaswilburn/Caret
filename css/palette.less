@@ -4,8 +4,8 @@
   position: fixed;
   top: 20px;
   left: ~"calc(50% - 150px)";
-  background: #333;
-  color: #AAA;
+  background: lighten(@background, 30%);
+  color: darken(@foreground, 30%);
   z-index: 999;
   padding: 4px 0px;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, .2);
@@ -29,7 +29,7 @@
     padding: 8px;
     margin: 8px auto;
     background: transparent;
-    color: white;
+    color: @background;
     font-weight: bold;
     font-size: 18px;
   }
@@ -45,7 +45,7 @@
       padding: 8px;
 
       &.current {
-        background: #444;
+        background: fade(@foreground, 90%);
         font-weight: bold;
       }
     }

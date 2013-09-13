@@ -11,9 +11,10 @@ module.exports = function(grunt) {
   
   grunt.initConfig({
     less: {
-      all: {
+      light: {
         files: {
-          "css/editor.css": "css/seed.less"
+          "css/caret.css": "css/seed.less",
+          "css/caret-dark.css": "css/seed-dark.less"
         }
       }
     },
@@ -46,7 +47,7 @@ module.exports = function(grunt) {
   });
   
   grunt.registerTask("default", ["less", "watch"]);
-  grunt.registerTask("package", ["less:all", "compress:pack", "copy:unpacked", "crx"]);
+  grunt.registerTask("package", ["less", "compress:pack", "copy:unpacked", "crx"]);
 
   grunt.registerTask("crx", "Makes a new CRX package", function() {
     var manifest = JSON.parse(fs.readFileSync("./build/unpacked/manifest.json"));
