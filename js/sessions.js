@@ -43,11 +43,15 @@ define([
           self.file.write(content);
           self.setUnmodified();
           renderTabs();
-        }
+        };
 
         if (!this.file || as) {
           var file = this.file = new File();
-          return file.open("save", function() {
+          return file.open("save", function(err) {
+            if (err) {
+              dialog(err);
+              return;
+            }
             self.fileName = file.entry.name;
             self.retain();
             whenOpen();
@@ -69,7 +73,7 @@ define([
       editor.setSession(session);
       syntax.value = session.syntaxMode || "plain_text";
       renderTabs();
-    }
+    };
     
     session.retain = function() {
       if (!this.file || !chrome.fileSystem.retainEntry) return;
@@ -99,10 +103,10 @@ define([
     session.setUnmodified = function() {
       var self = this;
       this.modified = false;
-      this.once("change", function() {
+      /*this.once("change", function() {
         self.modified = true;
-        setTimeout(renderTabs);
-      });
+        setTimeout(renderTabs, 1000);
+      });*/
     };
     session.setUnmodified();
   
@@ -122,7 +126,7 @@ define([
       if (tab === current) {
         span.className += " active";
       }
-      span.innerHTML = tab.fileName + (tab.modified ? " *" : "");
+      span.innerHTML = tab.fileName;// + (tab.modified ? " *" : "");
       var close = document.createElement("a");
       close.innerHTML = "&times;";
       close.className = "close";
@@ -240,6 +244,10 @@ define([
     var f = new File();
     f.open(function(file) {
       f.read(function(err, data) {
+        if (err) {
+          dialog(err);
+          return;
+        }
         addTab(data, file);
       });
     });
@@ -251,6 +259,10 @@ define([
         var f = new File();
         f.entry = file.entry;
         f.read(function(err, contents) {
+          if (err) {
+            dialog(err);
+            return;
+          }
           addTab(contents, f);
         });
       });
@@ -332,6 +344,7 @@ define([
               return;
             }
             file.read(function(err, contents) {
+              if (err) return;
               addTab(contents, file);
             });
             return id;

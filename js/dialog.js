@@ -3,7 +3,7 @@ define(["dom2"], function() {
   return function(text, buttons, callback) {
     if (typeof buttons == "function") {
       callback = buttons;
-      buttons = ["ok", "cancel"];
+      buttons = ["ok"];
     }
     
     var modal = document.find("template#dialog").content.cloneNode(true).find(".modal-overlay");

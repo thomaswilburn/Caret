@@ -31,6 +31,10 @@ define(function() {
       });
     },
     read: function(c) {
+      if (!this.entry) {
+        console.error(this);
+        c("File not opened", null);
+      }
       var reader = new FileReader();
       reader.onload = function() {
         c(null, reader.result);
