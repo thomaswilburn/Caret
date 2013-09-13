@@ -17,8 +17,8 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     var bounds = data.bounds || {
       width: 800,
       height: 600,
-      left: 10,
-      top: 10
+      left: 50,
+      top: 50
     };
     chrome.app.window.create("main.html", {
         bounds: bounds 

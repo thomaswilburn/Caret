@@ -27,6 +27,8 @@ el.findAll = doc.findAll = frag.findAll = function(selector) {
     return a;
 };
 
+el.matches = el.matches || el.webkitMatchesSelector;
+
 el.remove = function() {
     this.parentElement.removeChild(this);
 };

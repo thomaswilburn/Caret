@@ -12,6 +12,7 @@ define([
   var Session = ace.require("ace/edit_session").EditSession;
   var cfg = Settings.get("ace");
   var userConfig = Settings.get("user");
+  var syntax = document.find(".syntax");
 
   var augmentTab = function(session, file) {
     
@@ -114,10 +115,12 @@ define([
     tabContainer.innerHTML = "";
     tabs.forEach(function(tab, index) {
       var span = document.createElement("span");
+      span.setAttribute("draggable", true);
       span.setAttribute("command", "session:raise-tab");
       span.setAttribute("argument", index);
+      span.className = "tab";
       if (tab === current) {
-        span.className = "active";
+        span.className += " active";
       }
       span.innerHTML = tab.fileName + (tab.modified ? " *" : "");
       var close = document.createElement("a");
@@ -242,7 +245,7 @@ define([
   };
   
   var openFromLaunchData = function() {
-    if (window.launchData) {
+    if (window.launchData && window.launchData.items) {
       window.launchData.items.forEach(function(file) {
         var f = new File();
         f.entry = file.entry;
@@ -253,7 +256,58 @@ define([
     }
   };
   
-  var syntax = document.find(".syntax");
+  var enableTabDragDrop = function() {
+    var tabContainer = document.find(".tabs");
+    var draggedTab = null;
+    tabContainer.on("dragstart", function(e) {
+      if (!e.target.matches(".tab")) return;
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", e.target.getAttribute("argument"));
+      draggedTab = e.target;
+      draggedTab.ondragend = function() {
+        draggedTab = null;
+      };
+    });
+    tabContainer.on("dragover", function(e) { 
+      e.preventDefault();
+      e.dropEffect = "move";
+    });
+    tabContainer.on("drop", function(e) {
+      if (!draggedTab) return;
+      var target = e.target;
+      var location = "before";
+      var x = e.offsetX;
+      while (!target.matches(".tab")) {
+        if (target == tabContainer) {
+          var elements = tabContainer.findAll(".tab");
+          location = "after";
+          elements.forEach(function(el) {
+            if (el.offsetLeft < x) {
+              target = el;
+            }
+          });
+          break;
+        }
+        target = target.parentElement;
+        x += target.offsetLeft;
+      }
+      var from = tabs[e.dataTransfer.getData("text/plain") * 1];
+      var onto = tabs[target.getAttribute("argument") * 1];
+      var reordered = [];
+      tabs.forEach(function(t) {
+        if (t == from) return;
+        if (t == onto && location == "before") {
+          reordered.push(from);
+        }
+        reordered.push(t);
+        if (t == onto && location == "after") {
+          reordered.push(from);
+        }
+      });
+      tabs = reordered;
+      renderTabs();
+    });
+  };
   
   var init = function() {
     cfg.modes.forEach(function(mode) {
@@ -263,6 +317,7 @@ define([
       syntax.append(option);
     });
     addTab("");
+    enableTabDragDrop();
     openFromLaunchData();
     chrome.storage.local.get("retained", function(data) {
       var failures = [];
