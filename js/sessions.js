@@ -45,7 +45,7 @@ define([
           renderTabs();
         }
 
-        if (!this.file) {
+        if (!this.file || as) {
           var file = this.file = new File();
           return file.open("save", function() {
             self.fileName = file.entry.name;
