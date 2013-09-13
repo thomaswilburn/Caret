@@ -159,6 +159,7 @@ define([
       }
       tab.syntaxMode = syntaxValue;
     }
+    tab.setMode("ace/mode/" + syntaxValue);
     syntax.value = syntaxValue;
   };
   
@@ -382,6 +383,17 @@ define([
       var file = Settings.getAsFile(name);
       //since we allow comments, it's a good idea to tweak the display to JS mode
       addTab(data, file);
+    });
+  });
+  
+  //defaults don't get loaded as files, just as content
+  command.on("session:open-settings-defaults", function(name) {
+    Settings.load(name, function() {
+      var tab = addTab(Settings.getAsString(name, true));
+      tab.syntaxMode = "javascript";
+      setTabSyntax(tab);
+      tab.fileName = name + ".json";
+      renderTabs();
     });
   });
   

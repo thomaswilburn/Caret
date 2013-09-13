@@ -33,11 +33,18 @@
   {
     "label": "Settings",
     "sub": [
-      { "label": "User Settings", "command": "session:open-settings-file", "argument": "user" },
+      { "label": "User Preferences", "command": "session:open-settings-file", "argument": "user" },
       { "label": "Keyboard", "command": "session:open-settings-file", "argument": "keys" },
       { "label": "Menus", "command": "session:open-settings-file", "argument": "menus" },
       "divider",
-      { "label": "Reset to Default",
+      { "label": "View Defaults",
+        "sub": [
+          { "label": "User Preferences", "command": "session:open-settings-defaults", "argument": "user" },
+          { "label": "Keyboard", "command": "session:open-settings-defaults", "argument": "keys" },
+          { "label": "Menus", "command": "session:open-settings-defaults", "argument": "menus" }
+        ]
+      },
+      { "label": "Reset",
         "sub": [
           { "label": "User Settings", "command": "settings:delete-local", "argument": "user" },
           { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys" },

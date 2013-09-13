@@ -5,13 +5,18 @@ these files from the menu, then save it, it'll be dropped into Chrome's
 synchronized storage, which means that (theoretically) all your computers will
 get a copy. Comments are allowed, obviously--they'll be stripped out on load.
 
-Unfortunately, it's not (yet) possible to merge configuration the way that
-Sublime does, which means that this won't behave exactly like you may expect.
-If new options are introduced, you'll need to copy your settings to a new
-file, reset Caret's config to the defaults from the menu, then copy your
-configuration changes back over. Sorry about that. I'm working on it.
+Your individual settings are shallow-merged with a copy of the defaults 
+(available from Settings > View Defaults). When you first open them, your
+configuration will be a copy of the defaults, but I recommend stripping out
+anything you don't want to set explicitly, so that you can benefit if the
+default settings change in future releases.
+
+If your local file is not valid JSON, the defaults will be used. If your changes
+aren't being accepted, run the file (sans comments) through a JSON checker and
+make sure you don't have any syntax errors.
 
 */
+
 {
   //This should be any of the supported Ace themes
   "defaultTheme": "chrome", //AKA "Native"
@@ -27,4 +32,5 @@ configuration changes back over. Sorry about that. I'm working on it.
   //Web workers are used for code hinting in PHP, JavaScript, and JSON.
   //We don't yet have a way to set the worker options, but you can disable it.
   "useWorker": true
+  
 }

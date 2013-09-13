@@ -36,18 +36,61 @@ define(["command"], function(command) {
     },
     retain: function() { return false; }
   };
+  
+  var clone = function(item) {
+    var cloneArray = function(a) {
+      var n = [];
+      for (var i = 0; i < a.length; i++) {
+        if (a[i] instanceof Array) {
+          n[i] = cloneArray(a[i]);
+        } else if (typeof a[i] == "object") {
+          n[i] = cloneObject(a[i]);
+        } else {
+          n[i] = a[i];
+        }
+      }
+      return n;
+    };
+    var cloneObject = function(o) {
+      var n = {};
+      for (var key in o) {
+        if (o[key] instanceof Array) {
+          n[key] = cloneArray(o[key]);
+        } else if (typeof o[key] == "object") {
+          n[key] = cloneObject(o[key]);
+        } else {
+          n[key] = o[key];
+        }
+      }
+      return n;
+    };
+    if (item instanceof Array) {
+      return cloneArray(item);
+    }
+    return cloneObject(item);
+  };
 
   var Settings = {
     get: function(name) {
       name = name + ".json";
+      var comments = /\/\*[\s\S]*?\*\/|\/\/.*$/gm;
+      var original = clone(JSON.parse(defaults[name].replace(comments, "")));
+      var custom = {};
       try {
-        return JSON.parse(local[name].replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ""));
+        custom = JSON.parse(local[name].replace(comments, ""));
       } catch (e) {
-        return JSON.parse(defaults[name].replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ""));
+        //parse failed
       }
+      for (var key in custom) {
+        original[key] = custom[key];
+      }
+      return original;
     },
-    getAsString: function(name) {
+    getAsString: function(name, original) {
       name = name + ".json";
+      if (original) {
+        return defaults[name];
+      }
       return local[name] || defaults[name];
     },
     getAsFile: function(name) {
