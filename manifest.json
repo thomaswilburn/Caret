@@ -1,89 +1,89 @@
 {
-    "name": "Caret",
-    "description": "Professional text editing for Chrome and Chrome OS",
-    "version": "0.0.21",
-    "manifest_version": 2,
-    "icons": {
-      "128": "icon-128-2.png"
-    },
-    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCh9A0p0K76KGXnEYMf4tVxhHUBXQTRh984XrkVSuzX6Tp4al9cj7NgXh3Sjx+0+KctLzpmvCw9bwgWueAE13LhjQ+dJONaR5xhte0KTAfaVRGV5EKCBx6KwzcaBGWBHv3V1b/8CbTENivW3/eVTg0/gmyB0tzfqzEoXy/lnRkZdQIDAQAB",
-    "update_url": "http://thomaswilburn.net/caret/updates.xml",
+  "name": "Caret",
+  "description": "Professional text editing for Chrome and Chrome OS",
+  "version": "0.0.22",
+  "manifest_version": 2,
+  "icons": {
+    "128": "icon-128-2.png"
+  },
+  "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCh9A0p0K76KGXnEYMf4tVxhHUBXQTRh984XrkVSuzX6Tp4al9cj7NgXh3Sjx+0+KctLzpmvCw9bwgWueAE13LhjQ+dJONaR5xhte0KTAfaVRGV5EKCBx6KwzcaBGWBHv3V1b/8CbTENivW3/eVTg0/gmyB0tzfqzEoXy/lnRkZdQIDAQAB",
+  "update_url": "http://thomaswilburn.net/caret/updates.xml",
 
-    "app": {
-        "background": {
-            "scripts": [ "background.js" ]
-        }
-    },
-    
-    "permissions": [
-      "clipboardRead",
-      "clipboardWrite",
-      "contextMenus",
-      "storage",
-      {
-        "fileSystem": [ "write", "retainEntries" ]
-      }
-    ],
+  "app": {
+    "background": {
+      "scripts": [ "background.js" ]
+    }
+  },
+  
+  "permissions": [
+    "clipboardRead",
+    "clipboardWrite",
+    "contextMenus",
+    "storage",
+    {
+      "fileSystem": [ "write", "retainEntries" ]
+    }
+  ],
 
-    "kiosk_enabled": false,
-    "offline_enabled": true,
-    
-    "file_handlers": {
-      "text": {
-        "extensions": [
-          "as",
-          "as3",
-          "asm",
-          "c",
-          "cpp",
-          "coffee",
-          "conf",
-          "cs",
-          "csh",
-          "css",
-          "csv",
-          "diff",
-          "el",
-          "ejs",
-          "go",
-          "h",
-          "htm",
-          "html",
-          "htmls",
-          "java",
-          "js",
-          "json",
-          "log",
-          "lua",
-          "man",
-          "manifest",
-          "md",
-          "mdoc",
-          "me",
-          "patch",
-          "pl",
-          "py",
-          "rake",
-          "rb",
-          "sh",
-          "shtml",
-          "text",
-          "tsv",
-          "txt",
-          "vcf",
-          "xml",
-          "yaml",
-          "yml",
-          "zsh"
-        ],
-        "title": "Caret",
-        "types": [ 
-          "application/javascript",
-          "application/json",
-          "application/x-shellscript",
-          "application/xml",
-          "text/*"
-        ]
-      }
-   }
+  "kiosk_enabled": false,
+  "offline_enabled": true,
+  
+  "file_handlers": {
+    "text": {
+      "extensions": [
+        "as",
+        "as3",
+        "asm",
+        "c",
+        "cpp",
+        "coffee",
+        "conf",
+        "cs",
+        "csh",
+        "css",
+        "csv",
+        "diff",
+        "el",
+        "ejs",
+        "go",
+        "h",
+        "htm",
+        "html",
+        "htmls",
+        "java",
+        "js",
+        "json",
+        "log",
+        "lua",
+        "man",
+        "manifest",
+        "md",
+        "mdoc",
+        "me",
+        "patch",
+        "pl",
+        "py",
+        "rake",
+        "rb",
+        "sh",
+        "shtml",
+        "text",
+        "tsv",
+        "txt",
+        "vcf",
+        "xml",
+        "yaml",
+        "yml",
+        "zsh"
+      ],
+      "title": "Caret",
+      "types": [ 
+        "application/javascript",
+        "application/json",
+        "application/x-shellscript",
+        "application/xml",
+        "text/*"
+      ]
+    }
+  }
 }
