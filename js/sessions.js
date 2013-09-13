@@ -28,7 +28,7 @@ define([
       session.retain();
       session.setUnmodified();
       return;
-    };
+    }
     session.isTab = true;
     
     session.setUndoManager(new ace.UndoManager());
@@ -89,6 +89,7 @@ define([
       var id = this.file.retain();
       if (!id) return;
       chrome.storage.local.get("retained", function(data) {
+        if (!data.retained) return;
         var filtered = data.retained.filter(function(item) { return item != id });
         chrome.storage.local.set({ retained: filtered });
       });
@@ -132,6 +133,7 @@ define([
   var setTabSyntax = function(tab) {
     tab.setTabSize(userConfig.indentation || 2);
     tab.setUseWrapMode(userConfig.wordWrap);
+    tab.setUseWorker(userConfig.useWorker);
     var syntaxValue = "plain_text";
     if (tab.file) {
       var found = false;
@@ -189,7 +191,7 @@ define([
         next = 0;
       }
       raiseTab(next);
-    }
+    };
 
     if (tab.modified) {
       dialog(
@@ -200,7 +202,7 @@ define([
             tab.save();
           }
           continuation();
-        })
+        });
     } else {
       continuation();
     }
@@ -220,7 +222,7 @@ define([
       shifted = tabs.length + shifted;
     }
     raiseTab(shifted);
-  }
+  };
   
   var openFile = function() {
     var f = new File();
@@ -238,10 +240,10 @@ define([
         f.entry = file.entry;
         f.read(function(err, contents) {
           addTab(contents, f);
-        })
-      })
+        });
+      });
     }
-  }
+  };
   
   var syntax = document.find(".syntax");
   
@@ -276,6 +278,7 @@ define([
       //after a reasonable delay, filter failures out of retention
       setTimeout(function() {
         chrome.storage.local.get("retained", function(data) {
+          if (!data.retained) return;
           chrome.storage.local.set({
             retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
           });
@@ -287,6 +290,9 @@ define([
   var reset = function() {
     cfg = Settings.get("ace");
     userConfig = Settings.get("user");
+    tabs.forEach(function(tab) {
+      setTabSyntax(tab);
+    })
   };
   
   command.on("init:startup", init);
