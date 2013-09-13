@@ -59,14 +59,13 @@ module.exports = function(grunt) {
 
     var chrome = {
       win32: '"' + (process.env["ProgramFiles(x86)"] || process.env.ProgramFiles) + "\\Google\\Chrome\\Application\\chrome.exe" + '"',
-      linux: "/opt/google/chrome",
-      osx: ""
+      linux: "/opt/google/chrome/chrome",
+      osx: "Beats me."
     }
 
     var cmd = [ chrome[process.platform] ];
     cmd.push("--pack-extension=" + path.join(here, "build/unpacked"));
     cmd.push("--pack-extension-key=" + path.join(here, "../Caret.pem"));
-    //exec("echo %ProgramFiles%", console.log.bind(console));
     exec(cmd.join(" "),function(err, out, stderr) {
       if (err) {
         console.log(stderr);
