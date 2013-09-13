@@ -3,7 +3,7 @@
 All settings for Caret are stored in JSON-formatted files. If you open one of
 these files from the menu, then save it, it'll be dropped into Chrome's
 synchronized storage, which means that (theoretically) all your computers will
-get a copy.
+get a copy. Comments are allowed, obviously--they'll be stripped out on load.
 
 Unfortunately, it's not (yet) possible to merge configuration the way that
 Sublime does, which means that this won't behave exactly like you may expect.
@@ -13,10 +13,18 @@ configuration changes back over. Sorry about that. I'm working on it.
 
 */
 {
+  //This should be any of the supported Ace themes
   "defaultTheme": "chrome", //AKA "Native"
+  
+  //indentation only in spaces, as God intended
   "indentation": 2,
   "wordWrap": true,
-  "fontFamily": "", //WARNING: only fixed-width fonts are currently supported
+  
+  //only fixed-width fonts supported, for now
+  "fontFamily": "",
   "fontSize": 13,
+  
+  //Web workers are used for code hinting in PHP, JavaScript, and JSON.
+  //We don't yet have a way to set the worker options, but you can disable it.
   "useWorker": true
 }
