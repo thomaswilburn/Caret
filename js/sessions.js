@@ -135,20 +135,28 @@ define([
     tab.setUseWrapMode(userConfig.wordWrap);
     tab.setUseWorker(userConfig.useWorker);
     var syntaxValue = "plain_text";
-    if (tab.file) {
-      var found = false;
-      var extension = tab.file.entry.name.split(".").pop();
-      for (var i = 0; i < cfg.modes.length; i++) {
-        var mode = cfg.modes[i];
-        if (mode.extensions.indexOf(extension) > -1) {
-          tab.setMode("ace/mode/" + mode.name);
-          syntaxValue = mode.name;
-          break;
+    if (tab.syntaxMode) {
+      syntaxValue = tab.syntaxMode;
+    } else if (tab.file) {
+      if (tab.file.virtual) {
+        //settings files are special
+        syntaxValue = "javascript";
+        tab.setMode("ace/mode/javascript");
+      } else {
+        var found = false;
+        var extension = tab.file.entry.name.split(".").pop();
+        for (var i = 0; i < cfg.modes.length; i++) {
+          var mode = cfg.modes[i];
+          if (mode.extensions.indexOf(extension) > -1) {
+            tab.setMode("ace/mode/" + mode.name);
+            syntaxValue = mode.name;
+            break;
+          }
         }
       }
+      tab.syntaxMode = syntaxValue;
     }
     syntax.value = syntaxValue;
-    tab.syntaxMode = syntaxValue;
   };
   
   var addTab = function(contents, file) {
@@ -299,7 +307,9 @@ define([
   command.on("init:restart", reset);
   
   command.on("session:syntax", function(mode) {
-    editor.getSession().setMode("ace/mode/" + mode);
+    var session = editor.getSession();
+    session.setMode("ace/mode/" + mode);
+    session.syntaxMode = mode;
     editor.focus();
   });
   
@@ -316,7 +326,7 @@ define([
       var data = Settings.getAsString(name);
       var file = Settings.getAsFile(name);
       //since we allow comments, it's a good idea to tweak the display to JS mode
-      addTab(data, file).setMode("ace/mode/javascript");
+      addTab(data, file);
     });
   });
   

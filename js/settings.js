@@ -8,6 +8,7 @@ define(["command"], function(command) {
     if (name) {
       this.open(name, c);
     }
+    this.virtual = true;
   };
   SyncFile.prototype = {
     name: "",
