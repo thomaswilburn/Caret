@@ -101,7 +101,7 @@ define([
       this.modified = false;
       this.once("change", function() {
         self.modified = true;
-        renderTabs();
+        setTimeout(renderTabs);
       });
     };
     session.setUnmodified();
