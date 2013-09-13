@@ -35,31 +35,29 @@ define([
     session.setUndoManager(new ace.UndoManager());
     
     session.save = function(as) {
-      if (this.modified || as) {
-        var content = this.getValue();
-        var self = this;
+      var content = this.getValue();
+      var self = this;
 
-        var whenOpen = function() {
-          self.file.write(content);
-          self.setUnmodified();
-          renderTabs();
-        };
+      var whenOpen = function() {
+        self.file.write(content);
+        self.setUnmodified();
+        renderTabs();
+      };
 
-        if (!this.file || as) {
-          var file = this.file = new File();
-          return file.open("save", function(err) {
-            if (err) {
-              dialog(err);
-              return;
-            }
-            self.fileName = file.entry.name;
-            self.retain();
-            whenOpen();
-          });
-        }
-
-        whenOpen();
+      if (!this.file || as) {
+        var file = this.file = new File();
+        return file.open("save", function(err) {
+          if (err) {
+            dialog(err);
+            return;
+          }
+          self.fileName = file.entry.name;
+          self.retain();
+          whenOpen();
+        });
       }
+
+      whenOpen();
     };
     
     session.raise = function() {
@@ -242,7 +240,10 @@ define([
   
   var openFile = function() {
     var f = new File();
-    f.open(function(file) {
+    f.open(function(err, file) {
+      if (err) {
+        return dialog(err);
+      }
       f.read(function(err, data) {
         if (err) {
           dialog(err);

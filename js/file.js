@@ -25,9 +25,9 @@ define(function() {
       chrome.fileSystem.chooseEntry({
         type: modes[mode]
       }, function(entry) {
-        if (!entry) return;
+        if (!entry) return c("Couldn't open file");
         self.entry = entry;
-        c(self)
+        c(null, self)
       });
     },
     read: function(c) {
@@ -82,6 +82,7 @@ define(function() {
       chrome.fileSystem.isRestorable(id, function(is) {
         if (is) {
           chrome.fileSystem.restoreEntry(id, function(entry) {
+            if (!entry) return c("Could not restore file", null);
             self.entry = entry;
             c(null, self);
           });
