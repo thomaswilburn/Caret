@@ -249,7 +249,7 @@ define([
   
   var openFile = function() {
     var f = new File();
-    f.open(function(err, file) {
+    f.open(function(err) {
       if (err) {
         return dialog(err);
       }
@@ -289,7 +289,7 @@ define([
         e.target.classList.add("dragging");
       }, 50);
       e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", e.target.getAttribute("argument"));
+      e.dataTransfer.setData("application/x-tab-id", e.target.getAttribute("argument"));
       draggedTab = e.target;
       draggedTab.ondragend = function() {
         draggedTab = null;
@@ -328,7 +328,7 @@ define([
         target = target.parentElement;
         x += target.offsetLeft;
       }
-      var from = tabs[e.dataTransfer.getData("text/plain") * 1];
+      var from = tabs[e.dataTransfer.getData("application/x-tab-id") * 1];
       var onto = tabs[target.getAttribute("argument") * 1];
       var reordered = [];
       tabs.forEach(function(t) {
