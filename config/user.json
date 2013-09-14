@@ -32,6 +32,9 @@ make sure you don't have any syntax errors.
   
   //Web workers are used for code hinting in PHP, JavaScript, and JSON.
   //We don't yet have a way to set the worker options, but you can disable it.
-  "useWorker": true
+  "useWorker": true,
+  
+  //Crazy? You might like Vim keybindings. Only takes effect on restart
+  "emulateVim": false
   
 }
