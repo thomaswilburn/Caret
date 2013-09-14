@@ -1,7 +1,7 @@
 define(["dom2"], function() {
 
   return function(text, buttons, callback) {
-    if (typeof buttons == "function") {
+    if (typeof buttons == "function" || typeof buttons == "undefined") {
       callback = buttons;
       buttons = ["ok"];
     }

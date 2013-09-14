@@ -1,9 +1,11 @@
+//display always uses the white coloring
 .dialog {
   position: fixed;
   width: 250px;
   left: ~"calc(50% - 100px)";
   top: 200px;
-  background: @background;
+  background: white;
+  color: black;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, .2);
   z-index: 999;
   padding: 10px;
@@ -20,8 +22,8 @@
       padding: 8px;
       border: 1px solid #888;
       text-align: center;
-      background: @background;
-      color: @foreground;
+      background: white;
+      color: black;
       min-width: 75px;
       box-shadow: 4px 4px 8px rgba(0, 0, 0, .1);
 
@@ -39,7 +41,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: fade(@background, 20%);
+  background: rgba(255, 255, 255, .5);
   z-index: 99;
 }
 

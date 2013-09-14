@@ -25,7 +25,8 @@ define(function() {
       chrome.fileSystem.chooseEntry({
         type: modes[mode]
       }, function(entry) {
-        if (!entry) return c("Couldn't open file");
+        //cancelling acts like an error, but isn't.
+        if (!entry) return;
         self.entry = entry;
         c(null, self)
       });
