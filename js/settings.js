@@ -69,6 +69,9 @@ define(["command"], function(command) {
     }
     return cloneObject(item);
   };
+  
+  //track transfers to prevent multiple requests
+  var pending = {};
 
   var Settings = {
     get: function(name) {
@@ -102,6 +105,12 @@ define(["command"], function(command) {
         return c();
       }
       
+      //if a request is out, tag along with it
+      if (pending[name]) {
+        pending[name].push(c);
+        return;
+      }
+      
       var onload = function() {
         var raw = this.responseText.replace();
         defaults[name] = raw;
@@ -111,9 +120,14 @@ define(["command"], function(command) {
           } else {
             local[name] = defaults[name];
           }
-          c();
+          for (var i = 0; i < pending[name].length; i++) {
+            pending[name][i]();
+          }
+          delete pending[name]
         });
       };
+      
+      pending[name] = [c]
       
       var xhr = new XMLHttpRequest();
       xhr.open("GET", "config/" + name);
