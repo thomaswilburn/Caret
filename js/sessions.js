@@ -101,10 +101,11 @@ define([
     session.setUnmodified = function() {
       var self = this;
       this.modified = false;
-      /*this.once("change", function() {
+      //kind of awkward, but listening to change on session causes render issues
+      this.getDocument().once("change", function() {
         self.modified = true;
-        setTimeout(renderTabs, 1000);
-      });*/
+        renderTabs();
+      });
     };
     session.setUnmodified();
   
@@ -124,7 +125,7 @@ define([
       if (tab === current) {
         span.className += " active";
       }
-      span.innerHTML = tab.fileName;// + (tab.modified ? " *" : "");
+      span.innerHTML = tab.fileName + (tab.modified ? " &bull;" : "");
       var close = document.createElement("a");
       close.innerHTML = "&times;";
       close.className = "close";

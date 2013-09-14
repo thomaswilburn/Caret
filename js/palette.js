@@ -10,7 +10,7 @@ define([
   
   TODO:
     - add reference mode
-    - add command support
+    - add search mode
   
   */
   
