@@ -284,16 +284,30 @@ define([
     var draggedTab = null;
     tabContainer.on("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
+      e.target.style.opacity = .4;
+      setTimeout(function() {
+        e.target.classList.add("dragging");
+      }, 50);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", e.target.getAttribute("argument"));
       draggedTab = e.target;
       draggedTab.ondragend = function() {
         draggedTab = null;
+        e.target.style.opacity = null;
+        e.target.classList.remove("dragging");
       };
     });
     tabContainer.on("dragover", function(e) { 
       e.preventDefault();
       e.dropEffect = "move";
+    });
+    tabContainer.on("dragenter", function(e) {
+      if (!e.target.matches(".tab")) return;
+      e.target.classList.add("hovering");
+    });
+    tabContainer.on("dragleave", function(e) {
+      if (!e.target.matches(".tab")) return;
+      e.target.classList.remove("hovering");
     });
     tabContainer.on("drop", function(e) {
       if (!draggedTab) return;

@@ -13,15 +13,30 @@
     margin-right: 3px;
     background: @background;
     color: fade(@foreground, 50%);
-    border-bottom: 4px solid @background;
+    padding-bottom: 4px;
     flex: 0 1 auto;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    position: relative;
+    
+    transition: width .5s, border-width .5s;
     
     &.active {
+      padding-bottom: 0px;
       border-bottom: 4px solid @accent;
       color: @foreground;
+    }
+    
+    &.dragging {
+      width: 0;
+      padding: 0;
+    }
+    
+    &.hovering {
+      border-color: @faded;
+      border-left-width: 50px;
+      border-left-style: solid;
     }
     
     .close {
