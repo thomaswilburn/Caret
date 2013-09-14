@@ -34,19 +34,24 @@ define([
     
     session.setUndoManager(new ace.UndoManager());
     
-    session.save = function(as) {
+    session.save = function(as, c) {
+      if (typeof as == "function") {
+        c = as;
+        as = false;
+      }
       var content = this.getValue();
       var self = this;
 
       var whenOpen = function() {
-        self.file.write(content);
+        self.file.write(content, c);
         self.setUnmodified();
         renderTabs();
       };
 
       if (!this.file || as) {
-        var file = this.file = new File();
+        var file = new File();
         return file.open("save", function(err) {
+          self.file = file;
           if (err) {
             dialog(err);
             return;
@@ -148,7 +153,7 @@ define([
         //settings files are special
         syntaxValue = "javascript";
         tab.setMode("ace/mode/javascript");
-      } else {
+      } else if (tab.file.entry) {
         var found = false;
         var extension = tab.file.entry.name.split(".").pop();
         for (var i = 0; i < cfg.modes.length; i++) {
@@ -193,7 +198,6 @@ define([
       tab.drop();
       tabs = tabs.filter(function(tab, i) {
         if (i == index) {
-          //tab.save();
           return false;
         }
         return true;
@@ -213,11 +217,15 @@ define([
         tab.fileName + " has been modified. Do you want to save changes?",
         [{label: "Save", value: true}, {label: "Don't save", value: false}],
         function(confirm) {
+          if (typeof confirm == "undefined") {
+            return;
+          }
           if (confirm) {
-            tab.save();
+            return tab.save(continuation);
           }
           continuation();
         });
+        return;
     } else {
       continuation();
     }
