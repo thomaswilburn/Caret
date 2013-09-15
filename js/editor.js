@@ -35,7 +35,7 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
   var init = function() {
     aceConfig.themes.forEach(function(theme) {
       var option = document.createElement("option");
-      option.innerHTML = theme.alt || theme.label;
+      option.innerHTML = theme.label;
       option.setAttribute("value", theme.name);
       themes.append(option);
     });
