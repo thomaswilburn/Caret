@@ -1,8 +1,9 @@
 .tabs {
   background: @faded;
-  padding: 2px;
+  padding: 2px 2px 0px 0px;
   display: flex;
   justify-content: flex-start;
+  box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .3);
   
   span {
     display: flex;
@@ -11,14 +12,17 @@
     max-width: 300px;
     padding: 0px 4px;
     margin-right: 3px;
+    opacity: .8;
     background: @background;
-    color: fade(@foreground, 50%);
+    border-radius: 2px 2px 0 0;
+    color: @foreground;
     padding-bottom: 4px;
     flex: 0 1 auto;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
+    box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
     
     transition: width .5s, border-width .5s;
     
@@ -26,6 +30,8 @@
       padding-bottom: 0px;
       border-bottom: 4px solid @accent;
       color: @foreground;
+      opacity: 1;
+      box-shadow: none;
     }
     
     &.dragging {
