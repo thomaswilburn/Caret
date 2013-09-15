@@ -46,12 +46,13 @@
       },
       { "label": "Reset",
         "sub": [
-          { "label": "User Settings", "command": "settings:delete-local", "argument": "user" },
+          { "label": "User Preferences", "command": "settings:delete-local", "argument": "user" },
           { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys" },
           { "label": "Menus", "command": "settings:delete-local", "argument": "menus" }
         ]
       },
       "divider",
+      { "label": "Help", "command": "session:open-settings-defaults", "argument": "help" },
       { "label": "About Caret", "command": "app:about" }
     ]
   }
