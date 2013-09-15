@@ -9,6 +9,10 @@
   "^-TAB": { "command": "session:change-tab", "argument": -1},
   "^-q": "app:exit",
   
+  //Chromebook fixes
+  "^-up": { "ace": "addCursorAbove" },
+  "^-down": { "ace": "addCursorBelow" },
+  
   //Sublime compatibility
   "^-l": "sublime:expand-to-line",
   "^-d": { "ace": "selectMoreAfter" },
