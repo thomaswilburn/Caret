@@ -27,7 +27,8 @@ define([
 
     if (session.isTab) {
       session.retain();
-      session.setUnmodified();
+      session.modified = false;
+      renderTabs();
       return;
     }
     session.isTab = true;
@@ -44,7 +45,7 @@ define([
 
       var whenOpen = function() {
         self.file.write(content, c);
-        self.setUnmodified();
+        self.modified = false;
         renderTabs();
       };
 
@@ -103,16 +104,12 @@ define([
       });
     };
     
-    session.setUnmodified = function() {
-      var self = this;
-      this.modified = false;
-      //kind of awkward, but listening to change on session causes render issues
-      this.getDocument().once("change", function() {
-        self.modified = true;
-        renderTabs();
-      });
-    };
-    session.setUnmodified();
+    //once() is buggier than on(), not sure why
+    session.on("change", function() {
+      if (session.modified) return;
+      session.modified = true;
+      renderTabs();
+    });
   
   };
   
@@ -258,7 +255,7 @@ define([
           dialog(err);
           return;
         }
-        addTab(data, file);
+        addTab(data, f);
       });
     });
   };
