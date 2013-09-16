@@ -2,7 +2,7 @@ require([
   "command",
   "settings!user",
   "keys",
-  "sessions",
+  "fileManager",
   "menus",
   "palette"
   ], function(command, Settings) {

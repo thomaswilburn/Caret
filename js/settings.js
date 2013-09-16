@@ -161,6 +161,10 @@ define(["command"], function(command) {
   
   return {
     load: function(name, parentRequire, onLoad, config) {
+      if (name.length == 0) {
+        return onLoad(Settings);
+      }
+      
       var files = name.split(",");
       var completed = 0;
       
