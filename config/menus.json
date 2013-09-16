@@ -14,14 +14,18 @@
   {
     "label": "Edit",
     "sub": [
+      { "label": "Undo", "command": "ace:command", "argument": "undo" },
       { "label": "Redo", "command": "ace:command", "argument": "redo" },
       { "label": "Start/stop Macro Recording", "command": "ace:command", "argument": "togglerecording" },
       { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
       "divider",
+      { "label": "Find", "command": "ace:command", "argument": "find" },
+      { "label": "Find/Replace", "command": "ace:command", "argument": "replace" },
+      { "label": "Find Next", "command": "ace:command", "argument": "findnext" },
+      "divider",
       { "label": "Toggle Comment", "command": "ace:command", "argument": "togglecomment" },
       { "label": "Block Comment", "command": "ace:command", "argument": "toggleBlockComment" },
       { "label": "Select to Matching", "command": "ace:command", "argument": "selecttomatching" },
-      /* folding goes here, once it works */
       "divider",
       { "label": "Sort Lines", "command": "ace:command", "argument": "sortlines" },
       { "label": "Split Line", "command": "ace:command", "argument": "splitline" },
