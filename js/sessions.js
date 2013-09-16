@@ -391,7 +391,8 @@ define([
       if (!locationMemory) return;
       locationMemory.tab.raise();
       editor.moveCursorToPosition(locationMemory.cursor);
-    }
+    },
+    renderTabs: renderTabs
   }
 
 });

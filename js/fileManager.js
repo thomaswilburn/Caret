@@ -43,6 +43,16 @@ define([
   command.on("session:open-file", openFile);
   command.on("session:save-file", function() { sessions.getCurrent().save() });
   command.on("session:save-file-as", function() { sessions.getCurrent().save(true) });
+  command.on("session:revert-file", function() {
+    var tab = sessions.getCurrent();
+    if (!tab.file) return;
+    tab.file.read(function(err, data) {
+      if (err) return;
+      tab.setValue(data);
+      tab.modified = false;
+      sessions.renderTabs();
+    });
+  });
   
   command.on("session:open-settings-file", function(name) {
     Settings.load(name, function() {
