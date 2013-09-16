@@ -141,6 +141,7 @@ define([
   var setTabSyntax = function(tab) {
     tab.setTabSize(userConfig.indentation || 2);
     tab.setUseWrapMode(userConfig.wordWrap);
+    tab.setWrapLimit(userConfig.wrapLimit || null);
     tab.setUseWorker(userConfig.useWorker);
     var syntaxValue = "plain_text";
     if (tab.syntaxMode) {
