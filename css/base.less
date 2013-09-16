@@ -31,17 +31,23 @@ a[target] {
 .toolbar {
   flex: 0 0 30px;
   width: 100%;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .tabs {
   flex: 0 0 32px;
   width: 100%;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .editor-container {
-    flex-grow: 1;
-    height: 100%;
-    padding-top: 2px;
+  flex-grow: 1;
+  height: 100%;
+  padding-top: 2px;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .bottom-bar {
@@ -53,4 +59,6 @@ a[target] {
   align-content: stretch;
   box-shadow: 0 -4px 4px rgba(0, 0, 0, .1);
   z-index: 99;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }

@@ -30,10 +30,29 @@ require([
     document.find("#theme").setAttribute("href", url);
   }
   
-  
   //the settings manager may also fire init:restart to re-init components after startup
   command.fire("init:startup");
   command.on("init:restart", setTheme);
   setTheme();
+  
+  chrome.runtime.requestUpdateCheck(function(status, details) {
+    if (status == "update_available") {
+      dialog(
+        "An update to Caret version " + details.version + " is available. Would you like to restart and update?",
+        [{
+          label: "Restart",
+          value: true
+        }, {
+          label: "Not now",
+          value: false
+        }],
+        function(restart) {
+          if (restart) {
+            chrome.runtime.reload();
+          }
+        }
+      );
+    }
+  });
   
 });

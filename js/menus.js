@@ -112,8 +112,11 @@ define([
   });
 
   command.on("app:about", function() {
+    var content = document.find("#about").content.cloneNode(true).find("div").innerHTML;
+    var manifest = chrome.runtime.getManifest();
+    content = content.replace("%VERSION%", manifest.version);
     dialog(
-      document.find("#about").content.cloneNode(true).find("div").innerHTML,
+      content,
       ["ok"]
     );
   });
