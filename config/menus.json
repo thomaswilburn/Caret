@@ -16,7 +16,7 @@
     "sub": [
       { "label": "Undo", "command": "ace:command", "argument": "undo" },
       { "label": "Redo", "command": "ace:command", "argument": "redo" },
-      { "label": "Start/stop Macro Recording", "command": "ace:command", "argument": "togglerecording" },
+      { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
       { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
       "divider",
       { "label": "Find", "command": "ace:command", "argument": "find" },
