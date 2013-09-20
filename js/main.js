@@ -37,9 +37,9 @@ require([
   setTheme();
   
   chrome.runtime.requestUpdateCheck(function(status, details) {
-    if (status == "update_available") {
+    if (status == "update_available" && Settings.get("user").promptForUpdates !== false) {
       dialog(
-        "An update to Caret version " + details.version + " is available. Would you like to restart and update?",
+        "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
         [{
           label: "Restart",
           value: true

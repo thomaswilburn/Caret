@@ -18,6 +18,9 @@ make sure you don't have any syntax errors.
 */
 
 {
+  //If the update prompt doesn't always work for you, disable it here.
+  "promptForUpdates": true,
+  
   "defaultTheme": "chrome", //This should be any of the supported Ace themes
   "uiTheme": "light", //dark or light, your pick
   "cursor": "slim", //"ace", "slim", "smooth", "wide"
