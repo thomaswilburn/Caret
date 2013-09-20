@@ -155,14 +155,12 @@ define([
     activate: function(mode) {
       this.results = [];
       this.selected = 0;
+      this.input.value = "";
+      this.commandMode = mode == "command";
+      this.input.value = modes[mode] || "";
       this.render();
       this.element.classList.add("active");
       this.input.focus();
-      this.input.value = "";
-      if (mode) {
-        this.commandMode = mode == "command";
-        this.input.value = modes[mode] || "";
-      }
     },
     deactivate: function() {
       this.element.classList.remove("active");

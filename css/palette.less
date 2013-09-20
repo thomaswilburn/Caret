@@ -4,11 +4,12 @@
   position: fixed;
   top: 20px;
   left: ~"calc(50% - 150px)";
-  background: lighten(@background, 30%);
+  background: lighten(@background, 10%);
   color: darken(@foreground, 30%);
   z-index: 999;
   padding: 4px 0px;
-  box-shadow: 4px 4px 16px rgba(0, 0, 0, .2);
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, .5);
+  border-radius: 8px;
   font-size: 16px;
   
   &.active {
@@ -29,9 +30,13 @@
     padding: 8px;
     margin: 8px auto;
     background: transparent;
-    color: @background;
+    color: @foreground;
     font-weight: bold;
     font-size: 18px;
+
+    &:focus {
+      outline: 1px solid @background;
+    }
   }
   
   .results {
@@ -40,12 +45,12 @@
     list-style-type: none;
     
     li {
-      border-top: 1px solid #555;
+      border-top: 1px solid @faded;
       display: block;
       padding: 8px;
 
       &.current {
-        background: fade(@foreground, 90%);
+        background: @faded;
         font-weight: bold;
       }
     }

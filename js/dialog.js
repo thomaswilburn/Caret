@@ -46,7 +46,10 @@ define(["dom2"], function() {
       button.on("click", clickButton);
     });
 
-    modal.find("button").focus();
+    setTimeout(function() {
+      //ensure focus, even from palette (which normally refocuses editor)
+      modal.find("button").focus();
+    });
 
   }
 
