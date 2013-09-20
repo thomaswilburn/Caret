@@ -5,12 +5,8 @@ define(["editor"], function(editor) {
     var update = function() {
       var selection = editor.getSelection();
       var displayText = "";
-      if (selection.isEmpty()) {
-        var cursor = selection.getCursor();
-        displayText = (cursor.row + 1) + ":" + (cursor.column + 1);
-      } else {
-        displayText = editor.getCopyText().length + " characters selected";
-      }
+      var cursor = selection.getCursor();
+      displayText = (cursor.row + 1) + ":" + (cursor.column + 1);
       if (external) {
         displayText += " - " + external;
       }
@@ -42,7 +38,7 @@ define(["editor"], function(editor) {
           external = "";
           update();
           toastTimeout = null;
-        }, seconds ? seconds * 1000 : 5000)
+        }, seconds ? seconds * 1000 : 2000)
       }
     }
 

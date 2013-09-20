@@ -29,6 +29,7 @@ make sure you don't have any syntax errors.
   "wordWrap": true,
   "wrapLimit":false, //Set to the number of characters you want or false for full window
   "showMargin": false,
+  "lineEndings": "auto", //newline format - "windows", "unix", or "auto"
   
   //only fixed-width fonts supported, for now
   "fontFamily": "",
