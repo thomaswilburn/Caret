@@ -52,6 +52,8 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
     userConfig = Settings.get("user");
     themes.value = userConfig.defaultTheme;
     editor.setTheme("ace/theme/" + themes.value);
+    editor.setShowPrintMargin(userConfig.showMargin || false);
+    editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
     editor.container.style.fontSize = userConfig.fontSize ? userConfig.fontSize + "px" : null;
     editor.container.style.fontFamily = userConfig.fontFamily || null;
   };
