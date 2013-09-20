@@ -3,8 +3,9 @@ define([
   "command",
   "editor",
   "settings!menus",
+  "statusbar",
   "dom2"
-  ], function(sessions, command, editor, Settings) {
+  ], function(sessions, command, editor, Settings, status) {
   
   /*
   
@@ -69,7 +70,9 @@ define([
           e.stopImmediatePropagation();
           self.navigateList(e.keyCode == 38 ? -1 : 1);
           self.render();
+          return;
         }
+        self.selected = 0;
       });
       
       input.on("keyup", function(e) {
@@ -96,7 +99,9 @@ define([
       var menuWalker = function(menu) {
         for (var i = 0; i < menu.length; i++) {
           var item = menu[i];
-          if (fuzzyCommand.test(item.label)) {
+          //skip dividers and other special cases
+          if (typeof item == "string") continue;
+          if (item.command && fuzzyCommand.test(item.palette || item.label)) {
             results.push(item);
           }
           if (item.sub) {
@@ -148,6 +153,7 @@ define([
       if (!current) return;
       if (this.commandMode) {
         command.fire(current.command, current.argument);
+        status.toast("Executing: " + current.label + "...");
       }
       this.deactivate();
       editor.focus();
@@ -182,7 +188,7 @@ define([
       this.resultList.innerHTML = "";
       this.results.slice(0, 10).forEach(function(r, i) {
         var element = resultTemplate.cloneNode(true).find("li");
-        element.innerHTML = r.fileName || r.label;
+        element.innerHTML = r.fileName || r.palette || r.label;
         if (i == self.selected) {
           element.classList.add("current");
         }

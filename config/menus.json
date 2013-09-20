@@ -44,16 +44,16 @@
       "divider",
       { "label": "View Defaults",
         "sub": [
-          { "label": "User Preferences", "command": "session:open-settings-defaults", "argument": "user" },
-          { "label": "Keyboard", "command": "session:open-settings-defaults", "argument": "keys" },
-          { "label": "Menus", "command": "session:open-settings-defaults", "argument": "menus" }
+          { "label": "User Preferences", "command": "session:open-settings-defaults", "argument": "user", "palette": "User Preferences (Defaults)" },
+          { "label": "Keyboard", "command": "session:open-settings-defaults", "argument": "keys", "palette": "Keyboard (Defaults)" },
+          { "label": "Menus", "command": "session:open-settings-defaults", "argument": "menus", "palette": "Menus (Defaults)" }
         ]
       },
       { "label": "Reset",
         "sub": [
-          { "label": "User Preferences", "command": "settings:delete-local", "argument": "user" },
-          { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys" },
-          { "label": "Menus", "command": "settings:delete-local", "argument": "menus" }
+          { "label": "User Preferences", "command": "settings:delete-local", "argument": "user", "palette": "Reset User Preferences" },
+          { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys", "palette": "Reset Keyboard" },
+          { "label": "Menus", "command": "settings:delete-local", "argument": "menus", "palette": "Reset Menus" }
         ]
       },
       "divider",
