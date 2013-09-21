@@ -1,4 +1,4 @@
-define(["dom2"], function() {
+define(["editor", "dom2"], function(editor) {
 
   return function(text, buttons, callback) {
     if (typeof buttons == "function" || typeof buttons == "undefined") {
@@ -30,6 +30,7 @@ define(["dom2"], function() {
       modal.remove();
       var value = JSON.parse(this.value);
       if (callback) callback(value);
+      editor.focus();
     };
 
     buttons.forEach(function(options) {
@@ -42,13 +43,18 @@ define(["dom2"], function() {
       }
       button.innerHTML = options.label;
       button.value = options.value;
+      if (options.focus) {
+        button.className = "default";
+      }
       buttonRow.append(button);
       button.on("click", clickButton);
     });
 
     setTimeout(function() {
       //ensure focus, even from palette (which normally refocuses editor)
-      modal.find("button").focus();
+      var button = modal.find("button.default");
+      if (!button) button = modal.find("button");
+      button.focus();
     });
 
   }

@@ -19,6 +19,7 @@ define([
     if (file) {
       session.file = file;
       session.fileName = file.entry.name;
+      session.modifiedAt = new Date();
     } else {
       session.fileName = "untitled.txt";
     }
@@ -46,6 +47,7 @@ define([
       var whenOpen = function() {
         self.file.write(content, c);
         self.modified = false;
+        self.modifiedAt = new Date();
         renderTabs();
       };
 
@@ -233,6 +235,7 @@ define([
   var raiseTab = function(index) {
     var tab = tabs[index];
     tab.raise();
+    command.fire("session:check-file");
   };
   
   var switchTab = function(shift) {

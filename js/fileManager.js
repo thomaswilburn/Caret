@@ -53,6 +53,29 @@ define([
       sessions.renderTabs();
     });
   });
+  command.on("session:check-file", function() {
+    var tab = sessions.getCurrent();
+    if (!tab.file) return;
+    tab.file.entry.file(function(entry) {
+      if (tab.modifiedAt && entry.lastModifiedDate > tab.modifiedAt) {
+        if (tab.modified) {
+          dialog(
+            "This file has been modified since the last time it was saved. Would you like to reload?",
+            [{label: "Reload", value: true}, {label: "Cancel", value: false, focus: true}],
+            function(confirmed) {
+              if (confirmed) {
+                command.fire("session:revert-file");
+              } else {
+                tab.modifiedAt = new Date();
+              }
+            }
+          );
+        } else {
+          command.fire("session:revert-file");
+        }
+      }
+    });
+  });
   
   command.on("session:open-settings-file", function(name) {
     Settings.load(name, function() {
