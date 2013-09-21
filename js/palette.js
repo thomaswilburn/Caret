@@ -154,6 +154,8 @@ define([
       if (this.commandMode) {
         command.fire(current.command, current.argument);
         status.toast("Executing: " + current.label + "...");
+      } else {
+        command.fire("session:check-file");
       }
       this.deactivate();
       editor.focus();
