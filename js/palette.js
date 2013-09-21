@@ -119,17 +119,15 @@ define([
       var reference = re.reference.test(query) && re.reference.exec(query)[1];
       var results = [];
       
-      var openFileNames = sessions.getFilenames();
       var tabs;
       
       if (file) {
         var fuzzyFile = new RegExp(file.split("").join(".*"), "i");
-        var matches = openFileNames.filter(function(name) {
-          return fuzzyFile.test(name);
+        tabs = sessions.getAllTabs().filter(function(tab) {
+          return fuzzyFile.test(tab.fileName);
         });
-        results = matches.map(sessions.getTabByName);
       } else {
-        results = [ sessions.getCurrent() ];
+        tabs = [ sessions.getCurrent() ];
       }
       
       if (search) {
@@ -138,10 +136,10 @@ define([
         });
       }
 
-      this.results = results;
+      this.results = tabs;
 
-      if (results.length) {
-        results[this.selected].raiseBlurred();
+      if (this.results.length) {
+        this.results[this.selected].raiseBlurred();
         if (line) {
           editor.clearSelection();
           editor.moveCursorTo(line, 0);
@@ -180,7 +178,7 @@ define([
       }
       var current = this.results[this.selected];
       if (current && current.raise) {
-        current.raiseBlurred(true);
+        current.raiseBlurred();
       }
       this.render();
     },

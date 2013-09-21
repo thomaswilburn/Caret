@@ -55,7 +55,7 @@ define([
   });
   command.on("session:check-file", function() {
     var tab = sessions.getCurrent();
-    if (!tab.file) return;
+    if (!tab.file || tab.file.virtual) return;
     tab.file.entry.file(function(entry) {
       if (tab.modifiedAt && entry.lastModifiedDate > tab.modifiedAt) {
         if (tab.modified) {

@@ -363,6 +363,9 @@ define([
         renderTabs();
       });
     },
+    getAllTabs: function() {
+      return tabs;
+    },
     getCurrent: function() {
       return editor.getSession();
     },
