@@ -28,29 +28,30 @@ module.exports = function(grunt) {
       }
     },
     compress: {
-      pack: {
+      store: {
         options: {
           archive: "build/caret.zip",
-          pretty: true
+          pretty: true,
+          level: 2
         },
-        files: {
-          "/": ["config/**", "js/**", "css/*.css", "*.html", "manifest.json", "require.js", "background.js", "*.png"]
-        }
+        files: [
+          {cwd: "build/unpacked", expand: true, src: "**", dest: "/", isFile: true}
+        ]
       }
     },
     copy: {
       unpacked: {
         dest: "build/unpacked/",
-        src: ["config/**", "js/**", "css/*.css", "*.html", "manifest.json", "require.js", "background.js", "*.png"]
+        src: ["config/**", "js/**", "css/*.css", "*.html", "require.js", "background.js", "*.png"]
       }
     }
   });
   
   grunt.registerTask("default", ["less", "watch"]);
-  grunt.registerTask("package", ["less", "compress:pack", "copy:unpacked", "crx"]);
+  grunt.registerTask("package", ["less", "cleanup", "copy:unpacked", "crx", "webstore", "compress:store"]);
 
   grunt.registerTask("crx", "Makes a new CRX package", function() {
-    var manifest = JSON.parse(fs.readFileSync("./build/unpacked/manifest.json"));
+    var manifest = JSON.parse(fs.readFileSync("./manifest.json"));
     manifest.icons["128"] = "icon-128-inverted.png";
     fs.writeFileSync("./build/unpacked/manifest.json", JSON.stringify(manifest, null, 2));
 
@@ -72,9 +73,21 @@ module.exports = function(grunt) {
         console.log(stderr);
       }
       fs.renameSync("./build/unpacked.crx", "./build/Caret.crx");
-      exec("rm -rf ./build/unpacked");
       c();
     });
   });
+
+  grunt.registerTask("webstore", "Prepares the manifest for the web store", function() {
+    var manifest = JSON.parse(fs.readFileSync("./manifest.json"));
+    delete manifest.update_url;
+    delete manifest.key;
+    manifest = JSON.stringify(manifest, null, 2);
+    fs.writeFileSync("./build/unpacked/manifest.json", manifest);
+  });
+
+  grunt.registerTask("cleanup", "Removes the build/unpacked directory", function() {
+    var c = this.async();
+    exec("rm -rf ./build/*", c);
+  })
   
 };
