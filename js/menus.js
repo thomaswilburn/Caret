@@ -81,6 +81,7 @@ define([
   
   var Menu = function() {
     this.element = document.find(".toolbar");
+    this.active = false;
     this.bindEvents();
   }
   Menu.prototype = {
@@ -91,17 +92,28 @@ define([
       this.element.appendChild(elements);
     },
     bindEvents: function() {
+      var self = this;
       var menubar = this.element;
       menubar.addEventListener("click", function(e) {
         menubar.focus();
         var el = e.target;
         if (el.classList.contains("top")) {
           el.classList.toggle("active");
+          self.active = !self.active;
+        } else {
+          self.active = false;
         }
         menubar
           .findAll(".active")
           .filter(function(n) { return n != el })
           .forEach(function(n) { n.classList.remove("active") });
+      });
+      menubar.addEventListener("mousemove", function(e) {
+        var el = e.target;
+        if (el.classList.contains("top") && self.active) {
+          self.element.findAll(".active").forEach(function(n) { n.classList.remove("active") });
+          el.classList.add("active");
+        }
       });
     },
     deactivate: function() {
