@@ -6,41 +6,7 @@ define([
   "dom2"
   ], function(Settings, editor, dialog, command) {
   
-  var cfg = Settings.get("menus");
-  var keys = Settings.get("keys");
   var commands = editor.commands.commands;
-
-  var findKeyCombo = function(command) {
-    //check key config
-    for (var key in keys) {
-      var action = keys[key];
-      var verb = action.ace || action.command || action;
-      if (verb == command) {
-        var char = key.split("-").pop();
-        if (/[A-Z]$/.test(char)) {
-          char = "Shift-" + char.toUpperCase();
-        } else {
-          char = char[0].toUpperCase() + char.substr(1);
-        }
-        var prefix = "";
-        if (key.indexOf("^") > -1) {
-          prefix += "Ctrl-";
-        }
-        if (key.indexOf("M-") > -1) {
-          prefix += "Alt-";
-        }
-        return prefix + char;
-      }
-    }
-    for (var cmd in editor.commands.commands) {
-      if (cmd == command && editor.commands.commands[cmd].bindKey.win) {
-        return editor.commands.commands[cmd].bindKey.win.split("|").shift();
-      }
-    }
-    return false;
-  }
-  
-  var menubar = document.find(".toolbar");
   
   var walker = function(list, depth) {
     var fragment = document.createDocumentFragment();
@@ -80,36 +46,75 @@ define([
       fragment.appendChild(li);
     }
     return fragment;
-  }
-
-  var create = function() {
-    var menuElements = walker(cfg, 0);
-    menubar.innerHTML = "";
-    menubar.appendChild(menuElements);  
-  }
+  };
   
-  command.on("init:startup", create);
-  command.on("init:restart", function() {
-    cfg = Settings.get("menus");
-    keys = Settings.get("keys");
-    create();
-  })
-
-  menubar.addEventListener("click", function(e) {
-    menubar.focus();
-    var el = e.target;
-    if (el.classList.contains("top")) {
-      el.classList.toggle("active");
+  var findKeyCombo = function(command) {
+    var keys = Settings.get("keys");
+    //check key config
+    for (var key in keys) {
+      var action = keys[key];
+      var verb = action.ace || action.command || action;
+      if (verb == command) {
+        var char = key.split("-").pop();
+        if (/[A-Z]$/.test(char)) {
+          char = "Shift-" + char.toUpperCase();
+        } else {
+          char = char[0].toUpperCase() + char.substr(1);
+        }
+        var prefix = "";
+        if (key.indexOf("^") > -1) {
+          prefix += "Ctrl-";
+        }
+        if (key.indexOf("M-") > -1) {
+          prefix += "Alt-";
+        }
+        return prefix + char;
+      }
     }
-    menubar
-      .findAll(".active")
-      .filter(function(n) { return n != el })
-      .forEach(function(n) { n.classList.remove("active") });
-  });
+    for (var cmd in editor.commands.commands) {
+      if (cmd == command && editor.commands.commands[cmd].bindKey.win) {
+        return editor.commands.commands[cmd].bindKey.win.split("|").shift();
+      }
+    }
+    return false;
+  };
+  
+  var Menu = function() {
+    this.element = document.find(".toolbar");
+    this.bindEvents();
+  }
+  Menu.prototype = {
+    create: function() {
+      var cfg = Settings.get("menus");
+      var elements = walker(cfg, 0);
+      this.element.innerHTML = "";
+      this.element.appendChild(elements);
+    },
+    bindEvents: function() {
+      var menubar = this.element;
+      menubar.addEventListener("click", function(e) {
+        menubar.focus();
+        var el = e.target;
+        if (el.classList.contains("top")) {
+          el.classList.toggle("active");
+        }
+        menubar
+          .findAll(".active")
+          .filter(function(n) { return n != el })
+          .forEach(function(n) { n.classList.remove("active") });
+      });
+    },
+    deactivate: function() {
+      this.element.findAll(".active").forEach(function(node) { node.classList.remove("active") });
+    }
+  };
+  
+  var menu = new Menu();
+  
+  command.on("init:startup", menu.create.bind(menu));
+  command.on("init:restart", menu.create.bind(menu));
 
-  editor.on("focus", function(e) {
-    menubar.findAll(".active").forEach(function(node) { node.classList.remove("active"); });
-  });
+  editor.on("focus", menu.deactivate.bind(menu));
 
   command.on("app:about", function() {
     var content = document.find("#about").content.cloneNode(true).find("div").innerHTML;
