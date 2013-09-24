@@ -111,7 +111,7 @@ define([
       menubar.addEventListener("mousemove", function(e) {
         var el = e.target;
         if (el.classList.contains("top") && self.active) {
-          self.element.findAll(".active").forEach(function(n) { n.classList.remove("active") });
+          self.deactivate();
           el.classList.add("active");
         }
       });

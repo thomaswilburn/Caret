@@ -43,6 +43,7 @@ define([
   command.on("session:open-file", openFile);
   command.on("session:save-file", function() { sessions.getCurrent().save() });
   command.on("session:save-file-as", function() { sessions.getCurrent().save(true) });
+  
   command.on("session:revert-file", function() {
     var tab = sessions.getCurrent();
     if (!tab.file) return;
@@ -53,6 +54,7 @@ define([
       sessions.renderTabs();
     });
   });
+  
   command.on("session:check-file", function() {
     var tab = sessions.getCurrent();
     if (!tab.file || tab.file.virtual) return;
