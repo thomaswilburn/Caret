@@ -5,7 +5,7 @@ define([
     "file",
     "settings!ace,user",
     "aceBindings"
-  ], 
+  ],
   function(editor, dialog, command, File, Settings) {
   
   var tabs = [];
@@ -13,6 +13,8 @@ define([
   var cfg = Settings.get("ace");
   var userConfig = Settings.get("user");
   var syntax = document.find(".syntax");
+  var stack = [];
+  var stackOffset = 0;
 
   var augmentTab = function(session, file) {
     
@@ -45,9 +47,11 @@ define([
       var self = this;
 
       var whenOpen = function() {
-        self.file.write(content, c);
+        self.file.write(content, function() {
+          self.modifiedAt = new Date();
+          c();
+        });
         self.modified = false;
-        self.modifiedAt = new Date();
         renderTabs();
       };
 
@@ -71,8 +75,8 @@ define([
     session.raise = function() {
       editor.setSession(session);
       syntax.value = session.syntaxMode || "plain_text";
-      editor.focus();
       renderTabs();
+      editor.focus();
     };
 
     session.raiseBlurred = function() {
@@ -182,6 +186,7 @@ define([
       session.setValue(contents);
     } else {
       session = new Session(contents);
+      stack.unshift(session);
       tabs.push(session);
     }
     augmentTab(session, file);
@@ -238,15 +243,25 @@ define([
     command.fire("session:check-file");
   };
   
-  var switchTab = function(shift) {
-    shift = shift || 1;
-    var current = editor.getSession();
-    var currentIndex = tabs.indexOf(current);
-    var shifted = (currentIndex + shift) % tabs.length;
-    if (shifted < 0) {
-      shifted = tabs.length + shifted;
+  //keep track of the ctrl key for jumping through the tab stack
+  document.body.on("keydown", function(e) {
+    if (e.keyCode == 17) {
+      stackOffset = 0;
     }
-    raiseTab(shifted);
+  });
+  
+  //when ctrl is released, move the current tab to the top
+  document.body.on("keyup", function(e) {
+    if (e.keyCode == 17) {
+      var raised = stack[stackOffset];
+      stack = stack.filter(function(t) { return t !== raised });
+      stack.unshift(raised);
+    }
+  });
+  
+  var switchTab = function(shift) {
+    stackOffset = (stackOffset + 1) % stack.length;
+    stack[stackOffset].raise();
   };
   
   var enableTabDragDrop = function() {
