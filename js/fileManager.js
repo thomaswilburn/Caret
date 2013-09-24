@@ -1,7 +1,7 @@
 define([
-    "sessions", 
-    "file", 
-    "dialog", 
+    "sessions",
+    "file",
+    "dialog",
     "command",
     "settings!" //not excited, it just runs as a RequireJS plugin
   ], function(sessions, File, dialog, command, Settings) {
