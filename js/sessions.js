@@ -29,7 +29,6 @@ define([
     setTabSyntax(session);
 
     if (session.isTab) {
-      session.retain();
       session.modified = false;
       renderTabs();
       return;
@@ -64,7 +63,6 @@ define([
             return;
           }
           self.fileName = file.entry.name;
-          self.retain();
           whenOpen();
         });
       }
@@ -84,20 +82,6 @@ define([
       syntax.value = session.syntaxMode || "plain_text";
       renderTabs();
     };
-    
-    session.retain = function() {
-      if (!this.file || !chrome.fileSystem.retainEntry) return;
-      var id = this.file.retain();
-      if (!id) return;
-      chrome.storage.local.get("retained", function(data) {
-        data.retained = data.retained || [];
-        if (data.retained.indexOf(id) == -1) {
-          data.retained.push(id);
-          chrome.storage.local.set({ retained: data.retained });
-        }
-      });
-    };
-    session.retain();
     
     session.drop = function() {
       if (!this.file || !chrome.fileSystem.retainEntry) return;
@@ -142,6 +126,7 @@ define([
       span.append(close);
       tabContainer.append(span);
     });
+    setRetained();
   };
   
   var setTabSyntax = function(tab) {
@@ -331,6 +316,18 @@ define([
       tabs = reordered;
       renderTabs();
     });
+  };
+  
+  var setRetained = function() {
+    var keep = [];
+    tabs.forEach(function(tab, i) {
+      if (!tab.file || tab.file.virtual) return;
+      keep[i] = tab.file.retain();
+    });
+    keep = keep.filter(function(m) { return m });
+    if (keep.length) {
+      chrome.storage.local.set({ retained: keep });
+    }
   };
   
   var init = function() {
