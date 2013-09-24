@@ -127,6 +127,22 @@ define([
     });
   };
   
+  var reset = function() {
+    var tabs = sessions.getAllTabs();
+    tabs.forEach(function(tab) {
+      if (tab.file && tab.file.virtual) {
+        var setting = tab.fileName.replace(".json", "");
+        Settings.load(setting, function() {
+          var value = Settings.getAsString(setting);
+          tab.setValue(value);
+          tab.modified = false;
+          sessions.renderTabs();
+        });
+      }
+    });
+  };
+  
   command.on("init:startup", init);
+  command.on("init:restart", reset);
 
 });
