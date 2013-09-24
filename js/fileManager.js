@@ -6,7 +6,6 @@ define([
     "settings!" //not excited, it just runs as a RequireJS plugin
   ], function(sessions, File, dialog, command, Settings) {
 
-    
   var openFile = function() {
     var f = new File();
     f.open(function(err) {
@@ -98,20 +97,38 @@ define([
     openFromLaunchData();
     chrome.storage.local.get("retained", function(data) {
       var failures = [];
+      var successes = [];
+      var attempts = 0;
       if (data.retained && data.retained.length) {
-        data.retained.forEach(function(id) {
+        var checkFinished = function() {
+          if (attempts >= data.retained.length) {
+            successes = successes.filter(function(t) { return typeof t == "object" });
+            successes.forEach(function(retained) {
+              sessions.addFile(retained.contents, retained.file);
+            });
+          }
+        };
+        
+        data.retained.forEach(function(id, index) {
           var file = new File();
           file.restore(id, function(err, f) {
             if (err) {
               //add failures to be removed asynchronously
+              attempts++;
               failures.push(id);
-              return;
+              checkFinished();
+            } else {
+              file.read(function(err, contents) {
+                attempts++;
+                if (err) {
+                  failures.push(id);
+                } else {
+                  successes[index] = {contents: contents, file: file};
+                }
+                checkFinished();
+              });
             }
-            file.read(function(err, contents) {
-              if (err) return;
-              sessions.addFile(contents, file);
-            });
-            return id;
+            
           });
         });
       }
@@ -123,7 +140,7 @@ define([
             retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
           });
         });
-      }, 500);
+      }, 100);
     });
   };
   

@@ -49,7 +49,7 @@ define([
       var whenOpen = function() {
         self.file.write(content, function() {
           self.modifiedAt = new Date();
-          c();
+          if (c) c();
         });
         self.modified = false;
         renderTabs();
@@ -199,6 +199,7 @@ define([
       index = tabs.indexOf(editor.getSession());
     }
     var tab = tabs[index];
+    stack = stack.filter(function(t) { return t !== tab });
 
     var continuation = function() {
       tab.drop();
@@ -243,23 +244,24 @@ define([
     command.fire("session:check-file");
   };
   
-  //keep track of the ctrl key for jumping through the tab stack
-  document.body.on("keydown", function(e) {
-    if (e.keyCode == 17) {
-      stackOffset = 0;
-    }
-  });
-  
-  //when ctrl is released, move the current tab to the top
-  document.body.on("keyup", function(e) {
+  var watchCtrl = function(e) {
     if (e.keyCode == 17) {
       var raised = stack[stackOffset];
       stack = stack.filter(function(t) { return t !== raised });
       stack.unshift(raised);
+      document.body.off("keyup", watchCtrl);
+      ctrl = false;
     }
-  });
+  };
+  
+  var ctrl = false;
   
   var switchTab = function(shift) {
+    if (!ctrl) {
+      ctrl = true;
+      stackOffset = 0;
+      document.body.on("keyup", watchCtrl);
+    }
     stackOffset = (stackOffset + 1) % stack.length;
     stack[stackOffset].raise();
   };
