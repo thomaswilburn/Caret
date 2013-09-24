@@ -63,6 +63,8 @@ define([
             return;
           }
           self.fileName = file.entry.name;
+          delete self.syntaxMode;
+          setTabSyntax(self);
           whenOpen();
         });
       }
