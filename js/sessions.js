@@ -215,10 +215,10 @@ define([
 
     if (tab.modified) {
       dialog(
-        tab.fileName + " has been modified. Do you want to save changes?",
-        [{label: "Save", value: true}, {label: "Don't save", value: false}],
+        tab.fileName + " has been modified.\nDo you want to save changes?",
+        [{label: "Save", value: true}, {label: "Don't save", value: false}, { label: "Cancel" }],
         function(confirm) {
-          if (typeof confirm == "undefined") {
+          if (typeof confirm !== "boolean") {
             return;
           }
           if (confirm) {

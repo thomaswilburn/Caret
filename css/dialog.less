@@ -1,9 +1,8 @@
-//display always uses the white coloring
+//dialog always uses the white coloring, regardless of ui theme
 .dialog {
-  position: fixed;
-  width: 250px;
-  left: ~"calc(50% - 100px)";
-  top: 200px;
+  min-width: 250px;
+  max-width: 400px;
+  margin-top: 50px;
   background: white;
   color: black;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, .2);
@@ -11,6 +10,12 @@
   padding: 10px;
   border: 2px solid #AAA;
   line-height: 170%;
+  
+  .text {
+    white-space: pre-wrap;
+    text-align: center;
+    display: block;
+  }
 
   .button-row {
     display: flex;
@@ -36,6 +41,9 @@
 
 .modal-overlay {
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   content: "";
   top: 0;
   bottom: 0;
@@ -46,7 +54,7 @@
 }
 
 .credits {
-  text-align: center;
+  white-space: initial;
 
   h2 {
     font-size: 18px;

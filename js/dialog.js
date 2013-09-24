@@ -20,6 +20,7 @@ define(["editor", "dom2"], function(editor) {
       //check escape
       if (e.keyCode == 27) {
         modal.remove();
+        editor.focus();
         if (callback) callback();
       }
     };
@@ -38,11 +39,11 @@ define(["editor", "dom2"], function(editor) {
       if (typeof options == "string") {
         options = {
           label: options,
-          value: JSON.stringify(options)
+          value: options
         }
       }
       button.innerHTML = options.label;
-      button.value = options.value;
+      button.value = JSON.stringify(options.value || null);
       if (options.focus) {
         button.className = "default";
       }
