@@ -84,6 +84,10 @@ define(["command"], function(command) {
       } catch (e) {
         //parse failed
       }
+      //flat arrays (like menus.json) just get returned, not merged
+      if (custom && custom instanceof Array) {
+        return custom;
+      }
       for (var key in custom) {
         original[key] = custom[key];
       }
