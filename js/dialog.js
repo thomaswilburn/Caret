@@ -43,7 +43,7 @@ define(["editor", "dom2"], function(editor) {
         }
       }
       button.innerHTML = options.label;
-      button.value = JSON.stringify(options.value || null);
+      button.value = JSON.stringify(options.value);
       if (options.focus) {
         button.className = "default";
       }
