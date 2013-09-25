@@ -195,7 +195,7 @@ exports.handler.bindKey = function(key, command) {
     if (!key)
         return;
 
-    var ckb = this.commmandKeyBinding;
+    var ckb = this.commandKeyBinding;
     key.split("|").forEach(function(keyPart) {
         keyPart = keyPart.toLowerCase();
         ckb[keyPart] = command;
@@ -236,7 +236,7 @@ exports.handler.handleKeyboard = function(data, hashId, key, keyCode) {
     data.universalArgument = false;
     if (modifier) key = modifier + key;
     if (data.keyChain) key = data.keyChain += " " + key;
-    var command = this.commmandKeyBinding[key];
+    var command = this.commandKeyBinding[key];
     data.keyChain = command == "null" ? key : "";
     if (!command) return undefined;
     if (command === "null") return {command: "null"};

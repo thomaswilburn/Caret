@@ -11063,7 +11063,7 @@ var EventEmitter = require("../lib/event_emitter").EventEmitter;
 var CommandManager = function(platform, commands) {
     this.platform = platform;
     this.commands = this.byName = {};
-    this.commmandKeyBinding = {};
+    this.commandKeyBinding = {};
 
     this.addCommands(commands);
 
@@ -11166,7 +11166,7 @@ var useragent = require("../lib/useragent");
 function HashHandler(config, platform) {
     this.platform = platform || (useragent.isMac ? "mac" : "win");
     this.commands = {};
-    this.commmandKeyBinding = {};
+    this.commandKeyBinding = {};
 
     this.addCommands(config);
 };
@@ -11187,7 +11187,7 @@ function HashHandler(config, platform) {
         var name = (typeof command === 'string' ? command : command.name);
         command = this.commands[name];
         delete this.commands[name];
-        var ckb = this.commmandKeyBinding;
+        var ckb = this.commandKeyBinding;
         for (var hashId in ckb) {
             for (var key in ckb[hashId]) {
                 if (ckb[hashId][key] == command)
@@ -11204,7 +11204,7 @@ function HashHandler(config, platform) {
             return;
         }
 
-        var ckb = this.commmandKeyBinding;
+        var ckb = this.commandKeyBinding;
         key.split("|").forEach(function(keyPart) {
             var binding = this.parseKeys(keyPart, command);
             var hashId = binding.hashId;
@@ -11280,7 +11280,7 @@ function HashHandler(config, platform) {
     };
 
     this.findKeyCommand = function findKeyCommand(hashId, keyString) {
-        var ckbr = this.commmandKeyBinding;
+        var ckbr = this.commandKeyBinding;
         return ckbr[hashId] && ckbr[hashId][keyString];
     };
 
