@@ -1,9 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Distributed under the BSD license:
  *
- * Copyright (c) 2010, Ajax.org B.V.
+ * Copyright (c) 2012, Ajax.org B.V.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of Ajax.org B.V. nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,190 +26,202 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/ftl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/ftl_highlight_rules'], function(require, exports, module) {
+ace.define('ace/mode/velocity', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/velocity_highlight_rules', 'ace/mode/folding/velocity', 'ace/mode/behaviour/html'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
 var Tokenizer = require("../tokenizer").Tokenizer;
-var FtlHighlightRules = require("./ftl_highlight_rules").FtlHighlightRules;
+var VelocityHighlightRules = require("./velocity_highlight_rules").VelocityHighlightRules;
+var FoldMode = require("./folding/velocity").FoldMode;
+var HtmlBehaviour = require("./behaviour/html").HtmlBehaviour;
 
 var Mode = function() {
-    var highlighter = new FtlHighlightRules();
+    var highlighter = new VelocityHighlightRules();
+    this.foldingRules = new FoldMode();
     this.$tokenizer = new Tokenizer(highlighter.getRules());
+    this.$behaviour = new HtmlBehaviour();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
-
+  this.lineCommentStart = "##";
+  this.blockComment = {start: "#*", end: "*#"};
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
-});
-
-ace.define('ace/mode/ftl_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/html_highlight_rules', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
+});ace.define('ace/mode/velocity_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules', 'ace/mode/html_highlight_rules'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
-var HtmlHighlightRules = require("./html_highlight_rules").HtmlHighlightRules;
+var lang = require("../lib/lang");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+var HtmlHighlightRules = require("./html_highlight_rules").HtmlHighlightRules;
 
-var FtlLangHighlightRules = function () {
+var VelocityHighlightRules = function() {
+    HtmlHighlightRules.call(this);
 
-    var stringBuiltIns = "\\?|substring|cap_first|uncap_first|capitalize|chop_linebreak|date|time|datetime|"
-        + "ends_with|html|groups|index_of|j_string|js_string|json_string|last_index_of|length|lower_case|"
-        + "left_pad|right_pad|contains|matches|number|replace|rtf|url|split|starts_with|string|trim|"
-        + "upper_case|word_list|xhtml|xml";
-    var numberBuiltIns = "c|round|floor|ceiling";
-    var dateBuiltIns = "iso_[a-z_]+";
-    var seqBuiltIns = "first|last|seq_contains|seq_index_of|seq_last_index_of|reverse|size|sort|sort_by|chunk";
-    var hashBuiltIns = "keys|values";
-    var xmlBuiltIns = "children|parent|root|ancestors|node_name|node_type|node_namespace";
-    var expertBuiltIns = "byte|double|float|int|long|short|number_to_date|number_to_time|number_to_datetime|"
-        + "eval|has_content|interpret|is_[a-z_]+|namespacenew";
-    var allBuiltIns = stringBuiltIns + numberBuiltIns + dateBuiltIns + seqBuiltIns + hashBuiltIns
-        + xmlBuiltIns + expertBuiltIns;
+    var builtinConstants = lang.arrayToMap(
+        ('true|false|null').split('|')
+    );
 
-    var deprecatedBuiltIns = "default|exists|if_exists|web_safe";
+    var builtinFunctions = lang.arrayToMap(
+        ("_DateTool|_DisplayTool|_EscapeTool|_FieldTool|_MathTool|_NumberTool|_SerializerTool|_SortTool|_StringTool|_XPathTool").split('|')
+    );
 
-    var variables = "data_model|error|globals|lang|locale|locals|main|namespace|node|current_node|"
-        + "now|output_encoding|template_name|url_escaping_charset|vars|version";
+    var builtinVariables = lang.arrayToMap(
+        ('$contentRoot|$foreach').split('|')
+    );
 
-    var operators = "gt|gte|lt|lte|as|in|using";
+    var keywords = lang.arrayToMap(
+        ("#set|#macro|#include|#parse|" +
+        "#if|#elseif|#else|#foreach|" +
+        "#break|#end|#stop"
+        ).split('|')
+    );
 
-    var reserved = "true|false";
-
-    var attributes = "encoding|parse|locale|number_format|date_format|time_format|datetime_format|time_zone|"
-        + "url_escaping_charset|classic_compatible|strip_whitespace|strip_text|strict_syntax|ns_prefixes|"
-        + "attributes";
-
-    this.$rules = {
-        "start" : [{
-            token : "constant.character.entity",
-            regex : /&[^;]+;/
+    this.$rules.start.push(
+        {
+            token : "comment",
+            regex : "##.*$"
+        },{
+            token : "comment.block", // multi line comment
+            regex : "#\\*",
+            next : "vm_comment"
         }, {
-            token : "support.function",
-            regex : "\\?("+allBuiltIns+")"
-        },  {
-            token : "support.function.deprecated",
-            regex : "\\?("+deprecatedBuiltIns+")"
+            token : "string.regexp",
+            regex : "[/](?:(?:\\[(?:\\\\]|[^\\]])+\\])|(?:\\\\/|[^\\]/]))*[/]\\w*\\s*(?=[).,;]|$)"
         }, {
-            token : "language.variable",
-            regex : "\\.(?:"+variables+")"
+            token : "string", // single line
+            regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
         }, {
-            token : "constant.language",
-            regex : "\\b("+reserved+")\\b"
+            token : "string", // single line
+            regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
         }, {
-            token : "keyword.operator",
-            regex : "\\b(?:"+operators+")\\b"
+            token : "constant.numeric", // hex
+            regex : "0[xX][0-9a-fA-F]+\\b"
         }, {
-            token : "entity.other.attribute-name",
-            regex : attributes
+            token : "constant.numeric", // float
+            regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
         }, {
-            token : "string", //
-            regex : /['"]/,
-            next : "qstring"
+            token : "constant.language.boolean",
+            regex : "(?:true|false)\\b"
         }, {
             token : function(value) {
-                if (value.match("^[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?$")) {
-                    return "constant.numeric";
-                } else {
-                    return "variable";
-                }
+                if (keywords.hasOwnProperty(value))
+                    return "keyword";
+                else if (builtinConstants.hasOwnProperty(value))
+                    return "constant.language";
+                else if (builtinVariables.hasOwnProperty(value))
+                    return "variable.language";
+                else if (builtinFunctions.hasOwnProperty(value) || builtinFunctions.hasOwnProperty(value.substring(1)))
+                    return "support.function";
+                else if (value == "debugger")
+                    return "invalid.deprecated";
+                else
+                    if(value.match(/^(\$[a-zA-Z_][a-zA-Z0-9_]*)$/))
+                        return "variable";
+                    return "identifier";
             },
-            regex : /[\w.+\-]+/
+            regex : "[a-zA-Z$#][a-zA-Z0-9_]*\\b"
         }, {
             token : "keyword.operator",
-            regex : "!|\\.|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^="
+            regex : "!|&|\\*|\\-|\\+|=|!=|<=|>=|<|>|&&|\\|\\|"
         }, {
-            token : "paren.lparen",
+            token : "lparen",
             regex : "[[({]"
         }, {
-            token : "paren.rparen",
+            token : "rparen",
             regex : "[\\])}]"
         }, {
             token : "text",
             regex : "\\s+"
-        }],
+        }
+    );
 
-        "qstring" : [{
-            token : "constant.character.escape",
-            regex : '\\\\[nrtvef\\\\"$]'
-        }, {
-            token : "string",
-            regex : /['"]/,
+    this.$rules["vm_comment"] = [
+        {
+            token : "comment", // closing comment
+            regex : "\\*#|-->",
             next : "start"
         }, {
-            defaultToken : "string"
-        }]
-    };
-};
-
-oop.inherits(FtlLangHighlightRules, TextHighlightRules);
-
-var FtlHighlightRules = function() {
-    HtmlHighlightRules.call(this);
-
-    var directives = "assign|attempt|break|case|compress|default|elseif|else|escape|fallback|function|flush|"
-        + "ftl|global|if|import|include|list|local|lt|macro|nested|noescape|noparse|nt|recover|recurse|return|rt|"
-        + "setting|stop|switch|t|visit";
-
-    var startRules = [
-        {
-            token : "comment",
-            regex : "<#--",
-            next : "ftl-dcomment"
-        }, {
-            token : "string.interpolated",
-            regex : "\\${",
-            push  : "ftl-start"
-        }, {
-            token : "keyword.function",
-            regex :  "</?#("+directives+")",
-            push : "ftl-start"
-        }, {
-            token : "keyword.other",
-            regex : "</?@[a-zA-Z\\.]+",
-            push : "ftl-start"
+            defaultToken: "comment"
         }
     ];
 
-    var endRules = [
+    this.$rules["vm_start"] = [
         {
-           token : "keyword",
-            regex : "/?>",
-            next  : "pop"
+            token: "variable",
+            regex: "}",
+            next: "pop"
         }, {
-            token : "string.interpolated",
-            regex : "}",
-            next  : "pop"
+            token : "string.regexp",
+            regex : "[/](?:(?:\\[(?:\\\\]|[^\\]])+\\])|(?:\\\\/|[^\\]/]))*[/]\\w*\\s*(?=[).,;]|$)"
+        }, {
+            token : "string", // single line
+            regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+        }, {
+            token : "string", // single line
+            regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
+        }, {
+            token : "constant.numeric", // hex
+            regex : "0[xX][0-9a-fA-F]+\\b"
+        }, {
+            token : "constant.numeric", // float
+            regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+        }, {
+            token : "constant.language.boolean",
+            regex : "(?:true|false)\\b"
+        }, {
+            token : function(value) {
+                if (keywords.hasOwnProperty(value))
+                    return "keyword";
+                else if (builtinConstants.hasOwnProperty(value))
+                    return "constant.language";
+                else if (builtinVariables.hasOwnProperty(value))
+                    return "variable.language";
+                else if (builtinFunctions.hasOwnProperty(value) || builtinFunctions.hasOwnProperty(value.substring(1)))
+                    return "support.function";
+                else if (value == "debugger")
+                    return "invalid.deprecated";
+                else
+                    if(value.match(/^(\$[a-zA-Z_$][a-zA-Z0-9_]*)$/))
+                        return "variable";
+                    return "identifier";
+            },
+            regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+        }, {
+            token : "keyword.operator",
+            regex : "!|&|\\*|\\-|\\+|=|!=|<=|>=|<|>|&&|\\|\\|"
+        }, {
+            token : "lparen",
+            regex : "[[({]"
+        }, {
+            token : "rparen",
+            regex : "[\\])}]"
+        }, {
+            token : "text",
+            regex : "\\s+"
         }
     ];
 
-    for (var key in this.$rules)
-        this.$rules[key].unshift.apply(this.$rules[key], startRules);
-
-    this.embedRules(FtlLangHighlightRules, "ftl-", endRules, ["start"]);
-
-    this.addRules({
-        "ftl-dcomment" : [{
-            token : "comment",
-            regex : ".*?-->",
-            next : "pop"
-        }, {
-            token : "comment",
-            regex : ".+"
-        }]
-    });
+    for (var i in this.$rules) {
+        this.$rules[i].unshift({
+            token: "variable",
+            regex: "\\${",
+            push: "vm_start"
+        });
+    }
 
     this.normalizeRules();
 };
 
-oop.inherits(FtlHighlightRules, HtmlHighlightRules);
+oop.inherits(VelocityHighlightRules, TextHighlightRules);
 
-exports.FtlHighlightRules = FtlHighlightRules;
+exports.VelocityHighlightRules = VelocityHighlightRules;
 });
 
 ace.define('ace/mode/html_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/css_highlight_rules', 'ace/mode/javascript_highlight_rules', 'ace/mode/xml_highlight_rules'], function(require, exports, module) {
@@ -1057,4 +1069,547 @@ exports.tag = function(states, name, nextState, tagMap) {
     }].concat(string(name));
 };
 
+});
+
+ace.define('ace/mode/folding/velocity', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/folding/fold_mode', 'ace/range'], function(require, exports, module) {
+
+
+var oop = require("../../lib/oop");
+var BaseFoldMode = require("./fold_mode").FoldMode;
+var Range = require("../../range").Range;
+
+var FoldMode = exports.FoldMode = function() {};
+oop.inherits(FoldMode, BaseFoldMode);
+
+(function() {
+
+    this.getFoldWidgetRange = function(session, foldStyle, row) {
+        var range = this.indentationBlock(session, row);
+        if (range)
+            return range;
+
+        var re = /\S/;
+        var line = session.getLine(row);
+        var startLevel = line.search(re);
+        if (startLevel == -1 || line[startLevel] != "##")
+            return;
+
+        var startColumn = line.length;
+        var maxRow = session.getLength();
+        var startRow = row;
+        var endRow = row;
+
+        while (++row < maxRow) {
+            line = session.getLine(row);
+            var level = line.search(re);
+
+            if (level == -1)
+                continue;
+
+            if (line[level] != "##")
+                break;
+
+            endRow = row;
+        }
+
+        if (endRow > startRow) {
+            var endColumn = session.getLine(endRow).length;
+            return new Range(startRow, startColumn, endRow, endColumn);
+        }
+    };
+    this.getFoldWidget = function(session, foldStyle, row) {
+        var line = session.getLine(row);
+        var indent = line.search(/\S/);
+        var next = session.getLine(row + 1);
+        var prev = session.getLine(row - 1);
+        var prevIndent = prev.search(/\S/);
+        var nextIndent = next.search(/\S/);
+
+        if (indent == -1) {
+            session.foldWidgets[row - 1] = prevIndent!= -1 && prevIndent < nextIndent ? "start" : "";
+            return "";
+        }
+        if (prevIndent == -1) {
+            if (indent == nextIndent && line[indent] == "##" && next[indent] == "##") {
+                session.foldWidgets[row - 1] = "";
+                session.foldWidgets[row + 1] = "";
+                return "start";
+            }
+        } else if (prevIndent == indent && line[indent] == "##" && prev[indent] == "##") {
+            if (session.getLine(row - 2).search(/\S/) == -1) {
+                session.foldWidgets[row - 1] = "start";
+                session.foldWidgets[row + 1] = "";
+                return "";
+            }
+        }
+
+        if (prevIndent!= -1 && prevIndent < indent)
+            session.foldWidgets[row - 1] = "start";
+        else
+            session.foldWidgets[row - 1] = "";
+
+        if (indent < nextIndent)
+            return "start";
+        else
+            return "";
+    };
+
+}).call(FoldMode.prototype);
+
+});
+
+ace.define('ace/mode/behaviour/html', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/behaviour/xml', 'ace/mode/behaviour/cstyle', 'ace/token_iterator'], function(require, exports, module) {
+
+
+var oop = require("../../lib/oop");
+var XmlBehaviour = require("../behaviour/xml").XmlBehaviour;
+var CstyleBehaviour = require("./cstyle").CstyleBehaviour;
+var TokenIterator = require("../../token_iterator").TokenIterator;
+var voidElements = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+
+function hasType(token, type) {
+    var tokenTypes = token.type.split('.');
+    return type.split('.').every(function(type){
+        return (tokenTypes.indexOf(type) !== -1);
+    });
+    return hasType;
+}
+
+var HtmlBehaviour = function () {
+
+    this.inherit(XmlBehaviour); // Get xml behaviour
+    
+    this.add("autoclosing", "insertion", function (state, action, editor, session, text) {
+        if (text == '>') {
+            var position = editor.getCursorPosition();
+            var iterator = new TokenIterator(session, position.row, position.column);
+            var token = iterator.getCurrentToken();
+
+            if (token && hasType(token, 'string') && iterator.getCurrentTokenColumn() + token.value.length > position.column)
+                return;
+            var atCursor = false;
+            if (!token || !hasType(token, 'meta.tag') && !(hasType(token, 'text') && token.value.match('/'))){
+                do {
+                    token = iterator.stepBackward();
+                } while (token && (hasType(token, 'string') || hasType(token, 'keyword.operator') || hasType(token, 'entity.attribute-name') || hasType(token, 'text')));
+            } else {
+                atCursor = true;
+            }
+            if (!token || !hasType(token, 'meta.tag.name') || iterator.stepBackward().value.match('/')) {
+                return;
+            }
+            var element = token.value;
+            if (atCursor){
+                var element = element.substring(0, position.column - token.start);
+            }
+            if (voidElements.indexOf(element) !== -1){
+                return;
+            }
+            return {
+               text: '>' + '</' + element + '>',
+               selection: [1, 1]
+            }
+        }
+    });
+}
+oop.inherits(HtmlBehaviour, XmlBehaviour);
+
+exports.HtmlBehaviour = HtmlBehaviour;
+});
+
+ace.define('ace/mode/behaviour/xml', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/behaviour', 'ace/mode/behaviour/cstyle', 'ace/token_iterator'], function(require, exports, module) {
+
+
+var oop = require("../../lib/oop");
+var Behaviour = require("../behaviour").Behaviour;
+var CstyleBehaviour = require("./cstyle").CstyleBehaviour;
+var TokenIterator = require("../../token_iterator").TokenIterator;
+
+function hasType(token, type) {
+    var tokenTypes = token.type.split('.');
+    return type.split('.').every(function(type){
+        return (tokenTypes.indexOf(type) !== -1);
+    });
+    return hasType;
+}
+
+var XmlBehaviour = function () {
+    
+    this.inherit(CstyleBehaviour, ["string_dquotes"]); // Get string behaviour
+    
+    this.add("autoclosing", "insertion", function (state, action, editor, session, text) {
+        if (text == '>') {
+            var position = editor.getCursorPosition();
+            var iterator = new TokenIterator(session, position.row, position.column);
+            var token = iterator.getCurrentToken();
+
+            if (token && hasType(token, 'string') && iterator.getCurrentTokenColumn() + token.value.length > position.column)
+                return;
+            var atCursor = false;
+            if (!token || !hasType(token, 'meta.tag') && !(hasType(token, 'text') && token.value.match('/'))){
+                do {
+                    token = iterator.stepBackward();
+                } while (token && (hasType(token, 'string') || hasType(token, 'keyword.operator') || hasType(token, 'entity.attribute-name') || hasType(token, 'text')));
+            } else {
+                atCursor = true;
+            }
+            if (!token || !hasType(token, 'meta.tag.name') || iterator.stepBackward().value.match('/')) {
+                return;
+            }
+            var tag = token.value;
+            if (atCursor){
+                var tag = tag.substring(0, position.column - token.start);
+            }
+
+            return {
+               text: '>' + '</' + tag + '>',
+               selection: [1, 1]
+            }
+        }
+    });
+
+    this.add('autoindent', 'insertion', function (state, action, editor, session, text) {
+        if (text == "\n") {
+            var cursor = editor.getCursorPosition();
+            var line = session.getLine(cursor.row);
+            var rightChars = line.substring(cursor.column, cursor.column + 2);
+            if (rightChars == '</') {
+                var next_indent = this.$getIndent(line);
+                var indent = next_indent + session.getTabString();
+
+                return {
+                    text: '\n' + indent + '\n' + next_indent,
+                    selection: [1, indent.length, 1, indent.length]
+                }
+            }
+        }
+    });
+    
+}
+oop.inherits(XmlBehaviour, Behaviour);
+
+exports.XmlBehaviour = XmlBehaviour;
+});
+
+ace.define('ace/mode/behaviour/cstyle', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/behaviour', 'ace/token_iterator', 'ace/lib/lang'], function(require, exports, module) {
+
+
+var oop = require("../../lib/oop");
+var Behaviour = require("../behaviour").Behaviour;
+var TokenIterator = require("../../token_iterator").TokenIterator;
+var lang = require("../../lib/lang");
+
+var SAFE_INSERT_IN_TOKENS =
+    ["text", "paren.rparen", "punctuation.operator"];
+var SAFE_INSERT_BEFORE_TOKENS =
+    ["text", "paren.rparen", "punctuation.operator", "comment"];
+
+
+var autoInsertedBrackets = 0;
+var autoInsertedRow = -1;
+var autoInsertedLineEnd = "";
+var maybeInsertedBrackets = 0;
+var maybeInsertedRow = -1;
+var maybeInsertedLineStart = "";
+var maybeInsertedLineEnd = "";
+
+var CstyleBehaviour = function () {
+    
+    CstyleBehaviour.isSaneInsertion = function(editor, session) {
+        var cursor = editor.getCursorPosition();
+        var iterator = new TokenIterator(session, cursor.row, cursor.column);
+        if (!this.$matchTokenType(iterator.getCurrentToken() || "text", SAFE_INSERT_IN_TOKENS)) {
+            var iterator2 = new TokenIterator(session, cursor.row, cursor.column + 1);
+            if (!this.$matchTokenType(iterator2.getCurrentToken() || "text", SAFE_INSERT_IN_TOKENS))
+                return false;
+        }
+        iterator.stepForward();
+        return iterator.getCurrentTokenRow() !== cursor.row ||
+            this.$matchTokenType(iterator.getCurrentToken() || "text", SAFE_INSERT_BEFORE_TOKENS);
+    };
+    
+    CstyleBehaviour.$matchTokenType = function(token, types) {
+        return types.indexOf(token.type || token) > -1;
+    };
+    
+    CstyleBehaviour.recordAutoInsert = function(editor, session, bracket) {
+        var cursor = editor.getCursorPosition();
+        var line = session.doc.getLine(cursor.row);
+        if (!this.isAutoInsertedClosing(cursor, line, autoInsertedLineEnd[0]))
+            autoInsertedBrackets = 0;
+        autoInsertedRow = cursor.row;
+        autoInsertedLineEnd = bracket + line.substr(cursor.column);
+        autoInsertedBrackets++;
+    };
+    
+    CstyleBehaviour.recordMaybeInsert = function(editor, session, bracket) {
+        var cursor = editor.getCursorPosition();
+        var line = session.doc.getLine(cursor.row);
+        if (!this.isMaybeInsertedClosing(cursor, line))
+            maybeInsertedBrackets = 0;
+        maybeInsertedRow = cursor.row;
+        maybeInsertedLineStart = line.substr(0, cursor.column) + bracket;
+        maybeInsertedLineEnd = line.substr(cursor.column);
+        maybeInsertedBrackets++;
+    };
+    
+    CstyleBehaviour.isAutoInsertedClosing = function(cursor, line, bracket) {
+        return autoInsertedBrackets > 0 &&
+            cursor.row === autoInsertedRow &&
+            bracket === autoInsertedLineEnd[0] &&
+            line.substr(cursor.column) === autoInsertedLineEnd;
+    };
+    
+    CstyleBehaviour.isMaybeInsertedClosing = function(cursor, line) {
+        return maybeInsertedBrackets > 0 &&
+            cursor.row === maybeInsertedRow &&
+            line.substr(cursor.column) === maybeInsertedLineEnd &&
+            line.substr(0, cursor.column) == maybeInsertedLineStart;
+    };
+    
+    CstyleBehaviour.popAutoInsertedClosing = function() {
+        autoInsertedLineEnd = autoInsertedLineEnd.substr(1);
+        autoInsertedBrackets--;
+    };
+    
+    CstyleBehaviour.clearMaybeInsertedClosing = function() {
+        maybeInsertedBrackets = 0;
+        maybeInsertedRow = -1;
+    };
+
+    this.add("braces", "insertion", function (state, action, editor, session, text) {
+        var cursor = editor.getCursorPosition();
+        var line = session.doc.getLine(cursor.row);
+        if (text == '{') {
+            var selection = editor.getSelectionRange();
+            var selected = session.doc.getTextRange(selection);
+            if (selected !== "" && selected !== "{" && editor.getWrapBehavioursEnabled()) {
+                return {
+                    text: '{' + selected + '}',
+                    selection: false
+                };
+            } else if (CstyleBehaviour.isSaneInsertion(editor, session)) {
+                if (/[\]\}\)]/.test(line[cursor.column])) {
+                    CstyleBehaviour.recordAutoInsert(editor, session, "}");
+                    return {
+                        text: '{}',
+                        selection: [1, 1]
+                    };
+                } else {
+                    CstyleBehaviour.recordMaybeInsert(editor, session, "{");
+                    return {
+                        text: '{',
+                        selection: [1, 1]
+                    };
+                }
+            }
+        } else if (text == '}') {
+            var rightChar = line.substring(cursor.column, cursor.column + 1);
+            if (rightChar == '}') {
+                var matching = session.$findOpeningBracket('}', {column: cursor.column + 1, row: cursor.row});
+                if (matching !== null && CstyleBehaviour.isAutoInsertedClosing(cursor, line, text)) {
+                    CstyleBehaviour.popAutoInsertedClosing();
+                    return {
+                        text: '',
+                        selection: [1, 1]
+                    };
+                }
+            }
+        } else if (text == "\n" || text == "\r\n") {
+            var closing = "";
+            if (CstyleBehaviour.isMaybeInsertedClosing(cursor, line)) {
+                closing = lang.stringRepeat("}", maybeInsertedBrackets);
+                CstyleBehaviour.clearMaybeInsertedClosing();
+            }
+            var rightChar = line.substring(cursor.column, cursor.column + 1);
+            if (rightChar == '}' || closing !== "") {
+                var openBracePos = session.findMatchingBracket({row: cursor.row, column: cursor.column}, '}');
+                if (!openBracePos)
+                     return null;
+
+                var indent = this.getNextLineIndent(state, line.substring(0, cursor.column), session.getTabString());
+                var next_indent = this.$getIndent(line);
+
+                return {
+                    text: '\n' + indent + '\n' + next_indent + closing,
+                    selection: [1, indent.length, 1, indent.length]
+                };
+            }
+        }
+    });
+
+    this.add("braces", "deletion", function (state, action, editor, session, range) {
+        var selected = session.doc.getTextRange(range);
+        if (!range.isMultiLine() && selected == '{') {
+            var line = session.doc.getLine(range.start.row);
+            var rightChar = line.substring(range.end.column, range.end.column + 1);
+            if (rightChar == '}') {
+                range.end.column++;
+                return range;
+            } else {
+                maybeInsertedBrackets--;
+            }
+        }
+    });
+
+    this.add("parens", "insertion", function (state, action, editor, session, text) {
+        if (text == '(') {
+            var selection = editor.getSelectionRange();
+            var selected = session.doc.getTextRange(selection);
+            if (selected !== "" && editor.getWrapBehavioursEnabled()) {
+                return {
+                    text: '(' + selected + ')',
+                    selection: false
+                };
+            } else if (CstyleBehaviour.isSaneInsertion(editor, session)) {
+                CstyleBehaviour.recordAutoInsert(editor, session, ")");
+                return {
+                    text: '()',
+                    selection: [1, 1]
+                };
+            }
+        } else if (text == ')') {
+            var cursor = editor.getCursorPosition();
+            var line = session.doc.getLine(cursor.row);
+            var rightChar = line.substring(cursor.column, cursor.column + 1);
+            if (rightChar == ')') {
+                var matching = session.$findOpeningBracket(')', {column: cursor.column + 1, row: cursor.row});
+                if (matching !== null && CstyleBehaviour.isAutoInsertedClosing(cursor, line, text)) {
+                    CstyleBehaviour.popAutoInsertedClosing();
+                    return {
+                        text: '',
+                        selection: [1, 1]
+                    };
+                }
+            }
+        }
+    });
+
+    this.add("parens", "deletion", function (state, action, editor, session, range) {
+        var selected = session.doc.getTextRange(range);
+        if (!range.isMultiLine() && selected == '(') {
+            var line = session.doc.getLine(range.start.row);
+            var rightChar = line.substring(range.start.column + 1, range.start.column + 2);
+            if (rightChar == ')') {
+                range.end.column++;
+                return range;
+            }
+        }
+    });
+
+    this.add("brackets", "insertion", function (state, action, editor, session, text) {
+        if (text == '[') {
+            var selection = editor.getSelectionRange();
+            var selected = session.doc.getTextRange(selection);
+            if (selected !== "" && editor.getWrapBehavioursEnabled()) {
+                return {
+                    text: '[' + selected + ']',
+                    selection: false
+                };
+            } else if (CstyleBehaviour.isSaneInsertion(editor, session)) {
+                CstyleBehaviour.recordAutoInsert(editor, session, "]");
+                return {
+                    text: '[]',
+                    selection: [1, 1]
+                };
+            }
+        } else if (text == ']') {
+            var cursor = editor.getCursorPosition();
+            var line = session.doc.getLine(cursor.row);
+            var rightChar = line.substring(cursor.column, cursor.column + 1);
+            if (rightChar == ']') {
+                var matching = session.$findOpeningBracket(']', {column: cursor.column + 1, row: cursor.row});
+                if (matching !== null && CstyleBehaviour.isAutoInsertedClosing(cursor, line, text)) {
+                    CstyleBehaviour.popAutoInsertedClosing();
+                    return {
+                        text: '',
+                        selection: [1, 1]
+                    };
+                }
+            }
+        }
+    });
+
+    this.add("brackets", "deletion", function (state, action, editor, session, range) {
+        var selected = session.doc.getTextRange(range);
+        if (!range.isMultiLine() && selected == '[') {
+            var line = session.doc.getLine(range.start.row);
+            var rightChar = line.substring(range.start.column + 1, range.start.column + 2);
+            if (rightChar == ']') {
+                range.end.column++;
+                return range;
+            }
+        }
+    });
+
+    this.add("string_dquotes", "insertion", function (state, action, editor, session, text) {
+        if (text == '"' || text == "'") {
+            var quote = text;
+            var selection = editor.getSelectionRange();
+            var selected = session.doc.getTextRange(selection);
+            if (selected !== "" && selected !== "'" && selected != '"' && editor.getWrapBehavioursEnabled()) {
+                return {
+                    text: quote + selected + quote,
+                    selection: false
+                };
+            } else {
+                var cursor = editor.getCursorPosition();
+                var line = session.doc.getLine(cursor.row);
+                var leftChar = line.substring(cursor.column-1, cursor.column);
+                if (leftChar == '\\') {
+                    return null;
+                }
+                var tokens = session.getTokens(selection.start.row);
+                var col = 0, token;
+                var quotepos = -1; // Track whether we're inside an open quote.
+
+                for (var x = 0; x < tokens.length; x++) {
+                    token = tokens[x];
+                    if (token.type == "string") {
+                      quotepos = -1;
+                    } else if (quotepos < 0) {
+                      quotepos = token.value.indexOf(quote);
+                    }
+                    if ((token.value.length + col) > selection.start.column) {
+                        break;
+                    }
+                    col += tokens[x].value.length;
+                }
+                if (!token || (quotepos < 0 && token.type !== "comment" && (token.type !== "string" || ((selection.start.column !== token.value.length+col-1) && token.value.lastIndexOf(quote) === token.value.length-1)))) {
+                    if (!CstyleBehaviour.isSaneInsertion(editor, session))
+                        return;
+                    return {
+                        text: quote + quote,
+                        selection: [1,1]
+                    };
+                } else if (token && token.type === "string") {
+                    var rightChar = line.substring(cursor.column, cursor.column + 1);
+                    if (rightChar == quote) {
+                        return {
+                            text: '',
+                            selection: [1, 1]
+                        };
+                    }
+                }
+            }
+        }
+    });
+
+    this.add("string_dquotes", "deletion", function (state, action, editor, session, range) {
+        var selected = session.doc.getTextRange(range);
+        if (!range.isMultiLine() && (selected == '"' || selected == "'")) {
+            var line = session.doc.getLine(range.start.row);
+            var rightChar = line.substring(range.start.column + 1, range.start.column + 2);
+            if (rightChar == selected) {
+                range.end.column++;
+                return range;
+            }
+        }
+    });
+
+};
+
+oop.inherits(CstyleBehaviour, Behaviour);
+
+exports.CstyleBehaviour = CstyleBehaviour;
 });
