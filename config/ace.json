@@ -32,7 +32,8 @@
   ],
   "modes": [
     { "name": "actionscript", "label": "AS3", "extensions": ["as"] },
-    { "name": "batchfile", "label": "DOS Batch File", "extensions": ["bat"] },
+    { "name": "batchfile", "label": "Batch File", "extensions": ["bat"] },
+    { "name": "sh", "label": "Bash Shell", "extensions": ["sh"] },
     { "name": "c_cpp", "label": "C/C++", "extensions": ["c", "cpp", "h"] },
     { "name": "coffee", "label": "CoffeeScript", "extensions": ["coffee"] },
     { "name": "csharp", "label": "C#", "extensions": ["cs"] },
@@ -46,7 +47,6 @@
     { "name": "haml", "label": "HAML", "extensions": ["haml"] },
     { "name": "haxe", "label": "Haxe", "extensions": ["haxe"] },
     { "name": "html", "label": "HTML", "extensions": ["html", "htm"] },
-    { "name": "ini", "label": "Windows INI", "extensions": ["ini"] },
     { "name": "java", "label": "Java", "extensions": ["java"] },
     { "name": "javascript", "label": "JavaScript", "extensions": ["js"] },
     { "name": "json", "label": "JSON", "extensions": ["json"] },
@@ -60,6 +60,7 @@
     { "name": "mysql", "label": "MySQL", "extensions": ["sql"] },
     { "name": "objectivec", "label": "Objective C", "extensions": ["obc"] },
     { "name": "perl", "label": "Perl", "extensions": ["pl", "cgi"] },
+    { "name": "php", "label": "PHP", "extensions": ["php"] },
     { "name": "pgsql", "label": "PostgreSQL", "extensions": ["sql"] },
     { "name": "plain_text", "label": "Plain Text", "extensions": ["txt"] },
     { "name": "powershell", "label": "Powershell", "extensions": ["ps"] },
@@ -68,10 +69,10 @@
     { "name": "ruby", "label": "Ruby", "extensions": ["rb"] },
     { "name": "sass", "label": "Sass", "extensions": ["sass"] },
     { "name": "scss", "label": "SCSS", "extensions": ["scss"] },
-    { "name": "sh", "label": "Bash Shell", "extensions": ["sh"] },
     { "name": "sql", "label": "SQL", "extensions": ["sql"] },
     { "name": "svg", "label": "SVG", "extensions": ["svg"] },
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
+    { "name": "ini", "label": "Windows INI", "extensions": ["ini"] },
     { "name": "xml", "label": "XML", "extensions": ["xml"] },
     { "name": "yaml", "label": "YAML", "extensions": ["yaml"] }
   ]
