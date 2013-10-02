@@ -34,7 +34,7 @@
     { "name": "actionscript", "label": "AS3", "extensions": ["as"] },
     { "name": "batchfile", "label": "Batch File", "extensions": ["bat"] },
     { "name": "sh", "label": "Bash Shell", "extensions": ["sh"] },
-    { "name": "c_cpp", "label": "C/C++", "extensions": ["c", "cpp", "h"] },
+    { "name": "c_cpp", "label": "C/C++", "extensions": ["c", "cpp", "h", "cc"] },
     { "name": "coffee", "label": "CoffeeScript", "extensions": ["coffee"] },
     { "name": "csharp", "label": "C#", "extensions": ["cs"] },
     { "name": "css", "label": "CSS", "extensions": ["css"] },
