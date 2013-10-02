@@ -14,12 +14,17 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 
   //launchData.items will contain files from file manager
   chrome.storage.local.get("bounds", function(data) {
-    var bounds = data.bounds || {
+    var defaults = {
       width: 800,
       height: 600,
       left: 50,
       top: 50
     };
+    var bounds = data.bounds || defaults;
+    //sanity check the bounds information -- also need to add maximums
+    if (bounds.left < 0 || bounds.top < 0 || bounds.width < 0 || bounds.height < 0) {
+      bounds = defaults;
+    }
     chrome.app.window.create("main.html", {
         bounds: bounds 
     }, function(win) {
