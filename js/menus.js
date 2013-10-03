@@ -26,7 +26,9 @@ define([
       li.innerHTML = entry.label;
       if (entry.command) {
         li.setAttribute("command", entry.command);
-        var shortcut = findKeyCombo(entry.command == "ace:command" ? entry.argument : entry.command);
+        var command = entry.command == "ace:command" ? entry.argument : entry.command;
+        var arg = entry.command == "ace:command" ? undefined : entry.argument;
+        var shortcut = findKeyCombo(command, arg);
         if (shortcut) {
           li.innerHTML += "<span class=shortcut>" + shortcut + "</span>";
         }
@@ -48,13 +50,15 @@ define([
     return fragment;
   };
   
-  var findKeyCombo = function(command) {
+  var findKeyCombo = function(command, arg) {
     var keys = Settings.get("keys");
     //check key config
     for (var key in keys) {
       var action = keys[key];
       var verb = action.ace || action.command || action;
+      var object = action.argument;
       if (verb == command) {
+        if (arg && object !== arg) continue;
         var char = key.split("-").pop();
         if (/[A-Z]$/.test(char)) {
           char = "Shift-" + char.toUpperCase();
