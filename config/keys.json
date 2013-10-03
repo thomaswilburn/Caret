@@ -6,8 +6,6 @@
   "^-S": "session:save-file-as",
   "^-n": "session:new-file",
   "^-tab": "session:change-tab",
-  "^-TAB": { "command": "session:change-tab", "argument": -1},
-  "^-q": "app:exit",
   
   //Chromebook fixes
   "^-up": { "ace": "addCursorAbove" },
@@ -19,5 +17,8 @@
   "^-p": { "command": "palette:open" },
   "^-P": { "command": "palette:open", "argument": "command" },
   //"^-r": { "command": "palette:open", "argument": "reference" },
-  "^-g": { "command": "palette:open", "argument": "goto" }
+  "^-g": { "command": "palette:open", "argument": "goto" },
+  "^-m": { "ace": "jumptomatching" },
+  "^-q": { "command": "ace:togglemacro" },
+  "^-Q": { "ace": "replaymacro" }
 }

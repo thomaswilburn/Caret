@@ -16,8 +16,6 @@
     "sub": [
       { "label": "Undo", "command": "ace:command", "argument": "undo" },
       { "label": "Redo", "command": "ace:command", "argument": "redo" },
-      { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
-      { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
       "divider",
       { "label": "Find", "command": "ace:command", "argument": "find" },
       { "label": "Find/Replace", "command": "ace:command", "argument": "replace" },
@@ -33,6 +31,24 @@
       { "label": "To Lowercase", "command": "ace:command", "argument": "tolowercase" },
       { "label": "Move Lines Up", "command": "ace:command", "argument": "movelinesup" },
       { "label": "Move Lines Down", "command": "ace:command", "argument": "movelinesdown" }
+    ]
+  },
+  {
+    "label": "Tools",
+    "sub": [
+      { "label": "Go To...", "command": "palette:open" },
+      { "label": "Command Palette", "command": "palette:open", "argument": "command" },
+      "divider",
+      /* 
+      Planned here:
+        plugins
+        go to line/reference shortcuts
+        fullscreen
+        build system via NaCl
+      "divider",
+      */
+      { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
+      { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" }
     ]
   },
   {

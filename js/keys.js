@@ -21,7 +21,11 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
     for (var k in bindings) {
       var action = bindings[k];
       if (!action.ace) continue;
-      k = k.replace("^", "Ctrl").replace("M", "Alt");
+      k = k.replace("^", "Ctrl").replace("M", "Alt").replace(/-[A-Z]$/, function(match) { 
+        return "-Shift" + match.toUpperCase();
+      }).replace(/-[a-z]$/, function(match) {
+        return match.toUpperCase();
+      });
       handler.bindKey(k, action.ace);
     }
   };
