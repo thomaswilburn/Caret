@@ -132,18 +132,35 @@ define([
       });
       
       if (search) {
-        tabs = tabs.map(function(t) { 
-          var location = t.tab.getValue().search(search);
-          if (location == -1) {
-            return false;
+        try {
+          var crawl = new RegExp(search.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "g");
+        } catch (e) {
+          return;
+        }
+        var results = [];
+        tabs.forEach(function(t) {
+          if (results.length >= 10) return;
+          var found;
+          var lines = [];
+          var text = t.tab.getValue();
+          while (found = crawl.exec(text)) {
+            var position = t.tab.doc.indexToPosition(found.index);
+            if (lines.indexOf(position.row) > -1) {
+              continue;
+            }
+            lines.push(position.row);
+            var result = {
+              tab: t.tab
+            }
+            result.label = result.tab.fileName;
+            result.sublabel = result.tab.getLine(position.row).replace(/\</g, "&lt;").replace(/\>/g, "&gt;");
+            result.sublabel = result.sublabel.trim();
+            result.line = position.row;
+            results.push(result);
+            if (results.length >= 10) return;
           }
-          var position = t.tab.doc.indexToPosition(location);
-          t.label = t.tab.fileName;
-          t.sublabel = t.tab.getLine(position.row).replace("<", "&lt;").replace(">", "&gt;").trim();
-          t.sublabel = t.sublabel.replace(search, "<i>" + search + "</i>");
-          t.line = position.row;
-          return t;
-        }).filter(function(x) { return x });
+        });
+        tabs = results;
       }
 
       this.results = tabs;
