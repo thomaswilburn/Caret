@@ -7,14 +7,6 @@ define([
   "dom2"
   ], function(sessions, command, editor, Settings, status) {
   
-  /*
-  
-  TODO:
-    - add reference mode
-    - add search mode
-  
-  */
-  
   var resultTemplate = document.find("#palette-result").content;
 
   var re = {
@@ -35,6 +27,8 @@ define([
     "search": "#",
     "reference": "@"
   };
+  
+  var template = "<div class=label>%LABEL%</div><div class=sublabel>%SUB%</div>"
   
   var Palette = function() {
     this.results = [];
@@ -130,19 +124,36 @@ define([
         tabs = [ sessions.getCurrent() ];
       }
       
+      tabs = tabs.map(function(t) {
+        return {
+          tab: t,
+          line: line
+        }
+      });
+      
       if (search) {
-        results = results.filter(function(t) { 
-          return t.getValue().toLowerCase().indexOf(search.toLowerCase()) > -1;
-        });
+        tabs = tabs.map(function(t) { 
+          var location = t.tab.getValue().search(search);
+          if (location == -1) {
+            return false;
+          }
+          var position = t.tab.doc.indexToPosition(location);
+          t.label = t.tab.fileName;
+          t.sublabel = t.tab.getLine(position.row).replace("<", "&lt;").replace(">", "&gt;").trim();
+          t.sublabel = t.sublabel.replace(search, "<i>" + search + "</i>");
+          t.line = position.row;
+          return t;
+        }).filter(function(x) { return x });
       }
 
       this.results = tabs;
 
       if (this.results.length) {
-        this.results[this.selected].raiseBlurred();
-        if (line) {
+        var current = this.results[this.selected];
+        current.tab.raiseBlurred();
+        if (current.line) {
           editor.clearSelection();
-          editor.moveCursorTo(line, 0);
+          editor.moveCursorTo(current.line, 0);
         }
       }
     },
@@ -188,7 +199,9 @@ define([
       this.resultList.innerHTML = "";
       this.results.slice(0, 10).forEach(function(r, i) {
         var element = resultTemplate.cloneNode(true).find("li");
-        element.innerHTML = r.fileName || r.palette || r.label;
+        var text = template.replace("%LABEL%", r.palette || r.label || (r.tab ? r.tab.fileName : ""))
+        text = text.replace("%SUB%", r.sublabel || "")
+        element.innerHTML = text;
         if (i == self.selected) {
           element.classList.add("current");
         }
