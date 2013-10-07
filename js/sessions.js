@@ -3,107 +3,18 @@ define([
     "dialog",
     "command",
     "file",
+    "tab",
     "settings!ace,user",
     "aceBindings"
   ],
-  function(editor, dialog, command, File, Settings) {
+  function(editor, dialog, command, File, Tab, Settings) {
   
   var tabs = [];
-  var Session = ace.require("ace/edit_session").EditSession;
   var cfg = Settings.get("ace");
   var userConfig = Settings.get("user");
   var syntax = document.find(".syntax");
   var stack = [];
   var stackOffset = 0;
-
-  var augmentTab = function(session, file) {
-    
-    if (file) {
-      session.file = file;
-      session.fileName = file.entry.name;
-      session.modifiedAt = new Date();
-    } else {
-      session.fileName = "untitled.txt";
-    }
-    
-    setTabSyntax(session);
-
-    if (session.isTab) {
-      session.modified = false;
-      renderTabs();
-      return;
-    }
-    session.isTab = true;
-    
-    session.setUndoManager(new ace.UndoManager());
-    
-    session.save = function(as, c) {
-      if (typeof as == "function") {
-        c = as;
-        as = false;
-      }
-      var content = this.getValue();
-      var self = this;
-
-      var whenOpen = function() {
-        self.file.write(content, function() {
-          self.modifiedAt = new Date();
-          if (c) c();
-        });
-        self.modified = false;
-        renderTabs();
-      };
-
-      if (!this.file || as) {
-        var file = new File();
-        return file.open("save", function(err) {
-          self.file = file;
-          if (err) {
-            dialog(err);
-            return;
-          }
-          self.fileName = file.entry.name;
-          delete self.syntaxMode;
-          setTabSyntax(self);
-          whenOpen();
-        });
-      }
-
-      whenOpen();
-    };
-    
-    session.raise = function() {
-      editor.setSession(session);
-      syntax.value = session.syntaxMode || "plain_text";
-      renderTabs();
-      editor.focus();
-    };
-
-    session.raiseBlurred = function() {
-      editor.setSession(session);
-      syntax.value = session.syntaxMode || "plain_text";
-      renderTabs();
-    };
-    
-    session.drop = function() {
-      if (!this.file || !chrome.fileSystem.retainEntry) return;
-      var id = this.file.retain();
-      if (!id) return;
-      chrome.storage.local.get("retained", function(data) {
-        if (!data.retained) return;
-        var filtered = data.retained.filter(function(item) { return item != id });
-        chrome.storage.local.set({ retained: filtered });
-      });
-    };
-    
-    //once() is buggier than on(), not sure why
-    session.on("change", function() {
-      if (session.modified) return;
-      session.modified = true;
-      renderTabs();
-    });
-  
-  };
   
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
@@ -129,6 +40,20 @@ define([
       tabContainer.append(span);
     });
     setRetained();
+  };
+  
+  command.on("sessions:render", renderTabs);
+  
+  var setRetained = function() {
+    var keep = [];
+    tabs.forEach(function(tab, i) {
+      if (!tab.file || tab.file.virtual) return;
+      keep[i] = tab.file.retain();
+    });
+    keep = keep.filter(function(m) { return m });
+    if (keep.length) {
+      chrome.storage.local.set({ retained: keep });
+    }
   };
   
   var setTabSyntax = function(tab) {
@@ -164,21 +89,23 @@ define([
   };
   
   var addTab = function(contents, file) {
-    contents = contents || "";
     var current = editor.getSession();
-    var session;
+    var tab;
     //reuse tab if opening a file into an empty tab
     if (file && !current.file && !current.modified) {
-      session = current;
-      session.setValue(contents);
+      tab = current;
+      tab.setValue(contents);
+      tab.setFile(file);
+      tab.modified = false;
     } else {
-      session = new Session(contents);
-      stack.unshift(session);
-      tabs.push(session);
+      tab = new Tab(contents, file);
+      stack.unshift(tab);
+      tabs.push(tab);
     }
-    augmentTab(session, file);
-    session.raise();
-    return session;
+    setTabSyntax(tab);
+    raiseTab(tab);
+    renderTabs();
+    return tab;
   };
   
   var removeTab = function(index) {
@@ -203,7 +130,7 @@ define([
       if (next < 0) {
         next = 0;
       }
-      raiseTab(next);
+      raiseTabByIndex(next);
     };
 
     if (tab.modified) {
@@ -225,17 +152,34 @@ define([
     }
   };
   
-  var raiseTab = function(index) {
+  var raiseTab = function(tab) {
+    editor.setSession(tab);
+    syntax.value = tab.syntaxMode || "plain_text";
+    renderTabs();
+    editor.focus();
+  };
+  
+  var raiseBlurred = function(tab) {
+      editor.setSession(tab);
+      syntax.value = tab.syntaxMode || "plain_text";
+      renderTabs();
+  };
+  
+  var raiseTabByIndex = function(index) {
     var tab = tabs[index];
-    tab.raise();
+    raiseTab(tab);
     command.fire("session:check-file");
   };
   
+  var resetStack = function(tab) {
+      var raised = tab || stack[stackOffset];
+      stack = stack.filter(function(t) { return t != raised });
+      stack.unshift(raised);
+  }
+  
   var watchCtrl = function(e) {
     if (e.keyCode == 17) {
-      var raised = stack[stackOffset];
-      stack = stack.filter(function(t) { return t !== raised });
-      stack.unshift(raised);
+      resetStack();
       document.body.off("keyup", watchCtrl);
       ctrl = false;
     }
@@ -243,15 +187,23 @@ define([
   
   var ctrl = false;
   
-  var switchTab = function(shift) {
+  var switchTab = function() {
     if (!ctrl) {
       ctrl = true;
       stackOffset = 0;
       document.body.on("keyup", watchCtrl);
     }
     stackOffset = (stackOffset + 1) % stack.length;
-    stack[stackOffset].raise();
+    raiseTab(stack[stackOffset]);
   };
+  
+  command.on("session:raise-tab", function(index) {
+    var tab = tabs[index];
+    raiseTab(tab);
+    resetStack(tab);
+  });
+  command.on("session:close-tab", removeTab);
+  command.on("session:change-tab", switchTab);
   
   var enableTabDragDrop = function() {
     var tabContainer = document.find(".tabs");
@@ -320,18 +272,6 @@ define([
     });
   };
   
-  var setRetained = function() {
-    var keep = [];
-    tabs.forEach(function(tab, i) {
-      if (!tab.file || tab.file.virtual) return;
-      keep[i] = tab.file.retain();
-    });
-    keep = keep.filter(function(m) { return m });
-    if (keep.length) {
-      chrome.storage.local.set({ retained: keep });
-    }
-  };
-  
   var init = function() {
     cfg.modes.forEach(function(mode) {
       var option = document.createElement("option");
@@ -340,6 +280,7 @@ define([
       syntax.append(option);
     });
     addTab("");
+    renderTabs();
     enableTabDragDrop();
     reset();
   };
@@ -362,9 +303,6 @@ define([
     editor.focus();
   });
   
-  command.on("session:raise-tab", raiseTab);
-  command.on("session:close-tab", removeTab);
-  command.on("session:change-tab", switchTab);
   
   var locationMemory = null;
   
@@ -400,7 +338,7 @@ define([
       return tabs.map(function(t) { return t.fileName });
     },
     setCurrent: function(tab) {
-      tab.raise();
+      raiseTab(tab);
     },
     saveLocation: function() {
       var session = editor.getSession();
@@ -412,7 +350,7 @@ define([
     },
     restoreLocation: function() {
       if (!locationMemory) return;
-      locationMemory.tab.raise();
+      raiseTab(locationMemory.tab);
       editor.moveCursorToPosition(locationMemory.cursor);
     },
     renderTabs: renderTabs
