@@ -45,6 +45,7 @@
     { "name": "glsl", "label": "GL Shader Language", "extensions": ["glsl"] },
     { "name": "golang", "label": "Go", "extensions": ["go"] },
     { "name": "haml", "label": "HAML", "extensions": ["haml"] },
+    { "name": "handlebars", "label": "Handlebars", "extensions": ["handlebars"] },
     { "name": "haxe", "label": "Haxe", "extensions": ["haxe"] },
     { "name": "html", "label": "HTML", "extensions": ["html", "htm"] },
     { "name": "java", "label": "Java", "extensions": ["java"] },
