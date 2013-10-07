@@ -42,7 +42,7 @@ define([
     setRetained();
   };
   
-  command.on("sessions:render", renderTabs);
+  command.on("session:render", renderTabs);
   
   var setRetained = function() {
     var keep = [];

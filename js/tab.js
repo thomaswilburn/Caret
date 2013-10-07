@@ -25,7 +25,7 @@ define(["command"], function(command) {
     this.on("change", function() {
       if (self.modified) return;
       self.modified = true;
-      command.fire("sessions:render");
+      command.fire("session:render");
     });
     
   };
@@ -53,7 +53,7 @@ define(["command"], function(command) {
         if (c) c();
       });
       self.modified = false;
-      command.fire("sessions:render")
+      command.fire("session:render")
     };
 
     if (!this.file || as) {
