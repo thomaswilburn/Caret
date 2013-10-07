@@ -101,7 +101,7 @@ define(["command"], function(command) {
   Tab.prototype.getFingerprint = function(c) {
     if (!this.file || this.file.virtual) return false;
     this.file.entry.file(function(f) {
-      return [f.name, f.size, f.type, f.lastModifiedDate].join("|");
+      c([f.name, f.size, f.type, f.lastModifiedDate].join("|"));
     })
   };
   
