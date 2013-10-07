@@ -84,6 +84,27 @@ define(["command"], function(command) {
     });
   };
   
+  /*
+  
+  HACK HACK HACKETY HACK: Since Chrome won't give us a file path, we have to
+  find our own ways to identify unique files (so that we don't re-open them).
+  In order to do that, we'll try to get the unique information about a file,
+  and return it as a concatenated string that the sessions module can use to
+  check against a new file. This should work in the short term, but it could
+  be fooled by any files that are different, but A) named the same, B) the
+  same size, and C) dated the same. Rare, but possible.
+  
+  Oh, and for added suck, it's async.
+  
+  */
+  
+  Tab.prototype.getFingerprint = function(c) {
+    if (!this.file || this.file.virtual) return false;
+    this.file.entry.file(function(f) {
+      return [f.name, f.size, f.type, f.lastModifiedDate].join("|");
+    })
+  };
+  
   return Tab;
 
 });
