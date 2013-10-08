@@ -1,4 +1,4 @@
-define(function() {
+define(["manos"], function(M) {
   
   /*
   
@@ -51,37 +51,44 @@ define(function() {
     write: function(data, c) {
       var self = this;
       c = c || function() {};
-      var write = function() {
-        self.entry.createWriter(function(writer) {
-          writer.onerror = function(err) {
-            console.error(err);
-            c(err, self);
+      M.chain(
+        //check permissions
+        function(next) {
+          chrome.fileSystem.isWritableEntry(self.entry, next);
+        },
+        //if read-only, try to open as writable
+        function(ok, next) {
+          if (!ok) {
+            return chrome.fileSystem.getWritableEntry(self.entry, function(entry) {
+              if (entry) {
+                self.entry = entry;
+                next();
+              } else {
+                c("Couldn't open file as writable", self);
+              }
+            });
           }
-          writer.onwriteend = function() {
-            //after truncation, actually write the file
+          next();
+        },
+        //write file
+        function() {
+          self.entry.createWriter(function(writer) {
+            writer.onerror = function(err) {
+              console.error(err);
+              c(err, self);
+            }
             writer.onwriteend = function() {
-              c(null, self);
-            }
-            var blob = new Blob([data]);
-            writer.write(blob);
-          };
-          writer.truncate(0);
-        });
-      };
-      chrome.fileSystem.isWritableEntry(self.entry, function(w) {
-        if (!w) {
-          chrome.fileSystem.getWritableEntry(self.entry, function(e) {
-            if (e) {
-              self.entry = e;
-              write();
-            } else {
-              c("Couldn't open file as writeable", self);
-            }
+              //after truncation, actually write the file
+              writer.onwriteend = function() {
+                c(null, self);
+              }
+              var blob = new Blob([data]);
+              writer.write(blob);
+            };
+            writer.truncate(0);
           });
-        } else {
-          write();
         }
-      });
+      );
     },
     stat: function(c) {
       if (this.entry) {
