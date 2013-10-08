@@ -19,6 +19,7 @@
   //"^-r": { "command": "palette:open", "argument": "reference" },
   "^-g": { "command": "palette:open", "argument": "goto" },
   "^-m": { "ace": "jumptomatching" },
+  "^-M": { "command": "sublime:expand-to-matching" },
   "^-q": { "command": "ace:togglemacro" },
   "^-Q": { "ace": "replaymacro" }
 }
