@@ -80,7 +80,7 @@
       },
       "divider",
       { "label": "Help", "command": "session:open-settings-defaults", "argument": "help" },
-      { "label": "About Caret", "command": "app:about" }
+      { "label": "About Caret", "command": "app:about", "retainFocus": true }
     ]
   }
 

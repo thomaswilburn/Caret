@@ -184,7 +184,7 @@ define([
         command.fire("session:check-file");
       }
       this.deactivate();
-      editor.focus();
+      if (!current.retainFocus) editor.focus();
     },
     activate: function(mode) {
       this.results = [];
