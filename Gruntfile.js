@@ -42,7 +42,7 @@ module.exports = function(grunt) {
     copy: {
       unpacked: {
         dest: "build/unpacked/",
-        src: ["config/**", "js/**", "css/*.css", "*.html", "require.js", "background.js", "*.png"]
+        src: ["config/**", "js/**", "css/*.css", "*.html", "require.js", "background.js", "installer.js", "*.png"]
       }
     }
   });
@@ -69,9 +69,6 @@ module.exports = function(grunt) {
     cmd.push("--pack-extension=" + path.join(here, "build/unpacked"));
     cmd.push("--pack-extension-key=" + path.join(here, "../Caret.pem"));
     exec(cmd.join(" "),function(err, out, stderr) {
-      if (err) {
-        console.log(stderr);
-      }
       fs.renameSync("./build/unpacked.crx", "./build/Caret.crx");
       c();
     });
