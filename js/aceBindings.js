@@ -46,9 +46,7 @@ define(["command", "editor", "statusbar"], function(command, editor, status) {
     })
 
     //we also add a command redirect for firing Ace commands via regular command attributes
-    command.on("ace:command", function(cmd) {
-      editor.execCommand(cmd);
-    });
+    command.on("ace:command", editor.execCommand.bind(editor));
     
     //unbind the keys for the palette, whatever it does.
     editor.commands.bindKey("Ctrl-P", null);
