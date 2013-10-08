@@ -17,7 +17,7 @@
       { "label": "Undo", "command": "ace:command", "argument": "undo" },
       { "label": "Redo", "command": "ace:command", "argument": "redo" },
       "divider",
-      { "label": "Select Word", "command": "sublime:expand-to-word" },
+      { "label": "Select Word", "command": "ace:command", "argument": "selectMoreAfter" },
       { "label": "Select Line", "command": "sublime:expand-to-line" },
       { "label": "Select Paragraph", "command": "sublime:expand-to-paragraph" },
       { "label": "Select to Matching", "command": "sublime:expand-to-matching" },

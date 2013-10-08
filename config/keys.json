@@ -17,7 +17,7 @@
   "^-p": { "command": "palette:open" },
   "^-P": { "command": "palette:open", "argument": "command" },
   //"^-r": { "command": "palette:open", "argument": "reference" },
-  "^-g": { "command": "palette:open", "argument": "goto" },
+  "^-g": { "command": "palette:open", "argument": "line" },
   "^-m": { "ace": "jumptomatching" },
   "^-M": { "command": "sublime:expand-to-matching" },
   "^-q": { "command": "ace:togglemacro" },
