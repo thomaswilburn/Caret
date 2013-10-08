@@ -36,9 +36,44 @@ define(["command", "editor", "statusbar"], function(command, editor, status) {
     });
     
     command.on("sublime:expand-to-matching", function() {
+      var Range = ace.require("ace/range").Range;
+      var position = editor.getCursorPosition();
+      var line = editor.getSession().getLine(position.row);
+      var depth = 0;
+      var openers = {
+        "(": ")",
+        "{": "}"
+      };
+      var closers = {
+        ")": "(",
+        "}": "{"
+      };
+      //look for tokens inside the line first
+      var matchable = /(['"({])/;
+      for (var i = position.column; i >= 0; i--) {
+        if (matchable.test(line[i])) {
+          var match = line[i];
+          if (match in openers) {
+            match = openers[match];
+          }
+          for (var j = i + 1; j < line.length; j++) {
+            if (line[j] == match && depth == 0) {
+              var selection = editor.getSession().getSelection();
+              selection.setRange(new Range(position.row, i + 1, position.row, j));
+              return;
+            } else if (line[j] == match) {
+              depth--;
+            } else if (line[j] == closers[match]) {
+              depth++;
+            }
+          }
+        }
+      }
+      //if we couldn't find any matching pairs, we'll just use the default multiline bracket selection
+      //this is a little wonky, but it's better than nothing.
       editor.execCommand("jumptomatching");
       editor.execCommand("selecttomatching");
-    })
+    });
 
     //we also add a command redirect for firing Ace commands via regular command attributes
     command.on("ace:command", editor.execCommand.bind(editor));
