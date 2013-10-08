@@ -12,9 +12,7 @@ define(["dom2"], function() {
     if (!commands[command]) return;
     var registry = commands[command].slice();
     registry.forEach(function(entry) {
-      setTimeout(function() {
         entry.callback.apply(entry.scope || null, argument instanceof Array ? argument : [argument] );
-      });
     });
   }
   

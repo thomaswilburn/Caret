@@ -337,9 +337,8 @@ define([
     getFilenames: function() {
       return tabs.map(function(t) { return t.fileName });
     },
-    setCurrent: function(tab) {
-      raiseTab(tab);
-    },
+    setCurrent: raiseTab,
+    raiseBlurred: raiseBlurred,
     saveLocation: function() {
       var session = editor.getSession();
       var position = editor.getCursorPosition();

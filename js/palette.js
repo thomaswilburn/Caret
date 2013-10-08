@@ -133,7 +133,7 @@ define([
       
       if (search) {
         try {
-          var crawl = new RegExp(search.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "g");
+          var crawl = new RegExp(search.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "gi");
         } catch (e) {
           return;
         }
@@ -167,7 +167,7 @@ define([
 
       if (this.results.length) {
         var current = this.results[this.selected];
-        current.tab.raiseBlurred();
+        sessions.raiseBlurred(current.tab);
         if (current.line) {
           editor.clearSelection();
           editor.moveCursorTo(current.line, 0);
@@ -205,8 +205,8 @@ define([
         this.selected = this.results.length + this.selected;
       }
       var current = this.results[this.selected];
-      if (current && current.raise) {
-        current.raiseBlurred();
+      if (current && current.tab) {
+        sessions.raiseBlurred(current.tab);
       }
       this.render();
     },
