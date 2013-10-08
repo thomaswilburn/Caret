@@ -56,7 +56,7 @@ define(["command", "editor", "statusbar"], function(command, editor, status) {
           if (match in openers) {
             match = openers[match];
           }
-          for (var j = i + 1; j < line.length; j++) {
+          for (var j = position.column + 1; j < line.length; j++) {
             if (line[j] == match && depth == 0) {
               var selection = editor.getSession().getSelection();
               selection.setRange(new Range(position.row, i + 1, position.row, j));
