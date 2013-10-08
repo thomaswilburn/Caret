@@ -51,20 +51,36 @@ define(function() {
     write: function(data, c) {
       var self = this;
       c = c || function() {};
-      this.entry.createWriter(function(writer) {
-        writer.onerror = function(err) {
-          console.error(err);
-          c(err, self);
-        }
-        writer.onwriteend = function() {
-          //after truncation, actually write the file
-          writer.onwriteend = function() {
-            c(null, self);
+      var write = function() {
+        self.entry.createWriter(function(writer) {
+          writer.onerror = function(err) {
+            console.error(err);
+            c(err, self);
           }
-          var blob = new Blob([data]);
-          writer.write(blob);
-        };
-        writer.truncate(0);
+          writer.onwriteend = function() {
+            //after truncation, actually write the file
+            writer.onwriteend = function() {
+              c(null, self);
+            }
+            var blob = new Blob([data]);
+            writer.write(blob);
+          };
+          writer.truncate(0);
+        });
+      };
+      chrome.fileSystem.isWritableEntry(self.entry, function(w) {
+        if (!w) {
+          chrome.fileSystem.getWritableEntry(self.entry, function(e) {
+            if (e) {
+              self.entry = e;
+              write();
+            } else {
+              c("Couldn't open file as writeable", self);
+            }
+          });
+        } else {
+          write();
+        }
       });
     },
     stat: function(c) {
