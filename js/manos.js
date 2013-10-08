@@ -30,6 +30,19 @@ define(function() {
       for (var i = 0; i < a.length; i++) {
         f(a[i], i, check.bind(null, i));
       }
+    },
+    serial: function(a, f, c) {
+      var i = -1;
+      var next = function() {
+        i++;
+        var item = a[i];
+        if (typeof item == "undefined") {
+          if (c) c();
+        } else {
+          f(item, next);
+        }
+      };
+      next();
     }
   }
 
