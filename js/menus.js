@@ -130,7 +130,10 @@ define([
   command.on("init:startup", menu.create.bind(menu));
   command.on("init:restart", menu.create.bind(menu));
 
-  editor.on("focus", menu.deactivate.bind(menu));
+  editor.on("focus", function() {
+    menu.deactivate();
+    menu.active = false;
+  });
 
   command.on("app:about", function() {
     var content = document.find("#about").content.cloneNode(true).find("div").innerHTML;
