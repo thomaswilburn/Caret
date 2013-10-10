@@ -157,18 +157,19 @@ define([
     syntax.value = tab.syntaxMode || "plain_text";
     renderTabs();
     editor.focus();
+    command.fire("session:check-file");
   };
   
   var raiseBlurred = function(tab) {
-      editor.setSession(tab);
-      syntax.value = tab.syntaxMode || "plain_text";
-      renderTabs();
+    editor.setSession(tab);
+    syntax.value = tab.syntaxMode || "plain_text";
+    renderTabs();
+    command.fire("session:check-file");
   };
   
   var raiseTabByIndex = function(index) {
     var tab = tabs[index];
     raiseTab(tab);
-    command.fire("session:check-file");
   };
   
   var resetStack = function(tab) {
