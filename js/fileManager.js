@@ -110,6 +110,7 @@ define([
             //if able, read it
             function(err, f, next) {
               if (err) {
+                console.log(err);
                 failures.push(id);
                 return c();
               }

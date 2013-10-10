@@ -106,12 +106,12 @@ define(["manos"], function(M) {
       chrome.fileSystem.isRestorable(id, function(is) {
         if (is) {
           chrome.fileSystem.restoreEntry(id, function(entry) {
-            if (!entry) return c("Could not restore file", null);
+            if (!entry) return c("restoreEntry() failed for " + id, null);
             self.entry = entry;
             c(null, self);
           });
         } else {
-          c("Could not restore file", null);
+          c("isRestorable() returned false for " + id, null);
         }
       });
     }
