@@ -128,6 +128,7 @@ define([
         },
         //when all files are done, clean out the failures
         function() {
+          if (!failures.length) return;
           console.log("Failed to restore: " + failures.join(", "));
           chrome.storage.local.get("retained", function(data) {
             if (!data.retained) return;
