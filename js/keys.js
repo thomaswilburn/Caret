@@ -41,7 +41,7 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
     }
     if (!e.shiftKey) char = char.toLowerCase();
     var prefix = "";
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.metaKey) {
       prefix += "^";
     }
     if (e.altKey) {
