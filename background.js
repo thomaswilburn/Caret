@@ -1,6 +1,6 @@
 var mainWindow = null;
 
-chrome.app.runtime.onLaunched.addListener(function(launchData) {
+var openWindow = function(launchData) {
   
   if (mainWindow) {
     mainWindow.contentWindow.launchData = launchData;
@@ -37,4 +37,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
       
   });
   
-});
+};
+
+chrome.app.runtime.onLaunched.addListener(openWindow);
+chrome.app.runtime.onRestarted.addListener(openWindow);

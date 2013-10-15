@@ -4,7 +4,7 @@
   position: fixed;
   top: 20px;
   left: ~"calc(50% - 150px)";
-  background: lighten(@background, 10%);
+  background: transparent;
   color: darken(@foreground, 30%);
   z-index: 999;
   padding: 4px 0px;
@@ -12,23 +12,30 @@
   border-radius: 8px;
   font-size: 16px;
   
+  @paletteBackground: lighten(@background, 10%);
+  
   &.active {
     display: block;
+  }
+  
+  .main {
+    background: @paletteBackground;
+    padding: 8px 12px;
   }
   
   h1 {
     font-size: 12px;
     padding: 0;
-    margin: 0 12px;
+    margin-top: 0px;
   }
   
   input {
-    width: 90%;
+    width: 100%;
     display: block;
     border: 2px solid #555;
     border-radius: 4px;
     padding: 8px;
-    margin: 8px auto;
+    margin-top: 8px;
     background: transparent;
     color: @foreground;
     font-weight: bold;
@@ -40,6 +47,7 @@
   }
   
   .results {
+    background: fade(@paletteBackground, 80%);
     padding: 0;
     margin: 0;
     list-style-type: none;

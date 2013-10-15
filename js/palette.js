@@ -2,7 +2,7 @@ define([
   "sessions",
   "command",
   "editor",
-  "settings!menus",
+  "settings!menus,user",
   "statusbar",
   "dom2"
   ], function(sessions, command, editor, Settings, status) {
@@ -44,55 +44,10 @@ define([
     this.input = this.element.find("input");
     this.resultList = this.element.find(".results");
     this.commandMode = false;
+    this.searchAll = false;
     this.bindInput();
   };
   Palette.prototype = {
-    getTabValues: function(tab) {
-      var name = tab.fileName;
-      if (!this.cache[name]) {
-        return this.cacheTab(tab);
-      }
-      var cache = this.cache[name];
-      for (var i = 0; i < cache.length; i++) {
-        if (cache[i].tab == tab) {
-          return cache[i];
-        }
-      }
-      return this.cacheTab(tab);
-    },
-    cacheTab: function(tab) {
-      //create cache entry
-      var entry = {
-        tab: tab,
-        refs: [],
-        text: tab.getValue()
-      };
-      //create token iterator, search for all references
-      var ti = new TokenIterator(tab, 0);
-      var token;
-      while (token = ti.stepForward()) {
-        if (refTest.test(token.type)) {
-          //this is a match, let's store it as a valid result object
-          var row = ti.getCurrentTokenRow();
-          var col = ti.getCurrentTokenColumn();
-          var line = sanitize(tab.getLine(row));
-          entry.refs.push({
-            tab: tab,
-            line: row,
-            label: token.value,
-            sublabel: line,
-            column: col
-          });
-        }
-      }
-      var name = tab.fileName;
-      if (!this.cache[name]) {
-        this.cache[name] = [ entry ];
-      } else {
-        this.cache[name].push(entry);
-      }
-      return entry;
-    },
     bindInput: function() {
       var input = this.input;
       var self = this;
@@ -104,6 +59,7 @@ define([
       input.on("keydown", function(e) {
         if (e.keyCode == 27) {
           sessions.restoreLocation();
+          editor.clearSelection();
           return input.blur();
         }
         if (e.keyCode == 13) {
@@ -159,6 +115,53 @@ define([
       menuWalker(menus);
       this.results = results;
     },
+    getTabValues: function(tab) {
+      var name = tab.fileName;
+      if (!this.cache[name]) {
+        return this.cacheTab(tab);
+      }
+      var cache = this.cache[name];
+      for (var i = 0; i < cache.length; i++) {
+        if (cache[i].tab == tab) {
+          return cache[i];
+        }
+      }
+      return this.cacheTab(tab);
+    },
+    cacheTab: function(tab) {
+      //create cache entry
+      var entry = {
+        tab: tab,
+        refs: [],
+        text: tab.getValue()
+      };
+      //create token iterator, search for all references
+      var ti = new TokenIterator(tab, 0);
+      var token;
+      while (token = ti.stepForward()) {
+        if (refTest.test(token.type)) {
+          //this is a match, let's store it as a valid result object
+          var row = ti.getCurrentTokenRow();
+          var col = ti.getCurrentTokenColumn();
+          var line = sanitize(tab.getLine(row));
+          entry.refs.push({
+            tab: tab,
+            line: row,
+            value: token.value,
+            label: tab.fileName + ":" + row,
+            sublabel: line,
+            column: col
+          });
+        }
+      }
+      var name = tab.fileName;
+      if (!this.cache[name]) {
+        this.cache[name] = [ entry ];
+      } else {
+        this.cache[name].push(entry);
+      }
+      return entry;
+    },
     findLocations: function(query) {
       var file = re.file.test(query) && re.file.exec(query)[1];
       var line = re.line.test(query) && Number(re.line.exec(query)[1]) - 1;
@@ -175,7 +178,11 @@ define([
           return fuzzyFile.test(tab.fileName);
         });
       } else {
-        tabs = [ sessions.getCurrent() ];
+        if (this.searchAll) {
+          tabs = sessions.getAllTabs();
+        } else {
+          tabs = [ sessions.getCurrent() ];
+        }
       }
       
       tabs = tabs.map(function(t) {
@@ -225,7 +232,7 @@ define([
           if (results.length >= 10) return;
           var refs = self.getTabValues(t.tab).refs;
           for (var i = 0; i < refs.length; i++) {
-            if (crawl.test(refs[i].label)) {
+            if (crawl.test(refs[i].value)) {
               var len = results.push(refs[i]);
               if (len > 10) return;
             }
@@ -241,7 +248,10 @@ define([
         sessions.raiseBlurred(current.tab);
         if (current.line) {
           editor.clearSelection();
-          editor.moveCursorTo(current.line, 0);
+          editor.moveCursorTo(current.line, current.column || 0);
+          if (current.column) {
+            editor.execCommand("selectwordright");
+          }
         }
       }
     },
@@ -259,14 +269,14 @@ define([
     },
     activate: function(mode) {
       this.results = [];
+      this.cache = {};
       this.selected = 0;
-      this.input.value = "";
+      this.searchAll = Settings.get("user").searchAllFiles;
       this.commandMode = mode == "command";
       this.input.value = modes[mode] || "";
       this.render();
       this.element.classList.add("active");
       this.input.focus();
-      this.cache = {};
     },
     deactivate: function() {
       this.element.classList.remove("active");

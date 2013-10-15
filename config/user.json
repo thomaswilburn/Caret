@@ -39,6 +39,10 @@ make sure you don't have any syntax errors.
   //We don't yet have a way to set the worker options, but you can disable it.
   "useWorker": true,
   
+  //By default, the palette searches the current file only unless you widen the scope.
+  //If you'd like it to search all open files by default, set this option to true.
+  "searchAllFiles": false,
+  
   //Crazy? You might like Vim keybindings. Only takes effect on restart
   "emulateVim": false
   

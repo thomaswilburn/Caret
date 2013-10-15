@@ -43,6 +43,7 @@
       { "label": "Go To Anything", "command": "palette:open" },
       { "label": "Go To Line", "command": "palette:open", "argument": "line" },
       { "label": "Go To Search", "command": "palette:open", "argument": "search" },
+      { "label": "Go To Reference", "command": "palette:open", "argument": "reference" },
       { "label": "Command Palette", "command": "palette:open", "argument": "command" },
       "divider",
       /* 
