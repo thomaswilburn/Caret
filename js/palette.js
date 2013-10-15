@@ -113,7 +113,7 @@ define([
         }
       };
       menuWalker(menus);
-      this.results = results;
+      this.results = results.slice(0, 10);
     },
     getTabValues: function(tab) {
       var name = tab.fileName;
