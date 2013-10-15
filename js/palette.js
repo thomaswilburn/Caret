@@ -6,8 +6,14 @@ define([
   "statusbar",
   "dom2"
   ], function(sessions, command, editor, Settings, status) {
+    
+  var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
+  var refTest = /variable|identifier/;
   
   var resultTemplate = document.find("#palette-result").content;
+  var sanitize = function(text) {
+    return text.replace(/\</g, "&lt;").replace(/\>/g, "&gt;").trim();
+  };
 
   var re = {
     file: /^([^:#@]*)/,
@@ -32,6 +38,7 @@ define([
   
   var Palette = function() {
     this.results = [];
+    this.cache = {};
     this.selected = 0;
     this.element = document.find(".palette");
     this.input = this.element.find("input");
@@ -40,6 +47,52 @@ define([
     this.bindInput();
   };
   Palette.prototype = {
+    getTabValues: function(tab) {
+      var name = tab.fileName;
+      if (!this.cache[name]) {
+        return this.cacheTab(tab);
+      }
+      var cache = this.cache[name];
+      for (var i = 0; i < cache.length; i++) {
+        if (cache[i].tab == tab) {
+          return cache[i];
+        }
+      }
+      return this.cacheTab(tab);
+    },
+    cacheTab: function(tab) {
+      //create cache entry
+      var entry = {
+        tab: tab,
+        refs: [],
+        text: tab.getValue()
+      };
+      //create token iterator, search for all references
+      var ti = new TokenIterator(tab, 0);
+      var token;
+      while (token = ti.stepForward()) {
+        if (refTest.test(token.type)) {
+          //this is a match, let's store it as a valid result object
+          var row = ti.getCurrentTokenRow();
+          var col = ti.getCurrentTokenColumn();
+          var line = sanitize(tab.getLine(row));
+          entry.refs.push({
+            tab: tab,
+            line: row,
+            label: token.value,
+            sublabel: line,
+            column: col
+          });
+        }
+      }
+      var name = tab.fileName;
+      if (!this.cache[name]) {
+        this.cache[name] = [ entry ];
+      } else {
+        this.cache[name].push(entry);
+      }
+      return entry;
+    },
     bindInput: function() {
       var input = this.input;
       var self = this;
@@ -112,6 +165,7 @@ define([
       var search = re.search.test(query) && re.search.exec(query)[1];
       var reference = re.reference.test(query) && re.reference.exec(query)[1];
       var results = [];
+      var self = this;
       
       var tabs;
       
@@ -142,7 +196,7 @@ define([
           if (results.length >= 10) return;
           var found;
           var lines = [];
-          var text = t.tab.getValue();
+          var text = self.getTabValues(t.tab).text;
           while (found = crawl.exec(text)) {
             var position = t.tab.doc.indexToPosition(found.index);
             if (lines.indexOf(position.row) > -1) {
@@ -153,11 +207,28 @@ define([
               tab: t.tab
             }
             result.label = result.tab.fileName;
-            result.sublabel = result.tab.getLine(position.row).replace(/\</g, "&lt;").replace(/\>/g, "&gt;");
-            result.sublabel = result.sublabel.trim();
+            result.sublabel = sanitize(result.tab.getLine(position.row));
             result.line = position.row;
             results.push(result);
             if (results.length >= 10) return;
+          }
+        });
+        tabs = results;
+      } else if (reference) {
+        try {
+          var crawl = new RegExp(reference.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "i");
+        } catch (e) {
+          return;
+        }
+        var results = [];
+        tabs.forEach(function(t) {
+          if (results.length >= 10) return;
+          var refs = self.getTabValues(t.tab).refs;
+          for (var i = 0; i < refs.length; i++) {
+            if (crawl.test(refs[i].label)) {
+              var len = results.push(refs[i]);
+              if (len > 10) return;
+            }
           }
         });
         tabs = results;
@@ -195,6 +266,7 @@ define([
       this.render();
       this.element.classList.add("active");
       this.input.focus();
+      this.cache = {};
     },
     deactivate: function() {
       this.element.classList.remove("active");
