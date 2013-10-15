@@ -234,7 +234,7 @@ define([
           for (var i = 0; i < refs.length; i++) {
             if (crawl.test(refs[i].value)) {
               var len = results.push(refs[i]);
-              if (len > 10) return;
+              if (len >= 10) return;
             }
           }
         });
