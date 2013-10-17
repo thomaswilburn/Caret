@@ -26,6 +26,7 @@ define([
       span.setAttribute("draggable", true);
       span.setAttribute("command", "session:raise-tab");
       span.setAttribute("argument", index);
+      span.setAttribute("title", tab.fileName);
       span.className = "tab";
       if (tab === current) {
         span.classList.add("active");
