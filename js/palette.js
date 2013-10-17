@@ -8,7 +8,7 @@ define([
   ], function(sessions, command, editor, Settings, status) {
     
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
-  var refTest = /function/;
+  var refTest = /identifier|variable|function/;
   
   var resultTemplate = document.find("#palette-result").content;
   var sanitize = function(text) {
