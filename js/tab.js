@@ -28,6 +28,8 @@ define(["command", "file"], function(command, File) {
       command.fire("session:render");
     });
     
+    this.animationClass = "enter";
+    
   };
   
   //hopefully this never screws up unaugmented Ace sessions.

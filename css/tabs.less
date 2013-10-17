@@ -24,7 +24,8 @@
     position: relative;
     box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
     
-    transition: width .5s, border-width .5s;
+    transition: max-width .5s linear, -webkit-transform .2s ease, border-width .5s ease;
+    transition: max-width .5s linear, transform .2s ease, border-width .5s ease;
     
     &.active {
       padding-bottom: 0px;
@@ -43,6 +44,12 @@
       border-color: @faded;
       border-left-width: 50px;
       border-left-style: solid;
+    }
+    
+    &.enter {
+      //max-width: 0px;
+      -webkit-transform: translateY(24px);
+      transform: translateY(24px);
     }
     
     .close {

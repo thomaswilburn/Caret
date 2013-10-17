@@ -28,8 +28,12 @@ define([
       span.setAttribute("argument", index);
       span.className = "tab";
       if (tab === current) {
-        span.className += " active";
+        span.classList.add("active");
       }
+      if (tab.animationClass) {
+        span.classList.add(tab.animationClass);
+      }
+      tab.animationClass = "";
       span.innerHTML = tab.fileName + (tab.modified ? " &bull;" : "");
       var close = document.createElement("a");
       close.innerHTML = "&times;";
@@ -38,6 +42,10 @@ define([
       close.setAttribute("argument", index);
       span.append(close);
       tabContainer.append(span);
+    });
+    setTimeout(function() {
+      //wait for render before triggering the enter animation
+      tabContainer.findAll(".enter").forEach(function(span) { span.classList.remove("enter") });
     });
     setRetained();
   };
@@ -104,7 +112,6 @@ define([
     }
     setTabSyntax(tab);
     raiseTab(tab);
-    renderTabs();
     return tab;
   };
   
