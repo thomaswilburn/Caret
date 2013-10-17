@@ -8,7 +8,7 @@ define([
   ], function(sessions, command, editor, Settings, status) {
     
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
-  var refTest = /variable|identifier/;
+  var refTest = /function/;
   
   var resultTemplate = document.find("#palette-result").content;
   var sanitize = function(text) {
@@ -178,10 +178,10 @@ define([
           return fuzzyFile.test(tab.fileName);
         });
       } else {
+        var current = sessions.getCurrent(); 
+        tabs = [ current ];
         if (this.searchAll) {
-          tabs = sessions.getAllTabs();
-        } else {
-          tabs = [ sessions.getCurrent() ];
+          tabs.push.apply(tabs, sessions.getAllTabs().filter(function(t) { return t !== current }));
         }
       }
       
