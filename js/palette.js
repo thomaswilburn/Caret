@@ -9,6 +9,7 @@ define([
     
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
   var refTest = /identifier|variable|function/;
+  var jsRefTest = /entity\.name\.function/;
   
   var resultTemplate = document.find("#palette-result").content;
   var sanitize = function(text) {
@@ -37,6 +38,7 @@ define([
   var template = "<div class=label>%LABEL%</div><div class=sublabel>%SUB%</div>"
   
   var Palette = function() {
+    this.homeTab = null;
     this.results = [];
     this.cache = {};
     this.selected = 0;
@@ -139,7 +141,7 @@ define([
       var ti = new TokenIterator(tab, 0);
       var token;
       while (token = ti.stepForward()) {
-        if (refTest.test(token.type)) {
+        if (tab.syntaxMode == "javascript" ? jsRefTest.test(token.type) : refTest.test(token.type)) {
           //this is a match, let's store it as a valid result object
           var row = ti.getCurrentTokenRow();
           var col = ti.getCurrentTokenColumn();
@@ -178,7 +180,7 @@ define([
           return fuzzyFile.test(tab.fileName);
         });
       } else {
-        var current = sessions.getCurrent(); 
+        var current = this.homeTab; 
         tabs = [ current ];
         if (this.searchAll) {
           tabs.push.apply(tabs, sessions.getAllTabs().filter(function(t) { return t !== current }));
@@ -221,7 +223,7 @@ define([
           }
         });
         tabs = results;
-      } else if (reference) {
+      } else if (reference !== false) {
         try {
           var crawl = new RegExp(reference.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "i");
         } catch (e) {
@@ -268,6 +270,7 @@ define([
       if (!current.retainFocus) editor.focus();
     },
     activate: function(mode) {
+      this.homeTab = sessions.getCurrent();
       this.results = [];
       this.cache = {};
       this.selected = 0;
