@@ -6,17 +6,6 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
   var aceConfig = Settings.get("ace");
 
   var editor = window.editor = ace.edit("editor");
-  var container = document.body.find(".editor-container");
-  var containerSize = container.getBoundingClientRect();
-  
-  window.on("resize", function() {
-    var size = container.getBoundingClientRect();
-    var editorDiv = document.body.find("#editor");
-    editorDiv.style.width = size.width + "px";
-    editorDiv.style.height = size.height + "px";
-    editor.resize();
-  });
-  window.dispatchEvent(new Event("resize"));
   
   var themes = document.querySelector(".theme");
   
