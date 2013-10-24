@@ -32,6 +32,7 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
     editor.setTheme("ace/theme/" + themes.value);
     editor.setShowPrintMargin(userConfig.showMargin || false);
     editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
+    editor.setShowInvisibles(userConfig.showWhitespace || false);
     editor.container.style.fontSize = userConfig.fontSize ? userConfig.fontSize + "px" : null;
     editor.container.style.fontFamily = userConfig.fontFamily || null;
   };

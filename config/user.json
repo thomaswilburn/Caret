@@ -25,7 +25,9 @@ make sure you don't have any syntax errors.
   "uiTheme": "light", //dark or light, your pick
   "cursor": "slim", //"ace", "slim", "smooth", "wide"
   
-  "indentation": 2, //indentation only in spaces, as God intended
+  "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
+  "indentation": 2, //indentation size
+  "useTabs": false, //will turn off Ace's setUseSoftTabs() option and use tab characters instead
   "wordWrap": true,
   "wrapLimit":false, //Set to the number of characters you want or false for full window
   "showMargin": false,

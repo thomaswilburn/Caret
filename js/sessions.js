@@ -66,6 +66,7 @@ define([
   };
   
   var setTabSyntax = function(tab) {
+    tab.setUseSoftTabs(!userConfig.useTabs);
     tab.setTabSize(userConfig.indentation || 2);
     tab.setUseWrapMode(userConfig.wordWrap);
     tab.setWrapLimit(userConfig.wrapLimit || null);
