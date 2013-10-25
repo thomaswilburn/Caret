@@ -1,4 +1,9 @@
-define(["command", "editor", "statusbar"], function(command, editor, status) {
+define(["command", "editor", "statusbar", "settings!user"], function(command, editor, status, Settings) {
+
+    var userConfig = Settings.get("user");
+    command.on("init:restart", function() {
+      userConfig = Settings.get("user");
+    });
 
     //this is a place to put bindings that don't have direct equivalents in Ace, but are required for Sublime compatibility
 
@@ -73,6 +78,22 @@ define(["command", "editor", "statusbar"], function(command, editor, status) {
       //this is a little wonky, but it's better than nothing.
       editor.execCommand("jumptomatching");
       editor.execCommand("selecttomatching");
+    });
+    
+    command.on("sublime:tabs-to-spaces", function() {
+      var session = editor.getSession();
+      var text = session.getValue();
+      var spaces = new Array(userConfig.indentation + 1).join(" ");
+      text = text.replace(/\t/g, spaces);
+      session.setValue(text);
+    });
+    
+    command.on("sublime:spaces-to-tabs", function() {
+      var session = editor.getSession();
+      var text = session.getValue();
+      var replace = new RegExp(new Array(userConfig.indentation + 1).join(" "), "g");
+      text = text.replace(replace, "\t");
+      session.setValue(text);
     });
 
     //we also add a command redirect for firing Ace commands via regular command attributes
