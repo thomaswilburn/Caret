@@ -35,6 +35,11 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
     editor.setShowInvisibles(userConfig.showWhitespace || false);
     editor.container.style.fontSize = userConfig.fontSize ? userConfig.fontSize + "px" : null;
     editor.container.style.fontFamily = userConfig.fontFamily || null;
+    ace.config.loadModule("ace/ext/language_tools", function() {
+      editor.setOptions({
+        enableBasicAutocompletion: userConfig.autocomplete
+      });
+    });
   };
   
   command.on("init:startup", init);
