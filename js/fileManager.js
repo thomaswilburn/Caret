@@ -8,17 +8,22 @@ define([
   ], function(sessions, File, dialog, command, Settings, M) {
 
   var openFile = function() {
-    var f = new File();
-    f.open(function(err) {
-      if (err) {
-        return dialog(err);
-      }
-      f.read(function(err, data) {
-        if (err) {
-          dialog(err);
-          return;
-        }
-        sessions.addFile(data, f);
+    //have to call chooseEntry manually to support multiple files
+    chrome.fileSystem.chooseEntry({type: "openWritableFile", acceptsMultiple: true }, function(files) {
+      //annoying array function test, since it's not apparently a real array
+      if (!files.slice) {
+        files = [ files ];
+      };
+      files.forEach(function(entry) {
+        var f = new File();
+        f.entry = entry;
+        f.read(function(err, data) {
+          if (err) {
+            dialog(err);
+            return;
+          }
+          sessions.addFile(data, f);
+        });
       });
     });
   };
