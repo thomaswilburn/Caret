@@ -1,18 +1,23 @@
 var mainWindow = null;
+var timeout = null;
+var files = [];
 
-var openWindow = function(launchData) {
+var openWindow = function() {
   
+  //if window exists, re-use it
   if (mainWindow) {
-    mainWindow.contentWindow.launchData = launchData;
+    mainWindow.contentWindow.launchData = files;
     mainWindow.contentWindow.require(["command"], function(c) {
       c.fire("session:open-launch");
     });
     mainWindow.focus();
     mainWindow.drawAttention();
+    files = [];
+    timeout = null;
     return;
   }
-
-  //launchData.items will contain files from file manager
+  
+  //otherwise, open a new window
   chrome.storage.local.get("bounds", function(data) {
     var defaults = {
       width: 800,
@@ -29,15 +34,25 @@ var openWindow = function(launchData) {
         bounds: bounds 
     }, function(win) {
       mainWindow = win;
-      win.contentWindow.launchData = launchData;
+      win.contentWindow.launchData = files;
       mainWindow.onClosed.addListener(function() {
         mainWindow = null;
       });
+      files = [];
+      timeout = null;
     });
       
   });
+}
+
+var launch = function(launchData) {
+  
+  files.push.apply(files, launchData.items);
+  //we delay opening the actual window to give multiple file events time to fire
+  if (timeout !== null) return;
+  timeout = setTimeout(openWindow, 250);
   
 };
 
-chrome.app.runtime.onLaunched.addListener(openWindow);
-chrome.app.runtime.onRestarted.addListener(openWindow);
+chrome.app.runtime.onLaunched.addListener(launch);
+chrome.app.runtime.onRestarted.addListener(launch);

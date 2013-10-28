@@ -28,8 +28,8 @@ define([
   };
   
   var openFromLaunchData = function() {
-    if (window.launchData && window.launchData.items) {
-      window.launchData.items.forEach(function(file) {
+    if (window.launchData) {
+      window.launchData.forEach(function(file) {
         var f = new File(file.entry);
         f.read(function(err, contents) {
           if (err) {
