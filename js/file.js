@@ -6,8 +6,8 @@ define(["manos"], function(M) {
     
   */
   
-  var File = function() {
-    this.entry = null;
+  var File = function(entry) {
+    this.entry = entry || null;
   };
   
   File.prototype = {

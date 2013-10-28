@@ -15,8 +15,7 @@ define([
         files = [ files ];
       };
       files.forEach(function(entry) {
-        var f = new File();
-        f.entry = entry;
+        var f = new File(entry);
         f.read(function(err, data) {
           if (err) {
             dialog(err);
@@ -31,8 +30,7 @@ define([
   var openFromLaunchData = function() {
     if (window.launchData && window.launchData.items) {
       window.launchData.items.forEach(function(file) {
-        var f = new File();
-        f.entry = file.entry;
+        var f = new File(file.entry);
         f.read(function(err, contents) {
           if (err) {
             dialog(err);
