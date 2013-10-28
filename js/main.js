@@ -44,7 +44,7 @@ require([
         type: "basic",
         iconUrl: "icon-128.png",
         title: "Caret: Update Available",
-        message: "An update to Caret version " + details.version " is available. Would you like to update and restart now?",
+        message: "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
         buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
       }, function(id) { console.log(id); updateID = id });
     }
