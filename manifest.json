@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "manifest_version": 2,
   "icons": {
     "128": "icon-128.png"
@@ -20,6 +20,7 @@
     "clipboardWrite",
     "contextMenus",
     "storage",
+    "notifications",
     {
       "fileSystem": [ "write", "retainEntries", "directory" ]
     }

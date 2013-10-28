@@ -36,23 +36,24 @@ require([
   command.on("init:restart", setTheme);
   setTheme();
   
+  var updateID = "caret:update";
+  
   chrome.runtime.requestUpdateCheck(function(status, details) {
     if (status == "update_available" && Settings.get("user").promptForUpdates !== false) {
-      dialog(
-        "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
-        [{
-          label: "Restart",
-          value: true
-        }, {
-          label: "Not now",
-          value: false
-        }],
-        function(restart) {
-          if (restart) {
-            chrome.runtime.reload();
-          }
-        }
-      );
+      chrome.notifications.create(updateID, {
+        type: "basic",
+        iconUrl: "icon-128.png",
+        title: "Caret: Update Available",
+        message: "An update to Caret version " + details.version " is available. Would you like to update and restart now?",
+        buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
+      }, function(id) { console.log(id); updateID = id });
+    }
+  });
+  
+  chrome.notifications.onButtonClicked.addListener(function(id, index) {
+    if (id != updateID) return;
+    if (index == 0) {
+      chrome.runtime.reload();
     }
   });
   
