@@ -47,7 +47,7 @@ var openWindow = function() {
 
 var launch = function(launchData) {
   
-  files.push.apply(files, launchData.items);
+  if (launchData && launchData.items) files.push.apply(files, launchData.items);
   //we delay opening the actual window to give multiple file events time to fire
   if (timeout !== null) return;
   timeout = setTimeout(openWindow, 250);
