@@ -107,6 +107,9 @@ define([
         } else {
           self.active = false;
         }
+        if (!self.active) {
+          editor.focus();
+        }
         menubar
           .findAll(".active")
           .filter(function(n) { return n != el })
