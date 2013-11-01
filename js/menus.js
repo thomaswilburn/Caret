@@ -22,6 +22,9 @@ define([
         fragment.appendChild(preset);
         continue;
       }
+      if (entry.minVersion && entry.minVersion > chrome.version) {
+        continue;
+      }
       var li = document.createElement("li");
       li.innerHTML = entry.label;
       if (entry.command) {

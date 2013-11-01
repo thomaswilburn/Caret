@@ -48,18 +48,14 @@
       { "label": "Go To Reference", "command": "palette:open", "argument": "reference" },
       { "label": "Command Palette", "command": "palette:open", "argument": "command" },
       "divider",
-      /* 
-      Planned here:
-        plugins
-        go to line/reference shortcuts
-        fullscreen
-        build system via NaCl
-      "divider",
-      */
       { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
       { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" }
     ]
   },
+  /*{
+    "label": "Project",
+    "minVersion": 32
+  },*/
   {
     "label": "Settings",
     "sub": [

@@ -106,6 +106,7 @@ define([
           var item = menu[i];
           //skip dividers and other special cases
           if (typeof item == "string") continue;
+          if (item.minVersion && item.minVersion > window.navigator.version) continue;
           if (item.command && fuzzyCommand.test(item.palette || item.label)) {
             results.push(item);
           }

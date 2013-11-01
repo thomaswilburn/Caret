@@ -3,6 +3,9 @@ define(["command"], function(command) {
   var defaults = {};
   var local = {};
   
+  //put this here because Settings is pretty early in load process
+  chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] || 0;
+  
   var SyncFile = function(name, c) {
     this.entry = {};
     if (name) {
