@@ -30,24 +30,40 @@ a[target] {
 
 .toolbar {
   flex: 0 0 30px;
-  width: 100%;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
 
 .tabs {
   flex: 0 0 32px;
-  width: 100%;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
 
-#editor {
+.main {
+  display: flex;
   flex-grow: 1;
-  height: 100%;
-  padding-top: 2px;
+  align-items: stretch;
+  align-content: stretch;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+}
+
+.project {
+  display: none;
+  z-index: 99;
+  background: #888;
+  box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .2);
+  
+  &.show {
+    display: block;
+    width: 200px;
+  }
+}
+
+#editor {
+  flex-grow: 1;
+  padding-top: 2px;
 }
 
 .bottom-bar {

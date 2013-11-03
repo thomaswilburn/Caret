@@ -60,6 +60,7 @@ define([
   var ProjectManager = function() {
     this.directories = [];
     this.tabMap = {};
+    this.expanded = {};
   };
   ProjectManager.prototype = {
     element: null,
@@ -68,11 +69,13 @@ define([
       chrome.fileSystem.chooseEntry({ type: "openDirectory" }, function(d) {
         var root = new FSNode(d);
         self.directories.push(root);
-        root.walk(c);
+        root.walk(self.render.bind(self));
       });
     },
     render: function() {
-      //nested LIs with command attributes matching IDs
+      if (!this.element) return;
+      this.element.innerHTML = "";
+      var walker = function() {};
     },
     bindEvents: function() {
       //register for tree expansion, refresh
@@ -88,7 +91,7 @@ define([
   };
   
   var pm = new ProjectManager();
-  pm.addDirectory(function() { console.log(pm) });
+  command.on("project:add-dir", pm.addDirectory.bind(pm));
   command.on("project:open-file", pm.openFile.bind(pm));
 
 });
