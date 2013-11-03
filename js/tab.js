@@ -76,6 +76,8 @@ define(["command", "file"], function(command, File) {
   };
   
   Tab.prototype.drop = function() {
+    //let listeners know, like the project manager
+    this._emit("close");
     if (!this.file || !chrome.fileSystem.retainEntry) return;
     var id = this.file.retain();
     if (!id) return;
