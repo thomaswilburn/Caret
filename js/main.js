@@ -2,6 +2,7 @@ require([
   "command",
   "settings!user",
   "dialog",
+  "projectManager",
   "keys",
   "fileManager",
   "menus",
