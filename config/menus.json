@@ -56,8 +56,10 @@
     "label": "Project",
     "minVersion": 31,
     "sub": [
-      { "label": "Add directory", "command": "project:add-dir" },
-      { "label": "Remove all directories", "command": "project:remove-all" }
+      { "label": "Add Directory", "command": "project:add-dir" },
+      { "label": "Remove all directories", "command": "project:remove-all" },
+      { "label": "Generate Project File", "command": "project:generate" },
+      { "label": "Open Project File", "command": "project:restore-from-file" }
     ]
   },
   {
