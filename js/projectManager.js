@@ -107,24 +107,29 @@ define([
       if (!this.element) return;
       this.element.innerHTML = "";
       if (this.directories.length == 0) {
-        this.element.classList.remove("show");
+        this.element.removeClass("show");
         return;
       }
-      this.element.classList.add("show");
+      var self = this;
+      this.element.addClass("show");
       var walker = function(node) {
         var li = document.createElement("li");
-        var a = document.createElement("a");
-        a.innerHTML = node.label;
-        li.append(a);
         if (node.isDirectory) {
-          li.classList.add("directory");
-          //TODO: Is this open? Add expanded class if so
+          li.innerHTML = node.label;
+          li.setAttribute("data-full-path", node.entry.fullPath);
+          li.addClass("directory");
+          if (self.expanded[node.entry.fullPath]) {
+            li.addClass("expanded");
+          }
           var ul = document.createElement("ul");
           for (var i = 0; i < node.children.length; i++) {
-            ul.appendChild(walker(node.children[i]));
+            ul.append(walker(node.children[i]));
           }
-          li.appendChild(ul);
+          li.append(ul);
         } else {
+          var a = document.createElement("a");
+          a.innerHTML = node.label;
+          li.append(a);
           a.setAttribute("data-node-id", node.id);
         }
         return li;
@@ -142,8 +147,14 @@ define([
       this.bindEvents();
     },
     bindEvents: function() {
+      var self = this;
       this.element.on("click", function(e) {
         var target = e.target;
+        if (target.hasClass("directory")) {
+          target.toggle("expanded");
+          var path = target.getAttribute("data-full-path");
+          self.expanded[path] = !!!self.expanded[path]; 
+        }
       });
     },
     openFile: function(id) {
