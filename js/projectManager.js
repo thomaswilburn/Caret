@@ -3,8 +3,15 @@ define([
   "command",
   "sessions",
   "file",
+  "manos",
   "dom2"
-  ], function(Settings, command, sessions, File) {
+  ], function(Settings, command, sessions, File, M) {
+    
+  /*
+  It's tempting to store projects in local storage, similar to the way that we retain files for tabs, but this would be a mistake. Reading from storage is a pain, because it wants to store a single level deep, and we'll want to alter parts of the setup individually.
+  
+  Instead, we'll retain a single file handle to the project file, which (as JSON) will store the IDs of individual directories, the project-specific settings, and (hopefully, one day) build systems. This also gets us around the issues of restored directory order and constantly updating the retained file list--we'll just update it when the project file is saved.
+  */
 
   var guidCounter = 0;
 
