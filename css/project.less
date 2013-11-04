@@ -1,0 +1,36 @@
+.project {
+  @background: #444;
+  @foreground: white;
+  
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .4);
+  background: @background;
+  
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  li {
+    color: @foreground;
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, .2);
+    overflow: hidden;
+    white-space: no-wrap;
+    padding: 4px;
+    
+    & > ul {
+      display: none;
+    }
+    
+    &.expanded > ul {
+      display: block;
+    }
+  }
+  
+  .directory {
+    color: darken(@foreground, 30%);
+  }
+  
+}

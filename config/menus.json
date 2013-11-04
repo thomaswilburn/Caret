@@ -52,10 +52,14 @@
       { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" }
     ]
   },
-  /*{
+  {
     "label": "Project",
-    "minVersion": 32
-  },*/
+    "minVersion": 31,
+    "sub": [
+      { "label": "Add directory", "command": "project:add-dir" },
+      { "label": "Remove all directories", "command": "project:remove-all" }
+    ]
+  },
   {
     "label": "Settings",
     "sub": [

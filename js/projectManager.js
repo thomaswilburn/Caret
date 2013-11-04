@@ -75,7 +75,33 @@ define([
     render: function() {
       if (!this.element) return;
       this.element.innerHTML = "";
-      var walker = function() {};
+      if (this.directories.length == 0) {
+        this.element.classList.remove("show");
+        return;
+      }
+      this.element.classList.add("show");
+      var walker = function(node) {
+        var li = document.createElement("li");
+        li.innerHTML = node.label;
+        //check the tabMap for expansion, being open
+        //add classes to match
+        if (node.isDirectory) {
+          li.classList.add("directory");
+          var ul = document.createElement("ul");
+          for (var i = 0; i < node.children.length; i++) {
+            ul.appendChild(walker(node.children[i]));
+          }
+          li.appendChild(ul);
+        }
+        return li;
+      };
+      var trees = this.directories.map(walker);
+      var list = document.createElement("ul");
+      trees.forEach(function(dir) {
+        dir.classList.add("expanded");
+        list.appendChild(dir);
+      });
+      this.element.appendChild(list);
     },
     bindEvents: function() {
       //register for tree expansion, refresh
@@ -87,11 +113,17 @@ define([
       //open tab
       //map the pathname in the tabMap
       //register for tab close event
+    },
+    removeAllDirectories: function() {
+      this.directories = [];
+      this.render();
     }
   };
   
   var pm = new ProjectManager();
+  pm.element = document.find(".project");
   command.on("project:add-dir", pm.addDirectory.bind(pm));
+  command.on("project:remove-all", pm.removeAllDirectories.bind(pm));
   command.on("project:open-file", pm.openFile.bind(pm));
 
 });
