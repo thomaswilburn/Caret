@@ -29,10 +29,10 @@ define([
       span.setAttribute("title", tab.fileName);
       span.className = "tab";
       if (tab === current) {
-        span.classList.add("active");
+        span.addClass("active");
       }
       if (tab.animationClass) {
-        span.classList.add(tab.animationClass);
+        span.addClass(tab.animationClass);
       }
       tab.animationClass = "";
       span.innerHTML = tab.fileName + (tab.modified ? " &bull;" : "");
@@ -46,7 +46,7 @@ define([
     });
     setTimeout(function() {
       //wait for render before triggering the enter animation
-      tabContainer.findAll(".enter").forEach(function(span) { span.classList.remove("enter") });
+      tabContainer.findAll(".enter").forEach(function(span) { span.removeClass("enter") });
     });
     setRetained();
   };
@@ -222,7 +222,7 @@ define([
       if (!e.target.matches(".tab")) return;
       e.target.style.opacity = .4;
       setTimeout(function() {
-        e.target.classList.add("dragging");
+        e.target.addClass("dragging");
       }, 50);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("application/x-tab-id", e.target.getAttribute("argument"));
@@ -230,7 +230,7 @@ define([
       draggedTab.ondragend = function() {
         draggedTab = null;
         e.target.style.opacity = null;
-        e.target.classList.remove("dragging");
+        e.target.removeClass("dragging");
       };
     });
     tabContainer.on("dragover", function(e) { 
@@ -239,11 +239,11 @@ define([
     });
     tabContainer.on("dragenter", function(e) {
       if (!e.target.matches(".tab")) return;
-      e.target.classList.add("hovering");
+      e.target.addClass("hovering");
     });
     tabContainer.on("dragleave", function(e) {
       if (!e.target.matches(".tab")) return;
-      e.target.classList.remove("hovering");
+      e.target.removeClass("hovering");
     });
     tabContainer.on("drop", function(e) {
       if (!draggedTab) return;

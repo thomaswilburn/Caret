@@ -33,7 +33,7 @@ el.remove = function() {
     this.parentElement.removeChild(this);
 };
 
-el.append = function(element) {
+el.append = frag.append = function(element) {
     if (typeof element == "string") {
         this.innerHTML += element;
     } else {
@@ -74,6 +74,22 @@ el.css = function(style, one) {
         }
         this.style[key] = val;
     }
+};
+
+el.addClass = function(name) {
+  this.classList.add(name);
+};
+
+el.removeClass = function(name) {
+  this.classList.remove(name);
+};
+
+el.toggle = function(name) {
+  this.classList.toggle(name);
+};
+
+el.hasClass = function(name) {
+  return this.classList.contains(name);
 }
 
 })();

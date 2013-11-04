@@ -279,11 +279,11 @@ define([
       this.commandMode = mode == "command";
       this.input.value = modes[mode] || "";
       this.render();
-      this.element.classList.add("active");
+      this.element.addClass("active");
       this.input.focus();
     },
     deactivate: function() {
-      this.element.classList.remove("active");
+      this.element.removeClass("active");
     },
     navigateList: function(interval) {
       this.selected = (this.selected + interval) % this.results.length;
@@ -306,9 +306,9 @@ define([
         text = text.replace("%SUB%", r.sublabel || "")
         element.innerHTML = text;
         if (i == self.selected) {
-          element.classList.add("current");
+          element.addClass("current");
         }
-        self.resultList.appendChild(element);
+        self.resultList.append(element);
       });
     }
   };

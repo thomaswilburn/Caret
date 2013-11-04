@@ -19,7 +19,7 @@ define([
             preset = document.createElement("hr");
             break;
         }
-        fragment.appendChild(preset);
+        fragment.append(preset);
         continue;
       }
       if (entry.minVersion && entry.minVersion > chrome.version) {
@@ -45,10 +45,10 @@ define([
         }
         var ul = document.createElement("ul");
         ul.className = "menu";
-        ul.appendChild(walker(entry.sub, depth + 1));
-        li.appendChild(ul);
+        ul.append(walker(entry.sub, depth + 1));
+        li.append(ul);
       }
-      fragment.appendChild(li);
+      fragment.append(li);
     }
     return fragment;
   };
@@ -96,7 +96,7 @@ define([
       var cfg = Settings.get("menus");
       var elements = walker(cfg, 0);
       this.element.innerHTML = "";
-      this.element.appendChild(elements);
+      this.element.append(elements);
     },
     bindEvents: function() {
       var self = this;
@@ -104,8 +104,8 @@ define([
       menubar.addEventListener("click", function(e) {
         menubar.focus();
         var el = e.target;
-        if (el.classList.contains("top")) {
-          el.classList.toggle("active");
+        if (el.hasClass("top")) {
+          el.toggle("active");
           self.active = !self.active;
         } else {
           self.active = false;
@@ -116,18 +116,18 @@ define([
         menubar
           .findAll(".active")
           .filter(function(n) { return n != el })
-          .forEach(function(n) { n.classList.remove("active") });
+          .forEach(function(n) { n.removeClass("active") });
       });
       menubar.addEventListener("mousemove", function(e) {
         var el = e.target;
-        if (el.classList.contains("top") && self.active) {
+        if (el.hasClass("top") && self.active) {
           self.deactivate();
-          el.classList.add("active");
+          el.addClass("active");
         }
       });
     },
     deactivate: function() {
-      this.element.findAll(".active").forEach(function(node) { node.classList.remove("active") });
+      this.element.findAll(".active").forEach(function(node) { node.removeClass("active") });
     }
   };
   
