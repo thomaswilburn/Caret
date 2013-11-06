@@ -59,8 +59,9 @@
       { "label": "Add Directory", "command": "project:add-dir" },
       { "label": "Remove All Directories", "command": "project:remove-all" },
       { "label": "Refresh Directory", "command": "project:refresh-dir" },
-      { "label": "Generate/Update Project File", "command": "project:generate" }
-      //{ "label": "Open Project File", "command": "project:restore-from-file" }
+      { "label": "Generate/Update Project File", "command": "project:generate" },
+      { "label": "Open Project File", "command": "project:open" },
+      { "label": "Clear Project", "command": "project:clear" }
     ]
   },
   {

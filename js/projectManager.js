@@ -85,7 +85,7 @@ define([
         self.projectFile = new File();
         self.projectFile.restore(data.retainedProject, function(err, file) {
           if (err) {
-            return chrome.storage.local.clear("retainedProject");
+            return chrome.storage.local.remove("retainedProject");
           }
           file.read(function(err, data) {
             if (err) return;
@@ -256,6 +256,14 @@ define([
           self.render();
         }
       );
+    },
+    clearProject: function() {
+      console.log("clearing");
+      this.projectFile = null;
+      this.directories = [];
+      this.project = {};
+      chrome.storage.local.remove("retainedProject");
+      this.render();
     }
   };
   
@@ -265,5 +273,7 @@ define([
   command.on("project:generate", pm.generateProject.bind(pm));
   command.on("project:open-file", pm.openFile.bind(pm));
   command.on("project:refresh-dir", pm.refresh.bind(pm));
+  command.on("project:open", pm.openProjectFile.bind(pm));
+  command.on("project:clear", pm.clearProject.bind(pm));
 
 });
