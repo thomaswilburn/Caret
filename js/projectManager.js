@@ -242,14 +242,23 @@ define([
         var file = this.projectFile = new File();
         file.open("save", function() {
           file.write(json);
-          var id = chrome.fileSystem.retainEntry(file.entry);
+          var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
         });
       }
       return json;
     },
     openProjectFile: function() {
-      
+      var file = new File();
+      var self = this;
+      file.open(function() {
+        file.read(function(err, data) {
+          if (err) return;
+          self.loadProject(data);
+          var id = file.retain();
+          chrome.storage.local.set({retainedProject: id});
+        });
+      });
     },
     loadProject: function(project) {
       var self = this;

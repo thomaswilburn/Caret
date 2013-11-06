@@ -50,11 +50,13 @@ a[target] {
 }
 
 .project {
-  display: none;
+  transition: width .3s;
+  //display: none;
+  width: 0px;
   z-index: 99;
   
   &.show {
-    display: block;
+    //display: block;
     width: 200px;
   }
 }
