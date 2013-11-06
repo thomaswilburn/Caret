@@ -55,7 +55,7 @@ define(["command", "file"], function(command, File) {
         if (c) c();
       });
       self.modified = false;
-      command.fire("session:render")
+      command.fire("session:render");
     };
 
     if (!this.file || as) {

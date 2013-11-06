@@ -45,7 +45,12 @@ define([
   command.on("session:new-file", function() { sessions.addFile() });
   command.on("session:open-file", openFile);
   command.on("session:save-file", function() { sessions.getCurrent().save() });
-  command.on("session:save-file-as", function() { sessions.getCurrent().save(true) });
+  command.on("session:save-file-as", function() { 
+    var tab = sessions.getCurrent();
+    tab.save(true, function() {
+      sessions.setSyntax(tab);
+    });  
+  });
   
   command.on("session:revert-file", function() {
     var tab = sessions.getCurrent();

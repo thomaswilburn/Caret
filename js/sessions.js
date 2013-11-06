@@ -325,6 +325,7 @@ define([
   
   return {
     addFile: addTab,
+    setSyntax: setTabSyntax,
     addDefaultsFile: function(name) {
       Settings.load(name, function() {
         var tab = addTab(Settings.getAsString(name, true));
