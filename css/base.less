@@ -40,7 +40,7 @@ a[target] {
   transform: translateZ(0);
 }
 
-.editing {
+.central {
   display: flex;
   flex-grow: 1;
   align-items: stretch;
@@ -49,16 +49,14 @@ a[target] {
   transform: translateZ(0);
 }
 
-.project {
-  transition: width .3s;
-  //display: none;
-  width: 0px;
-  z-index: 99;
-  
-  &.show {
-    //display: block;
-    width: 200px;
-  }
+.editing {
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
+  align-content: stretch;
+  flex-direction: column;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 #editor {
