@@ -113,7 +113,7 @@ define([
       stack.unshift(tab);
       tabs.push(tab);
     }
-    if (file) {
+    if (file && !file.virtual) {
       file.entry.file(function(f) {
         var loaded = ["Loaded ", f.name, ", ", f.size, " bytes"].join("");
         status.toast(loaded, 2);

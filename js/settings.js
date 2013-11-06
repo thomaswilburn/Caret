@@ -2,6 +2,7 @@ define(["command"], function(command) {
 
   var defaults = {};
   var local = {};
+  var project = {};
   
   //put this here because Settings is pretty early in load process
   chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] || 0;
@@ -94,6 +95,10 @@ define(["command"], function(command) {
       for (var key in custom) {
         original[key] = custom[key];
       }
+      //override settings with project settings
+      for (var key in project) {
+        original[key] = project[key];
+      }
       return original;
     },
     getAsString: function(name, original) {
@@ -140,6 +145,14 @@ define(["command"], function(command) {
       xhr.open("GET", "config/" + name);
       xhr.onload = onload;
       xhr.send();
+    },
+    setProject: function(settings) {
+      project = settings;
+      command.fire("settings:change-local");
+    },
+    clearProject: function() {
+      project = {};
+      command.fire("settings:change-local");
     }
   };
 

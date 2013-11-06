@@ -261,12 +261,16 @@ define([
       });
     },
     loadProject: function(project) {
+      this.clearProject();
       var self = this;
       //project is the JSON from a project file
       if (typeof project == "string") {
         project = JSON.parse(project);
       }
       //assign settings
+      if (project.settings) {
+        Settings.setProject(project.settings);
+      }
       //restore directory entries that can be restored
       M.map(
         project.folders,
@@ -283,10 +287,10 @@ define([
       );
     },
     clearProject: function() {
-      console.log("clearing");
       this.projectFile = null;
       this.directories = [];
       this.project = {};
+      Settings.clearProject();
       chrome.storage.local.remove("retainedProject");
       this.render();
     }
