@@ -114,6 +114,9 @@ define(["manos"], function(M) {
           c("isRestorable() returned false for " + id, null);
         }
       });
+    },
+    getPath: function(c) {
+      chrome.fileSystem.getDisplayPath(this.entry, c);
     }
   };
   
