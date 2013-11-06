@@ -32,6 +32,16 @@
   
   .directory {
     color: darken(@foreground, 30%);
+    position: relative;
+    
+    &:after {
+      content: "▸";
+      margin-left: 6px;
+    }
+  }
+  
+  .expanded > .directory:after {
+    content: "▼";
   }
   
 }

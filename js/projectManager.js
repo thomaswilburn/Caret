@@ -134,10 +134,12 @@ define([
       this.pathMap = {};
       var walker = function(node) {
         var li = document.createElement("li");
+        var a = document.createElement("a");
+        li.append(a);
         if (node.isDirectory) {
-          li.innerHTML = node.label;
-          li.setAttribute("data-full-path", node.entry.fullPath);
-          li.addClass("directory");
+          a.innerHTML = node.label;
+          a.setAttribute("data-full-path", node.entry.fullPath);
+          a.addClass("directory");
           if (self.expanded[node.entry.fullPath]) {
             li.addClass("expanded");
           }
@@ -157,9 +159,7 @@ define([
           li.append(ul);
         } else {
           var path = node.entry.fullPath;
-          var a = document.createElement("a");
           a.innerHTML = node.label;
-          li.append(a);
           a.setAttribute("argument", path);
           a.setAttribute("command", "project:open-file");
           self.pathMap[path] = node;
@@ -183,7 +183,7 @@ define([
       this.element.on("click", function(e) {
         var target = e.target;
         if (target.hasClass("directory")) {
-          target.toggle("expanded");
+          target.parentElement.toggle("expanded");
           var path = target.getAttribute("data-full-path");
           self.expanded[path] = !!!self.expanded[path]; 
         }
@@ -261,7 +261,7 @@ define([
       });
     },
     loadProject: function(project) {
-      this.clearProject();
+      this.clearProject(true);
       var self = this;
       //project is the JSON from a project file
       if (typeof project == "string") {
@@ -286,12 +286,12 @@ define([
         }
       );
     },
-    clearProject: function() {
+    clearProject: function(keepRetained) {
       this.projectFile = null;
       this.directories = [];
       this.project = {};
       Settings.clearProject();
-      chrome.storage.local.remove("retainedProject");
+      if (!keepRetained) chrome.storage.local.remove("retainedProject");
       this.render();
     }
   };
