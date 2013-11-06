@@ -70,11 +70,14 @@ define([
     }
   };
   
-  var ProjectManager = function() {
+  var ProjectManager = function(element) {
     this.directories = [];
-    this.tabMap = {};
+    this.pathMap = {};
     this.expanded = {};
-    this.project = {};
+    this.projectFile = null;
+    if (element) {
+      this.setElement(element)
+    }
   };
   ProjectManager.prototype = {
     element: null,
@@ -112,6 +115,7 @@ define([
       }
       var self = this;
       this.element.addClass("show");
+      this.pathMap = {};
       var walker = function(node) {
         var li = document.createElement("li");
         if (node.isDirectory) {
@@ -122,15 +126,27 @@ define([
             li.addClass("expanded");
           }
           var ul = document.createElement("ul");
+          node.children.sort(function(a, b) {
+            if (a.isDirectory != b.isDirectory) {
+              //sneaky casting trick
+              return b.isDirectory * 1 - a.isDirectory * 1;
+            }
+            if (a.label < b.label) return -1;
+            if (a.label > b.label) return 1;
+            return 0;
+          });
           for (var i = 0; i < node.children.length; i++) {
             ul.append(walker(node.children[i]));
           }
           li.append(ul);
         } else {
+          var path = node.entry.fullPath;
           var a = document.createElement("a");
           a.innerHTML = node.label;
           li.append(a);
-          a.setAttribute("data-node-id", node.id);
+          a.setAttribute("argument", path);
+          a.setAttribute("command", "project:open-file");
+          self.pathMap[path] = node;
         }
         return li;
       };
@@ -157,13 +173,24 @@ define([
         }
       });
     },
-    openFile: function(id) {
-      //used to open files from the sidebar
-      //check in tabMap if it's already open
-      //read file
-      //open tab
-      //map the pathname in the tabMap
-      //register for tab close event
+    openFile: function(path) {
+      var self = this;
+      //walk through existing tabs to see if it's already open
+      var tabs = sessions.getAllTabs();
+      var found = tabs.some(function(tab) {
+        if (tab.file && tab.file.entry && tab.file.entry.fullPath == path) {
+          sessions.setCurrent(tab);
+          return true;
+        }
+      });
+      if (found) return;
+      //otherwise, we open the file and create a new tab
+      var node = this.pathMap[path];
+      if (!node) return;
+      var file = new File(node.entry);
+      file.read(function(err, data) {
+        var tab = sessions.addFile(data, file);
+      })
     },
     openProjectFile: function() {
       //read project file on user request
@@ -180,8 +207,7 @@ define([
     }
   };
   
-  var pm = new ProjectManager();
-  pm.setElement(document.find(".project"));
+  var pm = new ProjectManager(document.find(".project"));
   command.on("project:add-dir", pm.addDirectory.bind(pm));
   command.on("project:remove-all", pm.removeAllDirectories.bind(pm));
   command.on("project:open-file", pm.openFile.bind(pm));
