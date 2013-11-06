@@ -103,44 +103,42 @@ define([
       var failures = [];
       if (data.retained && data.retained.length) {
         //try to restore items in order
-        M.serial(data.retained, function(id, c) {
-          var file = new File();
-          M.chain(
-            //attempt to restore
-            function(next) {
-              file.restore(id, next);
-            },
-            //if able, read it
-            function(err, f, next) {
-              if (err) {
-                console.log(err);
-                failures.push(id);
-                return c();
-              }
-              file.read(next);
-            },
-            //if readable, load the tab
-            function(err, contents) {
+        M.map(
+          data.retained,
+          function(id, i, c) {
+            var file = new File();
+            file.restore(id, function(err) {
               if (err) {
                 failures.push(id);
-              } else {
-                sessions.addFile(contents, file);
+                return c(false);
               }
-              c();
-            }
-          );
-        },
-        //when all files are done, clean out the failures
-        function() {
-          if (!failures.length) return;
-          console.log("Failed to restore: " + failures.join(", "));
-          chrome.storage.local.get("retained", function(data) {
-            if (!data.retained) return;
-            chrome.storage.local.set({
-              retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
+              file.read(function(err, data) {
+                if (err) {
+                  failures.push(id);
+                  return c(false);
+                }
+                c({
+                  value: data,
+                  file: file
+                });
+              })
             });
-          });
-        });
+          },
+          function(restored) {
+            restored = restored.filter(function(d) { return d });
+            for (var i = 0; i < restored.length; i++) {
+              var tab = restored[i];
+              sessions.addFile(tab.value, tab.file);
+            }
+            if (!failures.length) return;
+            chrome.storage.local.get("retained", function(data) {
+              if (!data.retained) return;
+              chrome.storage.local.set({
+                retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
+              });
+            });
+          }
+        );
       }
     });
   };
