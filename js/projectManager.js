@@ -74,10 +74,26 @@ define([
     this.directories = [];
     this.pathMap = {};
     this.expanded = {};
+    this.project = null;
     this.projectFile = null;
     if (element) {
       this.setElement(element)
     }
+    var self = this;
+    chrome.storage.local.get("retainedProject", function(data) {
+      if (data.retainedProject) {
+        self.projectFile = new File();
+        self.projectFile.restore(data.retainedProject, function(err, file) {
+          if (err) {
+            return chrome.storage.local.clear("retainedProject");
+          }
+          file.read(function(err, data) {
+            if (err) return;
+            self.loadProject(JSON.parse(data));
+          });
+        });
+      }
+    })
   };
   ProjectManager.prototype = {
     element: null,
@@ -192,24 +208,61 @@ define([
         var tab = sessions.addFile(data, file);
       })
     },
+    generateProject: function() {
+      var project = this.project || {};
+      //everything but "folders" is left as-is
+      //run through all directories, retain them, and add to the structure
+      project.folders = this.directories.map(function(node) {
+        var id = chrome.fileSystem.retainEntry(node.entry);
+        return {
+          retained: id,
+          path: node.entry.fullPath
+        };
+      });
+      var json = JSON.stringify(project, null, 2);
+      if (this.projectFile) {
+        this.projectFile.write(json);
+      } else {
+        var file = this.projectFile = new File();
+        file.open("save", function() {
+          file.write(json);
+          var id = chrome.fileSystem.retainEntry(file.entry);
+          chrome.storage.local.set({retainedProject: id});
+        });
+      }
+      return json;
+    },
     openProjectFile: function() {
-      //read project file on user request
-      //call setProject with contents
+      
     },
-    restoreProject: function() {
-      //check local storage for retained project file ID
-      //if exists and is valid, restore this file, then call setProject
-    },
-    setProject: function(project) {
+    loadProject: function(project) {
+      var self = this;
       //project is the JSON from a project file
+      if (typeof project == "string") {
+        project = JSON.parse(project);
+      }
       //assign settings
       //restore directory entries that can be restored
+      M.map(
+        project.folders,
+        function(folder, index, c) {
+          chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
+            var node = new FSNode(entry);
+            self.directories.push(node);
+            node.walk(c);
+          });
+        },
+        function() {
+          self.render();
+        }
+      );
     }
   };
   
   var pm = new ProjectManager(document.find(".project"));
   command.on("project:add-dir", pm.addDirectory.bind(pm));
   command.on("project:remove-all", pm.removeAllDirectories.bind(pm));
+  command.on("project:generate", pm.generateProject.bind(pm));
   command.on("project:open-file", pm.openFile.bind(pm));
   command.on("project:refresh-dir", pm.refresh.bind(pm));
 
