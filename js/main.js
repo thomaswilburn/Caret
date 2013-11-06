@@ -39,17 +39,22 @@ require([
   
   var updateID = "caret:update";
   
-  chrome.runtime.requestUpdateCheck(function(status, details) {
-    if (status == "update_available" && Settings.get("user").promptForUpdates !== false) {
-      chrome.notifications.create(updateID, {
-        type: "basic",
-        iconUrl: "icon-128.png",
-        title: "Caret: Update Available",
-        message: "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
-        buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
-      }, function(id) { console.log(id); updateID = id });
-    }
-  });
+  var checkUpdates = function(isManual) {
+    chrome.runtime.requestUpdateCheck(function(status, details) {
+      if (status == "update_available") {
+        chrome.notifications.create(updateID, {
+          type: "basic",
+          iconUrl: "icon-128.png",
+          title: "Caret: Update Available",
+          message: "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
+          buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
+        }, function(id) { console.log(id); updateID = id });
+      }
+    });
+  };
+  
+  if (Settings.get("user").promptForUpdates !== false) checkUpdates();
+  command.on("app:check-for-updates", checkUpdates);
   
   chrome.notifications.onButtonClicked.addListener(function(id, index) {
     if (id != updateID) return;

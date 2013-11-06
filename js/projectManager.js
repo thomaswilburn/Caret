@@ -289,6 +289,8 @@ define([
         project.folders,
         function(folder, index, c) {
           chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
+            //remember, you can only restore project directories you'd previously opened
+            if (!entry) return c();
             var node = new FSNode(entry);
             self.directories.push(node);
             node.walk(c);
