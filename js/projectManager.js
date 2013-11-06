@@ -4,8 +4,9 @@ define([
   "sessions",
   "file",
   "manos",
+  "dialog",
   "dom2"
-  ], function(Settings, command, sessions, File, M) {
+  ], function(Settings, command, sessions, File, M, dialog) {
     
   /*
   It's tempting to store projects in local storage, similar to the way that we retain files for tabs, but this would be a mistake. Reading from storage is a pain, because it wants to store a single level deep, and we'll want to alter parts of the setup individually.
@@ -83,6 +84,7 @@ define([
     chrome.storage.local.get("retainedProject", function(data) {
       if (data.retainedProject) {
         self.projectFile = new File();
+        self.projectFile.onWrite = self.watchProjectFile.bind(self);
         self.projectFile.restore(data.retainedProject, function(err, file) {
           if (err) {
             return chrome.storage.local.remove("retainedProject");
@@ -240,16 +242,18 @@ define([
         this.projectFile.write(json);
       } else {
         var file = this.projectFile = new File();
+        var watch = this.watchProjectFile.bind(this);
         file.open("save", function() {
           file.write(json);
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
+          file.onWrite = watch;
         });
       }
       return json;
     },
     openProjectFile: function() {
-      var file = new File();
+      var file = this.projectFile = new File();
       var self = this;
       file.open(function() {
         file.read(function(err, data) {
@@ -258,20 +262,29 @@ define([
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
         });
+        file.onWrite = self.watchProjectFile;
+      });
+    },
+    watchProjectFile: function() {
+      var self = this;
+      this.projectFile.read(function(err, data) {
+        if (err) return;
+        self.loadProject(data);
       });
     },
     loadProject: function(project) {
-      this.clearProject(true);
       var self = this;
       //project is the JSON from a project file
       if (typeof project == "string") {
         project = JSON.parse(project);
       }
+      this.project = project;
       //assign settings
       if (project.settings) {
         Settings.setProject(project.settings);
       }
       //restore directory entries that can be restored
+      this.directories = [];
       M.map(
         project.folders,
         function(folder, index, c) {
@@ -285,6 +298,16 @@ define([
           self.render();
         }
       );
+    },
+    editProjectFile: function() {
+      if (!this.projectFile) {
+        return dialog("No project opened.");
+      }
+      var self = this;
+      this.projectFile.read(function(err, data) {
+        if (err) return;
+        sessions.addFile(data, self.projectFile);
+      });
     },
     clearProject: function(keepRetained) {
       this.projectFile = null;
@@ -303,6 +326,7 @@ define([
   command.on("project:open-file", pm.openFile.bind(pm));
   command.on("project:refresh-dir", pm.refresh.bind(pm));
   command.on("project:open", pm.openProjectFile.bind(pm));
+  command.on("project:edit", pm.editProjectFile.bind(pm));
   command.on("project:clear", pm.clearProject.bind(pm));
 
 });

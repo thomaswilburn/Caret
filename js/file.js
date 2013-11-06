@@ -6,8 +6,11 @@ define(["manos"], function(M) {
     
   */
   
+  var noop = function() {};
+  
   var File = function(entry) {
     this.entry = entry || null;
+    this.onWrite = noop;
   };
   
   File.prototype = {
@@ -81,6 +84,7 @@ define(["manos"], function(M) {
               //after truncation, actually write the file
               writer.onwriteend = function() {
                 c(null, self);
+                self.onWrite();
               }
               var blob = new Blob([data]);
               writer.write(blob);
