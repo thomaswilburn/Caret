@@ -31,6 +31,7 @@ define(["editor"], function(editor) {
       },
       toast: function(msg, seconds) {
         external = msg;
+        update();
         if (toastTimeout !== null) {
           clearTimeout(toastTimeout);
         }

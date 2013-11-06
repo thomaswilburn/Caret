@@ -5,9 +5,10 @@ define([
     "file",
     "tab",
     "settings!ace,user",
+    "statusbar",
     "aceBindings"
   ],
-  function(editor, dialog, command, File, Tab, Settings) {
+  function(editor, dialog, command, File, Tab, Settings, status) {
   
   var tabs = [];
   var cfg = Settings.get("ace");
@@ -111,6 +112,12 @@ define([
       tab = new Tab(contents, file);
       stack.unshift(tab);
       tabs.push(tab);
+    }
+    if (file) {
+      file.entry.file(function(f) {
+        var loaded = ["Loaded ", f.name, ", ", f.size, " bytes"].join("");
+        status.toast(loaded, 2);
+      });
     }
     setTabSyntax(tab);
     raiseTab(tab);
