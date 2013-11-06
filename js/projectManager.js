@@ -191,22 +191,38 @@ define([
     },
     openFile: function(path) {
       var self = this;
-      //walk through existing tabs to see if it's already open
-      var tabs = sessions.getAllTabs();
-      var found = tabs.some(function(tab) {
-        if (tab.file && tab.file.entry && tab.file.entry.fullPath == path) {
-          sessions.setCurrent(tab);
-          return true;
-        }
-      });
-      if (found) return;
-      //otherwise, we open the file and create a new tab
+      var found = false;
       var node = this.pathMap[path];
       if (!node) return;
-      var file = new File(node.entry);
-      file.read(function(err, data) {
-        var tab = sessions.addFile(data, file);
-      })
+      //walk through existing tabs to see if it's already open
+      var tabs = sessions.getAllTabs();
+      chrome.fileSystem.getDisplayPath(node.entry, function(path) {
+        //look through the tabs for matching display paths
+        M.map(
+          tabs,
+          function(tab, i, c) {
+            if (!tab.file || tab.file.virtual) {
+              return c(false);
+            }
+            tab.file.getPath(function(p) {
+              if (p == path) {
+                sessions.setCurrent(tab);
+                found = true;
+              }
+              //we don't actually use the result
+              c();
+            });
+          },
+          //if no match found, create a tab
+          function() {
+            if (found) return;
+            var file = new File(node.entry);
+            file.read(function(err, data) {
+              sessions.addFile(data, file);
+            })
+          }
+        );
+      });
     },
     generateProject: function() {
       var project = this.project || {};
