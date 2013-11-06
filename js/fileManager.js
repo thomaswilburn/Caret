@@ -107,12 +107,18 @@ define([
           data.retained,
           function(id, i, c) {
             var file = new File();
-            file.restore(id, function(err) {
-              if (err) {
-                failures.push(id);
-                return c(false);
-              }
-              file.read(function(err, data) {
+            M.chain(
+              function(next) {
+                file.restore(id, next);
+              },
+              function(err, _, next) {
+                if (err) {
+                  failures.push(id);
+                  return c(false);
+                }
+                file.read(next);
+              },
+              function(err, data) {
                 if (err) {
                   failures.push(id);
                   return c(false);
@@ -121,8 +127,8 @@ define([
                   value: data,
                   file: file
                 });
-              })
-            });
+              }
+            );
           },
           function(restored) {
             restored = restored.filter(function(d) { return d });
