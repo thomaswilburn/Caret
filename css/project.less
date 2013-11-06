@@ -35,13 +35,15 @@
     position: relative;
     
     &:after {
-      content: "▸";
+      content: "▶";
       margin-left: 6px;
+      display: inline-block;
     }
   }
   
   .expanded > .directory:after {
-    content: "▼";
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
   }
   
 }

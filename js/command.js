@@ -36,6 +36,7 @@ define(["dom2"], function() {
       var command = e.target.getAttribute("command");
       var arg = e.target.getAttribute("argument");
       fire(command, arg);
+      e.preventDefault();
     }
   });
   
