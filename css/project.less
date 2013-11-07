@@ -6,10 +6,22 @@
   overflow-y: auto;
   box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .4);
   background: @background;
+  z-index: 99;
+  flex-shrink: 0;
+
+  transition: width .3s;
+  //display: none;
+  width: 0px;
   
   a {
     text-decoration: none;
     color: inherit;
+  }
+  
+  &.show {
+    //display: block;
+    width: 200px;
+    padding: 4px 8px;
   }
   
   ul {
