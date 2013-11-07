@@ -53,6 +53,13 @@ define(["manos"], function(M) {
     },
     write: function(data, c) {
       var self = this;
+      if (!this.entry) {
+        //guard against cases where we accidentally write before opening
+        self.open("save", function() {
+          self.write(data, c);
+        });
+        return;
+      }
       c = c || function() {};
       M.chain(
         //check permissions

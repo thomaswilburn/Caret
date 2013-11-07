@@ -80,14 +80,15 @@ define([
     var self = this;
     chrome.storage.local.get("retainedProject", function(data) {
       if (data.retainedProject) {
-        self.projectFile = new File();
-        self.projectFile.onWrite = self.watchProjectFile.bind(self);
-        self.projectFile.restore(data.retainedProject, function(err, file) {
+        var file = new File();
+        file.onWrite = self.watchProjectFile.bind(self);
+        file.restore(data.retainedProject, function(err, f) {
           if (err) {
             return chrome.storage.local.remove("retainedProject");
           }
           file.read(function(err, data) {
             if (err) return;
+            self.projectFile = file;
             self.loadProject(JSON.parse(data));
           });
         });
@@ -250,19 +251,21 @@ define([
       if (this.projectFile) {
         this.projectFile.write(json);
       } else {
-        var file = this.projectFile = new File();
+        var file = new File();
         var watch = this.watchProjectFile.bind(this);
+        var self = this;
         file.open("save", function() {
           file.write(json);
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
           file.onWrite = watch;
+          self.projectFile = file;
         });
       }
       return json;
     },
     openProjectFile: function() {
-      var file = this.projectFile = new File();
+      var file = new File();
       var self = this;
       file.open(function() {
         file.read(function(err, data) {
@@ -270,6 +273,7 @@ define([
           self.loadProject(data);
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
+          self.projectFile = file;
         });
         file.onWrite = self.watchProjectFile;
       });
