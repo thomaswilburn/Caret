@@ -5,18 +5,14 @@ define([
   "file",
   "manos",
   "dialog",
+  "contextMenus",
   "dom2"
-  ], function(Settings, command, sessions, File, M, dialog) {
+  ], function(Settings, command, sessions, File, M, dialog, context) {
     
   /*
   It's tempting to store projects in local storage, similar to the way that we retain files for tabs, but this would be a mistake. Reading from storage is a pain, because it wants to store a single level deep, and we'll want to alter parts of the setup individually.
   
   Instead, we'll retain a single file handle to the project file, which (as JSON) will store the IDs of individual directories, the project-specific settings, and (hopefully, one day) build systems. This also gets us around the issues of restored directory order and constantly updating the retained file list--we'll just update it when the project file is saved.
-  
-  TODO:
-  1. Get open directories, navigation, etc working.
-  2. Enable project file generation, loading, restoration
-  3. Allow projects to create a settings layer
   */
 
   var guidCounter = 0;
@@ -55,6 +51,7 @@ define([
         reader.readEntries(collect);
       };
       var complete = function() {
+        self.children = [];
         for (var i = 0; i < entries.length; i++) {
           var entry = entries[i];
           if (entry.name[0] == "." && entry.isDirectory) continue;
@@ -107,6 +104,12 @@ define([
         root.walk(self.render.bind(self));
       });
     },
+    removeDirectory: function(args) {
+      this.directories = this.directories.filter(function(node) {
+        return node.id != args.id;
+      });
+      this.render();
+    },
     removeAllDirectories: function() {
       this.directories = [];
       this.render();
@@ -134,7 +137,7 @@ define([
       var self = this;
       this.element.addClass("show");
       this.pathMap = {};
-      var walker = function(node) {
+      var walker = function(node, depth) {
         var li = document.createElement("li");
         var a = document.createElement("a");
         li.append(a);
@@ -142,6 +145,12 @@ define([
           a.innerHTML = node.label;
           a.setAttribute("data-full-path", node.entry.fullPath);
           a.addClass("directory");
+          if (depth == 0) {
+            a.href = context.makeURL("root", node.id);
+          } else {
+            a.href = context.makeURL("directory", node.id);
+          }
+          a.setAttribute("command", null);
           if (self.expanded[node.entry.fullPath]) {
             li.addClass("expanded");
           }
@@ -156,7 +165,7 @@ define([
             return 0;
           });
           for (var i = 0; i < node.children.length; i++) {
-            ul.append(walker(node.children[i]));
+            ul.append(walker(node.children[i], depth+1));
           }
           li.append(ul);
         } else {
@@ -330,5 +339,7 @@ define([
   command.on("project:open", pm.openProjectFile.bind(pm));
   command.on("project:edit", pm.editProjectFile.bind(pm));
   command.on("project:clear", pm.clearProject.bind(pm));
+  
+  context.register("Remove from Project", "removeDirectory", "root/:id", pm.removeDirectory.bind(pm));
 
 });
