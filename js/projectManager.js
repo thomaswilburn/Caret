@@ -6,8 +6,9 @@ define([
   "manos",
   "dialog",
   "contextMenus",
+  "editor",
   "dom2"
-  ], function(Settings, command, sessions, File, M, dialog, context) {
+  ], function(Settings, command, sessions, File, M, dialog, context, editor) {
     
   /*
   It's tempting to store projects in local storage, similar to the way that we retain files for tabs, but this would be a mistake. Reading from storage is a pain, because it wants to store a single level deep, and we'll want to alter parts of the setup individually.
@@ -130,6 +131,11 @@ define([
     },
     render: function() {
       if (!this.element) return;
+      //Ace doesn't know about non-window resize events
+      //moving the panel will screw up its dimensions
+      setTimeout(function() {
+        editor.resize();
+      }, 500);
       this.element.innerHTML = "";
       if (this.directories.length == 0) {
         this.element.removeClass("show");
