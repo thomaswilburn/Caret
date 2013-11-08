@@ -138,7 +138,7 @@ define([
       var self = this;
       this.element.addClass("show");
       this.pathMap = {};
-      var walker = function(node, depth) {
+      var walker = function(node) {
         var li = document.createElement("li");
         var a = document.createElement("a");
         li.append(a);
@@ -146,7 +146,7 @@ define([
           a.innerHTML = node.label;
           a.setAttribute("data-full-path", node.entry.fullPath);
           a.addClass("directory");
-          if (depth == 0) {
+          if (self.directories.indexOf(node) != -1) {
             a.href = context.makeURL("root", node.id);
           } else {
             a.href = context.makeURL("directory", node.id);
@@ -166,7 +166,7 @@ define([
             return 0;
           });
           for (var i = 0; i < node.children.length; i++) {
-            ul.append(walker(node.children[i], depth+1));
+            ul.append(walker(node.children[i]));
           }
           li.append(ul);
         } else {
