@@ -172,6 +172,7 @@ define([
         } else {
           var path = node.entry.fullPath;
           a.innerHTML = node.label;
+          a.href = context.makeURL("file", node.entry.fullPath.replace(/[\/\\]/g, "@"));
           a.setAttribute("argument", path);
           a.setAttribute("command", "project:open-file");
           self.pathMap[path] = node;

@@ -38,6 +38,7 @@ define(function() {
         var key = positions[place];
         params[key] = result[place];
       }
+      params.url = url;
       return params;
     }
     return {
