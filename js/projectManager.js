@@ -147,7 +147,7 @@ define([
           a.setAttribute("data-full-path", node.entry.fullPath);
           a.addClass("directory");
           if (self.directories.indexOf(node) != -1) {
-            a.href = context.makeURL("root", node.id);
+            a.href = context.makeURL("root/directory", node.id);
           } else {
             a.href = context.makeURL("directory", node.id);
           }
@@ -159,7 +159,7 @@ define([
           node.children.sort(function(a, b) {
             if (a.isDirectory != b.isDirectory) {
               //sneaky casting trick
-              return b.isDirectory * 1 - a.isDirectory * 1;
+              return ~~b.isDirectory - ~~a.isDirectory;
             }
             if (a.label < b.label) return -1;
             if (a.label > b.label) return 1;
@@ -344,6 +344,6 @@ define([
   command.on("project:edit", pm.editProjectFile.bind(pm));
   command.on("project:clear", pm.clearProject.bind(pm));
   
-  context.register("Remove from Project", "removeDirectory", "root/:id", pm.removeDirectory.bind(pm));
+  context.register("Remove from Project", "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
 
 });
