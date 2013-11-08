@@ -50,7 +50,7 @@
     { "name": "html", "label": "HTML", "extensions": ["html", "htm"] },
     { "name": "java", "label": "Java", "extensions": ["java"] },
     { "name": "javascript", "label": "JavaScript", "extensions": ["js"] },
-    { "name": "json", "label": "JSON", "extensions": ["json"] },
+    { "name": "json", "label": "JSON", "extensions": ["json", "caret-project"] },
     { "name": "julia", "label": "Julia", "extensions": [] },
     { "name": "latex", "label": "LaTeX", "extensions": [] },
     { "name": "less", "label": "LESS", "extensions": ["less"] },
