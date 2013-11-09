@@ -14,7 +14,7 @@ define(["editor", "dom2"], function(editor) {
     
     document.body.append(modal);
 
-    var onKey = function(e) {
+    var onKeyDown = function(e) {
       e.stopPropagation();
       e.stopImmediatePropagation();
       //check escape
@@ -24,8 +24,23 @@ define(["editor", "dom2"], function(editor) {
         if (callback) callback();
       }
     };
+    
+    var onKeyPress = function(e) {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      buttons.forEach(function(options) {
+        if (typeof options == "string") return;
+        if (options.shortcut && options.shortcut == String.fromCharCode(e.charCode)) {
+          modal.remove();
+          editor.focus();
+          if (callback) callback(options.value);
+        }
+      })
+    }
 
-    modal.onkeydown = onKey;
+    modal.onkeydown = onKeyDown;
+    modal.onkeypress = onKeyPress;
 
     var clickButton = function() {
       modal.remove();
