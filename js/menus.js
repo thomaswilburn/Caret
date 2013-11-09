@@ -37,6 +37,9 @@ define([
         }
         if (entry.argument) li.setAttribute("argument", entry.argument);
       }
+      if (entry.retainFocus) {
+        li.addClass("no-refocus");
+      }
       if (entry.sub) {
         if (depth) {
           li.className = "parent";
@@ -110,7 +113,7 @@ define([
         } else {
           self.active = false;
         }
-        if (!self.active) {
+        if (!self.active && !el.hasClass("no-refocus")) {
           editor.focus();
         }
         menubar

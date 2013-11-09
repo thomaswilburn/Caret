@@ -42,11 +42,11 @@
   {
     "label": "Tools",
     "sub": [
-      { "label": "Go To Anything", "command": "palette:open" },
-      { "label": "Go To Line", "command": "palette:open", "argument": "line" },
-      { "label": "Go To Search", "command": "palette:open", "argument": "search" },
-      { "label": "Go To Reference", "command": "palette:open", "argument": "reference" },
-      { "label": "Command Palette", "command": "palette:open", "argument": "command" },
+      { "label": "Go To Anything", "command": "palette:open", "retainFocus": true },
+      { "label": "Go To Line", "command": "palette:open", "argument": "line", "retainFocus": true },
+      { "label": "Go To Search", "command": "palette:open", "argument": "search", "retainFocus": true },
+      { "label": "Go To Reference", "command": "palette:open", "argument": "reference", "retainFocus": true },
+      { "label": "Command Palette", "command": "palette:open", "argument": "command", "retainFocus": true },
       "divider",
       { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
       { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" }
