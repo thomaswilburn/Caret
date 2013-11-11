@@ -5,7 +5,7 @@ define(["command"], function(command) {
   var project = {};
   
   //put this here because Settings is pretty early in load process
-  chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] || 0;
+  chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] * 1 || 0;
   
   var SyncFile = function(name, c) {
     this.entry = {};

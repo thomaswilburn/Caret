@@ -9,7 +9,13 @@ define([
 
   var openFile = function() {
     //have to call chooseEntry manually to support multiple files
-    chrome.fileSystem.chooseEntry({type: "openWritableFile", acceptsMultiple: true }, function(files) {
+    var args = {
+      type: "openWritableFile"
+    };
+    if (chrome.version >= 30) {
+      args.acceptsMultiple = true;
+    }
+    chrome.fileSystem.chooseEntry(args, function(files) {
       //annoying array function test, since it's not apparently a real array
       if (!files.slice) {
         files = [ files ];
