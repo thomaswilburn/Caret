@@ -19,6 +19,7 @@
     { "name": "pastel_on_dark", "label": "Pastels on Dark" },
     { "name": "solarized_light", "label": "Solarized" },
     { "name": "solarized_dark", "label": "Solarized Dark" },
+    { "name": "son_of_obsidian", "label": "Son of Obsidian" },
     { "name": "terminal", "label": "Terminal" },
     { "name": "textmate", "label": "Textmate" },
     { "name": "tomorrow", "label": "Tomorrow" },

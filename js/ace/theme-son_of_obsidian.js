@@ -1,0 +1,11 @@
+/*Son of Obsidian theme ported to Ace by Luciano Paciornick*/
+ace.define(
+    "ace/theme/son_of_obsidian",
+    ["require", "exports", "module", "ace/lib/dom"],
+    function(require, exports, module) {
+        exports.isDark = true;
+        exports.cssClass = "ace-son-of-obsidian";
+        exports.cssText = ".ace-son-of-obsidian .ace_gutter {background: #e8e8e8; color: #333 } .ace-son-of-obsidian .ace_print-margin {width: 1px; background: #e8e8e8 } .ace-son-of-obsidian {background-color: #22272a; color: #F8F8F8 } .ace-son-of-obsidian .ace_cursor {color: rgba(255, 255, 255, 0.65) } .ace-son-of-obsidian .ace_marker-layer .ace_selection {background: #808080 } .ace-son-of-obsidian.ace_multiselect .ace_selection.ace_start {box-shadow: 0 0 3px 0px #22272a; border-radius: 2px } .ace-son-of-obsidian .ace_marker-layer .ace_step {background: rgb(198, 219, 174) } .ace-son-of-obsidian .ace_marker-layer .ace_bracket {margin: -1px 0 0 -1px; border: 1px solid rgba(255, 255, 255, 0.25) } .ace-son-of-obsidian .ace_marker-layer .ace_active-line {background: rgba(103, 140, 177, 0.27) } .ace-son-of-obsidian .ace_gutter-active-line {background-color: rgba(103, 140, 177, 0.27) } .ace-son-of-obsidian .ace_marker-layer .ace_selected-word {border: 1px solid #808080 } .ace-son-of-obsidian .ace_fold {background-color: #93C763; border-color: #F8F8F8 } .ace-son-of-obsidian .ace_constant, .ace-son-of-obsidian .ace_entity.ace_name.ace_tag, .ace-son-of-obsidian .ace_keyword, .ace-son-of-obsidian .ace_storage {color: #93C763 } .ace-son-of-obsidian .ace_constant.ace_numeric, .ace-son-of-obsidian .ace_keyword.ace_other.ace_unit {color: #FFCD22 } .ace-son-of-obsidian .ace_meta.ace_tag, .ace-son-of-obsidian .ace_support {color: #FFFFFF } .ace-son-of-obsidian .ace_invalid.ace_illegal {color: #F8F8F8; background-color: #9D1E15 } .ace-son-of-obsidian .ace_invalid.ace_deprecated {font-style: italic; color: #AB2A1D } .ace-son-of-obsidian .ace_string {color: #FF8000 } .ace-son-of-obsidian .ace_comment {color: #66747B } .ace-son-of-obsidian .ace_entity.ace_other.ace_attribute-name {color: #678CB1 }";
+        var dom = require("../lib/dom");
+        dom.importCssString(exports.cssText, exports.cssClass);
+});
