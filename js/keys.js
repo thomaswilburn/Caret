@@ -11,7 +11,9 @@ define(["settings!keys", "command", "editor", "dom2"], function(Settings, comman
     37: "LEFT",
     39: "RIGHT",
     38: "UP",
-    40: "DOWN"
+    40: "DOWN",
+    187: "=",
+    189: "-"
   };
   
   //need to remove existing Ace conflicts on init:start

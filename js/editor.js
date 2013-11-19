@@ -33,14 +33,33 @@ define(["file", "command", "settings!ace,user", "dom2"], function(File, command,
     editor.setShowPrintMargin(userConfig.showMargin || false);
     editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
     editor.setShowInvisibles(userConfig.showWhitespace || false);
-    editor.container.style.fontSize = userConfig.fontSize ? userConfig.fontSize + "px" : null;
     editor.container.style.fontFamily = userConfig.fontFamily || null;
+    defaultFontSize();
     ace.config.loadModule("ace/ext/language_tools", function() {
       editor.setOptions({
         enableBasicAutocompletion: userConfig.autocomplete
       });
     });
   };
+  
+  var defaultFontSize = function() {
+    var size = Settings.get("user").fontSize;
+    editor.container.style.fontSize = size ? size + "px" : null;
+  };
+  
+  var adjustFontSize = function(delta) {
+    var current = editor.container.style.fontSize;
+    if (current) {
+      current = current.replace("px", "") * 1;
+    } else {
+      current = Settings.get("user").fontSize;
+    }
+    var adjusted = current + delta;
+    editor.container.style.fontSize = adjusted + "px";
+  }
+  
+  command.on("editor:default-zoom", defaultFontSize);
+  command.on("editor:adjust-zoom", adjustFontSize);
   
   command.on("init:startup", init);
   command.on("init:restart", reset);

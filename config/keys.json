@@ -21,5 +21,8 @@
   "^-m": { "ace": "jumptomatching" },
   "^-M": { "command": "sublime:expand-to-matching" },
   "^-q": { "command": "ace:togglemacro" },
-  "^-Q": { "ace": "replaymacro" }
+  "^-Q": { "ace": "replaymacro" },
+  "^--": { "command": "editor:adjust-zoom", "argument": -1 },
+  "^-=": { "command": "editor:adjust-zoom", "argument": 1 },
+  "^-0": { "command": "editor:default-zoom" }
 }
