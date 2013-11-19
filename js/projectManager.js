@@ -147,6 +147,7 @@ define([
       var walker = function(node) {
         var li = document.createElement("li");
         var a = document.createElement("a");
+        a.setAttribute("tabindex", -1);
         li.append(a);
         if (node.isDirectory) {
           a.innerHTML = node.label;
