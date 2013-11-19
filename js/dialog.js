@@ -17,6 +17,9 @@ define(["editor", "dom2"], function(editor) {
     var onKeyDown = function(e) {
       e.stopPropagation();
       e.stopImmediatePropagation();
+      if (e.ctrlKey || e.metaKey || e.shiftKey) {
+        e.preventDefault();
+      }
       //check escape
       if (e.keyCode == 27) {
         modal.remove();
@@ -44,8 +47,12 @@ define(["editor", "dom2"], function(editor) {
 
     var clickButton = function() {
       modal.remove();
-      var value = JSON.parse(this.value);
-      if (callback) callback(value);
+      try {
+        var value = JSON.parse(this.value);
+        if (callback) callback(value);
+      } catch (err) {
+        //do nothing
+      }
       editor.focus();
     };
 
