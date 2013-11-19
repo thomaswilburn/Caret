@@ -31,7 +31,11 @@ define(["editor", "dom2"], function(editor) {
     var onKeyPress = function(e) {
       e.stopPropagation();
       e.stopImmediatePropagation();
-      e.preventDefault();
+      //allow Enter to trigger clicks
+      console.log(e.keyCode);
+      if (e.keyCode != 13) {
+        e.preventDefault();
+      }
       buttons.forEach(function(options) {
         if (typeof options == "string") return;
         if (options.shortcut && options.shortcut == String.fromCharCode(e.charCode)) {
