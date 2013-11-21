@@ -2,11 +2,10 @@
   @background: #444;
   @foreground: white;
   
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
   box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .4);
   background: @background;
-  z-index: 99;
   flex-shrink: 0;
 
   transition: width .3s;
@@ -22,6 +21,7 @@
   a {
     text-decoration: none;
     color: inherit;
+    white-space: nowrap;
   }
   
   ul {
@@ -35,11 +35,11 @@
     text-shadow: -1px -1px 1px rgba(0, 0, 0, .2);
     overflow: hidden;
     white-space: no-wrap;
-    padding: 4px;
+    padding: 4px 0px;
     
     & > ul {
       display: none;
-      padding-left: 4px;
+      padding-left: 6px;
     }
     
     &.expanded > ul {

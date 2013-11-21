@@ -92,6 +92,10 @@ define([
   var Menu = function() {
     this.element = document.find(".toolbar");
     this.active = false;
+    //input serves to track focus
+    this.input = document.createElement("input");
+    this.input.style.width = this.input.style.height = "0px";
+    document.body.append(this.input);
     this.bindEvents();
   }
   Menu.prototype = {
@@ -105,7 +109,7 @@ define([
       var self = this;
       var menubar = this.element;
       menubar.addEventListener("click", function(e) {
-        menubar.focus();
+        self.input.focus();
         var el = e.target;
         if (el.hasClass("top")) {
           el.toggle("active");
@@ -128,6 +132,14 @@ define([
           el.addClass("active");
         }
       });
+      this.input.on("blur", function(e) {
+        if (e.relatedTarget == null) return;
+        //handle leaving the menu for something else
+        setTimeout(function() {
+          self.active = false;
+          self.deactivate();
+        });
+      });
     },
     deactivate: function() {
       this.element.findAll(".active").forEach(function(node) { node.removeClass("active") });
@@ -138,11 +150,6 @@ define([
   
   command.on("init:startup", menu.create.bind(menu));
   command.on("init:restart", menu.create.bind(menu));
-
-  editor.on("focus", function() {
-    menu.deactivate();
-    menu.active = false;
-  });
 
   command.on("app:about", function() {
     var content = document.find("#about").content.cloneNode(true).find("div").innerHTML;
