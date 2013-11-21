@@ -24,6 +24,10 @@
     white-space: nowrap;
   }
   
+  a:focus {
+    outline: none;
+  }
+  
   ul {
     margin: 0;
     padding: 0;
@@ -33,7 +37,6 @@
   li {
     color: @foreground;
     text-shadow: -1px -1px 1px rgba(0, 0, 0, .2);
-    overflow: hidden;
     white-space: no-wrap;
     padding: 4px 0px;
     
@@ -51,15 +54,22 @@
     color: darken(@foreground, 30%);
     position: relative;
     
-    &:after {
+    &:before {
       content: "▶";
-      margin-left: 6px;
+      position: absolute;
+      left: -10px;
+      font-size: 75%;
+      opacity: .5;
       display: inline-block;
       transition: all .3s;
     }
   }
   
-  .expanded > .directory:after {
+  .root > .directory:before {
+    content: none;
+  }
+  
+  .expanded > .directory:before {
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
   }

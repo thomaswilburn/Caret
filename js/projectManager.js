@@ -189,6 +189,7 @@ define([
       var trees = this.directories.map(walker);
       var list = document.createElement("ul");
       trees.forEach(function(dir) {
+        dir.classList.add("root");
         dir.classList.add("expanded");
         list.appendChild(dir);
       });
