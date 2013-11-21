@@ -101,6 +101,7 @@ define([
     addDirectory: function(c) {
       var self = this;
       chrome.fileSystem.chooseEntry({ type: "openDirectory" }, function(d) {
+        if (!d) return;
         var root = new FSNode(d);
         self.directories.push(root);
         root.walk(self.render.bind(self));
