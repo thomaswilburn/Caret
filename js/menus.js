@@ -92,10 +92,6 @@ define([
   var Menu = function() {
     this.element = document.find(".toolbar");
     this.active = false;
-    //input serves to track focus
-    this.input = document.createElement("input");
-    this.input.style.width = this.input.style.height = "0px";
-    document.body.append(this.input);
     this.bindEvents();
   }
   Menu.prototype = {
@@ -108,8 +104,14 @@ define([
     bindEvents: function() {
       var self = this;
       var menubar = this.element;
+      var clickElsewhere = function(e) {
+        if (e.target.matches(".toolbar *")) return;
+        self.deactivate();
+        self.active = false;
+        document.body.off("click", clickElsewhere);
+      };
       menubar.addEventListener("click", function(e) {
-        self.input.focus();
+        document.body.on("click", clickElsewhere);
         var el = e.target;
         if (el.hasClass("top")) {
           el.toggle("active");
@@ -131,14 +133,6 @@ define([
           self.deactivate();
           el.addClass("active");
         }
-      });
-      this.input.on("blur", function(e) {
-        if (e.relatedTarget == null) return;
-        //handle leaving the menu for something else
-        setTimeout(function() {
-          self.active = false;
-          self.deactivate();
-        });
       });
     },
     deactivate: function() {
