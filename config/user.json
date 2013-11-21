@@ -18,8 +18,8 @@ make sure you don't have any syntax errors.
 */
 
 {
-  //If the update prompt doesn't always work for you, disable it here.
-  "promptForUpdates": true,
+  //If you want to see the update notification on startup, enable this
+  "promptForUpdates": false,
   
   "defaultTheme": "chrome", //This should be any of the supported Ace themes
   /*
