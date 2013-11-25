@@ -6,7 +6,8 @@ require([
   "keys",
   "fileManager",
   "menus",
-  "palette"
+  "palette",
+  "api"
   ], function(command, Settings, dialog) {
   
   var frame = chrome.app.window.current();

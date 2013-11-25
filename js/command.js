@@ -8,11 +8,12 @@ define(["dom2"], function() {
   
   var commands = {};
   
-  var fire = function(command, argument) {
+  //commands can pass a callback, although most don't respond that way
+  var fire = function(command, argument, callback) {
     if (!commands[command]) return;
     var registry = commands[command].slice();
     registry.forEach(function(entry) {
-        entry.callback.apply(entry.scope || null, argument instanceof Array ? argument : [argument] );
+        entry.callback.apply(entry.scope || null, argument instanceof Array ? argument : [argument], callback);
     });
   }
   
