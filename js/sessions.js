@@ -208,13 +208,13 @@ define([
   
   var ctrl = false;
   
-  var switchTab = function() {
+  var switchTab = function(arg) {
     if (!ctrl) {
       ctrl = true;
       stackOffset = 0;
       document.body.on("keyup", watchCtrl);
     }
-    stackOffset = (stackOffset + 1) % stack.length;
+    stackOffset = (stackOffset + (parseInt(arg,10)||1)) % stack.length;
     raiseTab(stack[stackOffset]);
   };
   
