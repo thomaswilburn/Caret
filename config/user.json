@@ -55,7 +55,8 @@ make sure you don't have any syntax errors.
     xcode
   */
   "uiTheme": "light", //dark or light, your pick
-  "cursor": "slim", //"ace", "slim", "smooth", "wide"
+  "cursor": "slim", //"ace", "slim", "smooth", "wide",
+  "highlightLine": false,
   
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
   "indentation": 2, //indentation size

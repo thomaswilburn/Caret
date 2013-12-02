@@ -104,6 +104,7 @@ define(["command", "editor", "statusbar", "settings!user"], function(command, ed
     editor.commands.bindKey("Ctrl-Shift-P", null);
     
     //filter some Ace commands for UI purposes
+    
     var isRecording = false;
     command.on("ace:togglemacro", function() {
       isRecording = !isRecording;
@@ -114,6 +115,10 @@ define(["command", "editor", "statusbar", "settings!user"], function(command, ed
       } else {
         status.clearMessage();
       }
-    })
+    });
+    
+    command.on("editor:insert", function(text) {
+      editor.insert(text);
+    });
 
 });

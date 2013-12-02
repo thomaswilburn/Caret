@@ -1,6 +1,9 @@
 define(["command", "settings!api"], function(command, Settings) {
   //handles sending custom messages based on Caret commands (builds, plugins, etc)
   var targets = Settings.get("api");
+  command.on("init:restart", function() {
+    targets = Settings.get("api");
+  });
   
   command.on("api:execute", function(id) {
     if (!id in targets) return;
@@ -8,9 +11,6 @@ define(["command", "settings!api"], function(command, Settings) {
     chrome.runtime.sendMessage(config.id, config.message);
   });
   
-  command.on("init:restart", function() {
-    targets = Settings.get("api");
-  })
   
   //External apps can send messages by matching Caret's command/argument config objects
   chrome.runtime.onMessageExternal.addListener(function(message, sender, c) {
