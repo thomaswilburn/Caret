@@ -27,8 +27,8 @@ chrome.runtime.onInstalled.addListener(function(e) {
     count: 0,
     notification: true,
     openWhenComplete: false,
+    openFunction: openWindow;
     errorURL: null,
-    openWindow_: null,
     noop: function() {},
     start: function() {
       this.count++;
@@ -47,7 +47,6 @@ chrome.runtime.onInstalled.addListener(function(e) {
         clearTimeout(pending);
         this.openWhenComplete = true;
       }
-      this.openWindow_ = openWindow;
       openWindow = function() {
         upgrade.openWhenComplete = true;
       }
@@ -56,7 +55,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
       this.count--;
       if (this.count <= 0) {
         chrome.notifications.clear("caret:upgrading", upgrade.noop);
-        openWindow = upgrade.openWindow_;
+        openWindow = this.openFunction;
         if (upgrade.openWhenComplete) {
           openWindow();
           upgrade.openWhenComplete = false;
@@ -112,6 +111,9 @@ chrome.runtime.onInstalled.addListener(function(e) {
                 };
                 writer.write(new Blob([sync[name]]));
               };
+              writer.onerror = function() {
+                upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
+              }
               writer.truncate(0);
             });
           }, function() {
