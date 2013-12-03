@@ -16,11 +16,13 @@ chrome.runtime.onInstalled.addListener(function(e) {
   
   */
 
-  var process = {
+  //upgrade object tracks async upgrade processes, and handles notifications
+  var upgrade = {
     count: 0,
-    notification: null,
+    notification: true,
     openWhenComplete: false,
     errorURL: null,
+    openWindow_: null,
     noop: function() {},
     start: function() {
       this.count++;
@@ -39,28 +41,34 @@ chrome.runtime.onInstalled.addListener(function(e) {
         clearTimeout(pending);
         this.openWhenComplete = true;
       }
+      this.openWindow_ = openWindow;
+      openWindow = function() {
+        upgrade.openWhenComplete = true;
+      }
     },
     finish: function() {
       this.count--;
       if (this.count <= 0) {
-        chrome.notifications.clear("caret:upgrading", process.noop);
-        if (this.openWhenComplete) {
+        chrome.notifications.clear("caret:upgrading", upgrade.noop);
+        openWindow = upgrade.openWindow_;
+        if (upgrade.openWhenComplete) {
           openWindow();
+          upgrade.openWhenComplete = false;
         }
       }
     },
     fail: function(url) {
-      process.errorURL = url;
+      upgrade.errorURL = url;
       chrome.notifications.create("caret:upgrade-error", {
         type: "basic",
         iconUrl: "icon-128.png",
         title: "Upgrade was unsuccessful",
-        message: "Part of the Caret upgrade process was unsuccessful. Click here for more information.",
+        message: "Part of the Caret upgrade was unsuccessful. Click here for more information.",
         isClickable: true
-      }, process.noop);
+      }, upgrade.noop);
       chrome.notifications.onClicked.addListener(function(id) {
         if (id == "caret:upgrade-error") {
-          window.open(process.errorURL);
+          window.open(upgrade.errorURL, "_blank");
         }
       })
       this.finish();
@@ -68,8 +76,9 @@ chrome.runtime.onInstalled.addListener(function(e) {
   };
 
   //start backing up settings to syncFileSystem
+  //currently not gated on version
   if (true) {
-    process.start();
+    upgrade.start();
     chrome.storage.sync.get(function(sync) {
       var saved = {};
       var check = function() {
@@ -78,11 +87,11 @@ chrome.runtime.onInstalled.addListener(function(e) {
             return;
           }
         }
-        process.finish();
+        upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
       }
       chrome.syncFileSystem.requestFileSystem(function(fs) {
         if (!fs) {
-          return process.fail("http://example.com");
+          return upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
         }
         window.fs = fs;
         var root = fs.root;
@@ -99,7 +108,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
               writer.truncate(0);
             });
           }, function() {
-            process.fail("http://example.com");
+            upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
           });
         }
       });
