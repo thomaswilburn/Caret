@@ -1,3 +1,6 @@
+/*
+For right now, run upgrades each time the background page reloads, just to be safe.
+
 chrome.runtime.onInstalled.addListener(function(e) {
   //this is where we'll track upgrades
   if (!e.previousVersion) return;
@@ -8,6 +11,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
   var build = semver[2];
   
   console.log("Upgrading Caret from version " + e.previousVersion);
+*/
   
   /*
   
@@ -81,6 +85,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
   //currently not gated on version
   if (true) {
     upgrade.start();
+    console.log("Upgrade: migrating settings from storage to syncFileSystem");
     chrome.storage.sync.get(function(sync) {
       var saved = {};
       var check = function() {
@@ -117,4 +122,6 @@ chrome.runtime.onInstalled.addListener(function(e) {
     });
   }
   
+/*
 });
+*/
