@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.2.17",
+  "version": "1.2.18",
   "manifest_version": 2,
   "icons": {
     "128": "icon-128.png"

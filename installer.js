@@ -27,7 +27,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
     count: 0,
     notification: true,
     openWhenComplete: false,
-    openFunction: openWindow;
+    openFunction: openWindow,
     errorURL: null,
     noop: function() {},
     start: function() {
