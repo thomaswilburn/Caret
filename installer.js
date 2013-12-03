@@ -44,6 +44,9 @@ chrome.runtime.onInstalled.addListener(function(e) {
       this.count--;
       if (this.count <= 0) {
         chrome.notifications.clear("caret:upgrading", process.noop);
+        if (this.openWhenComplete) {
+          openWindow();
+        }
       }
     },
     fail: function(url) {
