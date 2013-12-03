@@ -21,6 +21,7 @@
     "contextMenus",
     "storage",
     "notifications",
+    "syncFileSystem",
     {
       "fileSystem": [ "write", "retainEntries", "directory" ]
     }
