@@ -1,22 +1,3 @@
-/*
-
-All settings for Caret are stored in JSON-formatted files. If you open one of
-these files from the menu, then save it, it'll be dropped into Chrome's
-synchronized storage, which means that (theoretically) all your computers will
-get a copy. Comments are allowed, obviously--they'll be stripped out on load.
-
-Your individual settings are shallow-merged with a copy of the defaults 
-(available from Settings > View Defaults). When you first open them, your
-configuration will be a copy of the defaults, but I recommend stripping out
-anything you don't want to set explicitly, so that you can benefit if the
-default settings change in future releases.
-
-If your local file is not valid JSON, the defaults will be used. If your changes
-aren't being accepted, run the file (sans comments) through a JSON checker and
-make sure you don't have any syntax errors.
-
-*/
-
 {
   //If you want to see the update notification on startup, enable this
   "promptForUpdates": false,
