@@ -7,6 +7,8 @@ chrome.runtime.onInstalled.addListener(function(e) {
   var minor = semver[1];
   var build = semver[2];
   
+  console.log("Upgrading Caret from version " + e.previousVersion);
+  
   /*
   
   As with Android database upgrades, we'll perform these as a series of if statements, ordered by increasing
@@ -87,7 +89,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
             return;
           }
         }
-        upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
+        upgrade.finish();
       }
       chrome.syncFileSystem.requestFileSystem(function(fs) {
         if (!fs) {
