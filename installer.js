@@ -48,6 +48,10 @@ chrome.runtime.onInstalled.addListener(function(e) {
         this.openWhenComplete = true;
       }
       openWindow = function() {
+        if (upgrade.count <= 0) {
+          openWindow = upgrade.openFunction;
+          return openWindow();
+        }
         upgrade.openWhenComplete = true;
       }
     },
