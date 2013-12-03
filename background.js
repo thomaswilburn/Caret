@@ -1,5 +1,5 @@
 var mainWindow = null;
-var timeout = null;
+var pending = null;
 var files = [];
 
 var openWindow = function() {
@@ -13,7 +13,7 @@ var openWindow = function() {
     mainWindow.focus();
     mainWindow.drawAttention();
     files = [];
-    timeout = null;
+    pending = null;
     return;
   }
   
@@ -34,7 +34,7 @@ var openWindow = function() {
       mainWindow = null;
     });
     files = [];
-    timeout = null;
+    pending = null;
   });
 }
 
@@ -42,8 +42,8 @@ var launch = function(launchData) {
   
   if (launchData && launchData.items) files.push.apply(files, launchData.items);
   //we delay opening the actual window to give multiple file events time to fire
-  if (timeout !== null) return;
-  timeout = setTimeout(openWindow, 250);
+  if (pending !== null) return;
+  pending = setTimeout(openWindow, 250);
   
 };
 

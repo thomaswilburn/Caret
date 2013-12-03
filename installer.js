@@ -1,4 +1,4 @@
-//chrome.runtime.onInstalled.addListener(function(e) {
+chrome.runtime.onInstalled.addListener(function(e) {
   //this is where we'll track upgrades
   if (!e.previousVersion) return;
   
@@ -18,18 +18,49 @@
 
   var process = {
     count: 0,
+    notification: null,
+    openWhenComplete: false,
+    errorURL: null,
+    noop: function() {},
     start: function() {
       this.count++;
-      //show notification while upgrading
+      if (!this.notification) {
+        chrome.notifications.create("caret:upgrading", {
+          type: "basic",
+          iconUrl: "icon-128.png",
+          title: "Caret: Upgrading...",
+          message: "Please wait while Caret upgrades its background files."
+        }, function(id) {
+          this.notification = id;
+        });
+        this.notification = true;
+      }
+      if (pending) {
+        clearTimeout(pending);
+        this.openWhenComplete = true;
+      }
     },
     finish: function() {
       this.count--;
-      if (this.count == 0) {
-        console.log("All upgrades complete");
-        //hide notification when all processes finish.
-        //if a window open request was filed, call openWindow and clear the flag
-        //can use timeout as the flag, if we want, but should probably rename as pending
+      if (this.count <= 0) {
+        chrome.notifications.clear("caret:upgrading", process.noop);
       }
+    },
+    fail: function(url) {
+      process.errorURL = url;
+      chrome.notifications.create("caret:upgrade-error", {
+        type: "basic",
+        iconUrl: "icon-128.png",
+        title: "Upgrade was unsuccessful",
+        message: "Part of the Caret upgrade process was unsuccessful. Click here for more information.",
+        isClickable: true
+      }, process.noop);
+      chrome.notifications.onClicked.addListener(function(id) {
+        if (id == "caret:upgrade-error") {
+          window.open(process.errorURL);
+        }
+      })
+      this.finish();
     }
   };
 
@@ -40,7 +71,6 @@
       var saved = {};
       var check = function() {
         for (var name in sync) {
-          console.log(name);
           if (!(name in saved)) {
             return;
           }
@@ -48,23 +78,29 @@
         process.finish();
       }
       chrome.syncFileSystem.requestFileSystem(function(fs) {
+        if (!fs) {
+          return process.fail("http://example.com");
+        }
         window.fs = fs;
         var root = fs.root;
         for (var name in sync) {
           root.getFile(name, {create: true}, function(f) {
             f.createWriter(function(writer) {
               writer.onwriteend = function() {
-                writer.onwriteend = check;
+                writer.onwriteend = function() {
+                  saved[f.name] = f;
+                  check();
+                };
                 writer.write(new Blob([sync[name]]));
               };
               writer.truncate(0);
             });
           }, function() {
             process.fail("http://example.com");
-          };
+          });
         }
       });
     });
   }
   
-//});
+});
