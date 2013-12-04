@@ -47,10 +47,11 @@ chrome.runtime.onInstalled.addListener(function(e) {
         pending = null;
         this.openWhenComplete = true;
       }
-      upgrading = true;
+      //upgrading = true;
     },
     finish: function() {
       this.count--;
+      console.log("finishing", this, this.count);
       if (this.count <= 0) {
         chrome.notifications.clear("caret:upgrading", this.noop);
         upgrading = false;
@@ -70,24 +71,27 @@ chrome.runtime.onInstalled.addListener(function(e) {
         message: "Part of the Caret upgrade was unsuccessful. Click here for more information.",
         isClickable: true
       }, this.noop);
-      chrome.notifications.onClicked.addListener(function(id) {
-        if (id == "caret:upgrade-error") {
-          window.open(upgrade.errorURL, "_blank");
-        }
-      });
     }
   };
+  
+  chrome.notifications.onClicked.addListener(function(id) {
+    if (id == "caret:upgrade-error") {
+      window.open(upgrade.errorURL, "_blank");
+    }
+  });
 
   //start backing up settings to syncFileSystem
   //currently not gated on version
   if (true) {
-    upgrade.start();
-    console.log("Upgrade: migrating settings from storage to syncFileSystem");
     chrome.storage.sync.get(function(sync) {
+      upgrade.start();
+      console.log("Upgrade: migrating settings from storage to syncFileSystem");
+      var man = "https://gist.github.com/thomaswilburn/7773707";
       var saved = {};
       var check = function() {
         for (var name in sync) {
           if (!(name in saved)) {
+            console.log("failed migration", name);
             return;
           }
         }
@@ -95,7 +99,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
       }
       chrome.syncFileSystem.requestFileSystem(function(fs) {
         if (!fs) {
-          return upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
+          return upgrade.fail(man);
         }
         window.fs = fs;
         var root = fs.root;
@@ -105,17 +109,20 @@ chrome.runtime.onInstalled.addListener(function(e) {
               writer.onwriteend = function() {
                 writer.onwriteend = function() {
                   saved[f.name] = f;
+                  console.log("wrote file", f.name);
                   check();
                 };
                 writer.write(new Blob([sync[name]]));
               };
               writer.onerror = function() {
-                upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
+                console.log("write error", f.name);
+                upgrade.fail(man);
               }
               writer.truncate(0);
             });
           }, function() {
-            upgrade.fail("https://gist.github.com/thomaswilburn/7773707");
+            console.log("getfile error");
+            upgrade.fail(man);
           });
         }
       });
