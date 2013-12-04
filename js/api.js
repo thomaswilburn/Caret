@@ -1,4 +1,8 @@
-define(["command", "settings!api"], function(command, Settings) {
+define([
+    "command",
+    "settings!api"
+  ], function(command, Settings) {
+  
   //handles sending custom messages based on Caret commands (builds, plugins, etc)
   var targets = Settings.get("api");
   command.on("init:restart", function() {

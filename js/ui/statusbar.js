@@ -1,4 +1,6 @@
-define(["editor"], function(editor) {
+define([
+    "editor"
+  ], function(editor) {
 
     var external = "";
     var element = document.find(".status-text");

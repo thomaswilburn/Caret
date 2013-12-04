@@ -1,4 +1,9 @@
-define(["command", "editor", "statusbar", "settings!user"], function(command, editor, status, Settings) {
+define([
+    "command",
+    "editor",
+    "ui/statusbar",
+    "settings!user"
+  ], function(command, editor, status, Settings) {
 
     var userConfig = Settings.get("user");
     command.on("init:restart", function() {

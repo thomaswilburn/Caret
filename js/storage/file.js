@@ -1,4 +1,6 @@
-define(["manos"], function(M) {
+define([
+    "util/manos"
+  ], function(M) {
   
   /*
   

@@ -1,4 +1,6 @@
-define(["command"], function(command) {
+define([
+    "command"
+  ], function(command) {
 
   var defaults = {};
   var local = {};

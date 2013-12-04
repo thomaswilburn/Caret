@@ -1,9 +1,9 @@
 define([
-  "settings!menus,keys",
-  "editor",
-  "dialog",
-  "command",
-  "dom2"
+    "settings!menus,keys",
+    "editor",
+    "ui/dialog",
+    "command",
+    "util/dom2"
   ], function(Settings, editor, dialog, command) {
   
   var commands = editor.commands.commands;

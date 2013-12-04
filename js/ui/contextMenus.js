@@ -20,11 +20,12 @@ define(function() {
   
   var createRoute = function(route, handler) {
     var parts = route.split("/");
-    var positions = {};
-    parts = parts.map(function(s, i) {
+    var positionMap = {};
+    var position = 1;
+    parts = parts.map(function(s) {
       if (s[0] == ":") {
         //set the key to be used on parsing
-        positions[i] = s.replace(/^:/, "");
+        positionMap[position++] = s.replace(/^:/, "");
         return "*";
       }
       return s.replace(/[\^()\[\]]/, function(match) { return "\\" + match });
@@ -34,8 +35,8 @@ define(function() {
       var result = re.exec(url);
       if (!result) return result;
       var params = {};
-      for (var place in positions) {
-        var key = positions[place];
+      for (var place in positionMap) {
+        var key = positionMap[place];
         params[key] = result[place];
       }
       params.url = url;

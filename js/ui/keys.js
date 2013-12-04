@@ -1,4 +1,9 @@
-define(["settings!keys", "command", "editor", "dom2"], function(Settings, command, editor) {
+define([
+    "settings!keys",
+    "command",
+    "editor",
+    "util/dom2"
+  ], function(Settings, command, editor) {
 
   /*
   Still need to set Sublime keybindings

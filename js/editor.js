@@ -1,4 +1,9 @@
-define(["file", "command", "settings!ace,user", "dom2"], function(File, command, Settings) {
+define([
+    "storage/file",
+    "command",
+    "settings!ace,user",
+    "util/dom2"
+  ], function(File, command, Settings) {
   /*
   Module for loading the editor, adding window resizing and other events. Returns the editor straight from Ace.
   */

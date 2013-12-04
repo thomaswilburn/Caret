@@ -1,4 +1,7 @@
-define(["editor", "dom2"], function(editor) {
+define([
+    "editor",
+    "util/dom2"
+  ], function(editor) {
 
   return function(text, buttons, callback) {
     if (typeof buttons == "function" || typeof buttons == "undefined") {

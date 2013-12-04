@@ -1,4 +1,7 @@
-define(["command", "file"], function(command, File) {
+define([
+    "command",
+    "storage/file"
+  ], function(command, File) {
 
   var EditSession = ace.require("ace/edit_session").EditSession;
   

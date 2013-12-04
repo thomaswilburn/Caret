@@ -1,13 +1,13 @@
 define([
-  "settings!",
-  "command",
-  "sessions",
-  "file",
-  "manos",
-  "dialog",
-  "contextMenus",
-  "editor",
-  "dom2"
+    "settings!",
+    "command",
+    "sessions",
+    "storage/file",
+    "util/manos",
+    "ui/dialog",
+    "ui/contextMenus",
+    "editor",
+    "util/dom2"
   ], function(Settings, command, sessions, File, M, dialog, context, editor) {
     
   /*

@@ -1,10 +1,10 @@
 define([
-  "sessions",
-  "command",
-  "editor",
-  "settings!menus,user",
-  "statusbar",
-  "dom2"
+    "sessions",
+    "command",
+    "editor",
+    "settings!menus,user",
+    "ui/statusbar",
+    "util/dom2"
   ], function(sessions, command, editor, Settings, status) {
     
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;

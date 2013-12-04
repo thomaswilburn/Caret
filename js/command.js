@@ -1,4 +1,6 @@
-define(["dom2"], function() {
+define([
+    "util/dom2"
+  ], function() {
 
   /*
   

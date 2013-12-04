@@ -1,13 +1,13 @@
 require([
-  "command",
-  "settings!user",
-  "dialog",
-  "projectManager",
-  "keys",
-  "fileManager",
-  "menus",
-  "palette",
-  "api"
+    "command",
+    "settings!user",
+    "ui/dialog",
+    "ui/projectManager",
+    "ui/keys",
+    "fileManager",
+    "ui/menus",
+    "ui/palette",
+    "api"
   ], function(command, Settings, dialog) {
   
   var frame = chrome.app.window.current();

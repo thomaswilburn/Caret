@@ -1,10 +1,10 @@
 define([
     "sessions",
-    "file",
-    "dialog",
+    "storage/file",
+    "ui/dialog",
     "command",
     "settings!", //not excited, it just runs as a RequireJS plugin,
-    "manos"
+    "util/manos"
   ], function(sessions, File, dialog, command, Settings, M) {
 
   var openFile = function() {

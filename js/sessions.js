@@ -1,11 +1,11 @@
 define([
     "editor",
-    "dialog",
+    "ui/dialog",
     "command",
-    "file",
+    "storage/file",
     "tab",
     "settings!ace,user",
-    "statusbar",
+    "ui/statusbar",
     "aceBindings"
   ],
   function(editor, dialog, command, File, Tab, Settings, status) {
