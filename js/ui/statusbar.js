@@ -1,6 +1,7 @@
 define([
-    "editor"
-  ], function(editor) {
+    "editor",
+    "command"
+  ], function(editor, command) {
 
     var external = "";
     var element = document.find(".status-text");
@@ -18,7 +19,7 @@ define([
     
     var toastTimeout = null;
     
-    return {
+    var interface = {
       setMessage: function(msg) {
         external = msg;
         if (toastTimeout !== null) {
@@ -44,5 +45,11 @@ define([
         }, seconds ? seconds * 1000 : 2000)
       }
     }
+    
+    command.on("status:set", interface.setMessage);
+    command.on("status:clear", interface.clearMessage);
+    command.on("status:toast", interface.toast);
+    
+    return interface;
 
 });
