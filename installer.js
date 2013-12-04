@@ -1,6 +1,3 @@
-/*
-For right now, run upgrades each time the background page reloads, just to be safe.
-
 chrome.runtime.onInstalled.addListener(function(e) {
   //this is where we'll track upgrades
   if (!e.previousVersion) return;
@@ -11,8 +8,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
   var build = semver[2];
   
   console.log("Upgrading Caret from version " + e.previousVersion);
-*/
-  
+
   /*
   
   As with Android database upgrades, we'll perform these as a series of if statements, ordered by increasing
@@ -22,113 +18,4 @@ chrome.runtime.onInstalled.addListener(function(e) {
   
   */
 
-  //upgrade object tracks async upgrade processes, and handles notifications
-  var upgrade = {
-    count: 0,
-    notification: true,
-    openWhenComplete: false,
-    errorURL: null,
-    noop: function() {},
-    start: function() {
-      this.count++;
-      if (!this.notification) {
-        chrome.notifications.create("caret:upgrading", {
-          type: "basic",
-          iconUrl: "icon-128.png",
-          title: "Caret: Upgrading...",
-          message: "Please wait while Caret upgrades its background files."
-        }, function(id) {
-          this.notification = id;
-        });
-        this.notification = true;
-      }
-      if (pending) {
-        clearTimeout(pending);
-        pending = null;
-        this.openWhenComplete = true;
-      }
-      //upgrading = true;
-    },
-    finish: function() {
-      this.count--;
-      console.log("finishing", this, this.count);
-      if (this.count <= 0) {
-        chrome.notifications.clear("caret:upgrading", this.noop);
-        upgrading = false;
-        if (this.openWhenComplete) {
-          openWindow();
-          this.openWhenComplete = false;
-        }
-      }
-    },
-    fail: function(url) {
-      this.finish();
-      this.errorURL = url;
-      chrome.notifications.create("caret:upgrade-error", {
-        type: "basic",
-        iconUrl: "icon-128.png",
-        title: "Upgrade was unsuccessful",
-        message: "Part of the Caret upgrade was unsuccessful. Click here for more information.",
-        isClickable: true
-      }, this.noop);
-    }
-  };
-  
-  chrome.notifications.onClicked.addListener(function(id) {
-    if (id == "caret:upgrade-error") {
-      window.open(upgrade.errorURL, "_blank");
-    }
-  });
-
-  //start backing up settings to syncFileSystem
-  //currently not gated on version
-  if (true) {
-    chrome.storage.sync.get(function(sync) {
-      upgrade.start();
-      console.log("Upgrade: migrating settings from storage to syncFileSystem");
-      var man = "https://gist.github.com/thomaswilburn/7773707";
-      var saved = {};
-      var check = function() {
-        for (var name in sync) {
-          if (!(name in saved)) {
-            console.log("failed migration", name);
-            return;
-          }
-        }
-        upgrade.finish();
-      }
-      chrome.syncFileSystem.requestFileSystem(function(fs) {
-        if (!fs) {
-          return upgrade.fail(man);
-        }
-        window.fs = fs;
-        var root = fs.root;
-        for (var name in sync) {
-          root.getFile(name, {create: true}, function(f) {
-            f.createWriter(function(writer) {
-              writer.onwriteend = function() {
-                writer.onwriteend = function() {
-                  saved[f.name] = f;
-                  console.log("wrote file", f.name);
-                  check();
-                };
-                writer.write(new Blob([sync[name]]));
-              };
-              writer.onerror = function() {
-                console.log("write error", f.name);
-                upgrade.fail(man);
-              }
-              writer.truncate(0);
-            });
-          }, function() {
-            console.log("getfile error");
-            upgrade.fail(man);
-          });
-        }
-      });
-    });
-  }
-  
-/*
 });
-*/
