@@ -45,6 +45,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
       }
       if (pending) {
         clearTimeout(pending);
+        pending = null;
         this.openWhenComplete = true;
       }
       openWindow = function() {
