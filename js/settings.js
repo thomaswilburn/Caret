@@ -115,7 +115,7 @@ define([
     },
     load: function(name, c) {
       name = name + ".json";
-      if (local[name] || defaults[name]) {
+      if (local[name]) {
         return c();
       }
       
@@ -125,9 +125,7 @@ define([
         return;
       }
       
-      var onload = function() {
-        var raw = this.responseText.replace();
-        defaults[name] = raw;
+      var merge = function() {
         chrome.storage.sync.get(name, function(data) {
           if (data[name]) {
             local[name] = data[name];
@@ -143,9 +141,18 @@ define([
       
       pending[name] = [c]
       
+      console.log(name, defaults[name]);
+      if (defaults[name]) {
+        return merge();
+      }
+      
       var xhr = new XMLHttpRequest();
       xhr.open("GET", "config/" + name);
-      xhr.onload = onload;
+      xhr.onload = function() {
+        var raw = this.responseText.replace();
+        defaults[name] = raw;
+        merge();
+      };
       xhr.send();
     },
     setProject: function(settings) {
@@ -169,7 +176,6 @@ define([
     //reload anything that's been used
     var keys = Object.keys(defaults).map(function(n) { return n.replace(".json", "")});
     local = {};
-    defaults = {};
     var completed = 0;
     keys.forEach(function(key) {
       Settings.load(key, function() {
