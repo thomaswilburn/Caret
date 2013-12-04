@@ -27,7 +27,6 @@ chrome.runtime.onInstalled.addListener(function(e) {
     count: 0,
     notification: true,
     openWhenComplete: false,
-    openFunction: openWindow,
     errorURL: null,
     noop: function() {},
     start: function() {
@@ -48,40 +47,34 @@ chrome.runtime.onInstalled.addListener(function(e) {
         pending = null;
         this.openWhenComplete = true;
       }
-      openWindow = function() {
-        if (upgrade.count <= 0) {
-          openWindow = upgrade.openFunction;
-          return openWindow();
-        }
-        upgrade.openWhenComplete = true;
-      }
+      upgrading = true;
     },
     finish: function() {
       this.count--;
       if (this.count <= 0) {
-        chrome.notifications.clear("caret:upgrading", upgrade.noop);
-        openWindow = this.openFunction;
-        if (upgrade.openWhenComplete) {
+        chrome.notifications.clear("caret:upgrading", this.noop);
+        upgrading = false;
+        if (this.openWhenComplete) {
           openWindow();
-          upgrade.openWhenComplete = false;
+          this.openWhenComplete = false;
         }
       }
     },
     fail: function(url) {
-      upgrade.errorURL = url;
+      this.finish();
+      this.errorURL = url;
       chrome.notifications.create("caret:upgrade-error", {
         type: "basic",
         iconUrl: "icon-128.png",
         title: "Upgrade was unsuccessful",
         message: "Part of the Caret upgrade was unsuccessful. Click here for more information.",
         isClickable: true
-      }, upgrade.noop);
+      }, this.noop);
       chrome.notifications.onClicked.addListener(function(id) {
         if (id == "caret:upgrade-error") {
           window.open(upgrade.errorURL, "_blank");
         }
-      })
-      this.finish();
+      });
     }
   };
 

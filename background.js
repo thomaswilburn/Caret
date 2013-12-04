@@ -1,5 +1,6 @@
 var mainWindow = null;
 var pending = null;
+var upgrading = false;
 var files = [];
 
 var openWindow = function() {
@@ -43,6 +44,7 @@ var launch = function(launchData) {
   if (launchData && launchData.items) files.push.apply(files, launchData.items);
   //we delay opening the actual window to give multiple file events time to fire
   if (pending !== null) return;
+  if (upgrading) return;
   pending = setTimeout(openWindow, 250);
   
 };
