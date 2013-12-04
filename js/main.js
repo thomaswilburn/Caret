@@ -7,7 +7,8 @@ require([
     "fileManager",
     "ui/menus",
     "ui/palette",
-    "api"
+    "api",
+    "storage/syncfile"
   ], function(command, Settings, dialog) {
   
   var frame = chrome.app.window.current();
@@ -43,7 +44,7 @@ require([
           title: "Caret: Update Available",
           message: "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
           buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
-        }, function(id) { console.log(id); updateID = id });
+        }, function(id) { updateID = id });
       }
     });
   };

@@ -1,6 +1,8 @@
 define([
-    "command"
-  ], function(command) {
+    "command",
+    "storage/syncFS",
+    "storage/syncfile"
+  ], function(command, sync, SyncFile) {
 
   var defaults = {};
   var local = {};
@@ -8,40 +10,6 @@ define([
   
   //put this here because Settings is pretty early in load process
   chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] * 1 || 0;
-  
-  var SyncFile = function(name, c) {
-    this.entry = {};
-    if (name) {
-      this.open(name, c);
-    }
-    this.virtual = true;
-  };
-  SyncFile.prototype = {
-    name: "",
-    open: function(name, c) {
-      this.name = name;
-      this.entry.name = name;
-      if (c) {
-        c(this);
-      }
-    },
-    read: function(c) {
-      var name = this.name;
-      chrome.storage.sync.get(this.name, function(data) {
-        c(null, data[name]);
-      });
-    },
-    write: function(content, c) {
-      var data = {};
-      data[this.name] = content;
-      var self = this;
-      chrome.storage.sync.set(data, function() {
-        command.fire("settings:change-local");
-        if (c) c(null, self);
-      });
-    },
-    retain: function() { return false; }
-  };
   
   var clone = function(item) {
     var cloneArray = function(a) {
@@ -126,9 +94,9 @@ define([
       }
       
       var merge = function() {
-        chrome.storage.sync.get(name, function(data) {
-          if (data[name]) {
-            local[name] = data[name];
+        sync.get(name, function(data) {
+          if (data) {
+            local[name] = data;
           } else {
             local[name] = defaults[name];
           }
@@ -167,7 +135,7 @@ define([
   command.on("settings:delete-local", function(key) {
     key += ".json";
     local[key] = defaults[key];
-    chrome.storage.sync.remove(key);
+    sync.remove(key);
     command.fire("init:restart");
   });
 
