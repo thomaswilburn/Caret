@@ -141,7 +141,6 @@ define([
       
       pending[name] = [c]
       
-      console.log(name, defaults[name]);
       if (defaults[name]) {
         return merge();
       }
