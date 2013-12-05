@@ -48,7 +48,7 @@ define([
     }
   };
   
-  command.on("session:new-file", function() { sessions.addFile() });
+  command.on("session:new-file", function(content) { sessions.addFile(content) });
   command.on("session:open-file", openFile);
   command.on("session:save-file", function() { sessions.getCurrent().save() });
   command.on("session:save-file-as", function() { 
