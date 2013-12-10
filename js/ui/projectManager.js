@@ -11,9 +11,16 @@ define([
   ], function(Settings, command, sessions, File, M, dialog, context, editor) {
     
   /*
-  It's tempting to store projects in local storage, similar to the way that we retain files for tabs, but this would be a mistake. Reading from storage is a pain, because it wants to store a single level deep, and we'll want to alter parts of the setup individually.
+  It's tempting to store projects in local storage, similar to the way that we 
+  retain files for tabs, but this would be a mistake. Reading from storage is a 
+  pain, because it wants to store a single level deep, and we'll want to alter 
+  parts of the setup individually.
   
-  Instead, we'll retain a single file handle to the project file, which (as JSON) will store the IDs of individual directories, the project-specific settings, and (hopefully, one day) build systems. This also gets us around the issues of restored directory order and constantly updating the retained file list--we'll just update it when the project file is saved.
+  Instead, we'll retain a single file handle to the project file, which (as 
+  JSON) will store the IDs of individual directories, the project-specific 
+  settings, and (hopefully, one day) build systems. This also gets us around 
+  the issues of restored directory order and constantly updating the retained 
+  file list--we'll just update it when the project file is saved.
   */
 
   var guidCounter = 0;
@@ -138,13 +145,13 @@ define([
         editor.resize();
       }, 500);
       this.element.innerHTML = "";
+      this.pathMap = {};
       if (this.directories.length == 0) {
         this.element.removeClass("show");
         return;
       }
       var self = this;
       this.element.addClass("show");
-      this.pathMap = {};
       var walker = function(node) {
         var li = document.createElement("li");
         var a = document.createElement("a");
@@ -341,6 +348,9 @@ define([
       Settings.clearProject();
       if (!keepRetained) chrome.storage.local.remove("retainedProject");
       this.render();
+    },
+    getPaths: function() {
+      return Object.keys(this.pathMap);
     }
   };
   
@@ -355,5 +365,7 @@ define([
   command.on("project:clear", pm.clearProject.bind(pm));
   
   context.register("Remove from Project", "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
+  
+  return pm;
 
 });

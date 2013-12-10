@@ -4,8 +4,9 @@ define([
     "editor",
     "settings!menus,user",
     "ui/statusbar",
+    "ui/projectManager",
     "util/dom2"
-  ], function(sessions, command, editor, Settings, status) {
+  ], function(sessions, command, editor, Settings, status, project) {
     
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
   var refTest = /identifier|variable|function/;
@@ -173,12 +174,21 @@ define([
       var results = [];
       var self = this;
       
-      var tabs;
+      var tabs, projectFiles = [];
       
       if (file) {
         var fuzzyFile = new RegExp(file.split("").join(".*"), "i");
         tabs = sessions.getAllTabs().filter(function(tab) {
           return fuzzyFile.test(tab.fileName);
+        });
+        //check the project for matches as well
+        projectFiles = project.getPaths().filter(function(path) { return fuzzyFile.test(path) }).map(function(path) {
+          return {
+              label: path.substr(path.search(/[^\/\\]+$/)),
+              sublabel: "In project",
+              command: "project:open-file",
+              argument: path
+          }
         });
       } else {
         var current = this.homeTab; 
@@ -244,10 +254,11 @@ define([
         tabs = results;
       }
 
-      this.results = tabs;
+      this.results = tabs.concat(projectFiles);
 
       if (this.results.length) {
         var current = this.results[this.selected];
+        if (!current.tab) return;
         sessions.raiseBlurred(current.tab);
         if (current.line) {
           editor.clearSelection();
@@ -261,10 +272,11 @@ define([
     executeCurrent: function() {
       var current = this.results[this.selected];
       if (!current) return;
-      if (this.commandMode) {
+      if (current.command) {
         command.fire(current.command, current.argument);
         status.toast("Executing: " + current.label + "...");
       } else {
+        //must be the file search
         command.fire("session:check-file");
       }
       this.deactivate();
