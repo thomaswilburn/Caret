@@ -185,7 +185,7 @@ define([
         projectFiles = project.getPaths().filter(function(path) { return fuzzyFile.test(path) }).map(function(path) {
           return {
               label: path.substr(path.search(/[^\/\\]+$/)),
-              sublabel: "In project",
+              sublabel: path,
               command: "project:open-file",
               argument: path
           }
