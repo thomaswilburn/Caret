@@ -279,7 +279,7 @@ define([
       }
       var from = tabs[e.dataTransfer.getData("application/x-tab-id") * 1];
       var onto = tabs[target.getAttribute("argument") * 1];
-      if(from != onto) {
+      if (from != onto) {
         var reordered = [];
         tabs.forEach(function(t) {
           if (t == from) return;
