@@ -48,9 +48,12 @@ module.exports = function(grunt) {
   });
   
   grunt.registerTask("default", ["less", "watch"]);
-  grunt.registerTask("package", ["less", "cleanup", "copy:unpacked", "crx", "webstore", "compress:store"]);
+  grunt.registerTask("prep", ["less", "cleanup", "copy:unpacked"]);
+  grunt.registerTask("package", ["prep", "crx", "webstore", "compress:store"]);
+  grunt.registerTask("store", ["prep", "webstore", "compress:store"]);
+  grunt.registerTask("crx", ["prep", "chrome"]);
 
-  grunt.registerTask("crx", "Makes a new CRX package", function() {
+  grunt.registerTask("chrome", "Makes a new CRX package", function() {
     var manifest = JSON.parse(fs.readFileSync("./manifest.json"));
     manifest.icons["128"] = "icon-128-inverted.png";
     fs.writeFileSync("./build/unpacked/manifest.json", JSON.stringify(manifest, null, 2));
@@ -68,7 +71,12 @@ module.exports = function(grunt) {
     var cmd = [ chrome[process.platform] ];
     cmd.push("--pack-extension=" + path.join(here, "build/unpacked"));
     cmd.push("--pack-extension-key=" + path.join(here, "../Caret.pem"));
-    exec(cmd.join(" "),function(err, out, stderr) {
+    cmd = cmd.join(" ");
+    exec(cmd,function(err, out, stderr) {
+      if (err) {
+        console.log("Unable to run Chrome for CRX packaging.");
+        return c();
+      }
       fs.renameSync("./build/unpacked.crx", "./build/Caret.crx");
       c();
     });
