@@ -9,14 +9,14 @@ define([
     "aceBindings"
   ],
   function(editor, dialog, command, File, Tab, Settings, status) {
-  
+
   var tabs = [];
   var cfg = Settings.get("ace");
   var userConfig = Settings.get("user");
   var syntax = document.find(".syntax");
   var stack = [];
   var stackOffset = 0;
-  
+
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
     var contents = "";
@@ -51,9 +51,9 @@ define([
     });
     setRetained();
   };
-  
+
   command.on("session:render", renderTabs);
-  
+
   var setRetained = function() {
     var keep = [];
     tabs.forEach(function(tab, i) {
@@ -65,7 +65,7 @@ define([
       chrome.storage.local.set({ retained: keep });
     }
   };
-  
+
   var setTabSyntax = function(tab) {
     tab.setUseSoftTabs(!userConfig.useTabs);
     tab.setTabSize(userConfig.indentation || 2);
@@ -98,7 +98,7 @@ define([
     tab.setMode("ace/mode/" + syntaxValue);
     syntax.value = syntaxValue;
   };
-  
+
   var addTab = function(contents, file) {
     var current = editor.getSession();
     var tab;
@@ -123,7 +123,7 @@ define([
     raiseTab(tab);
     return tab;
   };
-  
+
   var removeTab = function(index) {
     if (!index) {
       index = tabs.indexOf(editor.getSession());
@@ -171,7 +171,7 @@ define([
       continuation();
     }
   };
-  
+
   var raiseTab = function(tab) {
     editor.setSession(tab);
     syntax.value = tab.syntaxMode || "plain_text";
@@ -179,25 +179,25 @@ define([
     editor.focus();
     command.fire("session:check-file");
   };
-  
+
   var raiseBlurred = function(tab) {
     editor.setSession(tab);
     syntax.value = tab.syntaxMode || "plain_text";
     renderTabs();
     command.fire("session:check-file");
   };
-  
+
   var raiseTabByIndex = function(index) {
     var tab = tabs[index];
     raiseTab(tab);
   };
-  
+
   var resetStack = function(tab) {
       var raised = tab || stack[stackOffset];
       stack = stack.filter(function(t) { return t != raised });
       stack.unshift(raised);
   }
-  
+
   var watchCtrl = function(e) {
     if (e.keyCode == 17) {
       resetStack();
@@ -205,9 +205,9 @@ define([
       ctrl = false;
     }
   };
-  
+
   var ctrl = false;
-  
+
   var switchTab = function(arg) {
     arg = arg || 1;
     if (!ctrl) {
@@ -219,7 +219,7 @@ define([
     if (stackOffset < 0) stackOffset = stack.length + stackOffset;
     raiseTab(stack[stackOffset]);
   };
-  
+
   command.on("session:raise-tab", function(index) {
     var tab = tabs[index];
     raiseTab(tab);
@@ -227,7 +227,7 @@ define([
   });
   command.on("session:close-tab", removeTab);
   command.on("session:change-tab", switchTab);
-  
+
   var enableTabDragDrop = function() {
     var tabContainer = document.find(".tabs");
     var draggedTab = null;
@@ -246,7 +246,7 @@ define([
         e.target.removeClass("dragging");
       };
     });
-    tabContainer.on("dragover", function(e) { 
+    tabContainer.on("dragover", function(e) {
       e.preventDefault();
       e.dropEffect = "move";
     });
@@ -279,22 +279,24 @@ define([
       }
       var from = tabs[e.dataTransfer.getData("application/x-tab-id") * 1];
       var onto = tabs[target.getAttribute("argument") * 1];
-      var reordered = [];
-      tabs.forEach(function(t) {
-        if (t == from) return;
-        if (t == onto && location == "before") {
-          reordered.push(from);
-        }
-        reordered.push(t);
-        if (t == onto && location == "after") {
-          reordered.push(from);
-        }
-      });
-      tabs = reordered;
+      if(from != onto) {
+        var reordered = [];
+        tabs.forEach(function(t) {
+          if (t == from) return;
+          if (t == onto && location == "before") {
+            reordered.push(from);
+          }
+          reordered.push(t);
+          if (t == onto && location == "after") {
+            reordered.push(from);
+          }
+        });
+        tabs = reordered;
+      }
       renderTabs();
     });
   };
-  
+
   var init = function() {
     cfg.modes.forEach(function(mode) {
       var option = document.createElement("option");
@@ -307,7 +309,7 @@ define([
     enableTabDragDrop();
     reset();
   };
-  
+
   var reset = function() {
     cfg = Settings.get("ace");
     userConfig = Settings.get("user");
@@ -315,20 +317,20 @@ define([
       setTabSyntax(tab);
     })
   };
-  
+
   command.on("init:startup", init);
   command.on("init:restart", reset);
-  
+
   command.on("session:syntax", function(mode) {
     var session = editor.getSession();
     session.setMode("ace/mode/" + mode);
     session.syntaxMode = mode;
     editor.focus();
   });
-  
-  
+
+
   var locationMemory = null;
-  
+
   return {
     addFile: addTab,
     setSyntax: setTabSyntax,
