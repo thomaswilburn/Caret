@@ -5,7 +5,6 @@
     "grunt": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-less": "*",
-    "grunt-contrib-compress": "*",
-    "grunt-contrib-copy": "*"
+    "grunt-contrib-compress": "*"
   }
 }
