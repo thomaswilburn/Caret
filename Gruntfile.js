@@ -7,7 +7,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-contrib-less");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-contrib-compress");
-  grunt.loadNpmTasks("grunt-contrib-copy");
   
   grunt.initConfig({
     less: {
@@ -39,19 +38,26 @@ module.exports = function(grunt) {
         ]
       }
     },
-    copy: {
-      unpacked: {
-        dest: "build/unpacked/",
-        src: ["config/**", "js/**", "css/*.css", "*.html", "require.js", "background.js", "installer.js", "*.png"]
-      }
-    }
+    copy:  ["config/**", "js/**", "css/*.css", "*.html", "require.js", "background.js", "installer.js", "*.png"]
   });
   
   grunt.registerTask("default", ["less", "watch"]);
-  grunt.registerTask("prep", ["less", "cleanup", "copy:unpacked"]);
-  grunt.registerTask("package", ["prep", "crx", "webstore", "compress:store"]);
+  grunt.registerTask("prep", ["less", "cleanup", "copyUnpacked"]);
+  grunt.registerTask("package", ["prep", "chrome", "webstore", "compress:store"]);
   grunt.registerTask("store", ["prep", "webstore", "compress:store"]);
   grunt.registerTask("crx", ["prep", "chrome"]);
+  
+  grunt.registerTask("copyUnpacked", "Copies files to the build directory", function() {
+    var srcPatterns = grunt.config.get("copy");
+    srcPatterns.forEach(function(pattern) {
+      var files = grunt.file.expandMapping(pattern, "./build/unpacked", {
+        filter: "isFile"
+      });
+      files.forEach(function(f) {
+        grunt.file.copy(f.src[0], f.dest);
+      })
+    });
+  });
 
   grunt.registerTask("chrome", "Makes a new CRX package", function() {
     var manifest = JSON.parse(fs.readFileSync("./manifest.json"));
