@@ -54,7 +54,7 @@ define([
     if (e.altKey) {
       prefix += "M";
     }
-    var combo = prefix + "-" + char;
+    var combo = prefix ? prefix + "-" + char : char;
     var keyConfig = Settings.get("keys");
     if (combo in keyConfig) {
       e.preventDefault();

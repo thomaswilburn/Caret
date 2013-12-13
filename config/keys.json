@@ -9,12 +9,16 @@
   "^-TAB": { "command": "session:change-tab", "argument": -1 },
   
   //Chromebook fixes
-  "^-up": { "ace": "addCursorAbove" },
-  "^-down": { "ace": "addCursorBelow" },
-  "M-pagedown": { "ace": "pagedown" },
-  "M-pageup": { "ace": "pageup" },
-  "M-home": { "ace": "gotolinestart" },
-  "M-end": { "ace": "gotolineend" },
+  "^-up": { "command": "ace:command", "argument": "addCursorAbove" },
+  "^-down": { "command": "ace:command", "argument": "addCursorBelow" },
+  "M-pagedown": { "command": "ace:command", "argument": "gotopagedown" },
+  "pagedown": { "command": "ace:command", "argument": "gotopagedown" },
+  "M-pageup": { "command": "ace:command", "argument": "gotopageup" },
+  "pageup": {"command": "ace:command", "argument": "gotopageup" },
+  "M-home": { "command": "ace:command", "argument": "gotolinestart" },
+  "home": { "command": "ace:command", "argument": "gotolinestart" },
+  "M-end": { "command": "ace:command", "argument": "gotolineend" },
+  "end": { "command": "ace:command", "argument": "gotolineend" },
   
   //Sublime compatibility
   "^-l": "sublime:expand-to-line",
