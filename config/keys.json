@@ -11,6 +11,10 @@
   //Chromebook fixes
   "^-up": { "ace": "addCursorAbove" },
   "^-down": { "ace": "addCursorBelow" },
+  "M-pagedown": { "ace": "pagedown" },
+  "M-pageup": { "ace": "pageup" },
+  "M-home": { "ace": "gotolinestart" },
+  "M-end": { "ace": "gotolineend" },
   
   //Sublime compatibility
   "^-l": "sublime:expand-to-line",

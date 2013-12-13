@@ -4,15 +4,15 @@ define([
     "editor",
     "util/dom2"
   ], function(Settings, command, editor) {
-
-  /*
-  Still need to set Sublime keybindings
-  */
   
   var keycodes = {
     9: "TAB",
     13: "RETURN",
     32: "SPACE",
+    33: "PAGEUP",
+    34: "PAGEDOWN",
+    35: "END",
+    36: "HOME",
     37: "LEFT",
     39: "RIGHT",
     38: "UP",

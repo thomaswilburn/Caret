@@ -11,7 +11,6 @@ define([
     });
 
     //this is a place to put bindings that don't have direct equivalents in Ace, but are required for Sublime compatibility
-
     command.on("sublime:expand-to-line", function() {
       editor.execCommand("gotolinestart");
       editor.execCommand("selecttolineend");
@@ -109,7 +108,6 @@ define([
     editor.commands.bindKey("Ctrl-Shift-P", null);
     
     //filter some Ace commands for UI purposes
-    
     var isRecording = false;
     command.on("ace:togglemacro", function() {
       isRecording = !isRecording;
@@ -122,6 +120,7 @@ define([
       }
     });
     
+    //API bindings
     command.on("editor:insert", function(text) {
       editor.insert(text);
     });
