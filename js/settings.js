@@ -113,14 +113,10 @@ define([
         return merge();
       }
       
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", "config/" + name);
-      xhr.onload = function() {
-        var raw = this.responseText.replace();
+      require(["util/text!config/" + name], function(raw) {
         defaults[name] = raw;
         merge();
-      };
-      xhr.send();
+      });
     },
     setProject: function(settings) {
       project = settings;
