@@ -7,11 +7,11 @@ define([
     "ui/projectManager",
     "util/dom2"
   ], function(sessions, command, editor, Settings, status, project) {
-    
+
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
   var refTest = /identifier|variable|function/;
   var jsRefTest = /entity\.name\.function/;
-  
+
   var resultTemplate = document.find("#palette-result").content;
   var sanitize = function(text) {
     return text.replace(/\</g, "&lt;").replace(/\>/g, "&gt;").trim();
@@ -23,21 +23,21 @@ define([
     reference: /@([^:#]*)/,
     search: /#([^:@]*)/
   };
-  
+
   var prefixes = {
     ":": "line",
     "@": "reference",
     "#": "search"
   };
-  
+
   var modes = {
     "line": ":",
     "search": "#",
     "reference": "@"
   };
-  
+
   var template = "<div class=label>%LABEL%</div><div class=sublabel>%SUB%</div>"
-  
+
   var Palette = function() {
     this.homeTab = null;
     this.results = [];
@@ -58,7 +58,7 @@ define([
       input.on("blur", function() {
         self.deactivate();
       });
-      
+
       input.on("keydown", function(e) {
         if (e.keyCode == 27) {
           sessions.restoreLocation();
@@ -80,7 +80,7 @@ define([
         }
         self.selected = 0;
       });
-      
+
       input.on("keyup", function(e) {
         self.parse(input.value);
       });
@@ -117,6 +117,18 @@ define([
         }
       };
       menuWalker(menus);
+      // retrieve syntax types and add them to palette results
+      var syntaxTypes = Settings.get("ace");
+      if (syntaxTypes && syntaxTypes.modes) {
+        syntaxTypes = syntaxTypes.modes.map(function(mode) {
+          return {
+            label: "Set syntax: " + mode.label,
+            command: "session:syntax",
+            argument: mode.name
+          };
+        });
+        menuWalker(syntaxTypes);
+      }
       this.results = results.slice(0, 10);
     },
     getTabValues: function(tab) {
@@ -173,9 +185,9 @@ define([
       var reference = re.reference.test(query) && re.reference.exec(query)[1];
       var results = [];
       var self = this;
-      
+
       var tabs, projectFiles = [];
-      
+
       if (file) {
         var fuzzyFile = new RegExp(file.split("").join(".*"), "i");
         tabs = sessions.getAllTabs().filter(function(tab) {
@@ -191,20 +203,20 @@ define([
           }
         });
       } else {
-        var current = this.homeTab; 
+        var current = this.homeTab;
         tabs = [ current ];
         if (this.searchAll) {
           tabs.push.apply(tabs, sessions.getAllTabs().filter(function(t) { return t !== current }));
         }
       }
-      
+
       tabs = tabs.map(function(t) {
         return {
           tab: t,
           line: line
         }
       });
-      
+
       if (search) {
         try {
           var crawl = new RegExp(search.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "gi");
@@ -324,14 +336,14 @@ define([
       });
     }
   };
-  
+
   var palette = new Palette();
-  
+
   command.on("palette:open", function(mode) {
     sessions.saveLocation();
     palette.activate(mode);
   });
 
   return palette;
-  
+
 });
