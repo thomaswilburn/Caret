@@ -13,6 +13,7 @@ define([
   var jsRefTest = /entity\.name\.function/;
   
   var resultTemplate = document.find("#palette-result").content;
+  var antiregex = new RegExp("(\\\\|\\" + "?.*+[](){}|^$".split("").join("|\\") + ")", "g");
   var sanitize = function(text) {
     return text.replace(/\</g, "&lt;").replace(/\>/g, "&gt;").trim();
   };
@@ -99,7 +100,11 @@ define([
     },
     findCommands: function(query) {
       if (query.length == 0) return this.results = [];
-      var fuzzyCommand = new RegExp(query.split("").join(".*"), "i");
+      var fuzzyCommand = new RegExp(query
+        .split("")
+        .map(function(char) { return char.replace(antiregex, "\\$1")})
+        .join(".*"),
+      "i");
       var results = [];
       var menus = Settings.get("menus");
       var menuWalker = function(menu) {
@@ -177,7 +182,11 @@ define([
       var tabs, projectFiles = [];
       
       if (file) {
-        var fuzzyFile = new RegExp(file.split("").join(".*"), "i");
+        var fuzzyFile = new RegExp(file
+          .split("")
+          .map(function(char) { return char.replace(antiregex, "\\$1") })
+          .join(".*"), 
+        "i");
         tabs = sessions.getAllTabs().filter(function(tab) {
           return fuzzyFile.test(tab.fileName);
         });
@@ -207,7 +216,7 @@ define([
       
       if (search) {
         try {
-          var crawl = new RegExp(search.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "gi");
+          var crawl = new RegExp(search.replace(antiregex, "\\$1"), "gi");
         } catch (e) {
           return;
         }
@@ -236,7 +245,7 @@ define([
         tabs = results;
       } else if (reference !== false) {
         try {
-          var crawl = new RegExp(reference.replace(/([.\[\]\(\)*\{\}])/g, "\\$1"), "i");
+          var crawl = new RegExp(reference.replace(antiregex, "\\$1"), "i");
         } catch (e) {
           return;
         }
