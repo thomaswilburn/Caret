@@ -6,17 +6,17 @@ define([
   ], function(Settings, command, editor) {
   
   var keycodes = {
-    9: "TAB",
-    13: "RETURN",
-    32: "SPACE",
-    33: "PAGEUP",
-    34: "PAGEDOWN",
-    35: "END",
-    36: "HOME",
-    37: "LEFT",
-    39: "RIGHT",
-    38: "UP",
-    40: "DOWN",
+    9: "Tab",
+    13: "Return",
+    32: "Space",
+    33: "PageUp",
+    34: "PageDown",
+    35: "End",
+    36: "Home",
+    37: "Left",
+    39: "Right",
+    38: "Up",
+    40: "Down",
     187: "=",
     189: "-"
   };
