@@ -1,1 +1,64 @@
-[]
+[
+  { "command": "app:exit", "label": "Exit Caret" },
+  { "command": "app:about", "label": "About Caret" },
+  { "label": "Help", "command": "session:open-settings-defaults", "argument": "help" },
+  { "label": "Check for Updates", "command": "app:check-for-updates", "argument": "manual" },
+  
+  { "command": "session:new-file", "label": "New File" },
+  { "command": "session:open-file", "label": "Open File" },
+  { "command": "session:save-file", "label": "Save File" },
+  { "command": "session:save-file-as", "label": "Save File As..." },
+  { "command": "session:revert-file", "label": "Revert File" },
+  { "command": "session:close-tab", "label": "Close File" },
+  
+  { "label": "Undo", "command": "ace:command", "argument": "undo" },
+  { "label": "Redo", "command": "ace:command", "argument": "redo" },
+  
+  { "label": "Select Word", "command": "ace:command", "argument": "selectMoreAfter" },
+  { "label": "Select Line", "command": "sublime:expand-to-line" },
+  { "label": "Select Paragraph", "command": "sublime:expand-to-paragraph" },
+  { "label": "Select to Matching", "command": "sublime:expand-to-matching" },
+  
+  { "label": "Find", "command": "ace:command", "argument": "find" },
+  { "label": "Find/Replace", "command": "ace:command", "argument": "replace" },
+  { "label": "Find Next", "command": "ace:command", "argument": "findnext" },
+  
+  { "label": "Toggle Comment", "command": "ace:command", "argument": "togglecomment" },
+  { "label": "Block Comment", "command": "ace:command", "argument": "toggleBlockComment" },
+  
+  { "label": "Convert Tabs to Spaces", "command": "sublime:tabs-to-spaces" },
+  { "label": "Convert Spaces to Tabs", "command": "sublime:spaces-to-tabs" },
+  { "label": "Sort Lines", "command": "ace:command", "argument": "sortlines" },
+  { "label": "Split Line", "command": "ace:command", "argument": "splitline" },
+  { "label": "To Uppercase", "command": "ace:command", "argument": "touppercase" },
+  { "label": "To Lowercase", "command": "ace:command", "argument": "tolowercase" },
+  { "label": "Move Lines Up", "command": "ace:command", "argument": "movelinesup" },
+  { "label": "Move Lines Down", "command": "ace:command", "argument": "movelinesdown" },
+  
+  { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
+  { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
+  
+  { "label": "Add Directory", "command": "project:add-dir" },
+  { "label": "Remove All Directories", "command": "project:remove-all" },
+  { "label": "Refresh Directory", "command": "project:refresh-dir" },
+  { "label": "Save Project File", "command": "project:generate" },
+  { "label": "Edit Current Project File", "command": "project:edit" },
+  { "label": "Open Project File", "command": "project:open" },
+  { "label": "Clear Project", "command": "project:clear" },
+  
+  { "command": "editor:default-zoom", "label": "Reset Text Size" },
+  { "command": "editor:adjust-zoom", "argument": 1, "label": "Increase Text Size" },
+  { "command": "editor:adjust-zoom", "argument": -1, "label": "Decrease Text Size" },
+  
+  { "label": "User Preferences", "command": "session:open-settings-file", "argument": "user" },
+  { "label": "Keyboard", "command": "session:open-settings-file", "argument": "keys" },
+  { "label": "Menus", "command": "session:open-settings-file", "argument": "menus" },
+  { "label": "External Commands", "command": "session:open-settings-file", "argument": "api" },
+  
+  { "label": "Default User Preferences", "command": "session:open-settings-defaults", "argument": "user" },
+  { "label": "Default Keyboard", "command": "session:open-settings-defaults", "argument": "keys" },
+  { "label": "Default Menus", "command": "session:open-settings-defaults", "argument": "menus" }
+  { "label": "Reset User Preferences", "command": "settings:delete-local", "argument": "user" },
+  { "label": "Reset Keyboard", "command": "settings:delete-local", "argument": "keys" },
+  { "label": "Reset Menus", "command": "settings:delete-local", "argument": "menus" }
+]
