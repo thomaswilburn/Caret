@@ -325,6 +325,7 @@ define([
     var session = editor.getSession();
     session.setMode("ace/mode/" + mode);
     session.syntaxMode = mode;
+    syntax.value = session.syntaxMode || "plain_text";
     editor.focus();
   });
 
