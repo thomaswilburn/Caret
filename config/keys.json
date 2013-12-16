@@ -9,8 +9,8 @@
   "^-TAB": { "command": "session:change-tab", "argument": -1 },
   
   //Chromebook fixes
-  "^-up": { "command": "ace:command", "argument": "addCursorAbove" },
-  "^-down": { "command": "ace:command", "argument": "addCursorBelow" },
+  "^-up": { "ace": "addCursorAbove" },
+  "^-down": { "ace": "addCursorBelow" },
   "M-pagedown": { "command": "ace:command", "argument": "gotopagedown" },
   "pagedown": { "command": "ace:command", "argument": "gotopagedown" },
   "M-pageup": { "command": "ace:command", "argument": "gotopageup" },
