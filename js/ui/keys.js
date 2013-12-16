@@ -21,18 +21,31 @@ define([
     189: "-"
   };
   
-  //need to remove existing Ace conflicts on init:start
+  //back-compat: we now use Ace-style bindings (Ctrl-X) instead of Vim-style (^-x)
+  var upgradeKeys = function(config) {
+    var converted = {};
+    for (var key in config) {
+      var value = config[key];
+      //detect old syntax
+      if (key.indexOf("^-") > -1 || key.indexOf("M-") > -1) {
+        key = key
+          .replace(/\^-/g, "Ctrl-")
+          .replace(/M-/g, "Alt-")
+          .replace(/-([A-Z]+)$/, "-Shift-$1")
+          .replace(/-([a-z]+)$/, function(match) { return match.toUpperCase() });
+      }
+      converted[key] = value;
+    }
+    return converted;
+  };
+  
+  //need to remove existing Ace conflicts
   var bindAce = function() {
     var handler = editor.getKeyboardHandler();
-    var bindings = Settings.get("keys");
+    var bindings = upgradeKeys(Settings.get("keys"));
     for (var k in bindings) {
       var action = bindings[k];
       if (!action.ace) continue;
-      k = k.replace("^", "Ctrl").replace("M", "Alt").replace(/-[A-Z]$/, function(match) { 
-        return "-Shift" + match.toUpperCase();
-      }).replace(/-[a-z]$/, function(match) {
-        return match.toUpperCase();
-      });
       handler.bindKey(k, action.ace);
     }
   };
@@ -46,16 +59,12 @@ define([
     if (e.keyCode in keycodes) {
       char = keycodes[e.keyCode];
     }
-    if (!e.shiftKey) char = char.toLowerCase();
-    var prefix = "";
-    if (e.ctrlKey || e.metaKey) {
-      prefix += "^";
-    }
-    if (e.altKey) {
-      prefix += "M";
-    }
-    var combo = prefix ? prefix + "-" + char : char;
-    var keyConfig = Settings.get("keys");
+    var prefixes = [];
+    if (e.ctrlKey) prefixes.push("Ctrl");
+    if (e.altKey) prefixes.push("Alt");
+    if (e.shiftKey) prefixes.push("Shift");
+    var combo = prefixes.length ? prefixes.join("-") + "-" + char : char;
+    var keyConfig = upgradeKeys(Settings.get("keys"));
     if (combo in keyConfig) {
       e.preventDefault();
       var action = keyConfig[combo];
