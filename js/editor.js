@@ -72,6 +72,7 @@ define([
   
   command.on("editor:theme", function(theme) {
     editor.setTheme("ace/theme/" + theme);
+    themes.value = theme;
     editor.focus();
   });
 
