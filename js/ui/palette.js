@@ -125,6 +125,22 @@ define([
       };
       menuWalker(menus);
       this.results = results.slice(0, 10);
+      if (this.results.length < 10) {
+        var commandMap = {};
+        //do not duplicate results from menu
+        this.results.forEach(function(r) { commandMap[r.command] = true; });
+        for (var i = 0; i < command.list.length; i++) {
+          var c = command.list[i];
+          if (c.command in commandMap) continue;
+          if (fuzzyCommand.test(c.label)) {
+            this.results.push(c);
+            //once we have 10, quit
+            if (this.results.length >= 10) {
+              break;
+            }
+          }
+        }
+      }
     },
     getTabValues: function(tab) {
       var name = tab.fileName;

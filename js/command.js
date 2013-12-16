@@ -51,9 +51,25 @@ define([
     }
   });
   
-  return {
+  var facade = {
     fire: fire,
-    on: register
+    on: register,
+    list: []
   };
+  
+  //this is kind of a hack, since it updates as async
+  //we'll have to investigate a Require plugin if this is needed at startup
+  //alternatively, we could have init wait for the loaded event
+  var listRequest = new XMLHttpRequest();
+  listRequest.open("GET", "config/commands.json");
+  listRequest.onerror = listRequest.onLoad = function() {
+    if (listRequest.responseText) {
+      var list = JSON.parse(listRequest.responseText);
+      facade.list.push.apply(facade.list, list);
+      fire("command:loaded-list");
+    }
+  }
+  
+  return facade;
 
 });

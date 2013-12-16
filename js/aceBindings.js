@@ -2,13 +2,32 @@ define([
     "command",
     "editor",
     "ui/statusbar",
-    "settings!user"
+    "settings!user,ace"
   ], function(command, editor, status, Settings) {
 
     var userConfig = Settings.get("user");
     command.on("init:restart", function() {
       userConfig = Settings.get("user");
     });
+    
+    //load the syntax commands and set them up in the command listings
+    var aceConfig = Settings.get("ace");
+    for (var i = 0; i < aceConfig.modes.length; i++) {
+      var mode = aceConfig.modes[i];
+      command.list.push({
+        command: "session:syntax",
+        argument: mode.name,
+        label: "Set Syntax: " + mode.label
+      });
+    }
+    for (var i = 0; i < aceConfig.themes.length; i++) {
+      var theme = aceConfig.themes[i];
+      command.list.push({
+        command: "editor:theme",
+        argument: theme.name,
+        label: "Set Theme: " + theme.label
+      });
+    }
 
     //this is a place to put bindings that don't have direct equivalents in Ace, but are required for Sublime compatibility
     command.on("sublime:expand-to-line", function() {
