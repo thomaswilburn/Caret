@@ -57,7 +57,7 @@
   
   { "label": "Default User Preferences", "command": "session:open-settings-defaults", "argument": "user" },
   { "label": "Default Keyboard", "command": "session:open-settings-defaults", "argument": "keys" },
-  { "label": "Default Menus", "command": "session:open-settings-defaults", "argument": "menus" }
+  { "label": "Default Menus", "command": "session:open-settings-defaults", "argument": "menus" },
   { "label": "Reset User Preferences", "command": "settings:delete-local", "argument": "user" },
   { "label": "Reset Keyboard", "command": "settings:delete-local", "argument": "keys" },
   { "label": "Reset Menus", "command": "settings:delete-local", "argument": "menus" }

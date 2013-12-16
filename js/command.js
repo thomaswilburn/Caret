@@ -6,6 +6,7 @@ define([
     try {
       list = JSON.parse(list);
     } catch (e) {
+      console.error(e);
       list = [];
     }
 
