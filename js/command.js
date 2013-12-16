@@ -3,11 +3,22 @@ define([
     "util/dom2"
   ], function(list) {
     
-    list = JSON.parse(list);
+    try {
+      list = JSON.parse(list);
+    } catch (e) {
+      list = [];
+    }
 
   /*
   
-  A module for translating UI interactions into events for the rest of the application. Basically it's a pubsub with a dom layer. Listens for menu events, as well as offering an API for firing and subscribing to arbitrary events.
+  The command module is the heart of Caret's loosely-coupled modules. It
+  serves as an event bus for inter-module communication, but it also listens
+  to the DOM for click/change events and makes it easy to bind page interactions
+  to command callbacks.
+  
+  Command is usually called as if synchronous, but it does support asynchronous
+  operation--it will pass a callback in to any subscribers, but will also
+  immediately pass back the return value (if any) from the those subscribers.
   
   */
   
@@ -16,19 +27,27 @@ define([
   //commands can pass a callback, although most don't respond that way
   var fire = function(command, argument, callback) {
     if (!commands[command]) return;
+    var args = [].slice.call(arguments, 1);
+    //technically, a function argument is a callback...
+    if (typeof argument == "function") {
+      callback = argument;
+    }
     var registry = commands[command].slice();
     registry.forEach(function(entry) {
-        var result = entry.callback.apply(entry.scope || null, argument instanceof Array ? argument : [argument], callback);
+      var result = entry.callback.apply(null, args);
+      //immediately call back if sync-style return value was provided
+      if (typeof result !== "undefined" && callback) {
+        callback.call(null, result);
+      }
     });
   }
   
-  var register = function(command, listener, scope) {
+  var register = function(command, listener) {
     if (!commands[command]) {
       commands[command] = [];
     }
     commands[command].push({
-      callback: listener,
-      scope: scope
+      callback: listener
     });
   }
   
@@ -57,7 +76,7 @@ define([
   var facade = {
     fire: fire,
     on: register,
-    list: list || []
+    list: list
   };
   
   return facade;

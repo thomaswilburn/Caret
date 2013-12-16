@@ -35,7 +35,6 @@ define([
       e.stopPropagation();
       e.stopImmediatePropagation();
       //allow Enter to trigger clicks
-      console.log(e.keyCode);
       if (e.keyCode != 13) {
         e.preventDefault();
       }
