@@ -3,7 +3,7 @@
   "Ctrl-O": "session:open-file",
   "Ctrl-W": "session:close-tab",
   "Ctrl-S": "session:save-file",
-  "Ctrl-S": "session:save-file-as",
+  "Ctrl-Shift-S": "session:save-file-as",
   "Ctrl-N": "session:new-file",
   "Ctrl-Tab": "session:change-tab",
   "Ctrl-Shift-Tab": { "command": "session:change-tab", "argument": -1 },
