@@ -37,19 +37,21 @@ define([
     registry.forEach(function(entry) {
       var result = entry.callback.apply(null, args);
       //immediately call back if sync-style return value was provided
-      if (typeof result !== "undefined") {
+      if (typeof result !== "undefined" || entry.sync) {
         //console.info("Immediate return from " + name, result);
         if (callback) callback.call(null, result);
       }
     });
   }
   
-  var register = function(command, listener) {
+  var register = function(command, listener, sync) {
     if (!commands[command]) {
       commands[command] = [];
     }
+    //we allow a sync flag to be set for operations that will definitely return
     commands[command].push({
-      callback: listener
+      callback: listener,
+      sync: sync
     });
   }
   
