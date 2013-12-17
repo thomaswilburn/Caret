@@ -48,17 +48,18 @@ define([
     }
   };
   
-  command.on("session:new-file", function(content) { sessions.addFile(content) });
+  command.on("session:new-file", function(content) { return sessions.addFile(content) });
   command.on("session:open-file", openFile);
-  command.on("session:save-file", function() { sessions.getCurrent().save() });
-  command.on("session:save-file-as", function() { 
+  command.on("session:save-file", function(c) { return sessions.getCurrent().save(c) });
+  command.on("session:save-file-as", function(c) { 
     var tab = sessions.getCurrent();
     tab.save(true, function() {
       sessions.setSyntax(tab);
-    });  
+      if (c) c();
+    });
   });
   
-  command.on("session:revert-file", function() {
+  command.on("session:revert-file", function(c) {
     var tab = sessions.getCurrent();
     if (!tab.file) return;
     tab.file.read(function(err, data) {

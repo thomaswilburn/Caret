@@ -29,7 +29,7 @@ define([
   var fire = function(command, argument, callback) {
     if (!commands[command]) return;
     var args = [].slice.call(arguments, 1);
-    //technically, a function argument is a callback...
+    //technically, a function as `argument` is a callback...
     if (typeof argument == "function") {
       callback = argument;
     }
@@ -37,8 +37,9 @@ define([
     registry.forEach(function(entry) {
       var result = entry.callback.apply(null, args);
       //immediately call back if sync-style return value was provided
-      if (typeof result !== "undefined" && callback) {
-        callback.call(null, result);
+      if (typeof result !== "undefined") {
+        //console.info("Immediate return from " + name, result);
+        if (callback) callback.call(null, result);
       }
     });
   }
@@ -53,7 +54,6 @@ define([
   }
   
   //delegate for all elements that have a command attribute
-  //may want to add more listeners for other UI elements (select)
   document.body.on("click", function(e) {
     //cancel on inputs, selectboxes
     if (["input", "select"].indexOf(e.target.tagName.toLowerCase()) >= 0) return;

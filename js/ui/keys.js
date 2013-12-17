@@ -52,7 +52,6 @@ define([
   command.on("init:startup", bindAce);
   command.on("init:restart", bindAce);
   
-  
   //we have to listen on keydown, because keypress will get caught by the window manager
   window.on("keydown", function(e) {
     var char = String.fromCharCode(e.keyCode);
