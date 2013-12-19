@@ -220,6 +220,19 @@ define([
     raiseTab(stack[stackOffset]);
   };
 
+  var switchTabLinear = function(shift) {
+    shift = shift || 1;
+    var current = editor.getSession();
+    var currentIndex = tabs.indexOf(current);
+    var shifted = (currentIndex + shift) % tabs.length;
+    if (shifted < 0) {
+      shifted = tabs.length + shifted;
+    }
+    var tab = tabs[shifted];
+    raiseTab(tab);
+    resetStack(tab);
+  };
+
   command.on("session:raise-tab", function(index) {
     var tab = tabs[index];
     raiseTab(tab);
@@ -227,6 +240,7 @@ define([
   });
   command.on("session:close-tab", removeTab);
   command.on("session:change-tab", switchTab);
+  command.on("session:change-tab-linear", switchTabLinear);
 
   var enableTabDragDrop = function() {
     var tabContainer = document.find(".tabs");
