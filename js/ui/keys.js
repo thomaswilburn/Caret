@@ -22,7 +22,7 @@ define([
   };
   
   //back-compat: we now use Ace-style bindings (Ctrl-X) instead of Vim-style (^-x)
-  var upgradeKeys = function(config) {
+  var normalizeKeys = function(config) {
     var converted = {};
     for (var key in config) {
       var value = config[key];
@@ -34,7 +34,7 @@ define([
           .replace(/-([A-Z]+)$/, "-Shift-$1")
           .replace(/-([a-z]+)$/, function(match) { return match.toUpperCase() });
       }
-      converted[key] = value;
+      converted[key.toLowerCase()] = value;
     }
     return converted;
   };
@@ -42,7 +42,7 @@ define([
   //need to remove existing Ace conflicts
   var bindAce = function() {
     var handler = editor.getKeyboardHandler();
-    var bindings = upgradeKeys(Settings.get("keys"));
+    var bindings = normalizeKeys(Settings.get("keys"));
     for (var k in bindings) {
       var action = bindings[k];
       if (!action.ace) continue;
@@ -63,7 +63,8 @@ define([
     if (e.altKey) prefixes.push("Alt");
     if (e.shiftKey) prefixes.push("Shift");
     var combo = prefixes.length ? prefixes.join("-") + "-" + char : char;
-    var keyConfig = upgradeKeys(Settings.get("keys"));
+    combo = combo.toLowerCase();
+    var keyConfig = normalizeKeys(Settings.get("keys"));
     if (combo in keyConfig) {
       e.preventDefault();
       var action = keyConfig[combo];
