@@ -56,43 +56,6 @@ a[target] {
 #editor {
   flex-grow: 1;
   padding-top: 2px;
-
-  ::-webkit-scrollbar {
-      width: 15px;
-      height: 15px;
-  }
-
-  ::-webkit-scrollbar-button {
-      height: 0px;
-      width: 0px;
-  }
-
-  ::-webkit-scrollbar-track {
-      background-color: mix(@foreground, @background, 15%);
-  }
-  
-  ::-webkit-scrollbar-track:vertical {
-      border-left: 1px solid mix(@foreground, @background, 25%);
-  }
-  
-  ::-webkit-scrollbar-track:horizontal {
-      border-top: 1px solid mix(@foreground, @background, 25%);
-  }
-
-  ::-webkit-scrollbar-thumb {
-      background-color: mix(@foreground, @background, 30%);
-      border: 3px solid transparent;
-      border-radius: 6px;
-      background-clip: content-box;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-      background-color: mix(@foreground, @background, 35%);
-  }
-
-  ::-webkit-scrollbar-corner {
-      background-color: mix(@foreground, @background, 15%);
-  }
 }
 
 .bottom-bar {
