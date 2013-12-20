@@ -65,20 +65,13 @@ define([
       var object = action.argument;
       if (verb == command) {
         if (arg && object !== arg) continue;
-        var char = key.split("-").pop();
-        if (/[A-Z]$/.test(char)) {
-          char = "Shift-" + char.toUpperCase();
-        } else {
-          char = char[0].toUpperCase() + char.substr(1);
-        }
-        var prefix = "";
-        if (key.indexOf("^") > -1) {
-          prefix += "Ctrl-";
-        }
-        if (key.indexOf("M-") > -1) {
-          prefix += "Alt-";
-        }
-        return prefix + char;
+        //transform old keys and lower-case
+        key = key
+          .replace(/(?:^|M)-([A-Z]+)$/, "-Shift-$1")
+          .replace(/\^-/g, "Ctrl-")
+          .replace(/M-/g, "Alt-")
+          .replace(/(^|-)([a-z])/g, function(match) { console.log(arguments); return match.toUpperCase; });
+        return key;
       }
     }
     for (var cmd in editor.commands.commands) {
