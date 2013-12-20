@@ -67,10 +67,12 @@ define([
         if (arg && object !== arg) continue;
         //transform old keys and lower-case
         key = key
-          .replace(/(?:^|M)-([A-Z]+)$/, "-Shift-$1")
+          //back-compat
+          .replace(/(\^|M)-([A-Z]+)$/, "$1-Shift-$2")
           .replace(/\^-/g, "Ctrl-")
           .replace(/M-/g, "Alt-")
-          .replace(/(^|-)([a-z])/g, function(match) { console.log(arguments); return match.toUpperCase; });
+          //capitalize keys for lazy people
+          .replace(/(^|-)([a-z])/g, function(match) { return match.toUpperCase(); });
         return key;
       }
     }

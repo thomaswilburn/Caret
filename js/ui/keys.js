@@ -21,6 +21,9 @@ define([
     189: "-"
   };
   
+  var defaultAceCommands = ace.require("./commands/default_commands").commands;
+  var AceCommandManager = ace.require("./commands/command_manager").CommandManager;
+  
   //back-compat: we now use Ace-style bindings (Ctrl-X) instead of Vim-style (^-x)
   var normalizeKeys = function(config) {
     var converted = {};
@@ -41,11 +44,12 @@ define([
   
   //need to remove existing Ace conflicts
   var bindAce = function() {
-    var handler = editor.getKeyboardHandler();
+    var handler = new AceCommandManager("win", defaultAceCommands);
+    editor.setKeyboardHandler(handler);
     var bindings = normalizeKeys(Settings.get("keys"));
     for (var k in bindings) {
       var action = bindings[k];
-      if (!action.ace) continue;
+      //if (!action.ace) continue;
       handler.bindKey(k, action.ace);
     }
   };

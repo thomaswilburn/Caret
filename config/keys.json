@@ -11,6 +11,10 @@
   //Chromebook fixes
   "Ctrl-Up": { "ace": "addCursorAbove" },
   "Ctrl-Down": { "ace": "addCursorBelow" },
+  "Ctrl-Home": { "command": "ace:command", "argument": "gotostart" },
+  "Ctrl-End": { "command": "ace:command", "argument": "gotoend" },
+  "Ctrl-PageUp": { "command": "ace:command", "argument": "gotostart" },
+  "Ctrl-PageDown": { "command": "ace:command", "argument": "gotoend" },
   "Alt-PageDown": { "command": "ace:command", "argument": "gotopagedown" },
   "PageDown": { "command": "ace:command", "argument": "gotopagedown" },
   "Alt-PageUp": { "command": "ace:command", "argument": "gotopageup" },
