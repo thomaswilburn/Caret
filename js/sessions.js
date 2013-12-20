@@ -146,6 +146,8 @@ define([
       if (next < 0) {
         next = 0;
       }
+      var current = editor.getSession();
+      if (tab !== current) return renderTabs();
       raiseTabByIndex(next);
     };
 
