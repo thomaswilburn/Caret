@@ -5,30 +5,42 @@
   justify-content: flex-start;
   box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .3);
   
-  span {
+  &.dragging-tab {
+    span .close {
+      pointer-events: none;
+    }
+  }
+  
+  > span {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 300px;
+    max-width: 200px;
     padding: 0px 0px 0px 4px;
-    margin-right: 3px;
     opacity: .8;
-    background: @background;
-    border-radius: 2px 2px 0 0;
     color: @foreground;
     padding-bottom: 4px;
-    flex: 0 1 auto;
+    flex: 1 1 200px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
-    box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
+    border-left: 0 solid transparent;
+    border-right: 3px solid transparent;
+    background-clip: padding-box;
     
-    transition: max-width .5s linear, -webkit-transform .2s ease, border-width .5s ease;
-    transition: max-width .5s linear, transform .2s ease, border-width .5s ease;
-    
+    &:not(.ghost-tab) {
+      background-color: @background;
+      border-radius: 2px 2px 0 0;
+      box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
+      
+      transition: max-width .2s linear, flex-basis .2s linear, -webkit-transform .2s ease, border-left-width .2s linear, border-right-width .2s linear, border-bottom-width .5s ease;
+      transition: max-width .2s linear, flex-basis .2s linear, transform .2s ease, border-left-width .2s linear, border-right-width .2s linear, border-bottom-width .5s ease;
+    }
+
     &.active {
       padding-bottom: 0px;
+      
       border-bottom: 4px solid @accent;
       color: @foreground;
       opacity: 1;
@@ -36,18 +48,23 @@
     }
     
     &.dragging {
-      width: 0;
-      padding: 0;
+      display: none;
     }
     
-    &.hovering {
-      border-color: @faded;
-      border-left-width: 50px;
-      border-left-style: solid;
+    &.hovering-left {
+      border-left-width: 100px;
+      max-width: 300px;
+      flex-basis: 300px;
+    }
+    
+    &.hovering-right {
+      border-right-width: 103px;
+      max-width: 300px;
+      flex-basis: 300px;
     }
     
     &.enter {
-      //max-width: 0px;
+      max-width: 0px;
       -webkit-transform: translateY(24px);
       transform: translateY(24px);
     }

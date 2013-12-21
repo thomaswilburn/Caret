@@ -16,6 +16,8 @@ define([
   var syntax = document.find(".syntax");
   var stack = [];
   var stackOffset = 0;
+  var isTabContainerHovered = false;
+  var ghostTabsCount = 0;
 
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
@@ -45,6 +47,11 @@ define([
       span.append(close);
       tabContainer.append(span);
     });
+    for (var i = 0; i < ghostTabsCount; i++) {
+      var span = document.createElement("span");
+      span.className = "ghost-tab";
+      tabContainer.append(span);
+    }
     setTimeout(function() {
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(span) { span.removeClass("enter") });
@@ -145,6 +152,9 @@ define([
       var next = index - 1;
       if (next < 0) {
         next = 0;
+      }
+      if (isTabContainerHovered) {
+        ghostTabsCount++;
       }
       var current = editor.getSession();
       if (tab !== current) return renderTabs();
@@ -249,7 +259,9 @@ define([
     var draggedTab = null;
     tabContainer.on("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
+      tabContainer.addClass("dragging-tab");
       e.target.style.opacity = .4;
+      
       setTimeout(function() {
         e.target.addClass("dragging");
       }, 50);
@@ -259,41 +271,68 @@ define([
       draggedTab.ondragend = function() {
         draggedTab = null;
         e.target.style.opacity = null;
-        e.target.removeClass("dragging");
+        setTimeout(function() {
+          e.target.removeClass("dragging");
+        }, 50);
+        tabContainer.removeClass("dragging-tab");
       };
     });
     tabContainer.on("dragover", function(e) {
       e.preventDefault();
       e.dropEffect = "move";
+      if (!e.target.matches(".tab")) return;
+      
+      var targetStyle = getComputedStyle(e.target);
+      var tabWidth = e.target.offsetWidth - parseInt(targetStyle.borderLeftWidth) - parseInt(targetStyle.borderRightWidth);
+      if (e.offsetX - parseInt(targetStyle.borderLeftWidth) < tabWidth / 2) {
+        if (!e.target.hasClass("hovering-left")) {
+          e.target.removeClass("hovering-right");
+          e.target.addClass("hovering-left");
+        }
+      } else {
+        if (!e.target.hasClass("hovering-right")) {
+          e.target.removeClass("hovering-left");
+          e.target.addClass("hovering-right");
+        }
+      }
     });
     tabContainer.on("dragenter", function(e) {
       if (!e.target.matches(".tab")) return;
-      e.target.addClass("hovering");
+      var targetStyle = getComputedStyle(e.target);
+      var tabWidth = e.target.offsetWidth - parseInt(targetStyle.borderLeftWidth) - parseInt(targetStyle.borderRightWidth);
+      if (e.offsetX - parseInt(targetStyle.borderLeftWidth) < tabWidth / 2) {
+        if (!e.target.hasClass("hovering-left")) {
+          e.target.removeClass("hovering-right");
+          e.target.addClass("hovering-left");
+        }
+      } else {
+        if (!e.target.hasClass("hovering-right")) {
+          e.target.removeClass("hovering-left");
+          e.target.addClass("hovering-right");
+        }
+      }
     });
     tabContainer.on("dragleave", function(e) {
       if (!e.target.matches(".tab")) return;
-      e.target.removeClass("hovering");
+      e.target.removeClass("hovering-left");
+      e.target.removeClass("hovering-right");
     });
     tabContainer.on("drop", function(e) {
       if (!draggedTab) return;
-      var target = e.target;
-      var location = "before";
-      var x = e.offsetX;
-      while (!target.matches(".tab")) {
-        if (target == tabContainer) {
-          var elements = tabContainer.findAll(".tab");
-          location = "after";
-          elements.forEach(function(el) {
-            if (el.offsetLeft < x) {
-              target = el;
-            }
-          });
-          break;
-        }
-        target = target.parentElement;
-        x += target.offsetLeft;
-      }
+      tabContainer.removeClass("dragging-tab");
+      
       var from = tabs[e.dataTransfer.getData("application/x-tab-id") * 1];
+      var location = "before";
+      var target = tabContainer.find('.hovering-left');
+      if (target === null) {
+        target = tabContainer.find('.hovering-right');
+        location = "after";
+        
+        if (target === null) {
+          target = tabContainer.find('.tab:last-of-type')
+        }
+      }
+      
       var onto = tabs[target.getAttribute("argument") * 1];
       if (from != onto) {
         var reordered = [];
@@ -321,6 +360,22 @@ define([
       command.fire("session:close-tab", e.target.getAttribute("argument"));
     });
   };
+  
+  var enableTabContainerHover = function() {
+    var tabContainer = document.find(".tabs");
+    tabContainer.on("mouseenter", function(e) {
+      isTabContainerHovered = true;
+    });
+    
+    tabContainer.on("mouseleave", function(e) {
+      isTabContainerHovered = false;
+      if (ghostTabsCount > 0)
+      {
+        ghostTabsCount = 0;
+        renderTabs();
+      }
+    });
+  };
 
   var init = function() {
     cfg.modes.forEach(function(mode) {
@@ -333,6 +388,7 @@ define([
     renderTabs();
     enableTabDragDrop();
     enableTabMiddleClick();
+    enableTabContainerHover();
     reset();
   };
 
