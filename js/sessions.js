@@ -313,7 +313,7 @@ define([
     });
   };
   
-  var enableCloseTabOnMiddleClick = function() {
+  var enableTabMiddleClick = function() {
     var tabContainer = document.find(".tabs");
     tabContainer.on("click", function(e) {
       if (!e.target.matches(".tab")) return;
@@ -332,7 +332,7 @@ define([
     addTab("");
     renderTabs();
     enableTabDragDrop();
-    enableCloseTabOnMiddleClick();
+    enableTabMiddleClick();
     reset();
   };
 
