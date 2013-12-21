@@ -19,13 +19,24 @@
   }
   
   a {
+    display: block;
+    padding: 4px;
     text-decoration: none;
     color: inherit;
     white-space: nowrap;
-  }
-  
-  a:focus {
-    outline: none;
+    border-radius: 2px;
+
+    &:hover {
+      background: fade(@foreground, 10%);
+    }
+
+    &:active {
+      background: fade(@foreground, 15%);
+    }
+
+    &:focus {
+      outline: none;
+    }
   }
   
   ul {
@@ -38,7 +49,6 @@
     color: @foreground;
     text-shadow: -1px -1px 1px rgba(0, 0, 0, .2);
     white-space: no-wrap;
-    padding: 4px 0px;
     
     & > ul {
       display: none;
