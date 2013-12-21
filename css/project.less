@@ -75,8 +75,21 @@
     }
   }
   
-  .root > .directory:before {
-    content: none;
+  .root {
+  
+    &:not(:first-child) {
+      border-top: 1px solid lighten(@background, 20%);
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+    
+    & > .directory {
+      font-weight: bold;
+      
+      &:before {
+        content: none;
+      }
+    }
   }
   
   .expanded > .directory:before {
