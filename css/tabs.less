@@ -5,13 +5,18 @@
   justify-content: flex-start;
   box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .3);
   
-  span {
+  &.dragging-tab {
+    span .close {
+      pointer-events: none;
+    }
+  }
+  
+  > span {
     display: flex;
     justify-content: space-between;
     align-items: center;
     max-width: 200px;
     padding: 0px 0px 0px 4px;
-    margin-right: 3px;
     opacity: .8;
     color: @foreground;
     padding-bottom: 4px;
@@ -20,19 +25,22 @@
     text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
-
-    &:not(.ghostTab) {
-      background: @background;
+    border-left: 0 solid transparent;
+    border-right: 3px solid transparent;
+    background-clip: padding-box;
+    
+    &:not(.ghost-tab) {
+      background-color: @background;
       border-radius: 2px 2px 0 0;
       box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
-      border-left: 0 solid transparent;
-
-      transition: max-width .2s linear, flex-basis .2s linear, -webkit-transform .2s ease, border-left-width .2s linear, border-bottom-width .5s ease;
-      transition: max-width .2s linear, flex-basis .2s linear, transform .2s ease, border-left-width .2s linear, border-bottom-width .5s ease;
+      
+      transition: max-width .2s linear, flex-basis .2s linear, -webkit-transform .2s ease, border-left-width .2s linear, border-right-width .2s linear, border-bottom-width .5s ease;
+      transition: max-width .2s linear, flex-basis .2s linear, transform .2s ease, border-left-width .2s linear, border-right-width .2s linear, border-bottom-width .5s ease;
     }
-    
+
     &.active {
       padding-bottom: 0px;
+      
       border-bottom: 4px solid @accent;
       color: @foreground;
       opacity: 1;
@@ -43,11 +51,16 @@
       display: none;
     }
     
-    &.hovering {
-      border-color: @faded;
-      border-left-width: 50px;
-      max-width: 250px;
-      flex-basis: 250px;
+    &.hovering-left {
+      border-left-width: 100px;
+      max-width: 300px;
+      flex-basis: 300px;
+    }
+    
+    &.hovering-right {
+      border-right-width: 103px;
+      max-width: 300px;
+      flex-basis: 300px;
     }
     
     &.enter {
