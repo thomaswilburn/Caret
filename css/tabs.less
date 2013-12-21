@@ -25,10 +25,11 @@
       background: @background;
       border-radius: 2px 2px 0 0;
       box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
-    }
+      border-left: 0 solid transparent;
 
-    transition: max-width .2s linear, -webkit-transform .2s ease, border-width .5s ease;
-    transition: max-width .2s linear, transform .2s ease, border-width .5s ease;
+      transition: max-width .2s linear, flex-basis .2s linear, -webkit-transform .2s ease, border-left-width .2s linear, border-bottom-width .5s ease;
+      transition: max-width .2s linear, flex-basis .2s linear, transform .2s ease, border-left-width .2s linear, border-bottom-width .5s ease;
+    }
     
     &.active {
       padding-bottom: 0px;
@@ -39,14 +40,14 @@
     }
     
     &.dragging {
-      width: 0;
-      padding: 0;
+      display: none;
     }
     
     &.hovering {
       border-color: @faded;
       border-left-width: 50px;
-      border-left-style: solid;
+      max-width: 250px;
+      flex-basis: 250px;
     }
     
     &.enter {
