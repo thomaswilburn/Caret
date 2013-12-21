@@ -153,7 +153,9 @@ define([
       if (next < 0) {
         next = 0;
       }
-      ghostTabsCount++;
+      if (isTabContainerHovered) {
+        ghostTabsCount++;
+      }
       var current = editor.getSession();
       if (tab !== current) return renderTabs();
       raiseTabByIndex(next);
@@ -338,7 +340,6 @@ define([
     
     tabContainer.on("mouseleave", function(e) {
       isTabContainerHovered = false;
-      if (isTabContainerHovered) return;
       if (ghostTabsCount > 0)
       {
         ghostTabsCount = 0;
