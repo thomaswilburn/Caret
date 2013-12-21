@@ -312,6 +312,15 @@ define([
       renderTabs();
     });
   };
+  
+  var enableTabMiddleClick = function() {
+    var tabContainer = document.find(".tabs");
+    tabContainer.on("click", function(e) {
+      if (!e.target.matches(".tab")) return;
+      if (e.button != 1) return;
+      command.fire("session:close-tab", e.target.getAttribute("argument"));
+    });
+  };
 
   var init = function() {
     cfg.modes.forEach(function(mode) {
@@ -323,6 +332,7 @@ define([
     addTab("");
     renderTabs();
     enableTabDragDrop();
+    enableTabMiddleClick();
     reset();
   };
 
