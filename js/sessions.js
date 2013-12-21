@@ -16,6 +16,8 @@ define([
   var syntax = document.find(".syntax");
   var stack = [];
   var stackOffset = 0;
+  var isTabContainerHovered = false;
+  var ghostTabsCount = 0;
 
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
@@ -45,6 +47,11 @@ define([
       span.append(close);
       tabContainer.append(span);
     });
+    for (var i = 0; i < ghostTabsCount; i++) {
+      var span = document.createElement("span");
+      span.className = "ghostTab";
+      tabContainer.append(span);
+    }
     setTimeout(function() {
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(span) { span.removeClass("enter") });
@@ -146,6 +153,7 @@ define([
       if (next < 0) {
         next = 0;
       }
+      ghostTabsCount++;
       var current = editor.getSession();
       if (tab !== current) return renderTabs();
       raiseTabByIndex(next);
@@ -321,6 +329,23 @@ define([
       command.fire("session:close-tab", e.target.getAttribute("argument"));
     });
   };
+  
+  var enableTabContainerHover = function() {
+    var tabContainer = document.find(".tabs");
+    tabContainer.on("mouseenter", function(e) {
+      isTabContainerHovered = true;
+    });
+    
+    tabContainer.on("mouseleave", function(e) {
+      isTabContainerHovered = false;
+      if (isTabContainerHovered) return;
+      if (ghostTabsCount > 0)
+      {
+        ghostTabsCount = 0;
+        renderTabs();
+      }
+    });
+  };
 
   var init = function() {
     cfg.modes.forEach(function(mode) {
@@ -333,6 +358,7 @@ define([
     renderTabs();
     enableTabDragDrop();
     enableTabMiddleClick();
+    enableTabContainerHover();
     reset();
   };
 

@@ -13,19 +13,22 @@
     padding: 0px 0px 0px 4px;
     margin-right: 3px;
     opacity: .8;
-    background: @background;
-    border-radius: 2px 2px 0 0;
     color: @foreground;
     padding-bottom: 4px;
-    flex: 1 1 auto;
+    flex: 1 1 200px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
-    box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
-    
-    transition: max-width .5s linear, -webkit-transform .2s ease, border-width .5s ease;
-    transition: max-width .5s linear, transform .2s ease, border-width .5s ease;
+
+    &:not(.ghostTab) {
+      background: @background;
+      border-radius: 2px 2px 0 0;
+      box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
+    }
+
+    transition: max-width .2s linear, -webkit-transform .2s ease, border-width .5s ease;
+    transition: max-width .2s linear, transform .2s ease, border-width .5s ease;
     
     &.active {
       padding-bottom: 0px;
@@ -47,7 +50,7 @@
     }
     
     &.enter {
-      //max-width: 0px;
+      max-width: 0px;
       -webkit-transform: translateY(24px);
       transform: translateY(24px);
     }
