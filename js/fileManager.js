@@ -45,7 +45,7 @@ define([
   command.on("session:save-file", function(c) { return sessions.getCurrent().save(c) });
   command.on("session:save-file-as", function(c) { 
     var tab = sessions.getCurrent();
-    tab.save(true, function() {
+    tab.save(true).then(function() {
       sessions.setSyntax(tab);
       if (c) c();
     });

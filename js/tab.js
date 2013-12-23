@@ -21,11 +21,9 @@ define([
     }
     
     this.modified = false;
-    
     this.setUndoManager(new ace.UndoManager());
     
     var self = this;
-    
     this.on("change", function() {
       if (self.modified) return;
       self.modified = true;
@@ -52,37 +50,36 @@ define([
     }
     var content = this.getValue();
     var self = this;
+    var deferred = M.deferred();
 
-    var promise = new Promise(function(ok, fail) {
-      var whenOpen = function() {
-        self.file.write(content).then(function() {
-          self.modifiedAt = new Date();
-          self.modified = false;
-          command.fire("session:render");
-          ok();
-        }, fail);
-      };
-  
-      if (!self.file || as) {
-        var file = new File();
-        file.open("save")
-          .then(function() {
-            self.file = file;
-            self.fileName = file.entry.name;
-            delete self.syntaxMode;
-          }, function(err) {
-            dialog(err);
-            fail();
-          })
-          .then(whenOpen);
-        return;
-      }
-  
-      whenOpen();
-    });
+    var whenOpen = function() {
+      self.file.write(content).then(function() {
+        self.modifiedAt = new Date();
+        self.modified = false;
+        command.fire("session:render");
+        deferred.done();
+      }, deferred.fail.bind(deferred));
+    };
+
+    if (!self.file || as) {
+      var file = new File();
+      file.open("save")
+        .then(function() {
+          self.file = file;
+          self.fileName = file.entry.name;
+          delete self.syntaxMode;
+        }, function(err) {
+          dialog(err);
+          deferred.fail();
+        })
+        .then(whenOpen);
+      return;
+    }
+
+    whenOpen();
     
-    if (c) M.pton(promise, c);
-    return promise;
+    if (c) M.pton(deferred, c);
+    return deferred.promise();
   };
   
   Tab.prototype.drop = function() {
