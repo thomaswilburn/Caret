@@ -44,12 +44,28 @@ define(function() {
       };
       next();
     },
+    //promise-to-node -- tacks node-style callbacks onto a promise
     pton: function(promise, c) {
       promise.then(function(success) {
         c(null, success);
       }, function(err) {
         c(err);
       });
+    },
+    //mimic $.Deferred for less nesting.
+    deferred: function() {
+      var resolve, reject;
+      var promise = new Promise(function(ok, fail) {
+        resolve = ok;
+        reject = fail;
+      });
+      
+      return {
+        done: resolve,
+        fail: reject,
+        then: promise.then.bind(promise),
+        promise: function() { return promise }
+      };
     }
   }
 

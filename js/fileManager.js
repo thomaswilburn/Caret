@@ -126,7 +126,6 @@ define([
             restored = restored.filter(function(d) { return d });
             for (var i = 0; i < restored.length; i++) {
               var tab = restored[i];
-              console.log(tab.file);
               sessions.addFile(tab.value, tab.file);
             }
             if (!failures.length) return;
