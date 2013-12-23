@@ -8,9 +8,6 @@ define([
   var local = {};
   var project = {};
   
-  //put this here because Settings is pretty early in load process
-  chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] * 1 || 0;
-  
   var clone = function(item) {
     var cloneArray = function(a) {
       var n = [];
@@ -94,7 +91,7 @@ define([
       }
       
       var merge = function() {
-        sync.get(name, function(data) {
+        sync.get(name).then(function(data) {
           if (data) {
             local[name] = data;
           } else {

@@ -1,7 +1,8 @@
 define([
     "storage/syncFS",
-    "command"
-  ], function(sync, command) {
+    "command",
+    "util/manos"
+  ], function(sync, command, M) {
 
   /*
 
@@ -32,24 +33,25 @@ define([
     open: function(name, c) {
       this.name = name;
       this.entry.name = name;
-      if (c) {
-        c(this);
-      }
+      var self = this;
+      var promise = new Promise(function(ok, fail) {
+        resolve(self);
+      });
+      if (c) M.pton(promise, c);
+      return promise;
     },
     read: function(c) {
       var name = this.name;
-      sync.get(this.name, function(data) {
-        c(null, data[name]);
-      });
+      return sync.get(this.name);
     },
     write: function(content, c) {
       var self = this;
-      sync.set(this.name, content, function() {
+      return sync.set(this.name, content).then(function() {
         command.fire("settings:change-local");
-        if (c) c(null, self);
       });
     },
-    retain: function() { return false; }
+    retain: function() { return false; },
+    restore: function() { return new Promise.reject() }
   };
   
   return SyncFile;

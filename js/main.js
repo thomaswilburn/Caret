@@ -1,3 +1,5 @@
+chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] * 1 || 0;
+
 require([
     "command",
     "settings!user",

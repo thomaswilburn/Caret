@@ -25,49 +25,66 @@ define(function() {
   };
   
   return {
-    get: function(key, callback) {
+    get: function(key) {
       if (cache) {
         var result = decode(key);
-        return callback(result);
+        return Promise.resolve(result);
       }
-      requests.push(callback);
-      if (pending) return;
       
-      chrome.storage.sync.get(function(all) {
-        cache = all;
-        var result = decode(key);
-        return callback(result);
+      var only = function(data) {
+        return decode(key);
+      }
+      
+      var fetch = function() {
+        return new Promise(function(ok) {
+          chrome.storage.sync.get(function(all) {
+            cache = all;
+            ok(all);
+            pending = null;
+          });
+        });
+      };
+      if (!pending) {
+        pending = fetch();
+      }
+      return pending.then(only);
+    },
+    set: function(key, data) {
+      cache = null;
+      return new Promise(function(ok, fail) {
+        if (data.length < 3000) {
+          var hash = {};
+          hash[key] = data;
+          chrome.storage.sync.set(hash, ok);
+        } else {
+          var chunks = [];
+          for (var i = 0; i < data.length; i += 3000) {
+            chunks.push(data.substr(i, i + 3000));
+          }
+          var hash = {};
+          hash[key] = chunks.length;
+          chunks.map(function(chunk, i) {
+            hash[key + i] = chunk;
+          });
+          chrome.storage.sync.set(hash, ok)
+        }
       });
     },
-    set: function(key, data, callback) {
-      cache = null;
-      data = data;
-      if (data.length < 3000) {
-        var hash = {};
-        hash[key] = data;
-        chrome.storage.sync.set(hash, callback);
-      } else {
-        var chunks = [];
-        for (var i = 0; i < data.length; i += 3000) {
-          chunks.push(data.substr(i, i + 3000));
-        }
-        var hash = {};
-        hash[key] = chunks.length;
-        chunks.map(function(chunk, i) {
-          hash[key + i] = chunk;
-        });
-        chrome.storage.sync.set(hash, callback)
-      }
-    },
-    remove: function(key, callback) {
+    remove: function(key) {
       var seed = cache[key];
-      if (typeof seed == "number") {
-        for (var i = 0; i < seed; i++) {
-          chrome.storage.sync.remove(key + i);
+      return new Promise(function(ok) {
+        if (typeof seed == "number") {
+          var waiting = [];
+          var p = Promise.all(new Array(seed).map(function(i) {
+            new Promise(function(ok) {
+              chrome.storage.sync.remove(key + i, ok);
+            });
+          }));
+          return p.then(ok);
         }
-      }
-      chrome.storage.sync.remove(key, callback);
-      cache = null;
+        cache = null;
+        chrome.storage.sync.remove(key, ok);
+      });
     }
   }
   
