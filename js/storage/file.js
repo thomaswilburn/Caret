@@ -27,14 +27,14 @@ define([
         "open": "openWritableFile",
         "save": "saveFile"
       };
-      var promise = new Promise(function(resolve, reject) {
+      var promise = new Promise(function(ok, fail) {
         chrome.fileSystem.chooseEntry({
           type: modes[mode] || "open"
         }, function(entry) {
           //cancelling acts like an error, but isn't.
-          if (!entry) return reject(chrome.runtime.lastError);
+          if (!entry) return fail(chrome.runtime.lastError);
           self.entry = entry;
-          resolve(self)
+          ok(self)
         });
       });
       if (c) M.pton(promise, c);
@@ -42,24 +42,24 @@ define([
     },
     read: function(c) {
       var self = this;
-      var promise = new Promise(function(resolve, reject) {
+      var promise = new Promise(function(ok, fail) {
         if (!self.entry) {
-          console.error(this);
-          reject("File not opened");
+          console.error(self);
+          fail("File not opened");
         }
         var reader = new FileReader();
         reader.onload = function() {
-          resolve(reader.result);
+          ok(reader.result);
         };
         reader.onerror = function(err) {
           console.error("File read error!");
-          reject(err);
+          fail(err);
         };
         self.entry.file(function(f) {
           reader.readAsText(f);
         });
       });
-      if (c) M.pton(promise, c);
+      if (c && typeof c == "function") M.pton(promise, c);
       return promise;
     },
     write: function(data, c) {
@@ -70,7 +70,7 @@ define([
           return self.write(data, c);
         });
       }
-      var promise = new Promise(function(resolve, reject) {
+      var promise = new Promise(function(ok, fail) {
         M.chain(
           //check permissions
           function(next) {
@@ -84,7 +84,7 @@ define([
                   self.entry = entry;
                   next();
                 } else {
-                  reject("Couldn't open file as writable");
+                  fail("Couldn't open file as writable");
                 }
               });
             }
@@ -95,12 +95,12 @@ define([
             self.entry.createWriter(function(writer) {
               writer.onerror = function(err) {
                 console.error(err);
-                reject(err);
+                fail(err);
               }
               writer.onwriteend = function() {
                 //after truncation, actually write the file
                 writer.onwriteend = function() {
-                  resolve(self);
+                  ok(self);
                   self.onWrite();
                 }
                 var blob = new Blob([data]);
@@ -116,13 +116,13 @@ define([
     },
     stat: function(c) {
       var self = this;
-      var promise = new Promise(function(resolve, reject) {
+      var promise = new Promise(function(ok, fail) {
         if (self.entry) {
           return self.entry.file(function(f) {
-            resolve(f);
+            ok(f);
           });
         }
-        reject("No file entry");
+        fail("No file entry");
       });
       if (c) M.pton(promise, c);
       return promise;
@@ -132,16 +132,16 @@ define([
     },
     restore: function(id, c) {
       var self = this;
-      var promise = new Promise(function(resolve, reject) {
+      var promise = new Promise(function(ok, fail) {
         chrome.fileSystem.isRestorable(id, function(is) {
           if (is) {
             chrome.fileSystem.restoreEntry(id, function(entry) {
-              if (!entry) return reject("restoreEntry() failed for " + id);
+              if (!entry) return fail("restoreEntry() failed for " + id);
               self.entry = entry;
-              resolve(self);
+              ok();
             });
           } else {
-            reject("isRestorable() returned false for " + id);
+            fail("isRestorable() returned false for " + id);
           }
         });
       });
@@ -150,8 +150,8 @@ define([
     },
     getPath: function(c) {
       var self = this;
-      var promise = new Promise(function(resolve, reject) {
-        chrome.fileSystem.getDisplayPath(this.entry, resolve);
+      var promise = new Promise(function(ok, fail) {
+        chrome.fileSystem.getDisplayPath(this.entry, ok);
       });
       if (c) M.pton(c);
       return promise;

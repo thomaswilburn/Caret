@@ -22,13 +22,9 @@ define([
       };
       files.forEach(function(entry) {
         var f = new File(entry);
-        f.read(function(err, data) {
-          if (err) {
-            dialog(err);
-            return;
-          }
+        f.read().then(function(data) {
           sessions.addFile(data, f);
-        });
+        }, dialog);
       });
     });
   };
@@ -37,13 +33,9 @@ define([
     if (window.launchData) {
       window.launchData.forEach(function(file) {
         var f = new File(file.entry);
-        f.read(function(err, contents) {
-          if (err) {
-            dialog(err);
-            return;
-          }
+        f.read().then(function(contents) {
           sessions.addFile(contents, f);
-        });
+        }, dialog);
       });
     }
   };
@@ -62,8 +54,7 @@ define([
   command.on("session:revert-file", function(c) {
     var tab = sessions.getCurrent();
     if (!tab.file) return;
-    tab.file.read(function(err, data) {
-      if (err) return;
+    tab.file.read().then(function(data) {
       tab.setValue(data);
       tab.modified = false;
       sessions.renderTabs();
@@ -119,33 +110,23 @@ define([
           data.retained,
           function(id, i, c) {
             var file = new File();
-            M.chain(
-              function(next) {
-                file.restore(id, next);
-              },
-              function(err, _, next) {
-                if (err) {
-                  failures.push(id);
-                  return c(false);
-                }
-                file.read(next);
-              },
-              function(err, data) {
-                if (err) {
-                  failures.push(id);
-                  return c(false);
-                }
+            file
+              .restore(id)
+              .then(file.read.bind(file))
+              .then(function(data) {
                 c({
                   value: data,
                   file: file
-                });
-              }
-            );
+                })
+              }, function(err) {
+                failures.push(id);
+              });
           },
           function(restored) {
             restored = restored.filter(function(d) { return d });
             for (var i = 0; i < restored.length; i++) {
               var tab = restored[i];
+              console.log(tab.file);
               sessions.addFile(tab.value, tab.file);
             }
             if (!failures.length) return;

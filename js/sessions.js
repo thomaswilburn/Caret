@@ -2,13 +2,12 @@ define([
     "editor",
     "ui/dialog",
     "command",
-    "storage/file",
     "tab",
     "settings!ace,user",
     "ui/statusbar",
     "aceBindings"
   ],
-  function(editor, dialog, command, File, Tab, Settings, status) {
+  function(editor, dialog, command, Tab, Settings, status) {
 
   var tabs = [];
   var cfg = Settings.get("ace");

@@ -1,7 +1,8 @@
 define([
     "command",
-    "storage/file"
-  ], function(command, File) {
+    "storage/file",
+    "util/manos"
+  ], function(command, File, M) {
 
   var EditSession = ace.require("ace/edit_session").EditSession;
   
@@ -52,30 +53,36 @@ define([
     var content = this.getValue();
     var self = this;
 
-    var whenOpen = function() {
-      self.file.write(content, function() {
-        self.modifiedAt = new Date();
-        if (c) c();
-      });
-      self.modified = false;
-      command.fire("session:render");
-    };
-
-    if (!this.file || as) {
-      var file = new File();
-      return file.open("save", function(err) {
-        self.file = file;
-        if (err) {
-          dialog(err);
-          return;
-        }
-        self.fileName = file.entry.name;
-        delete self.syntaxMode;
-        whenOpen();
-      });
-    }
-
-    whenOpen();
+    var promise = new Promise(function(ok, fail) {
+      var whenOpen = function() {
+        self.file.write(content).then(function() {
+          self.modifiedAt = new Date();
+          self.modified = false;
+          command.fire("session:render");
+          ok();
+        }, fail);
+      };
+  
+      if (!self.file || as) {
+        var file = new File();
+        file.open("save")
+          .then(function() {
+            self.file = file;
+            self.fileName = file.entry.name;
+            delete self.syntaxMode;
+          }, function(err) {
+            dialog(err);
+            fail();
+          })
+          .then(whenOpen);
+        return;
+      }
+  
+      whenOpen();
+    });
+    
+    if (c) M.pton(promise, c);
+    return promise;
   };
   
   Tab.prototype.drop = function() {
@@ -89,27 +96,6 @@ define([
       var filtered = data.retained.filter(function(item) { return item != id });
       chrome.storage.local.set({ retained: filtered });
     });
-  };
-  
-  /*
-  
-  HACK HACK HACKETY HACK: Since Chrome won't give us a file path, we have to
-  find our own ways to identify unique files (so that we don't re-open them).
-  In order to do that, we'll try to get the unique information about a file,
-  and return it as a concatenated string that the sessions module can use to
-  check against a new file. This should work in the short term, but it could
-  be fooled by any files that are different, but A) named the same, B) the
-  same size, and C) dated the same. Rare, but possible.
-  
-  Oh, and for added suck, it's async.
-  
-  */
-  
-  Tab.prototype.getFingerprint = function(c) {
-    if (!this.file || this.file.virtual) return false;
-    this.file.entry.file(function(f) {
-      c([f.name, f.size, f.type, f.lastModifiedDate].join("|"));
-    })
   };
   
   return Tab;
