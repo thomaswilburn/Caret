@@ -27,109 +27,134 @@ define([
         "open": "openWritableFile",
         "save": "saveFile"
       };
-      chrome.fileSystem.chooseEntry({
-        type: modes[mode]
-      }, function(entry) {
-        //cancelling acts like an error, but isn't.
-        if (!entry) return;
-        self.entry = entry;
-        c(null, self)
+      var promise = new Promise(function(resolve, reject) {
+        chrome.fileSystem.chooseEntry({
+          type: modes[mode] || "open"
+        }, function(entry) {
+          //cancelling acts like an error, but isn't.
+          if (!entry) return reject(chrome.runtime.lastError);
+          self.entry = entry;
+          resolve(self)
+        });
       });
+      if (c) M.pton(promise, c);
+      return promise;
     },
     read: function(c) {
-      if (!this.entry) {
-        console.error(this);
-        c("File not opened", null);
-      }
-      var reader = new FileReader();
-      reader.onload = function() {
-        c(null, reader.result);
-      };
-      reader.onerror = function() {
-        console.error("File read error!");
-        c(err, null);
-      };
-      this.entry.file(function(f) {
-        reader.readAsText(f);
+      var self = this;
+      var promise = new Promise(function(resolve, reject) {
+        if (!self.entry) {
+          console.error(this);
+          reject("File not opened");
+        }
+        var reader = new FileReader();
+        reader.onload = function() {
+          resolve(reader.result);
+        };
+        reader.onerror = function(err) {
+          console.error("File read error!");
+          reject(err);
+        };
+        self.entry.file(function(f) {
+          reader.readAsText(f);
+        });
       });
+      if (c) M.pton(promise, c);
+      return promise;
     },
     write: function(data, c) {
       var self = this;
-      if (!this.entry) {
+      if (!self.entry) {
         //guard against cases where we accidentally write before opening
-        self.open("save", function() {
-          self.write(data, c);
+        return self.open("save").then(function() {
+          return self.write(data, c);
         });
-        return;
       }
-      c = c || function() {};
-      M.chain(
-        //check permissions
-        function(next) {
-          chrome.fileSystem.isWritableEntry(self.entry, next);
-        },
-        //if read-only, try to open as writable
-        function(ok, next) {
-          if (!ok) {
-            return chrome.fileSystem.getWritableEntry(self.entry, function(entry) {
-              if (entry) {
-                self.entry = entry;
-                next();
-              } else {
-                c("Couldn't open file as writable", self);
+      var promise = new Promise(function(resolve, reject) {
+        M.chain(
+          //check permissions
+          function(next) {
+            chrome.fileSystem.isWritableEntry(self.entry, next);
+          },
+          //if read-only, try to open as writable
+          function(ok, next) {
+            if (!ok) {
+              return chrome.fileSystem.getWritableEntry(self.entry, function(entry) {
+                if (entry) {
+                  self.entry = entry;
+                  next();
+                } else {
+                  reject("Couldn't open file as writable");
+                }
+              });
+            }
+            next();
+          },
+          //write file
+          function() {
+            self.entry.createWriter(function(writer) {
+              writer.onerror = function(err) {
+                console.error(err);
+                reject(err);
               }
+              writer.onwriteend = function() {
+                //after truncation, actually write the file
+                writer.onwriteend = function() {
+                  resolve(self);
+                  self.onWrite();
+                }
+                var blob = new Blob([data]);
+                writer.write(blob);
+              };
+              writer.truncate(0);
             });
           }
-          next();
-        },
-        //write file
-        function() {
-          self.entry.createWriter(function(writer) {
-            writer.onerror = function(err) {
-              console.error(err);
-              c(err, self);
-            }
-            writer.onwriteend = function() {
-              //after truncation, actually write the file
-              writer.onwriteend = function() {
-                c(null, self);
-                self.onWrite();
-              }
-              var blob = new Blob([data]);
-              writer.write(blob);
-            };
-            writer.truncate(0);
-          });
-        }
-      );
+        );  
+      });
+      if (c) M.pton(promise, c);
+      return promise;
     },
     stat: function(c) {
-      if (this.entry) {
-        return this.entry.file(function(f) {
-          c(null, f);
-        });
-      }
-      return c("No entry");
+      var self = this;
+      var promise = new Promise(function(resolve, reject) {
+        if (self.entry) {
+          return self.entry.file(function(f) {
+            resolve(f);
+          });
+        }
+        reject("No file entry");
+      });
+      if (c) M.pton(promise, c);
+      return promise;
     },
     retain: function() {
       return chrome.fileSystem.retainEntry(this.entry);
     },
     restore: function(id, c) {
       var self = this;
-      chrome.fileSystem.isRestorable(id, function(is) {
-        if (is) {
-          chrome.fileSystem.restoreEntry(id, function(entry) {
-            if (!entry) return c("restoreEntry() failed for " + id, null);
-            self.entry = entry;
-            c(null, self);
-          });
-        } else {
-          c("isRestorable() returned false for " + id, null);
-        }
+      var promise = new Promise(function(resolve, reject) {
+        chrome.fileSystem.isRestorable(id, function(is) {
+          if (is) {
+            chrome.fileSystem.restoreEntry(id, function(entry) {
+              if (!entry) return reject("restoreEntry() failed for " + id);
+              self.entry = entry;
+              resolve(self);
+            });
+          } else {
+            reject("isRestorable() returned false for " + id);
+          }
+        });
       });
+      if (c) M.pton(promise, c);
+      return promise;
     },
     getPath: function(c) {
-      chrome.fileSystem.getDisplayPath(this.entry, c);
+      var self = this;
+      var promise = new Promise(function(resolve, reject) {
+        chrome.fileSystem.getDisplayPath(this.entry, resolve);
+      });
+      if (c) M.pton(c);
+      return promise;
     }
   };
   

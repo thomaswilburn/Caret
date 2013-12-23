@@ -43,6 +43,13 @@ define(function() {
         }
       };
       next();
+    },
+    pton: function(promise, c) {
+      promise.then(function(success) {
+        c(null, success);
+      }, function(err) {
+        c(err);
+      });
     }
   }
 
