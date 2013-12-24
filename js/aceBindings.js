@@ -30,12 +30,13 @@ define([
     }
 
     //this is a place to put bindings that don't have direct equivalents in Ace, but are required for Sublime compatibility
-    command.on("sublime:expand-to-line", function() {
+    command.on("sublime:expand-to-line", function(c) {
       editor.execCommand("gotolinestart");
       editor.execCommand("selecttolineend");
+      if (c) c();
     });
     
-    command.on("sublime:expand-to-paragraph", function() {
+    command.on("sublime:expand-to-paragraph", function(c) {
       var session = editor.getSession();
       var selection = editor.getSelection();
       var currentLine = editor.getCursorPosition().row;
@@ -61,9 +62,10 @@ define([
       editor.clearSelection();
       editor.moveCursorTo(startLine);
       selection.selectTo(endLine);
+      if (c) c();
     });
     
-    command.on("sublime:expand-to-matching", function() {
+    command.on("sublime:expand-to-matching", function(c) {
       var Range = ace.require("ace/range").Range;
       var position = editor.getCursorPosition();
       var line = editor.getSession().getLine(position.row);
@@ -101,22 +103,25 @@ define([
       //this is a little wonky, but it's better than nothing.
       editor.execCommand("jumptomatching");
       editor.execCommand("selecttomatching");
+      if (c) c();
     });
     
-    command.on("sublime:tabs-to-spaces", function() {
+    command.on("sublime:tabs-to-spaces", function(c) {
       var session = editor.getSession();
       var text = session.getValue();
       var spaces = new Array(userConfig.indentation + 1).join(" ");
       text = text.replace(/\t/g, spaces);
       session.setValue(text);
+      if (c) c();
     });
     
-    command.on("sublime:spaces-to-tabs", function() {
+    command.on("sublime:spaces-to-tabs", function(c) {
       var session = editor.getSession();
       var text = session.getValue();
       var replace = new RegExp(new Array(userConfig.indentation + 1).join(" "), "g");
       text = text.replace(replace, "\t");
       session.setValue(text);
+      if (c) c();
     });
 
     //we also add a command redirect for firing Ace commands via regular command attributes
@@ -128,7 +133,7 @@ define([
     
     //filter some Ace commands for UI purposes
     var isRecording = false;
-    command.on("ace:togglemacro", function() {
+    command.on("ace:togglemacro", function(c) {
       isRecording = !isRecording;
       editor.execCommand("togglerecording");
       editor.focus();
@@ -137,11 +142,13 @@ define([
       } else {
         status.clearMessage();
       }
+      if (c) c();
     });
     
     //API bindings
-    command.on("editor:insert", function(text) {
+    command.on("editor:insert", function(text, c) {
       editor.insert(text);
+      if (c) c();
     });
 
 });

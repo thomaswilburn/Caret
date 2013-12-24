@@ -123,7 +123,7 @@ define([
     return tab;
   };
 
-  var removeTab = function(index) {
+  var removeTab = function(index, c) {
     if (!index) {
       index = tabs.indexOf(editor.getSession());
     }
@@ -148,6 +148,7 @@ define([
       var current = editor.getSession();
       if (tab !== current) return renderTabs();
       raiseTabByIndex(next);
+      if (c) c();
     };
 
     if (tab.modified) {
@@ -209,7 +210,7 @@ define([
 
   var ctrl = false;
 
-  var switchTab = function(arg) {
+  var switchTab = function(arg, c) {
     arg = arg || 1;
     if (!ctrl) {
       ctrl = true;
@@ -219,9 +220,10 @@ define([
     stackOffset = (stackOffset + arg) % stack.length;
     if (stackOffset < 0) stackOffset = stack.length + stackOffset;
     raiseTab(stack[stackOffset]);
+    if (c) c();
   };
 
-  var switchTabLinear = function(shift) {
+  var switchTabLinear = function(shift, c) {
     shift = shift || 1;
     var current = editor.getSession();
     var currentIndex = tabs.indexOf(current);
@@ -232,6 +234,7 @@ define([
     var tab = tabs[shifted];
     raiseTab(tab);
     resetStack(tab);
+    if (c) c();
   };
 
   command.on("session:raise-tab", function(index) {

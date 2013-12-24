@@ -48,12 +48,13 @@ define([
     });
   };
   
-  var defaultFontSize = function() {
+  var defaultFontSize = function(c) {
     var size = Settings.get("user").fontSize;
     editor.container.style.fontSize = size ? size + "px" : null;
+    if (c) c();
   };
   
-  var adjustFontSize = function(delta) {
+  var adjustFontSize = function(delta, c) {
     var current = editor.container.style.fontSize;
     if (current) {
       current = current.replace("px", "") * 1;
@@ -62,6 +63,7 @@ define([
     }
     var adjusted = current + delta;
     editor.container.style.fontSize = adjusted + "px";
+    if (c) c();
   }
   
   command.on("editor:default-zoom", defaultFontSize);
@@ -70,10 +72,11 @@ define([
   command.on("init:startup", init);
   command.on("init:restart", reset);
   
-  command.on("editor:theme", function(theme) {
+  command.on("editor:theme", function(theme, c) {
     editor.setTheme("ace/theme/" + theme);
     themes.value = theme;
     editor.focus();
+    if (c) c();
   });
 
   //disable focusing on the editor except by program

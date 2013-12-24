@@ -7,7 +7,7 @@ define([
     "util/manos"
   ], function(sessions, File, dialog, command, Settings, M) {
 
-  var openFile = function() {
+  var openFile = function(c) {
     //have to call chooseEntry manually to support multiple files
     var args = {
       type: "openWritableFile"
@@ -20,12 +20,13 @@ define([
       if (!files.slice) {
         files = [ files ];
       };
-      files.forEach(function(entry) {
+      files.map(function(entry) {
         var f = new File(entry);
-        f.read().then(function(data) {
+        return f.read().then(function(data) {
           sessions.addFile(data, f);
         }, dialog);
       });
+      Promise.all(files).then(c);
     });
   };
   
@@ -42,7 +43,7 @@ define([
   
   command.on("session:new-file", function(content) { return sessions.addFile(content) });
   command.on("session:open-file", openFile);
-  command.on("session:save-file", function(c) { return sessions.getCurrent().save(c) });
+  command.on("session:save-file", function(c) { sessions.getCurrent().save(c) });
   command.on("session:save-file-as", function(c) { 
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {
@@ -58,6 +59,7 @@ define([
       tab.setValue(data);
       tab.modified = false;
       sessions.renderTabs();
+      c();
     });
   });
   
@@ -85,17 +87,19 @@ define([
     });
   });
   
-  command.on("session:open-settings-file", function(name) {
+  command.on("session:open-settings-file", function(name, c) {
     Settings.load(name, function() {
       var data = Settings.getAsString(name);
       var file = Settings.getAsFile(name);
       sessions.addFile(data, file);
+      if (c) c();
     });
   });
   
   //defaults don't get loaded as files, just as content
-  command.on("session:open-settings-defaults", function(name) {
+  command.on("session:open-settings-defaults", function(name, c) {
     sessions.addDefaultsFile(name);
+    if (c) c();
   });
   
   command.on("session:open-launch", openFromLaunchData);

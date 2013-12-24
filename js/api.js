@@ -9,13 +9,14 @@ define([
     targets = Settings.get("api");
   });
   
-  command.on("api:execute", function(id) {
-    if (!id in targets) return;
+  command.on("api:execute", function(id, c) {
+    if (!id in targets) return c();
     var config = targets[id];
     chrome.runtime.sendMessage(config.id, config.message, null, function() {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError);
       }
+      if (c) c();
     });
   });
   
