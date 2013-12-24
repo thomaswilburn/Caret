@@ -26,7 +26,7 @@ require([
       "light": "css/caret.css"
     };
     var theme = user.uiTheme || "light";
-    var url = themes[theme];
+    var url = themes[theme] || themes.dark;
     document.find("#theme").setAttribute("href", url);
   }
   
