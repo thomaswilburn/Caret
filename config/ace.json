@@ -63,7 +63,7 @@
     { "name": "markdown", "label": "Markdown", "extensions": ["md"] },
     { "name": "mysql", "label": "MySQL", "extensions": ["sql"] },
     { "name": "objectivec", "label": "Objective C", "extensions": ["obc"] },
-    { "name": "perl", "label": "Perl", "extensions": ["pl", "cgi"] },
+    { "name": "perl", "label": "Perl", "extensions": ["pl", "cgi", "pm"] },
     { "name": "php", "label": "PHP", "extensions": ["php"] },
     { "name": "pgsql", "label": "PostgreSQL", "extensions": ["sql"] },
     { "name": "plain_text", "label": "Plain Text", "extensions": ["txt"] },
