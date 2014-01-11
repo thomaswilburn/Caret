@@ -331,7 +331,7 @@ define([
       option.value = mode.name;
       syntax.append(option);
     });
-    addTab("");
+    if (!tabs.length) addTab("");
     renderTabs();
     enableTabDragDrop();
     enableTabMiddleClick();

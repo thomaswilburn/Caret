@@ -77,6 +77,16 @@ define([
     }
   });
   
+  //register for startup and fire any commands that are pending
+  register("init:startup", function() {
+    if (window.launchCommands) {
+      window.launchCommands.forEach(function(bundle) {
+        fire(bundle.message.command, bundle.message.argument, bundle.sendResponse);
+      });
+      delete window.launchCommands;
+    }
+  });
+  
   var facade = {
     fire: fire,
     on: register,

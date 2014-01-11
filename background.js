@@ -2,6 +2,7 @@ var mainWindow = null;
 var pending = null;
 var upgrading = false;
 var files = [];
+var commands = [];
 
 var openWindow = function() {
   
@@ -31,10 +32,12 @@ var openWindow = function() {
   }, function(win) {
     mainWindow = win;
     win.contentWindow.launchData = files;
+    win.contentWindow.launchCommands = commands;
     mainWindow.onClosed.addListener(function() {
       mainWindow = null;
     });
     files = [];
+    commands = [];
     pending = null;
   });
 }
@@ -49,5 +52,20 @@ var launch = function(launchData) {
   
 };
 
+var onMessage = function(message, sender, sendResponse) {
+  //main window will pick up the message, if it's open
+  //we also allow extensions to suppress launch behavior for spurious messages
+  if (mainWindow || message.quiet) return;
+  commands.push({
+    message: message,
+    sender: sender,
+    sendResponse: sendResponse
+  });
+  if (pending !== null) return;
+  if (upgrading) return;
+  pending = setTimeout(openWindow, 250);
+};
+
 chrome.app.runtime.onLaunched.addListener(launch);
 chrome.app.runtime.onRestarted.addListener(launch);
+chrome.runtime.onMessageExternal.addListener(onMessage);
