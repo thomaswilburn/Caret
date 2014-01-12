@@ -162,7 +162,8 @@ define([
     getPath: function(c) {
       var self = this;
       var promise = new Promise(function(ok, fail) {
-        chrome.fileSystem.getDisplayPath(this.entry, ok);
+        if (!self.entry) return fail("No backing entry, cannot get path")
+        chrome.fileSystem.getDisplayPath(self.entry, ok);
       });
       if (c) M.pton(promise, c);
       return promise;

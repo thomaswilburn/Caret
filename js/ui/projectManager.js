@@ -233,7 +233,7 @@ define([
             if (!tab.file || tab.file.virtual) {
               return c(false);
             }
-            tab.file.getPath(function(p) {
+            tab.file.getPath(function(err, p) {
               if (p == path) {
                 sessions.setCurrent(tab);
                 found = true;
