@@ -77,18 +77,14 @@ define([
     }
   });
 
-  //register for startup and fire any commands that are pending
-  register("init:startup", function() {
-    //wait a couple of seconds to make sure startup finishes first
-    //sloppy, but we don't have a decent init:complete event yet
-    setTimeout(function() {
-      if (window.launchCommands) {
-        window.launchCommands.forEach(function(bundle) {
-          fire(bundle.message.command, bundle.message.argument, bundle.sendResponse);
-        });
-        delete window.launchCommands;
-      }
-    }, 2000);
+  //register for post-startup and fire any commands that are pending
+  register("init:complete", function() {
+    if (window.launchCommands) {
+      window.launchCommands.forEach(function(bundle) {
+        fire(bundle.message.command, bundle.message.argument, bundle.sendResponse);
+      });
+      delete window.launchCommands;
+    }
   });
   
   var facade = {

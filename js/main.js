@@ -29,9 +29,26 @@ require([
     var url = themes[theme] || themes.dark;
     document.find("#theme").setAttribute("href", url);
   }
+
+  var loadedModules = {
+    "editor": false, 
+    "fileManager": false, 
+    "sessions": false
+  };
   
   //the settings manager may also fire init:restart to re-init components after startup
-  command.fire("init:startup");
+  command.fire("init:startup", function(mod) {
+    //ignore callback in non-essential modules
+    if (typeof loadedModules[mod] == "undefined") return;
+    loadedModules[mod] = true;
+    for (var key in loadedModules) {
+      if (!loadedModules[key]) {
+        return;
+      }
+    }
+    //all specified modules are loaded, app is ready for init:complete
+    command.fire("init:complete");
+  });
   command.on("init:restart", setTheme);
   setTheme();
   

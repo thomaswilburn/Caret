@@ -368,6 +368,7 @@ define([
     enableTabDragDrop();
     enableTabMiddleClick();
     reset();
+    return "sessions";
   };
 
   var reset = function() {

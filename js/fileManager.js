@@ -136,9 +136,9 @@ define([
   
   command.on("session:open-launch", openFromLaunchData);
   
-  var init = function() {
+  var init = function(complete) {
     openFromLaunchData();
-    if (Settings.get("user").disableTabRestore) return;
+    if (Settings.get("user").disableTabRestore) return "fileManager";
     chrome.storage.local.get("retained", function(data) {
       var failures = [];
       if (data.retained && data.retained.length) {
@@ -165,6 +165,7 @@ define([
               var tab = restored[i];
               sessions.addFile(tab.value, tab.file);
             }
+            if (complete) complete("fileManager");
             if (!failures.length) return;
             chrome.storage.local.get("retained", function(data) {
               if (!data.retained) return;

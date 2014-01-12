@@ -28,6 +28,8 @@ define([
       });
     }
     reset();
+    //let main.js know this module is ready
+    return "editor";
   };
   
   //reloaded when settings change
