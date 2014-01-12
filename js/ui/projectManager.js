@@ -226,6 +226,7 @@ define([
     bindEvents: function() {
       var self = this;
       this.element.on("click", function(e) {
+        e.preventDefault();
         var target = e.target;
         if (target.hasClass("directory")) {
           target.parentElement.toggle("expanded");

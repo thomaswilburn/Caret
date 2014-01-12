@@ -55,7 +55,7 @@ var launch = function(launchData) {
 var onMessage = function(message, sender, sendResponse) {
   //main window will pick up the message, if it's open
   //we also allow extensions to suppress launch behavior for spurious messages
-  if (mainWindow || message.quiet) return;
+  if (mainWindow || message.quiet || !message.command) return;
   commands.push({
     message: message,
     sender: sender,
