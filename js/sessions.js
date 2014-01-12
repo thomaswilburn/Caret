@@ -276,11 +276,13 @@ define([
     });
     tabContainer.on("dragover", function(e) {
       e.preventDefault();
+      e.stopPropagation();
       e.dropEffect = "move";
     });
     tabContainer.on("dragenter", function(e) {
       if (!e.target.matches(".tab")) return;
       e.target.addClass("hovering");
+      e.stopPropagation();
     });
     tabContainer.on("dragleave", function(e) {
       if (!e.target.matches(".tab")) return;
@@ -288,6 +290,7 @@ define([
     });
     tabContainer.on("drop", function(e) {
       if (!draggedTab) return;
+      e.stopPropagation();
       var target = e.target;
       var location = "before";
       var x = e.offsetX;

@@ -4,8 +4,9 @@ define([
     "ui/dialog",
     "command",
     "settings!", //not excited, it just runs as a RequireJS plugin,
-    "util/manos"
-  ], function(sessions, File, dialog, command, Settings, M) {
+    "util/manos",
+    "ui/projectManager"
+  ], function(sessions, File, dialog, command, Settings, M, projectManager) {
 
   var openFile = function(c) {
     //have to call chooseEntry manually to support multiple files
@@ -40,7 +41,27 @@ define([
       });
     }
   };
+
+  var openFromDropEvent = function(items) {
+    [].forEach.call(items, function(entry){
+      //only process files
+      if (entry.kind !== "file") return;
+      entry = entry.webkitGetAsEntry();
+
+      //files get opened in a tab
+      if (entry.isFile) {
+        var f = new File(entry);
+        return f.read().then(function(data) {
+          sessions.addFile(data, f);
+        }, dialog);
+      //directories get added to project
+      } else if (entry.isDirectory) {
+        projectManager.insertDirectory(entry);
+      }
+    });
+  };
   
+  command.on("session:open-dragdrop", openFromDropEvent);
   command.on("session:new-file", function(content) { return sessions.addFile(content) });
   command.on("session:open-file", openFile);
   command.on("session:save-file", function(c) { sessions.getCurrent().save(c) });

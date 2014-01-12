@@ -109,10 +109,26 @@ define([
       var self = this;
       chrome.fileSystem.chooseEntry({ type: "openDirectory" }, function(d) {
         if (!d) return;
-        var root = new FSNode(d);
-        self.directories.push(root);
-        root.walk(self.render.bind(self));
+        self.insertDirectory(d);
       });
+    },
+    insertDirectory: function(entry) {
+      var root;
+      //ensure we aren't duplicating
+      this.directories.forEach(function(directoryNode){
+        if (directoryNode.entry.fullPath === entry.fullPath) {
+          root = directoryNode;
+        }
+      });
+      if (!root) {
+        root = new FSNode(entry);
+        this.directories.push(root);
+      }
+
+      //if the directory was there, we still want
+      //to refresh it, in response to the users
+      //interaction
+      root.walk(this.render.bind(this));
     },
     removeDirectory: function(args) {
       this.directories = this.directories.filter(function(node) {
