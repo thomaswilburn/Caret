@@ -29,7 +29,7 @@ define([
       element.setAttribute("command", "session:raise-tab");
       element.setAttribute("argument", index);
       element.setAttribute("title", tab.fileName);
-      element.setAttribute("href", "root/tabs/" + index);
+      element.setAttribute("href", "tabs/" + index);
       element.removeAttribute("title");
       element.className = "tab";
       if (tab === current) {
@@ -349,10 +349,10 @@ define([
 
   command.on("session:close-to-right", closeTabsRight);
 
-  contextMenus.register("Close", "closeTab", "root/tabs/:id", function(args) {
+  contextMenus.register("Close", "closeTab", "tabs/:id", function(args) {
     command.fire("session:close-tab", args.id);
   });
-  contextMenus.register("Close tabs to the right", "closeTabsRight", "root/tabs/:id", function(args) {
+  contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", function(args) {
     closeTabsRight(args.id);
   });
 
