@@ -264,6 +264,8 @@ define([
       }, 50);
       e.dataTransfer.setDragImage(e.target, 0, 0);
       e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.clearData("text/plain");
+      e.dataTransfer.clearData("text/uri-list");
       e.dataTransfer.setData("application/x-tab-id", e.target.getAttribute("argument"));
       draggedTab = e.target;
       draggedTab.ondragend = function() {
