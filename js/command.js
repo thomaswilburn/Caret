@@ -77,16 +77,6 @@ define([
     }
   });
 
-  document.body.on("dragover", function(e) {
-    e.preventDefault();
-  });
-
-  document.body.on("drop", function(e) {
-    e.preventDefault();
-    if (e.dataTransfer.types.indexOf("Files") === -1) return;
-    fire("session:open-dragdrop", e.dataTransfer.items);
-  });
-
   //register for startup and fire any commands that are pending
   register("init:startup", function() {
     if (window.launchCommands) {

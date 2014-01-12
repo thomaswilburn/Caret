@@ -60,8 +60,19 @@ define([
       }
     });
   };
+
+  document.body.on("dragover", function(e) {
+    e.preventDefault();
+  });
+
+  document.body.on("drop", function(e) {
+    e.preventDefault();
+    if (e.dataTransfer.types.indexOf("Files") === -1) return;
+    fire("session:open-dragdrop", e.dataTransfer.items);
+  });
   
   command.on("session:open-dragdrop", openFromDropEvent);
+  
   command.on("session:new-file", function(content) { return sessions.addFile(content) });
   command.on("session:open-file", openFile);
   command.on("session:save-file", function(c) { sessions.getCurrent().save(c) });
