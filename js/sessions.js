@@ -330,7 +330,7 @@ define([
     });
   };
 
-  /*var closeTabsRight = function(tabID) {
+  var closeTabsRight = function(tabID) {
     tabID = tabID || tabs.indexOf(editor.getSession());
     var toClose = [];
     for (var i = tabs.length - 1; i > args.id; i--) {
@@ -346,7 +346,7 @@ define([
   });
   contextMenus.register("Close tabs to the right", "closeTabsRight", "root/tabs/:id", function(args) {
     closeTabsRight(args.id);
-  });*/
+  });
 
   var init = function() {
     cfg.modes.forEach(function(mode) {
@@ -355,7 +355,6 @@ define([
       option.value = mode.name;
       syntax.append(option);
     });
-    console.log(tabs.length);
     if (!tabs.length) addTab("");
     renderTabs();
     enableTabDragDrop();
