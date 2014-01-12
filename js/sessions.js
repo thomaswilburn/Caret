@@ -1,13 +1,15 @@
 define([
     "editor",
     "ui/dialog",
+    "ui/contextMenus",
     "command",
     "tab",
     "settings!ace,user",
     "ui/statusbar",
+    "util/manos",
     "aceBindings"
   ],
-  function(editor, dialog, command, Tab, Settings, status) {
+  function(editor, dialog, contextMenus, command, Tab, Settings, status, M) {
 
   var tabs = [];
   var cfg = Settings.get("ace");
@@ -22,31 +24,33 @@ define([
     var current = editor.getSession();
     tabContainer.innerHTML = "";
     tabs.forEach(function(tab, index) {
-      var span = document.createElement("span");
-      span.setAttribute("draggable", true);
-      span.setAttribute("command", "session:raise-tab");
-      span.setAttribute("argument", index);
-      span.setAttribute("title", tab.fileName);
-      span.className = "tab";
+      var element = document.createElement("a");
+      element.setAttribute("draggable", true);
+      element.setAttribute("command", "session:raise-tab");
+      element.setAttribute("argument", index);
+      element.setAttribute("title", tab.fileName);
+      element.setAttribute("href", "root/tabs/" + index);
+      element.removeAttribute("title");
+      element.className = "tab";
       if (tab === current) {
-        span.addClass("active");
+        element.addClass("active");
       }
       if (tab.animationClass) {
-        span.addClass(tab.animationClass);
+        element.addClass(tab.animationClass);
       }
       tab.animationClass = "";
-      span.innerHTML = tab.fileName + (tab.modified ? " &bull;" : "");
+      element.innerHTML = tab.fileName + (tab.modified ? " &bull;" : "");
       var close = document.createElement("a");
       close.innerHTML = "&times;";
       close.className = "close";
       close.setAttribute("command", "session:close-tab");
       close.setAttribute("argument", index);
-      span.append(close);
-      tabContainer.append(span);
+      element.append(close);
+      tabContainer.append(element);
     });
     setTimeout(function() {
       //wait for render before triggering the enter animation
-      tabContainer.findAll(".enter").forEach(function(span) { span.removeClass("enter") });
+      tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });
     });
     setRetained();
   };
@@ -255,6 +259,7 @@ define([
       setTimeout(function() {
         e.target.addClass("dragging");
       }, 50);
+      e.dataTransfer.setDragImage(e.target,0,0);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("application/x-tab-id", e.target.getAttribute("argument"));
       draggedTab = e.target;
@@ -320,9 +325,26 @@ define([
     tabContainer.on("click", function(e) {
       if (!e.target.matches(".tab")) return;
       if (e.button != 1) return;
+      e.preventDefault();
       command.fire("session:close-tab", e.target.getAttribute("argument"));
     });
   };
+
+  var closeTab = function(args) {
+    command.fire("session:close-tab", args.id);
+  };
+
+  var closeTabsRight = function(args) {
+    var toClose = [];
+    for (var i = tabs.length - 1; i > args.id; i--) {
+      toClose.push(i);
+    }
+    M.serial(toClose, removeTab);
+  };
+
+  contextMenus.register("Close", "closeTab", "root/tabs/:id", closeTab);
+  contextMenus.register("Close tabs to the right", "closeTabsRight", "root/tabs/:id", closeTabsRight);
+  
 
   var init = function() {
     cfg.modes.forEach(function(mode) {
