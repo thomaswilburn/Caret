@@ -10,6 +10,7 @@
   { "command": "session:save-file-as", "label": "Save File As..." },
   { "command": "session:revert-file", "label": "Revert File" },
   { "command": "session:close-tab", "label": "Close File" },
+  { "command": "session:close-to-right", "label": "Close Tabs to the Right"},
   
   { "label": "Undo", "command": "ace:command", "argument": "undo" },
   { "label": "Redo", "command": "ace:command", "argument": "redo" },

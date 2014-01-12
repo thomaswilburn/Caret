@@ -259,7 +259,7 @@ define([
       setTimeout(function() {
         e.target.addClass("dragging");
       }, 50);
-      e.dataTransfer.setDragImage(e.target,0,0);
+      e.dataTransfer.setDragImage(e.target, 0, 0);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("application/x-tab-id", e.target.getAttribute("argument"));
       draggedTab = e.target;
@@ -330,11 +330,8 @@ define([
     });
   };
 
-  var closeTab = function(args) {
-    command.fire("session:close-tab", args.id);
-  };
-
-  var closeTabsRight = function(args) {
+  /*var closeTabsRight = function(tabID) {
+    tabID = tabID || tabs.indexOf(editor.getSession());
     var toClose = [];
     for (var i = tabs.length - 1; i > args.id; i--) {
       toClose.push(i);
@@ -342,9 +339,14 @@ define([
     M.serial(toClose, removeTab);
   };
 
-  contextMenus.register("Close", "closeTab", "root/tabs/:id", closeTab);
-  contextMenus.register("Close tabs to the right", "closeTabsRight", "root/tabs/:id", closeTabsRight);
-  
+  commands.on("session:close-to-right", closeTabsRight);
+
+  contextMenus.register("Close", "closeTab", "root/tabs/:id", function(args) {
+    command.fire("session:close-tab", args.id);
+  });
+  contextMenus.register("Close tabs to the right", "closeTabsRight", "root/tabs/:id", function(args) {
+    closeTabsRight(args.id);
+  });*/
 
   var init = function() {
     cfg.modes.forEach(function(mode) {
@@ -353,6 +355,7 @@ define([
       option.value = mode.name;
       syntax.append(option);
     });
+    console.log(tabs.length);
     if (!tabs.length) addTab("");
     renderTabs();
     enableTabDragDrop();
