@@ -3,7 +3,7 @@ define([
     "storage/file",
     "ui/dialog",
     "command",
-    "settings!", //not excited, it just runs as a RequireJS plugin,
+    "settings!user",
     "util/manos",
     "ui/projectManager"
   ], function(sessions, File, dialog, command, Settings, M, projectManager) {
@@ -138,6 +138,7 @@ define([
   
   var init = function() {
     openFromLaunchData();
+    if (Settings.get("user").disableTabRestore) return;
     chrome.storage.local.get("retained", function(data) {
       var failures = [];
       if (data.retained && data.retained.length) {
