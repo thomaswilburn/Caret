@@ -150,8 +150,11 @@ define([
         next = 0;
       }
       var current = editor.getSession();
-      if (tab !== current) return renderTabs();
-      raiseTabByIndex(next);
+      if (tab !== current) {
+        renderTabs();
+      } else {
+        raiseTabByIndex(next);
+      }
       if (c) c();
     };
 
@@ -333,13 +336,13 @@ define([
   var closeTabsRight = function(tabID) {
     tabID = tabID || tabs.indexOf(editor.getSession());
     var toClose = [];
-    for (var i = tabs.length - 1; i > args.id; i--) {
+    for (var i = tabs.length - 1; i > tabID; i--) {
       toClose.push(i);
     }
     M.serial(toClose, removeTab);
   };
 
-  commands.on("session:close-to-right", closeTabsRight);
+  command.on("session:close-to-right", closeTabsRight);
 
   contextMenus.register("Close", "closeTab", "root/tabs/:id", function(args) {
     command.fire("session:close-tab", args.id);
