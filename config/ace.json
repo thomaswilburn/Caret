@@ -77,6 +77,7 @@
     { "name": "stylus", "label": "Stylus", "extensions": ["styl"] },
     { "name": "svg", "label": "SVG", "extensions": ["svg"] },
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
+    { "name": "typescript", "label": "TypeScript", "extensions": ["ts"] },
     { "name": "ini", "label": "Windows INI", "extensions": ["ini"] },
     { "name": "xml", "label": "XML", "extensions": ["xml"] },
     { "name": "yaml", "label": "YAML", "extensions": ["yaml"] }
