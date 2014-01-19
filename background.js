@@ -35,10 +35,12 @@ var openWindow = function() {
     win.contentWindow.launchCommands = commands;
     mainWindow.onClosed.addListener(function() {
       mainWindow = null;
+      chrome.storage.local.remove("isOpen");
     });
     files = [];
     commands = [];
     pending = null;
+    chrome.storage.local.set({isOpen: true});
   });
 }
 
@@ -73,5 +75,12 @@ var onMessage = function(message, sender, sendResponse) {
 };
 
 chrome.app.runtime.onLaunched.addListener(launch);
-chrome.app.runtime.onRestarted.addListener(launch);
+
+//We shouldn't always relaunch, only if a window was open at shutdown
+chrome.app.runtime.onRestarted.addListener(function() {
+  chrome.storage.local.get("isOpen", function(data) {
+    if (data.isOpen) launch();
+  });
+});
+
 chrome.runtime.onMessageExternal.addListener(onMessage);
