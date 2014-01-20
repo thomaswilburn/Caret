@@ -157,6 +157,7 @@ define([
                 })
               }, function(err) {
                 failures.push(id);
+                c(null);
               });
           },
           function(restored) {
