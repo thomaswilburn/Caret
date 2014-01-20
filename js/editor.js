@@ -84,6 +84,26 @@ define([
   //disable focusing on the editor except by program
   document.find("textarea").setAttribute("tabindex", -1);
   
+  command.on("editor:print", function(c) {
+    ace.require("ace/config").loadModule("ace/ext/static_highlight", function(static) {
+      var session = editor.getSession();
+      var printable = static.renderSync(session.getValue(), session.getMode(), editor.renderer.theme);
+      var iframe = document.createElement("iframe");
+      var css = "<style>" + printable.css + "</style>";
+      var doc = css + printable.html;
+      iframe.srcdoc = doc;
+      iframe.width = iframe.height = 1;
+      iframe.style.display = "none";
+      document.body.append(iframe);
+      setTimeout(function() {
+        iframe.contentWindow.print();
+        setTimeout(function() {
+          iframe.remove();
+        })
+      });
+    });
+  });
+  
   return editor;
 
 });

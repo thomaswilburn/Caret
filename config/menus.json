@@ -8,6 +8,7 @@
       { "label": "Save As", "command": "session:save-file-as" },
       { "label": "Revert", "command": "session:revert-file" },
       { "label": "Close", "command": "session:close-tab" },
+      { "label": "Print", "command": "editor:print" },
       { "label": "Exit", "command": "app:exit" }
     ]
   },
