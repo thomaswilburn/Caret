@@ -2,7 +2,7 @@ chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] * 1 || 0;
 
 require([
     "command",
-    "settings!user",
+    "storage/settingsProvider",
     "ui/dialog",
     "ui/projectManager",
     "ui/keys",
@@ -20,14 +20,15 @@ require([
   });
   
   var setTheme = function() {
-    var user = Settings.get("user");
-    var themes = {
-      "dark": "css/caret-dark.css",
-      "light": "css/caret.css"
-    };
-    var theme = user.uiTheme || "light";
-    var url = themes[theme] || themes.dark;
-    document.find("#theme").setAttribute("href", url);
+    Settings.pull("user").then(function(data) {
+      var themes = {
+        "dark": "css/caret-dark.css",
+        "light": "css/caret.css"
+      };
+      var theme = data.user.uiTheme || "light";
+      var url = themes[theme] || themes.dark;
+      document.find("#theme").setAttribute("href", url);
+    });
   }
 
   var loadedModules = {
@@ -70,7 +71,9 @@ require([
     });
   };
   
-  if (Settings.get("user").promptForUpdates !== false) checkUpdates();
+  Settings.pull("user").then(function(cfg) {
+    if (cfg.user.promptForUpdates !== false) checkUpdates();
+  });
   command.on("app:check-for-updates", checkUpdates);
   
   chrome.notifications.onButtonClicked.addListener(function(id, index) {
