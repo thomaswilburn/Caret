@@ -51,15 +51,8 @@ manipulating the tab structure.
 ## settings.js
 
 Runs as a RequireJS plugin, so that dependent modules can rely on having
-settings available on startup, but actually returns a Settings object with the
-following methods:
-
-- `get` Retrieves the current settings object by name, with all layers `(project, local, and default) merged over top each other.
-- `getAsString` Retrieves the local settings as a string, mostly used when opening settings for editing.
-- `getAsFile`
-- `load` Requests a fresh copy of the local settings from sync storage, usually called after either writing to settings or when the dependent module does not have a settings cache.
-- `setProject` Sets the top-most JSON object to be merged when calling `Settings.get()`, used for the project-specific settings overrides.
-- `clearProject` Removes the top-most JSON object, so that only local and default settings are merged.
+settings available on startup, but actually just returns the same singleton
+as `storage/settingsProvider`.
 
 ## tab.js
 

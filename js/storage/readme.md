@@ -20,6 +20,19 @@ objects adhering to the File interface, which makes it much easier to open
 many types of data through the same tab/editor UI. It also makes persistence
 much more consistent and less verbose throughout Caret.
 
+## settingsProvider.js
+
+The actual singleton returned when modules load configs via the `settings`
+plugin. Provides the following API:
+
+- `get` Retrieves the current settings object by name, with all layers `(project, local, and default) merged over top each other.
+- `getAsString` Retrieves the local settings as a string, mostly used when opening settings for editing.
+- `getAsFile`
+- `load` Requests a fresh copy of the local settings from sync storage, usually called after either writing to settings or when the dependent module does not have a settings cache.
+- `setProject` Sets the top-most JSON object to be merged when calling `Settings.get()`, used for the project-specific settings overrides.
+- `clearProject` Removes the top-most JSON object, so that only local and default settings are merged.
+- `pull` Calls load/get for you on the list of arguments, and returns a promise that's fullfilled with a hash of the requested settings.
+
 ## syncFile.js
 
 A constructor matching the File interface, but backed by chrome.storage.sync.
