@@ -325,7 +325,6 @@ define([
   };
 
   var reset = function() {
-    cfg = Settings.get("ace");
     userConfig = Settings.get("user");
     tabs.forEach(function(tab) {
       tab.detectSyntax(userConfig);
