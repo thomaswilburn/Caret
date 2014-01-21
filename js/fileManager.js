@@ -79,7 +79,9 @@ define([
   command.on("session:save-file-as", function(c) { 
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {
-      sessions.setSyntax(tab);
+      var mode = tab.detectSyntax(Settings.get("user"));
+      sessions.renderTabs();
+      command.fire("session:syntax", mode);
       if (c) c();
     });
   });

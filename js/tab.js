@@ -1,8 +1,9 @@
 define([
     "command",
     "storage/file",
-    "util/manos"
-  ], function(command, File, M) {
+    "util/manos",
+    "settings!ace"
+  ], function(command, File, M, Settings) {
 
   var EditSession = ace.require("ace/edit_session").EditSession;
   
@@ -73,10 +74,9 @@ define([
           deferred.fail();
         })
         .then(whenOpen);
-      return;
+    } else {
+      whenOpen();
     }
-
-    whenOpen();
     
     if (c) M.pton(deferred, c);
     return deferred.promise();
@@ -94,6 +94,64 @@ define([
       chrome.storage.local.set({ retained: filtered });
     });
   };
+  
+  Tab.prototype.render = function(index) {
+    var element = document.createElement("a");
+    element.setAttribute("draggable", true);
+    element.setAttribute("command", "session:raise-tab");
+    element.setAttribute("argument", index);
+    element.setAttribute("title", this.fileName);
+    element.setAttribute("href", "tabs/" + index);
+    element.removeAttribute("title");
+    element.className = "tab";
+    if (this.animationClass) {
+      element.addClass(this.animationClass);
+    }
+    this.animationClass = "";
+    element.innerHTML = this.fileName + (this.modified ? " &bull;" : "");
+    var close = document.createElement("a");
+    close.innerHTML = "&times;";
+    close.className = "close";
+    close.setAttribute("command", "session:close-tab");
+    close.setAttribute("argument", index);
+    element.append(close);
+    return element;
+  }
+  
+  Tab.prototype.detectSyntax = function(userConfig) {
+    //this won't ever change, safe to get each time
+    var aceConfig = Settings.get("ace");
+    this.setUseSoftTabs(!userConfig.useTabs);
+    this.setTabSize(userConfig.indentation || 2);
+    this.setUseWrapMode(userConfig.wordWrap);
+    this.setWrapLimit(userConfig.wrapLimit || null);
+    this.setNewLineMode(userConfig.lineEnding || "auto");
+    this.setUseWorker(userConfig.useWorker);
+    var syntaxValue = "plain_text";
+    if (this.syntaxMode) {
+      syntaxValue = this.syntaxMode;
+    } else if (this.file) {
+      if (this.file.virtual) {
+        //settings files are special
+        syntaxValue = "javascript";
+        this.setMode("ace/mode/javascript");
+      } else if (this.file.entry) {
+        var found = false;
+        var extension = this.file.entry.name.split(".").pop();
+        for (var i = 0; i < aceConfig.modes.length; i++) {
+          var mode = aceConfig.modes[i];
+          if (mode.extensions.indexOf(extension) > -1) {
+            this.setMode("ace/mode/" + mode.name);
+            syntaxValue = mode.name;
+            break;
+          }
+        }
+      }
+      this.syntaxMode = syntaxValue;
+    }
+    this.setMode("ace/mode/" + syntaxValue);
+    return syntaxValue;
+  }
   
   return Tab;
 

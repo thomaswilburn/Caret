@@ -23,29 +23,11 @@ define([
     var contents = "";
     var current = editor.getSession();
     tabContainer.innerHTML = "";
-    tabs.forEach(function(tab, index) {
-      var element = document.createElement("a");
-      element.setAttribute("draggable", true);
-      element.setAttribute("command", "session:raise-tab");
-      element.setAttribute("argument", index);
-      element.setAttribute("title", tab.fileName);
-      element.setAttribute("href", "tabs/" + index);
-      element.removeAttribute("title");
-      element.className = "tab";
+    tabs.forEach(function(tab, i) {
+      var element = tab.render(i);
       if (tab === current) {
         element.addClass("active");
       }
-      if (tab.animationClass) {
-        element.addClass(tab.animationClass);
-      }
-      tab.animationClass = "";
-      element.innerHTML = tab.fileName + (tab.modified ? " &bull;" : "");
-      var close = document.createElement("a");
-      close.innerHTML = "&times;";
-      close.className = "close";
-      close.setAttribute("command", "session:close-tab");
-      close.setAttribute("argument", index);
-      element.append(close);
       tabContainer.append(element);
     });
     setTimeout(function() {
@@ -69,39 +51,6 @@ define([
     }
   };
 
-  var setTabSyntax = function(tab) {
-    tab.setUseSoftTabs(!userConfig.useTabs);
-    tab.setTabSize(userConfig.indentation || 2);
-    tab.setUseWrapMode(userConfig.wordWrap);
-    tab.setWrapLimit(userConfig.wrapLimit || null);
-    tab.setNewLineMode(userConfig.lineEnding || "auto");
-    tab.setUseWorker(userConfig.useWorker);
-    var syntaxValue = "plain_text";
-    if (tab.syntaxMode) {
-      syntaxValue = tab.syntaxMode;
-    } else if (tab.file) {
-      if (tab.file.virtual) {
-        //settings files are special
-        syntaxValue = "javascript";
-        tab.setMode("ace/mode/javascript");
-      } else if (tab.file.entry) {
-        var found = false;
-        var extension = tab.file.entry.name.split(".").pop();
-        for (var i = 0; i < cfg.modes.length; i++) {
-          var mode = cfg.modes[i];
-          if (mode.extensions.indexOf(extension) > -1) {
-            tab.setMode("ace/mode/" + mode.name);
-            syntaxValue = mode.name;
-            break;
-          }
-        }
-      }
-      tab.syntaxMode = syntaxValue;
-    }
-    tab.setMode("ace/mode/" + syntaxValue);
-    syntax.value = syntaxValue;
-  };
-
   var addTab = function(contents, file) {
     var current = editor.getSession();
     var tab;
@@ -122,7 +71,7 @@ define([
         status.toast(loaded, 2);
       });
     }
-    setTabSyntax(tab);
+    tab.detectSyntax(userConfig);
     raiseTab(tab);
     return tab;
   };
@@ -153,7 +102,7 @@ define([
       if (tab !== current) {
         renderTabs();
       } else {
-        raiseTabByIndex(next);
+        raiseTab(tabs[next]);
       }
       if (c) c();
     };
@@ -194,11 +143,6 @@ define([
     syntax.value = tab.syntaxMode || "plain_text";
     renderTabs();
     command.fire("session:check-file");
-  };
-
-  var raiseTabByIndex = function(index) {
-    var tab = tabs[index];
-    raiseTab(tab);
   };
 
   var resetStack = function(tab) {
@@ -375,7 +319,7 @@ define([
     cfg = Settings.get("ace");
     userConfig = Settings.get("user");
     tabs.forEach(function(tab) {
-      setTabSyntax(tab);
+      tab.detectSyntax(userConfig);
     })
   };
 
@@ -395,12 +339,11 @@ define([
 
   return {
     addFile: addTab,
-    setSyntax: setTabSyntax,
     addDefaultsFile: function(name) {
       Settings.load(name, function() {
         var tab = addTab(Settings.getAsString(name, true));
         tab.syntaxMode = "javascript";
-        setTabSyntax(tab);
+        tab.detectSyntax(userConfig);
         tab.fileName = name + ".json";
         renderTabs();
       });
