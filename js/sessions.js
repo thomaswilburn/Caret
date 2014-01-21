@@ -10,6 +10,14 @@ define([
     "aceBindings"
   ],
   function(editor, dialog, contextMenus, command, Tab, Settings, status, M) {
+    
+  /*
+  
+  The sessions module manages the presentation and rendering of the editor tabs.
+  It's probably overcomplicated, and I'm slowly moving chunks of it out into
+  other, more appropriate modules.
+  
+  */
 
   var tabs = [];
   var cfg = Settings.get("ace");
@@ -76,6 +84,7 @@ define([
     return tab;
   };
 
+  //removeTab looks long, but it handles the async save/don't/cancel flow
   var removeTab = function(index, c) {
     if (!index) {
       index = tabs.indexOf(editor.getSession());
@@ -146,9 +155,9 @@ define([
   };
 
   var resetStack = function(tab) {
-      var raised = tab || stack[stackOffset];
-      stack = stack.filter(function(t) { return t != raised });
-      stack.unshift(raised);
+    var raised = tab || stack[stackOffset];
+    stack = stack.filter(function(t) { return t != raised });
+    stack.unshift(raised);
   }
 
   var watchCtrl = function(e) {
