@@ -2,6 +2,8 @@ define([
     "command",
     "storage/settingsProvider",
   ], function(command, Settings) {
+    
+  /* A plugin that handles loading Settings "synchronously" */
   
   return {
     load: function(name, parentRequire, onLoad, config) {

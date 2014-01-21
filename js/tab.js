@@ -119,14 +119,17 @@ define([
   }
   
   Tab.prototype.detectSyntax = function(userConfig) {
-    //this won't ever change, safe to get each time
-    var aceConfig = Settings.get("ace");
-    this.setUseSoftTabs(!userConfig.useTabs);
-    this.setTabSize(userConfig.indentation || 2);
-    this.setUseWrapMode(userConfig.wordWrap);
-    this.setWrapLimit(userConfig.wrapLimit || null);
-    this.setNewLineMode(userConfig.lineEnding || "auto");
-    this.setUseWorker(userConfig.useWorker);
+    //settings are async
+    Settings.pull("user").then(function(data) {
+      var userConfig = data.user;
+      this.setUseSoftTabs(!userConfig.useTabs);
+      this.setTabSize(userConfig.indentation || 2);
+      this.setUseWrapMode(userConfig.wordWrap);
+      this.setWrapLimit(userConfig.wrapLimit || null);
+      this.setNewLineMode(userConfig.lineEnding || "auto");
+      this.setUseWorker(userConfig.useWorker);
+    });
+    //syntax, however, is sync
     var syntaxValue = "plain_text";
     if (this.syntaxMode) {
       syntaxValue = this.syntaxMode;
@@ -138,6 +141,8 @@ define([
       } else if (this.file.entry) {
         var found = false;
         var extension = this.file.entry.name.split(".").pop();
+        //this won't ever change, safe to get each time
+        var aceConfig = Settings.get("ace");
         for (var i = 0; i < aceConfig.modes.length; i++) {
           var mode = aceConfig.modes[i];
           if (mode.extensions.indexOf(extension) > -1) {

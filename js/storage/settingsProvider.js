@@ -1,8 +1,9 @@
 define([
     "storage/syncFS",
     "storage/syncfile",
-    "command"
-  ], function(sync, syncFile, command) {
+    "command",
+    "util/manos"
+  ], function(sync, SyncFile, command, M) {
 
   var defaults = {};
   var local = {};
@@ -122,6 +123,24 @@ define([
     clearProject: function() {
       project = {};
       command.fire("settings:change-local");
+    },
+    //load/get all requested settings via a promise
+    pull: function() {
+      var deferred = M.deferred();
+      var names = [].slice.call(arguments);
+      var pending = names.map(function(name) {
+        return new Promise(function(ok) {
+          Settings.load(name, ok);
+        });
+      });
+      Promise.all(pending).then(function() {
+        var collected = {};
+        names.forEach(function(name) {
+          collected[name] = Settings.get(name);
+        });
+        deferred.done(collected);
+      });
+      return deferred.promise();
     }
   };
 

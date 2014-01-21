@@ -4,7 +4,7 @@ define([
     "ui/contextMenus",
     "command",
     "tab",
-    "settings!ace,user",
+    "storage/settingsProvider",
     "ui/statusbar",
     "util/manos",
     "aceBindings"
@@ -20,8 +20,6 @@ define([
   */
 
   var tabs = [];
-  var cfg = Settings.get("ace");
-  var userConfig = Settings.get("user");
   var syntax = document.find(".syntax");
   var stack = [];
   var stackOffset = 0;
@@ -79,7 +77,7 @@ define([
         status.toast(loaded, 2);
       });
     }
-    tab.detectSyntax(userConfig);
+    tab.detectSyntax();
     raiseTab(tab);
     return tab;
   };
@@ -310,12 +308,14 @@ define([
   });
 
   var init = function() {
-    cfg.modes.forEach(function(mode) {
-      var option = document.createElement("option");
-      option.innerHTML = mode.label;
-      option.value = mode.name;
-      syntax.append(option);
-    });
+    Settings.pull("ace").then(function(data) {
+      data.ace.modes.forEach(function(mode) {
+        var option = document.createElement("option");
+        option.innerHTML = mode.label;
+        option.value = mode.name;
+        syntax.append(option);
+      });
+    })
     if (!tabs.length) addTab("");
     renderTabs();
     enableTabDragDrop();
@@ -325,10 +325,9 @@ define([
   };
 
   var reset = function() {
-    userConfig = Settings.get("user");
     tabs.forEach(function(tab) {
-      tab.detectSyntax(userConfig);
-    })
+      tab.detectSyntax();
+    });
   };
 
   command.on("init:startup", init);
@@ -348,13 +347,11 @@ define([
   return {
     addFile: addTab,
     addDefaultsFile: function(name) {
-      Settings.load(name, function() {
-        var tab = addTab(Settings.getAsString(name, true));
-        tab.syntaxMode = "javascript";
-        tab.detectSyntax(userConfig);
-        tab.fileName = name + ".json";
-        renderTabs();
-      });
+      var tab = addTab(Settings.getAsString(data[name], true));
+      tab.syntaxMode = "javascript";
+      tab.detectSyntax();
+      tab.fileName = name + ".json";
+      renderTabs();
     },
     getAllTabs: function() {
       return tabs;

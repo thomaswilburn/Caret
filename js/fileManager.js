@@ -3,7 +3,7 @@ define([
     "storage/file",
     "ui/dialog",
     "command",
-    "settings!user",
+    "storage/settingsProvider",
     "util/manos",
     "ui/projectManager"
   ], function(sessions, File, dialog, command, Settings, M, projectManager) {
@@ -79,7 +79,7 @@ define([
   command.on("session:save-file-as", function(c) { 
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {
-      var mode = tab.detectSyntax(Settings.get("user"));
+      var mode = tab.detectSyntax();
       sessions.renderTabs();
       command.fire("session:syntax", mode);
       if (c) c();
@@ -140,60 +140,64 @@ define([
   
   var init = function(complete) {
     openFromLaunchData();
-    if (Settings.get("user").disableTabRestore) return "fileManager";
-    chrome.storage.local.get("retained", function(data) {
-      var failures = [];
-      if (data.retained && data.retained.length) {
-        //try to restore items in order
-        M.map(
-          data.retained,
-          function(id, i, c) {
-            var file = new File();
-            file
-              .restore(id)
-              .then(file.read.bind(file))
-              .then(function(data) {
-                c({
-                  value: data,
-                  file: file
-                })
-              }, function(err) {
-                failures.push(id);
-                c(null);
+    Settings.pull("user").then(function(data) {
+      if (data.user.disableTabRestore) complete("fileManager");
+      chrome.storage.local.get("retained", function(data) {
+        var failures = [];
+        if (data.retained && data.retained.length) {
+          //try to restore items in order
+          M.map(
+            data.retained,
+            function(id, i, c) {
+              var file = new File();
+              file
+                .restore(id)
+                .then(file.read.bind(file))
+                .then(function(data) {
+                  c({
+                    value: data,
+                    file: file
+                  })
+                }, function(err) {
+                  failures.push(id);
+                  c(null);
+                });
+            },
+            function(restored) {
+              restored = restored.filter(function(d) { return d });
+              for (var i = 0; i < restored.length; i++) {
+                var tab = restored[i];
+                sessions.addFile(tab.value, tab.file);
+              }
+              complete("fileManager");
+              if (!failures.length) return;
+              chrome.storage.local.get("retained", function(data) {
+                if (!data.retained) return;
+                chrome.storage.local.set({
+                  retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
+                });
               });
-          },
-          function(restored) {
-            restored = restored.filter(function(d) { return d });
-            for (var i = 0; i < restored.length; i++) {
-              var tab = restored[i];
-              sessions.addFile(tab.value, tab.file);
             }
-            if (complete) complete("fileManager");
-            if (!failures.length) return;
-            chrome.storage.local.get("retained", function(data) {
-              if (!data.retained) return;
-              chrome.storage.local.set({
-                retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
-              });
-            });
-          }
-        );
-      }
+          );
+        }
+      });
     });
   };
   
   var reset = function() {
     var tabs = sessions.getAllTabs();
+    var virtuals = [];
     tabs.forEach(function(tab) {
       if (tab.file && tab.file.virtual) {
-        var setting = tab.fileName.replace(".json", "");
-        Settings.load(setting, function() {
-          var value = Settings.getAsString(setting);
-          tab.setValue(value);
+        var v = tab.file.read().then(function(data) {
+          tab.setValue(data);
           tab.modified = false;
-          sessions.renderTabs();
         });
+        virtuals.push(v);
       }
+    });
+    Promise.all(virtuals).then(function() {
+      setTimeout(sessions.renderTabs, 10);
     });
   };
   

@@ -1,5 +1,5 @@
 define([
-    "settings!",
+    "storage/settingsProvider",
     "command",
     "sessions",
     "storage/file",
