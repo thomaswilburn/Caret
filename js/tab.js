@@ -102,7 +102,6 @@ define([
     element.setAttribute("argument", index);
     element.setAttribute("title", this.fileName);
     element.setAttribute("href", "tabs/" + index);
-    element.removeAttribute("title");
     element.className = "tab";
     if (this.animationClass) {
       element.addClass(this.animationClass);
