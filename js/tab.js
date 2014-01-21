@@ -120,14 +120,15 @@ define([
   
   Tab.prototype.detectSyntax = function(userConfig) {
     //settings are async
+    var self = this;
     Settings.pull("user").then(function(data) {
       var userConfig = data.user;
-      this.setUseSoftTabs(!userConfig.useTabs);
-      this.setTabSize(userConfig.indentation || 2);
-      this.setUseWrapMode(userConfig.wordWrap);
-      this.setWrapLimit(userConfig.wrapLimit || null);
-      this.setNewLineMode(userConfig.lineEnding || "auto");
-      this.setUseWorker(userConfig.useWorker);
+      self.setUseSoftTabs(!userConfig.useTabs);
+      self.setTabSize(userConfig.indentation || 2);
+      self.setUseWrapMode(userConfig.wordWrap);
+      self.setWrapLimit(userConfig.wrapLimit || null);
+      self.setNewLineMode(userConfig.lineEnding || "auto");
+      self.setUseWorker(userConfig.useWorker);
     });
     //syntax, however, is sync
     var syntaxValue = "plain_text";
