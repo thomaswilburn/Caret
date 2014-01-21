@@ -70,7 +70,7 @@ module.exports = function(grunt) {
 
     var chrome = {
       win32: '"' + (process.env["ProgramFiles(x86)"] || process.env.ProgramFiles) + "\\Google\\Chrome\\Application\\chrome.exe" + '"',
-      linux: "/opt/google/chrome/chrome",
+      linux: "/opt/google/chrome/google-chrome",
       osx: "Beats me."
     }
 
