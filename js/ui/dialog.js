@@ -1,7 +1,8 @@
 define([
     "editor",
+    "util/template!templates/dialog.html",
     "util/dom2"
-  ], function(editor) {
+  ], function(editor, inflate) {
 
   return function(text, buttons, callback) {
     if (typeof buttons == "function" || typeof buttons == "undefined") {
@@ -9,13 +10,26 @@ define([
       buttons = ["ok"];
     }
     
-    var modal = document.find("template#dialog").content.cloneNode(true).find(".modal-overlay");
+    buttons = buttons.map(function(options) {
+      if (typeof options == "string") {
+        return {
+          label: options,
+          value: options
+        };
+      }
+      return options;
+    });
     
-    var buttonRow = modal.find(".button-row");
-    var message = modal.find(".text");
-    message.innerHTML = text;
+    var modal = inflate.get("templates/dialog.html", {
+      text: text,
+      buttons: buttons
+    });
     
     document.body.append(modal);
+    
+    var defaultButton = modal.find("button.default");
+    if (!defaultButton) defaultButton = modal.find("button");
+    defaultButton.focus();
 
     var onKeyDown = function(e) {
       e.stopPropagation();
@@ -48,40 +62,22 @@ define([
       })
     }
 
-    modal.onkeydown = onKeyDown;
-    modal.onkeypress = onKeyPress;
-
-    var clickButton = function() {
+    var clickButton = function(e) {
+      var target = e.target;
+      if (!target.matches("button")) return;
       modal.remove();
       try {
-        var value = JSON.parse(this.value);
+        var value = JSON.parse(target.value);
         if (callback) callback(value);
       } catch (err) {
         //do nothing
       }
       editor.focus();
     };
-
-    buttons.forEach(function(options) {
-      var button = document.createElement("button");
-      if (typeof options == "string") {
-        options = {
-          label: options,
-          value: options
-        }
-      }
-      button.innerHTML = options.label;
-      button.value = JSON.stringify(options.value);
-      if (options.focus) {
-        button.className = "default";
-      }
-      buttonRow.append(button);
-      button.on("click", clickButton);
-    });
-
-    var button = modal.find("button.default");
-    if (!button) button = modal.find("button");
-    button.focus();
+    
+    modal.onkeydown = onKeyDown;
+    modal.onkeypress = onKeyPress;
+    modal.onclick = clickButton;
 
   }
 
