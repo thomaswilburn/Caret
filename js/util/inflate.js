@@ -50,7 +50,7 @@ define([
         }
       } else {
         after = template.substr(found.index + found[0].length);
-        replacement = data[tag];
+        replacement = typeof data[tag] != "undefined" ? data[tag] : "";
       }
       template = before + replacement + after;
     }
@@ -65,6 +65,7 @@ define([
   
   var inflate = function(id, data) {
     var html = inflateHTML(id, data);
+    if (!html) return null;
     return parse(html);
   };
   
@@ -86,6 +87,7 @@ define([
   return {
     get: inflate,
     getHTML: inflateHTML,
+    load: load,
     getAsync: function(id, data) {
       if (cache[id]) {
         return Promise.resolve(inflate(id, data));

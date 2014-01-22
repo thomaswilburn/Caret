@@ -2,8 +2,9 @@ define([
     "command",
     "storage/file",
     "util/manos",
-    "settings!ace"
-  ], function(command, File, M, Settings) {
+    "settings!ace",
+    "util/template!templates/tab.html"
+  ], function(command, File, M, Settings, inflate) {
 
   var EditSession = ace.require("ace/edit_session").EditSession;
   
@@ -96,24 +97,13 @@ define([
   };
   
   Tab.prototype.render = function(index) {
-    var element = document.createElement("a");
-    element.setAttribute("draggable", true);
-    element.setAttribute("command", "session:raise-tab");
-    element.setAttribute("argument", index);
-    element.setAttribute("title", this.fileName);
-    element.setAttribute("href", "tabs/" + index);
-    element.className = "tab";
-    if (this.animationClass) {
-      element.addClass(this.animationClass);
-    }
+    var element = inflate.get("templates/tab.html", {
+      index: index,
+      fileName: this.fileName,
+      modified: this.modified,
+      animation: this.animationClass
+    });
     this.animationClass = "";
-    element.innerHTML = this.fileName + (this.modified ? " &bull;" : "");
-    var close = document.createElement("a");
-    close.innerHTML = "&times;";
-    close.className = "close";
-    close.setAttribute("command", "session:close-tab");
-    close.setAttribute("argument", index);
-    element.append(close);
     return element;
   }
   
