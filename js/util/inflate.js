@@ -109,6 +109,9 @@ define([
     get: inflate,
     getHTML: inflateHTML,
     load: load,
+    loadHTML: function(id, template) {
+      cache[id] = template;
+    },
     getAsync: function(id, data) {
       if (cache[id]) {
         return Promise.resolve(inflate(id, data));
