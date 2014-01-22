@@ -3,8 +3,9 @@ define([
     "editor",
     "ui/dialog",
     "command",
+    "util/inflate",
     "util/dom2"
-  ], function(Settings, editor, dialog, command) {
+  ], function(Settings, editor, dialog, command, inflate) {
   
   var commands = editor.commands.commands;
   
@@ -143,13 +144,14 @@ define([
   command.on("init:restart", menu.create.bind(menu));
 
   command.on("app:about", function() {
-    var content = document.find("#about").content.cloneNode(true).find("div").innerHTML;
-    var manifest = chrome.runtime.getManifest();
-    content = content.replace("%VERSION%", manifest.version);
-    dialog(
-      content,
-      ["ok"]
-    );
+    inflate.load("templates/about.html").then(function() {
+      dialog(
+        inflate.getHTML("templates/about.html", {
+          version: chrome.runtime.getManifest().version
+        }),
+        ["ok"]
+      );
+    });
   });
   
 });
