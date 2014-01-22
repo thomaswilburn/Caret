@@ -13,7 +13,6 @@ define([
   var refTest = /identifier|variable|function/;
   var jsRefTest = /entity\.name\.function/;
   
-  var resultTemplate = document.find("#palette-result").content;
   //build a regex that finds special regex characters for sanitization
   var antiregex = new RegExp("(\\\\|\\" + "?.*+[](){}|^$".split("").join("|\\") + ")", "g");
   var sanitize = function(text) {
