@@ -5,8 +5,9 @@ define([
     "settings!menus,user",
     "ui/statusbar",
     "ui/projectManager",
+    "util/template!templates/paletteItem.html",
     "util/dom2"
-  ], function(sessions, command, editor, Settings, status, project) {
+  ], function(sessions, command, editor, Settings, status, project, inflate) {
     
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
   var refTest = /identifier|variable|function/;
@@ -38,8 +39,6 @@ define([
     "search": "#",
     "reference": "@"
   };
-  
-  var template = "<div class=label>%LABEL%</div><div class=sublabel>%SUB%</div>"
   
   var Palette = function() {
     this.homeTab = null;
@@ -340,13 +339,11 @@ define([
       this.element.find(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
       this.resultList.innerHTML = "";
       this.results.slice(0, 10).forEach(function(r, i) {
-        var element = resultTemplate.cloneNode(true).find("li");
-        var text = template.replace("%LABEL%", r.palette || r.label || (r.tab ? r.tab.fileName : ""))
-        text = text.replace("%SUB%", r.sublabel || "")
-        element.innerHTML = text;
-        if (i == self.selected) {
-          element.addClass("current");
-        }
+        var element = inflate.get("templates/paletteItem.html", {
+          label: r.palette || r.label || (r.tab ? r.tab.fileName : ""),
+          sublabel: r.sublabel,
+          isCurrent: i == self.selected
+        });
         self.resultList.append(element);
       });
     }

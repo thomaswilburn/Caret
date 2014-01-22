@@ -9,6 +9,8 @@ define([
   var commands = editor.commands.commands;
   
   var walker = function(list, depth) {
+    //It's tough to template menus, since they tend to be very mutable
+    //We'll stick with DOM construction for now.
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < list.length; i++) {
       var entry = list[i];

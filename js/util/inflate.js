@@ -26,7 +26,8 @@ define([
     while (found = searcher.exec(template)) {
       var tag = found[1];
       before = template.substr(0, found.index);
-      if (tag[0] == "#") {
+
+      if (tag[0] == "#") { //section tags
         var key = tag.substr(1);
         //it's a section, let's replace it
         var findEnding = new RegExp("\\{\\{/" + key + "\\}\\}");
@@ -35,20 +36,40 @@ define([
         var contents = template.substr(found.index + found[0].length, ending.index - (found.index + found[0].length));
         
         var value = data[key];
-        var replacement = "";
+        replacement = "";
         //switch based on the type
         if (value.map) {
           //arrays get a loop
           var boundProcess = process.bind(null, contents);
           replacement = value.map(boundProcess).join("");
         } else if (typeof value == "object") {
-          //objects get re-templated
+          //objects get re-templated, should probably merge with parent
           replacement = process(contents, value);
         } else if (value) {
           //otherwise we evaluate for truthiness in the current scope
           replacement = process(contents, data);
         }
-      } else {
+      } else if (tag[0] == "^") { //negation tags
+        var findEnding = new RegExp("\\{\\{/" + key + "\\}\\}");
+        var ending = findEnding.exec(template);
+        after = template.substr(ending.index + ending[0].length);
+        var value = data[key];
+
+        if (!value) {
+          replacement = template.substr(found.index + found[0].length, ending.index - (found.index + found[0].length));
+        } else {
+          replacement = "";
+        }
+
+      } else if (tag[0] == ">") { //partial, load and recurse
+        var id = tag.substr(1).trim();
+        after = template.substr(found.index + found[0].length);
+        if (cache[id]) {
+          replacement = process(cache[id], data);
+        } else {
+          replacement = "";
+        }
+      } else { //regular substitution
         after = template.substr(found.index + found[0].length);
         replacement = typeof data[tag] != "undefined" ? data[tag] : "";
       }
