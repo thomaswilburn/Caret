@@ -1,0 +1,17 @@
+<li 
+  {{#command}}
+  command="{{command}}"
+  argument="{{argument}}"
+  {{/command}}
+  class="{{#hasChildren}}
+    {{#isRoot}}top{{/isRoot}}
+    {{^isRoot}}parent{{/isRoot}}
+  {{/hasChildren}}
+  {{#retainFocus}}no-refocus{{/retainFocus}}"
+>{{label}}
+{{#shortcut}}
+  <span class="shortcut">{{shortcut}}</span>
+{{/shortcut}}
+{{#hasChildren}}
+  <ul class="menu"></ul>
+{{/hasChildren}}</li>
