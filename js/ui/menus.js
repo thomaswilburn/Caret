@@ -3,15 +3,13 @@ define([
     "editor",
     "ui/dialog",
     "command",
-    "util/inflate",
+    "util/template!templates/menuItem.html",
     "util/dom2"
   ], function(Settings, editor, dialog, command, inflate) {
   
   var commands = editor.commands.commands;
   
   var walker = function(list, depth) {
-    //It's tough to template menus, since they tend to be very mutable
-    //We'll stick with DOM construction for now.
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < list.length; i++) {
       var entry = list[i];
@@ -28,33 +26,22 @@ define([
       if (entry.minVersion && entry.minVersion > chrome.version) {
         continue;
       }
-      var li = document.createElement("li");
-      li.innerHTML = entry.label;
-      if (entry.command) {
-        li.setAttribute("command", entry.command);
-        var command = entry.command == "ace:command" ? entry.argument : entry.command;
-        var arg = entry.command == "ace:command" ? undefined : entry.argument;
-        var shortcut = findKeyCombo(command, arg);
-        if (shortcut) {
-          li.innerHTML += "<span class=shortcut>" + shortcut + "</span>";
-        }
-        if (entry.argument) li.setAttribute("argument", entry.argument);
-      }
-      if (entry.retainFocus) {
-        li.addClass("no-refocus");
-      }
+      var isAce = entry.command == "ace:command";
+      var data = {
+        command: entry.command,
+        argument: entry.argument,
+        shortcut: isAce ? findKeyCombo(entry.argument) : findKeyCombo(entry.command, entry.argument),
+        hasChildren: entry.sub && !!entry.sub.length,
+        isRoot: !depth,
+        retainFocus: entry.retainFocus,
+        label: entry.label
+      };
+      var element = inflate.get("templates/menuItem.html", data);
       if (entry.sub) {
-        if (depth) {
-          li.className = "parent";
-        } else {
-          li.className = "top";
-        }
-        var ul = document.createElement("ul");
-        ul.className = "menu";
-        ul.append(walker(entry.sub, depth + 1));
-        li.append(ul);
+        var children = walker(entry.sub, depth + 1);
+        element.find("ul").append(children);
       }
-      fragment.append(li);
+      fragment.append(element);
     }
     return fragment;
   };
