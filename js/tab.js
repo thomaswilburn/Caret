@@ -70,6 +70,7 @@ define([
           self.file = file;
           self.fileName = file.entry.name;
           delete self.syntaxMode;
+          self.detectSyntax();
         }, function(err) {
           dialog(err);
           deferred.fail();
