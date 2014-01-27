@@ -38,7 +38,7 @@ module.exports = function(grunt) {
         ]
       }
     },
-    copy:  ["config/**", "js/**", "css/*.css", "*.html", "require.js", "background.js", "installer.js", "*.png"]
+    copy:  ["config/**", "js/**", "css/*.css", "**/*.html", "require.js", "background.js", "installer.js", "*.png"]
   });
   
   grunt.registerTask("default", ["less", "watch"]);

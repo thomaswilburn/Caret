@@ -1,6 +1,6 @@
 {
-  //If you want to see the update notification on startup, enable this
-  "promptForUpdates": false,
+  //If you want to disable update checks at startup, change this
+  "promptForUpdates": true,
   
   "defaultTheme": "chrome", //This should be any of the supported Ace themes
   /*
