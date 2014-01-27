@@ -42,7 +42,7 @@ define([
     return converted;
   };
   
-  //need to remove existing Ace conflicts
+  //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = function() {
     var handler = new AceCommandManager("win", defaultAceCommands);
     editor.setKeyboardHandler(handler);
@@ -50,7 +50,7 @@ define([
     for (var k in bindings) {
       var action = bindings[k];
       //if (!action.ace) continue;
-      handler.bindKey(k, action.ace);
+      handler.bindKey(k, action.command == "ace:command" ? action.argument : action.ace);
     }
   };
   command.on("init:startup", bindAce);
