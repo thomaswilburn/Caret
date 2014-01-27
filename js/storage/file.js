@@ -35,7 +35,7 @@ define([
         //cancelling acts like an error, but isn't.
         if (!entry) return deferred.fail(chrome.runtime.lastError);
         self.entry = entry;
-        deferred.done(self)
+        deferred.done(self);
       });
     
       if (c) M.pton(deferred, c);
@@ -102,13 +102,13 @@ define([
             writer.onerror = function(err) {
               console.error(err);
               deferred.fail(err);
-            }
+            };
             writer.onwriteend = function() {
               //after truncation, actually write the file
               writer.onwriteend = function() {
                 deferred.done();
                 self.onWrite();
-              }
+              };
               var blob = new Blob([data]);
               writer.write(blob);
             };
@@ -162,7 +162,7 @@ define([
     getPath: function(c) {
       var self = this;
       var promise = new Promise(function(ok, fail) {
-        if (!self.entry) return fail("No backing entry, cannot get path")
+        if (!self.entry) return fail("No backing entry, cannot get path");
         chrome.fileSystem.getDisplayPath(self.entry, ok);
       });
       if (c) M.pton(promise, c);

@@ -66,7 +66,7 @@ define([
     var adjusted = current + delta;
     editor.container.style.fontSize = adjusted + "px";
     if (c) c();
-  }
+  };
   
   command.on("editor:default-zoom", defaultFontSize);
   command.on("editor:adjust-zoom", adjustFontSize);
@@ -85,9 +85,9 @@ define([
   document.find("textarea").setAttribute("tabindex", -1);
   
   command.on("editor:print", function(c) {
-    ace.require("ace/config").loadModule("ace/ext/static_highlight", function(static) {
+    ace.require("ace/config").loadModule("ace/ext/static_highlight", function(highlight) {
       var session = editor.getSession();
-      var printable = static.renderSync(session.getValue(), session.getMode(), editor.renderer.theme);
+      var printable = highlight.renderSync(session.getValue(), session.getMode(), editor.renderer.theme);
       var iframe = document.createElement("iframe");
       var css = "<style>" + printable.css + "</style>";
       var doc = css + printable.html;
@@ -99,7 +99,7 @@ define([
         iframe.contentWindow.print();
         setTimeout(function() {
           iframe.remove();
-        })
+        });
       });
     });
   });

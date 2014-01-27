@@ -59,8 +59,8 @@ define([
           editor.focus();
           if (callback) callback(options.value);
         }
-      })
-    }
+      });
+    };
 
     var clickButton = function(e) {
       var target = e.target;
@@ -79,6 +79,6 @@ define([
     modal.onkeypress = onKeyPress;
     modal.onclick = clickButton;
 
-  }
+  };
 
 });

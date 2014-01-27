@@ -29,7 +29,7 @@ require([
       var url = themes[theme] || themes.dark;
       document.find("#theme").setAttribute("href", url);
     });
-  }
+  };
 
   var loadedModules = {
     "editor": false, 
@@ -78,7 +78,7 @@ require([
   
   chrome.notifications.onButtonClicked.addListener(function(id, index) {
     if (id != updateID) return;
-    if (index == 0) {
+    if (index === 0) {
       chrome.runtime.reload();
     }
   });

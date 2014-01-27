@@ -43,7 +43,7 @@ define([
     this.file = file;
     this.fileName = file.entry.name;
     this.modifiedAt = new Date();
-  }
+  };
   
   Tab.prototype.save = function(as, c) {
     if (typeof as == "function") {
@@ -106,7 +106,7 @@ define([
     });
     this.animationClass = "";
     return element;
-  }
+  };
   
   Tab.prototype.detectSyntax = function(userConfig) {
     //settings are async
@@ -130,7 +130,6 @@ define([
         syntaxValue = "javascript";
         this.setMode("ace/mode/javascript");
       } else if (this.file.entry) {
-        var found = false;
         var extension = this.file.entry.name.split(".").pop();
         //this won't ever change, safe to get each time
         var aceConfig = Settings.get("ace");
@@ -147,7 +146,7 @@ define([
     }
     this.setMode("ace/mode/" + syntaxValue);
     return syntaxValue;
-  }
+  };
   
   return Tab;
 

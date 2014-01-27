@@ -10,13 +10,15 @@ define([
   });
   
   command.on("api:execute", function(id, c) {
-    if (!id in targets) return c();
+    if (!(id in targets))
+      return c();
     var config = targets[id];
     chrome.runtime.sendMessage(config.id, config.message, null, function() {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError);
       }
-      if (c) c();
+      if (c)
+        c();
     });
   });
   

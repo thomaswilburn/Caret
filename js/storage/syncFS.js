@@ -33,7 +33,7 @@ define(function() {
       
       var only = function(data) {
         return decode(key);
-      }
+      };
       
       var fetch = function() {
         return new Promise(function(ok) {
@@ -66,7 +66,7 @@ define(function() {
           chunks.map(function(chunk, i) {
             hash[key + i] = chunk;
           });
-          chrome.storage.sync.set(hash, ok)
+          chrome.storage.sync.set(hash, ok);
         }
       });
     },
@@ -86,7 +86,7 @@ define(function() {
         chrome.storage.sync.remove(key, ok);
       });
     }
-  }
+  };
   
   
 });

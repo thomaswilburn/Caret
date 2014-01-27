@@ -41,14 +41,14 @@ define(function() {
       }
       params.url = url;
       return params;
-    }
+    };
     return {
       parse: parser,
       regex: re,
       url: makeURL(parts.join("/")),
       callback: handler
     };
-  }
+  };
   
   chrome.contextMenus.onClicked.addListener(onClick);
   
