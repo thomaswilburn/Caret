@@ -98,7 +98,7 @@ define([
         }
         return true;
       });
-      if (tabs.length == 0) {
+      if (tabs.length === 0) {
         return addTab();
       }
       var next = index - 1;
@@ -156,7 +156,7 @@ define([
     var raised = tab || stack[stackOffset];
     stack = stack.filter(function(t) { return t != raised });
     stack.unshift(raised);
-  }
+  };
 
   var watchCtrl = function(e) {
     if (e.keyCode == 17) {
@@ -209,7 +209,7 @@ define([
     var draggedTab = null;
     tabContainer.on("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
-      e.target.style.opacity = .4;
+      e.target.style.opacity = 0.4;
       setTimeout(function() {
         e.target.addClass("dragging");
       }, 50);
@@ -315,8 +315,9 @@ define([
         option.value = mode.name;
         syntax.append(option);
       });
-    })
-    if (!tabs.length) addTab("");
+    });
+    if (!tabs.length)
+      addTab("");
     renderTabs();
     enableTabDragDrop();
     enableTabMiddleClick();
@@ -389,6 +390,6 @@ define([
       editor.moveCursorToPosition(locationMemory.cursor);
     },
     renderTabs: renderTabs
-  }
+  };
 
 });

@@ -45,7 +45,7 @@ define([
       while (startLine > 0) {
         startLine--;
         var line = session.getLine(startLine);
-        if (line == "") {
+        if (line === "") {
           //we'll skip the preceding space
           startLine += 1;
           break;
@@ -55,7 +55,7 @@ define([
       while (endLine < length) {
         endLine++;
         var line = session.getLine(endLine);
-        if (line == "") {
+        if (line === "") {
           break;
         }
       }
@@ -87,7 +87,7 @@ define([
             match = openers[match];
           }
           for (var j = position.column + 1; j < line.length; j++) {
-            if (line[j] == match && depth == 0) {
+            if (line[j] === match && depth === 0) {
               var selection = editor.getSession().getSelection();
               selection.setRange(new Range(position.row, i + 1, position.row, j));
               return;

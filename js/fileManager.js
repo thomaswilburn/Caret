@@ -20,7 +20,7 @@ define([
       //annoying array function test, since it's not apparently a real array
       if (!files.slice) {
         files = [ files ];
-      };
+      }
       files.map(function(entry) {
         var f = new File(entry);
         return f.read().then(function(data) {

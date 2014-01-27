@@ -99,7 +99,7 @@ define([
       this.render();
     },
     findCommands: function(query) {
-      if (query.length == 0) return this.results = [];
+      if (query.length === 0) return this.results = [];
       var fuzzyCommand = new RegExp(query
         .split("")
         .map(function(char) { return char.replace(antiregex, "\\$1")})
@@ -213,7 +213,7 @@ define([
               sublabel: path,
               command: "project:open-file",
               argument: path
-          }
+          };
         });
       } else {
         var current = this.homeTab; 
@@ -227,7 +227,7 @@ define([
         return {
           tab: t,
           line: line
-        }
+        };
       });
       
       if (search) {
@@ -250,7 +250,7 @@ define([
             lines.push(position.row);
             var result = {
               tab: t.tab
-            }
+            };
             result.label = result.tab.fileName;
             result.sublabel = sanitize(result.tab.getLine(position.row));
             result.line = position.row;

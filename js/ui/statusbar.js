@@ -19,7 +19,7 @@ define([
     
     var toastTimeout = null;
     
-    var interface = {
+    var interFace = {
       setMessage: function(msg) {
         external = msg;
         if (toastTimeout !== null) {
@@ -42,14 +42,14 @@ define([
           external = "";
           update();
           toastTimeout = null;
-        }, seconds ? seconds * 1000 : 2000)
+        }, seconds ? seconds * 1000 : 2000);
       }
-    }
+    };
     
-    command.on("status:set", interface.setMessage);
-    command.on("status:clear", interface.clearMessage);
-    command.on("status:toast", interface.toast);
+    command.on("status:set", interFace.setMessage);
+    command.on("status:clear", interFace.clearMessage);
+    command.on("status:toast", interFace.toast);
     
-    return interface;
+    return interFace;
 
 });

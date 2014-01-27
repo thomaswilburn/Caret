@@ -90,6 +90,6 @@ el.toggle = function(name) {
 
 el.hasClass = function(name) {
   return this.classList.contains(name);
-}
+};
 
-})
+});

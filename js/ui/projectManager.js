@@ -49,12 +49,12 @@ define([
       var inc = 1;
       var check = function() {
         inc--;
-        if (inc == 0) {
+        if (inc === 0) {
           return done(self);
         }
       };
       var collect = function(list) {
-        if (list.length == 0) return complete();
+        if (list.length === 0) return complete();
         entries.push.apply(entries, list);
         reader.readEntries(collect);
       };
@@ -83,7 +83,7 @@ define([
     this.project = null;
     this.projectFile = null;
     if (element) {
-      this.setElement(element)
+      this.setElement(element);
     }
     var self = this;
     chrome.storage.local.get("retainedProject", function(data) {
@@ -101,7 +101,7 @@ define([
           });
         });
       }
-    })
+    });
   };
   ProjectManager.prototype = {
     element: null,
@@ -148,7 +148,7 @@ define([
         if (counter = self.directories.length) {
           self.render();
         }
-      }
+      };
       this.directories.forEach(function(d) {
         d.walk(check);
       });
@@ -162,7 +162,7 @@ define([
       }, 500);
       this.element.innerHTML = "";
       this.pathMap = {};
-      if (this.directories.length == 0) {
+      if (this.directories.length === 0) {
         this.element.removeClass("show");
         return;
       }
@@ -265,7 +265,7 @@ define([
             var file = new File(node.entry);
             file.read(function(err, data) {
               sessions.addFile(data, file);
-            })
+            });
           }
         );
       });

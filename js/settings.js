@@ -7,7 +7,7 @@ define([
   
   return {
     load: function(name, parentRequire, onLoad, config) {
-      if (name.length == 0) {
+      if (name.length === 0) {
         return onLoad(Settings);
       }
       

@@ -43,7 +43,7 @@ define([
     this.file = file;
     this.fileName = file.entry.name;
     this.modifiedAt = new Date();
-  }
+  };
   
   Tab.prototype.save = function(as, c) {
     if (typeof as == "function") {
@@ -106,7 +106,7 @@ define([
     });
     this.animationClass = "";
     return element;
-  }
+  };
   
   Tab.prototype.detectSyntax = function(userConfig) {
     //settings are async
@@ -147,7 +147,7 @@ define([
     }
     this.setMode("ace/mode/" + syntaxValue);
     return syntaxValue;
-  }
+  };
   
   return Tab;
 

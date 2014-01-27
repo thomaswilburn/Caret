@@ -101,11 +101,11 @@ define([
           for (var i = 0; i < pending[name].length; i++) {
             pending[name][i]();
           }
-          delete pending[name]
+          delete pending[name];
         });
       };
       
-      pending[name] = [c]
+      pending[name] = [c];
       
       if (defaults[name]) {
         return merge();
