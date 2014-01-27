@@ -157,7 +157,7 @@ define([
                   c({
                     value: data,
                     file: file
-                  })
+                  });
                 }, function(err) {
                   failures.push(id);
                   c(null);

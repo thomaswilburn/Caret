@@ -2,10 +2,10 @@
   draggable
   href="tabs/{{index}}"
   command="session:raise-tab"
-  argument={{index}}
+  argument="{{index}}"
   title="{{fileName}}"
   class="tab {{animation}}"
 >
   {{fileName}} {{#modified}}&bull;{{/modified}}
-  <a class="close" command="session:close-tab" argument={{index}}>&times;</a>
+  <span class="close" command="session:close-tab" argument={{index}}>&times;</span>
 </a>
