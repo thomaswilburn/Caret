@@ -14,7 +14,7 @@ define(function() {
         if (f) {
           f.apply(null, args);
         }
-      }
+      };
       next();
     },
     map: function(a, f, c) {
@@ -67,6 +67,6 @@ define(function() {
         promise: function() { return promise }
       };
     }
-  }
+  };
 
 });

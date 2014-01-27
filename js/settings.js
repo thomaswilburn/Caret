@@ -20,9 +20,9 @@ define([
           if (completed == files.length) {
             onLoad(Settings);
           }
-        })
+        });
       });
     }
-  }
+  };
 
 });

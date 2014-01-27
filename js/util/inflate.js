@@ -103,7 +103,7 @@ define([
         ok();
       });
     });
-  }
+  };
   
   return {
     get: inflate,
@@ -121,6 +121,6 @@ define([
         return Promise.resolve(rendered);
       });
     }
-  }
+  };
   
 });

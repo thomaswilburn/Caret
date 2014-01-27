@@ -33,7 +33,7 @@ define(function() {
       
       var only = function(data) {
         return decode(key);
-      }
+      };
       
       var fetch = function() {
         return new Promise(function(ok) {

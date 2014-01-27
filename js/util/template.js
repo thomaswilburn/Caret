@@ -15,6 +15,6 @@ define(["util/inflate"], function(inflate) {
         onLoad(inflate);
       });
     }
-  }
+  };
 
 });

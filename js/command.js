@@ -42,7 +42,7 @@ define([
         if (callback) callback.call(null, result);
       }
     });
-  }
+  };
   
   var register = function(command, listener, sync) {
     if (!commands[command]) {
@@ -53,13 +53,13 @@ define([
       callback: listener,
       sync: sync
     });
-  }
+  };
 
   //delegate for all elements that have a command attribute
   document.body.on("click", function(e) {
     //cancel on inputs, selectboxes
     if (["input", "select"].indexOf(e.target.tagName.toLowerCase()) >= 0) return;
-    if (e.button != 0) return;
+    if (e.button !== 0) return;
     //delegate all items with a command attribute
     if (e.target.hasAttribute("command")) {
       var command = e.target.getAttribute("command");
