@@ -24,6 +24,7 @@
     transition: opacity .2s;
     display: flex;
     padding: 4px 8px;
+    position: relative;
     justify-content: space-between;
 
     &:hover, &.active {
@@ -51,10 +52,11 @@
     }
 
     &.parent::after {
-      content: "►";
+      content: ">";
       font-family: serif;
       position: absolute;
       right: 4px;
+      top: 0px;
       color: fade(@foreground, 50%);
     }
 

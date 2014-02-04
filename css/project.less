@@ -65,13 +65,16 @@
     position: relative;
     
     &:before {
-      content: "▶";
+      content: ">";
       position: absolute;
-      left: -10px;
-      font-size: 75%;
+      left: -5px;
       opacity: .5;
       display: inline-block;
       transition: all .3s;
+    }
+    
+    &:hover:before {
+      opacity: 1;
     }
   }
   
