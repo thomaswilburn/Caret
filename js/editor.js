@@ -40,7 +40,7 @@ define([
     editor.setShowPrintMargin(userConfig.showMargin || false);
     editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
     editor.setShowInvisibles(userConfig.showWhitespace || false);
-    editor.setHighlightActiveLine(userConfig.highlightLine || true);
+    editor.setHighlightActiveLine(userConfig.highlightLine || false);
     editor.container.style.fontFamily = userConfig.fontFamily || null;
     defaultFontSize();
     ace.config.loadModule("ace/ext/language_tools", function() {
