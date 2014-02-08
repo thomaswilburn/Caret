@@ -24,7 +24,6 @@
     transition: opacity .2s;
     display: flex;
     padding: 4px 8px;
-    position: relative;
     justify-content: space-between;
 
     &:hover, &.active {
@@ -41,7 +40,7 @@
 
     .menu {
       display: none;
-      min-width: 150px;
+      min-width: 250px;
       position: absolute;
       margin-left: 80%;
       margin-top: -2em;
@@ -52,11 +51,10 @@
     }
 
     &.parent::after {
-      content: ">";
+      content: "►";
       font-family: serif;
       position: absolute;
       right: 4px;
-      top: 0px;
       color: fade(@foreground, 50%);
     }
 
