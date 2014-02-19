@@ -37,6 +37,7 @@ define([
     userConfig = Settings.get("user");
     themes.value = userConfig.defaultTheme;
     editor.setTheme("ace/theme/" + themes.value);
+    editor.setOption("scrollPastEnd", userConfig.scrollPastEnd);
     editor.setShowPrintMargin(userConfig.showMargin || false);
     editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
     editor.setShowInvisibles(userConfig.showWhitespace || false);

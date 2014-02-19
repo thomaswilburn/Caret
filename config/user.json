@@ -46,6 +46,7 @@
   "wrapLimit":false, //Set to the number of characters you want or false for full window
   "showMargin": false,
   "lineEndings": "auto", //newline format - "windows", "unix", or "auto"
+  "scrollPastEnd": true, //allow the editor to scroll past the end of the document
   
   //only fixed-width fonts supported, for now
   "fontFamily": "",
