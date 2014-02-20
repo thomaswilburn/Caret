@@ -347,7 +347,7 @@ define([
   return {
     addFile: addTab,
     addDefaultsFile: function(name) {
-      var tab = addTab(Settings.getAsString(data[name], true));
+      var tab = addTab(Settings.getAsString(name, true));
       tab.syntaxMode = "javascript";
       tab.detectSyntax();
       tab.fileName = name + ".json";
