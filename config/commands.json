@@ -11,7 +11,8 @@
   { "command": "session:revert-file", "label": "Revert File" },
   { "command": "session:close-tab", "label": "Close File" },
   { "command": "editor:print", "label": "Print File" },
-  { "command": "session:close-to-right", "label": "Close Tabs to the Right"},
+  { "command": "session:close-to-right", "label": "Close Tabs to the Right" },
+  { "command": "session:insert-from-file", "label": "Insert from File" },
   
   { "label": "Undo", "command": "ace:command", "argument": "undo" },
   { "label": "Redo", "command": "ace:command", "argument": "redo" },
@@ -20,6 +21,7 @@
   { "label": "Select Line", "command": "sublime:expand-to-line" },
   { "label": "Select Paragraph", "command": "sublime:expand-to-paragraph" },
   { "label": "Select to Matching", "command": "sublime:expand-to-matching" },
+  { "label": "Word Count", "command": "editor:word-count" },
   
   { "label": "Find", "command": "ace:command", "argument": "find" },
   { "label": "Find/Replace", "command": "ace:command", "argument": "replace" },

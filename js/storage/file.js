@@ -22,6 +22,7 @@ define([
         c = mode;
         mode = "open";
       }
+      mode = mode || "open";
       //mode is "open" or "save"
       var modes = {
         "open": "openWritableFile",
@@ -30,7 +31,7 @@ define([
       var deferred = M.deferred();
       
       chrome.fileSystem.chooseEntry({
-        type: modes[mode] || "open"
+        type: modes[mode]
       }, function(entry) {
         //cancelling acts like an error, but isn't.
         if (!entry) return deferred.fail(chrome.runtime.lastError);

@@ -18,6 +18,7 @@
       { "label": "Undo", "command": "ace:command", "argument": "undo" },
       { "label": "Redo", "command": "ace:command", "argument": "redo" },
       "divider",
+      { "label": "Insert from File", "command": "session:insert-from-file" },
       { "label": "Select Word", "command": "ace:command", "argument": "selectMoreAfter" },
       { "label": "Select Line", "command": "sublime:expand-to-line" },
       { "label": "Select Paragraph", "command": "sublime:expand-to-paragraph" },
@@ -50,7 +51,8 @@
       { "label": "Command Palette", "command": "palette:open", "argument": "command", "retainFocus": true },
       "divider",
       { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
-      { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" }
+      { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
+      { "label": "Word Count", "command": "editor:word-count" }
     ]
   },
   {

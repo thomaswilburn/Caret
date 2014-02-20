@@ -105,6 +105,14 @@ define([
     });
   });
   
+  command.on("editor:word-count", function(c) {
+    var text = editor.getSession().getValue();
+    var lines = text.split("\n").length + " lines";
+    var characters = text.length + " characters";
+    var words = text.split(/\b/).length + " words";
+    command.fire("status:toast", [characters, words, lines].join(", "));
+  });
+  
   return editor;
 
 });

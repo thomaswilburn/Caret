@@ -298,8 +298,8 @@ define([
       var current = this.results[this.selected];
       if (!current) return;
       if (current.command) {
-        command.fire(current.command, current.argument);
         status.toast("Executing: " + current.label + "...");
+        command.fire(current.command, current.argument);
       } else {
         //must be the file search
         command.fire("session:check-file");

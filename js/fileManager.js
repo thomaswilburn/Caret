@@ -1,12 +1,13 @@
 define([
     "sessions",
+    "editor",
     "storage/file",
     "ui/dialog",
     "command",
     "storage/settingsProvider",
     "util/manos",
     "ui/projectManager"
-  ], function(sessions, File, dialog, command, Settings, M, projectManager) {
+  ], function(sessions, editor, File, dialog, command, Settings, M, projectManager) {
 
   var openFile = function(c) {
     //have to call chooseEntry manually to support multiple files
@@ -134,6 +135,13 @@ define([
   command.on("session:open-settings-defaults", function(name, c) {
     sessions.addDefaultsFile(name);
     if (c) c();
+  });
+  
+  command.on("session:insert-from-file", function(c) {
+    var f = new File();
+    f.open().then(f.read.bind(f)).then(function(text) {
+      editor.execCommand("insertstring", text);
+    });
   });
   
   command.on("session:open-launch", openFromLaunchData);
