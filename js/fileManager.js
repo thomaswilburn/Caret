@@ -76,7 +76,12 @@ define([
 
   command.on("session:new-file", function(content) { return sessions.addFile(content) });
   command.on("session:open-file", openFile);
-  command.on("session:save-file", function(c) { sessions.getCurrent().save(c) });
+  command.on("session:save-file", function(c) { 
+    sessions.getCurrent()
+      .save(c)
+      .then(function() {
+        command.fire("session:syntax");
+      }); });
   command.on("session:save-file-as", function(c) { 
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {

@@ -123,7 +123,7 @@ define([
     //syntax, however, is sync
     var syntaxValue = "plain_text";
     if (this.syntaxMode) {
-      syntaxValue = this.syntaxMode;
+      return this.syntaxMode;
     } else if (this.file) {
       if (this.file.virtual) {
         //settings files are special
@@ -142,9 +142,8 @@ define([
           }
         }
       }
-      this.syntaxMode = syntaxValue;
     }
-    command.fire("session:syntax", syntaxValue);
+    this.syntaxMode = syntaxValue;
     return syntaxValue;
   }
   

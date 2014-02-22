@@ -323,8 +323,12 @@ define([
 
   command.on("session:syntax", function(mode) {
     var session = editor.getSession();
-    session.setMode("ace/mode/" + mode);
-    session.syntaxMode = mode;
+    if (mode) {
+      session.setMode("ace/mode/" + mode);
+      session.syntaxMode = mode;
+    } else {
+      mode = session.syntaxMode;
+    }
     syntax.value = mode;
     editor.focus();
   });
