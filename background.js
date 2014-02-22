@@ -84,3 +84,33 @@ chrome.app.runtime.onRestarted.addListener(function() {
 });
 
 chrome.runtime.onMessageExternal.addListener(onMessage);
+
+// setup for app button menus
+
+chrome.contextMenus.create({
+  title: "Emergency Reset",
+  contexts: [ "launcher" ],
+  id: "app:factory-reset"
+});
+
+chrome.contextMenus.onClicked.addListener(function(data) {
+  if (data.menuItemId != "app:factory-reset") return;
+  if (mainWindow) mainWindow.close();
+  var cleared = {
+    local: false,
+    sync: false
+  };
+  var check = function(storage) {
+    cleared[storage] = true;
+    if (cleared.local && cleared.sync) {
+      chrome.notifications.create("app:factory-reset-complete", {
+        type: "basic",
+        iconUrl: "icon-128.png",
+        title: "Emergency Reset Complete",
+        message: "Caret has been reset to the default settings."
+      }, function() {});
+    }
+  };
+  chrome.storage.local.clear(check.bind(null, "local"));
+  chrome.storage.sync.clear(check.bind(null, "sync"));
+});
