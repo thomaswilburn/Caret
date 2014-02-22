@@ -109,7 +109,8 @@ define([
     var text = editor.getSession().getValue();
     var lines = text.split("\n").length + " lines";
     var characters = text.length + " characters";
-    var words = text.split(/\b/).length + " words";
+    var words = text.match(/\b\S+\b/g);
+    words = words ? words.length : 0;
     command.fire("status:toast", [characters, words, lines].join(", "));
   });
   
