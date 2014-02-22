@@ -122,13 +122,12 @@ define([
     });
     //syntax, however, is sync
     var syntaxValue = this.syntaxMode || "plain_text";
-    if (!this.syntaxMode && this.file) {
+    if (this.file) {
       if (this.file.virtual) {
         //settings files are special
         syntaxValue = "javascript";
         this.setMode("ace/mode/javascript");
       } else if (this.file.entry) {
-        var found = false;
         var extension = this.file.entry.name.split(".").pop();
         //this won't ever change, safe to get each time
         var aceConfig = Settings.get("ace");
