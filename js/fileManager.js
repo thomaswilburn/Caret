@@ -98,6 +98,21 @@ define([
     });
   });
   
+  var setRetained = function() {
+    var tabs = sessions.getAllTabs();
+    var keep = [];
+    tabs.forEach(function(tab, i) {
+      if (!tab.file || tab.file.virtual) return;
+      keep[i] = tab.file.retain();
+    });
+    keep = keep.filter(function(m) { return m });
+    if (keep.length) {
+      chrome.storage.local.set({ retained: keep });
+    }
+  };
+  
+  command.on("session:retain-tabs", setRetained);
+  
   command.on("session:check-file", function() {
     var tab = sessions.getCurrent();
     if (!tab.file || tab.file.virtual) return;

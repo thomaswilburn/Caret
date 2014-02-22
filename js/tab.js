@@ -137,7 +137,6 @@ define([
         for (var i = 0; i < aceConfig.modes.length; i++) {
           var mode = aceConfig.modes[i];
           if (mode.extensions.indexOf(extension) > -1) {
-            this.setMode("ace/mode/" + mode.name);
             syntaxValue = mode.name;
             break;
           }
@@ -145,7 +144,7 @@ define([
       }
       this.syntaxMode = syntaxValue;
     }
-    this.setMode("ace/mode/" + syntaxValue);
+    command.fire("session:syntax", syntaxValue);
     return syntaxValue;
   }
   

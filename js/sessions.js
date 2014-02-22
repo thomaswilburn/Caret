@@ -40,22 +40,10 @@ define([
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });
     });
-    setRetained();
+    command.fire("session:retain-tabs");
   };
 
   command.on("session:render", renderTabs);
-
-  var setRetained = function() {
-    var keep = [];
-    tabs.forEach(function(tab, i) {
-      if (!tab.file || tab.file.virtual) return;
-      keep[i] = tab.file.retain();
-    });
-    keep = keep.filter(function(m) { return m });
-    if (keep.length) {
-      chrome.storage.local.set({ retained: keep });
-    }
-  };
 
   var addTab = function(contents, file) {
     var current = editor.getSession();
