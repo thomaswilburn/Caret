@@ -329,7 +329,6 @@ define([
     editor.focus();
   });
 
-
   var locationMemory = null;
 
   return {

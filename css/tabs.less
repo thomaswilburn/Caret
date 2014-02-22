@@ -14,7 +14,7 @@
     max-width: 200px;
     padding: 0px 0px 0px 4px;
     margin-right: 3px;
-    opacity: .8;
+    opacity: .6;
     background: @background;
     border-radius: 2px 2px 0 0;
     color: @foreground;
@@ -35,6 +35,10 @@
       color: @foreground;
       opacity: 1;
       box-shadow: none;
+      
+      .close {
+        color: @accent;
+      }
     }
     
     &.dragging {
@@ -57,7 +61,8 @@
     .close {
       font-size: 18px;
       text-align: center;
-      color: @accent;
+      vertical-align: middle;
+      width: 18px;
       background: @background;
       position: relative;
       margin-left: 4px;

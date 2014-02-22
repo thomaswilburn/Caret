@@ -6,6 +6,9 @@
   title="{{fileName}}"
   class="tab {{animation}}"
 >
-  {{fileName}} {{#modified}}&bull;{{/modified}}
-  <span class="close" command="session:close-tab" argument={{index}}>&times;</span>
+  {{fileName}}
+  <span class="close" command="session:close-tab" argument={{index}}>
+    {{#modified}}&equiv;{{/modified}}
+    {{^modified}}&times;{{/modified}}
+  </span>
 </a>
