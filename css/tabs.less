@@ -1,9 +1,9 @@
 .tabs {
-  background: @faded;
+  background: linear-gradient(to bottom, @faded, lighten(@faded, 10%));
   padding: 2px 2px 0px 0px;
   display: flex;
   justify-content: flex-start;
-  box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .3);
+  //box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .3);
 
   a.tab {
     display: flex;
@@ -26,8 +26,8 @@
     position: relative;
     box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
     
-    transition: max-width .5s linear, -webkit-transform .2s ease, border-width .5s ease;
-    transition: max-width .5s linear, transform .2s ease, border-width .5s ease;
+    transition: max-width .5s linear, -webkit-transform .2s ease, border-width .5s ease, opacity .2s ease;
+    transition: max-width .5s linear, transform .2s ease, border-width .5s ease, opacity .2s ease;
     
     &.active {
       padding-bottom: 0px;
@@ -39,6 +39,10 @@
       .close {
         color: @accent;
       }
+    }
+    
+    &:hover:not(.active) {
+      opacity: .8;
     }
     
     &.dragging {
