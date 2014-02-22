@@ -42,7 +42,7 @@ define([
           external = "";
           update();
           toastTimeout = null;
-        }, seconds ? seconds * 1000 : 2000)
+        }, seconds ? seconds * 1000 : 5000)
       }
     }
     
