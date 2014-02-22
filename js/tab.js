@@ -121,10 +121,8 @@ define([
       self.setUseWorker(userConfig.useWorker);
     });
     //syntax, however, is sync
-    var syntaxValue = "plain_text";
-    if (this.syntaxMode) {
-      return this.syntaxMode;
-    } else if (this.file) {
+    var syntaxValue = this.syntaxMode || "plain_text";
+    if (!this.syntaxMode && this.file) {
       if (this.file.virtual) {
         //settings files are special
         syntaxValue = "javascript";
@@ -143,6 +141,7 @@ define([
         }
       }
     }
+    this.setMode("ace/mode/" + syntaxValue);
     this.syntaxMode = syntaxValue;
     return syntaxValue;
   }
