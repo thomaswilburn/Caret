@@ -1,14 +1,16 @@
-<a
+<span
   draggable="true"
-  href="tabs/{{index}}"
-  command="session:raise-tab"
-  argument="{{index}}"
-  title="{{fileName}}"
   class="tab {{animation}}"
 >
-  {{fileName}}
-  <span class="close" command="session:close-tab" argument={{index}}>
+  <a
+    href="tabs/{{index}}"
+    class="label"
+    title="{{fileName}}"
+    command="session:raise-tab"
+    argument="{{index}}"
+  >{{fileName}}</a>
+  <a class="close" command="session:close-tab" argument={{index}}>
     {{#modified}}&equiv;{{/modified}}
     {{^modified}}&times;{{/modified}}
-  </span>
-</a>
+  </a>
+</span>
