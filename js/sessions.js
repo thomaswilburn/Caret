@@ -4,14 +4,11 @@ define([
     "sessions/switching",
     "sessions/binding",
     "editor",
-    "ui/contextMenus",
     "command",
-    "tab",
     "storage/settingsProvider",
-    "util/manos",
     "aceBindings"
   ],
-  function(state, addRemove, switching, bindEvents, editor, contextMenus, command, Tab, Settings, M) {
+  function(state, addRemove, switching, bindEvents, editor, command, Settings) {
     
   /*
   
@@ -21,6 +18,18 @@ define([
   */
 
   var syntax = document.find(".syntax");
+
+  command.on("session:syntax", function(mode) {
+    var session = editor.getSession();
+    if (mode) {
+      session.setMode("ace/mode/" + mode);
+      session.syntaxMode = mode;
+    } else {
+      mode = session.syntaxMode;
+    }
+    syntax.value = mode;
+    editor.focus();
+  });
 
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
@@ -42,24 +51,6 @@ define([
   };
 
   command.on("session:render", renderTabs);
-
-  var closeTabsRight = function(tabID) {
-    tabID = tabID || state.tabs.indexOf(editor.getSession());
-    var toClose = [];
-    for (var i = state.tabs.length - 1; i > tabID; i--) {
-      toClose.push(i);
-    }
-    M.serial(toClose, addRemove.remove);
-  };
-
-  command.on("session:close-to-right", closeTabsRight);
-
-  contextMenus.register("Close", "closeTab", "tabs/:id", function(args) {
-    command.fire("session:close-tab", args.id);
-  });
-  contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", function(args) {
-    closeTabsRight(args.id);
-  });
 
   var init = function() {
     Settings.pull("ace").then(function(data) {
@@ -85,18 +76,6 @@ define([
 
   command.on("init:startup", init);
   command.on("init:restart", reset);
-
-  command.on("session:syntax", function(mode) {
-    var session = editor.getSession();
-    if (mode) {
-      session.setMode("ace/mode/" + mode);
-      session.syntaxMode = mode;
-    } else {
-      mode = session.syntaxMode;
-    }
-    syntax.value = mode;
-    editor.focus();
-  });
 
   var locationMemory = null;
 

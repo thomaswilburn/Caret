@@ -1,8 +1,11 @@
 define([
     "command",
     "sessions/state",
+    "sessions/addRemove",
+    "ui/contextMenus",
+    "util/manos",
     "util/dom2"
-  ], function(command, state) {
+  ], function(command, state, addRemove, contextMenus, M) {
 
   var enableTabDragDrop = function() {
     var tabContainer = document.find(".tabs");
@@ -90,6 +93,24 @@ define([
       command.fire("session:close-tab", e.target.getAttribute("argument"));
     });
   };
+  
+  var closeTabsRight = function(tabID) {
+    tabID = tabID || state.tabs.indexOf(editor.getSession());
+    var toClose = [];
+    for (var i = state.tabs.length - 1; i > tabID; i--) {
+      toClose.push(i);
+    }
+    M.serial(toClose, addRemove.remove);
+  };
+
+  command.on("session:close-to-right", closeTabsRight);
+
+  contextMenus.register("Close", "closeTab", "tabs/:id", function(args) {
+    command.fire("session:close-tab", args.id);
+  });
+  contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", function(args) {
+    closeTabsRight(args.id);
+  });
   
   return function() {
     enableTabDragDrop();
