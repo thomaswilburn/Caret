@@ -27,6 +27,14 @@ el.findAll = doc.findAll = frag.findAll = function(selector) {
     return a;
 };
 
+el.findUp = function(selector) {
+  var target = this;
+  while (target && !target.matches(selector)) {
+    target = target.parentElement;
+  }
+  return target;
+}
+
 el.matches = el.matches || el.webkitMatchesSelector;
 
 el.remove = function() {
