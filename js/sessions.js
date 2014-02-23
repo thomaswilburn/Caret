@@ -1,4 +1,5 @@
 define([
+    "sessions/state",
     "editor",
     "ui/dialog",
     "ui/contextMenus",
@@ -9,7 +10,7 @@ define([
     "util/manos",
     "aceBindings"
   ],
-  function(editor, dialog, contextMenus, command, Tab, Settings, status, M) {
+  function(state, editor, dialog, contextMenus, command, Tab, Settings, status, M) {
     
   /*
   
@@ -17,11 +18,13 @@ define([
   It's probably overcomplicated, and I'm slowly moving chunks of it out into
   other, more appropriate modules.
   
+  Part of this move is to transfer the tab state (the tabs and stack arrays) into
+  an external module, which can then be requested and manipulated by other modules
+  imported here.
+  
   */
 
-  var tabs = [];
   var syntax = document.find(".syntax");
-  var stack = [];
   var stackOffset = 0;
 
   var renderTabs = function() {
@@ -29,7 +32,7 @@ define([
     var contents = "";
     var current = editor.getSession();
     tabContainer.innerHTML = "";
-    tabs.forEach(function(tab, i) {
+    state.tabs.forEach(function(tab, i) {
       var element = tab.render(i);
       if (tab === current) {
         element.addClass("active");
@@ -56,8 +59,8 @@ define([
       tab.modified = false;
     } else {
       tab = new Tab(contents, file);
-      stack.unshift(tab);
-      tabs.push(tab);
+      state.stack.unshift(tab);
+      state.tabs.push(tab);
     }
     if (file && !file.virtual) {
       file.entry.file(function(f) {
@@ -73,14 +76,14 @@ define([
   //removeTab looks long, but it handles the async save/don't/cancel flow
   var removeTab = function(index, c) {
     if (!index) {
-      index = tabs.indexOf(editor.getSession());
+      index = state.tabs.indexOf(editor.getSession());
     }
-    var tab = tabs[index];
-    stack = stack.filter(function(t) { return t !== tab });
+    var tab = state.tabs[index];
+    state.stack = state.stack.filter(function(t) { return t !== tab });
 
     var continuation = function() {
       tab.drop();
-      tabs = tabs.filter(function(tab, i) {
+      state.tabs = state.tabs.filter(function(tab, i) {
         if (i == index) {
           return false;
         }
@@ -97,7 +100,7 @@ define([
       if (tab !== current) {
         renderTabs();
       } else {
-        raiseTab(tabs[next]);
+        raiseTab(state.tabs[next]);
       }
       if (c) c();
     };
@@ -141,9 +144,9 @@ define([
   };
 
   var resetStack = function(tab) {
-    var raised = tab || stack[stackOffset];
-    stack = stack.filter(function(t) { return t != raised });
-    stack.unshift(raised);
+    var raised = tab || state.stack[stackOffset];
+    state.stack = state.stack.filter(function(t) { return t != raised });
+    state.stack.unshift(raised);
   }
 
   var watchCtrl = function(e) {
@@ -163,28 +166,28 @@ define([
       stackOffset = 0;
       document.body.on("keyup", watchCtrl);
     }
-    stackOffset = (stackOffset + arg) % stack.length;
-    if (stackOffset < 0) stackOffset = stack.length + stackOffset;
-    raiseTab(stack[stackOffset]);
+    stackOffset = (stackOffset + arg) % state.stack.length;
+    if (stackOffset < 0) stackOffset = state.stack.length + stackOffset;
+    raiseTab(state.stack[stackOffset]);
     if (c) c();
   };
 
   var switchTabLinear = function(shift, c) {
     shift = shift || 1;
     var current = editor.getSession();
-    var currentIndex = tabs.indexOf(current);
+    var currentIndex = state.tabs.indexOf(current);
     var shifted = (currentIndex + shift) % tabs.length;
     if (shifted < 0) {
-      shifted = tabs.length + shifted;
+      shifted = state.tabs.length + shifted;
     }
-    var tab = tabs[shifted];
+    var tab = state.tabs[shifted];
     raiseTab(tab);
     resetStack(tab);
     if (c) c();
   };
 
   command.on("session:raise-tab", function(index) {
-    var tab = tabs[index];
+    var tab = state.tabs[index];
     raiseTab(tab);
     resetStack(tab);
   });
@@ -247,11 +250,11 @@ define([
         target = target.parentElement;
         x += target.offsetLeft;
       }
-      var from = tabs[e.dataTransfer.getData("application/x-tab-id") * 1];
-      var onto = tabs[target.getAttribute("argument") * 1];
+      var from = state.tabs[e.dataTransfer.getData("application/x-tab-id") * 1];
+      var onto = state.tabs[target.getAttribute("argument") * 1];
       if (from != onto) {
         var reordered = [];
-        tabs.forEach(function(t) {
+        state.tabs.forEach(function(t) {
           if (t == from) return;
           if (t == onto && location == "before") {
             reordered.push(from);
@@ -261,7 +264,7 @@ define([
             reordered.push(from);
           }
         });
-        tabs = reordered;
+        state.tabs = reordered;
       }
       renderTabs();
     });
@@ -278,9 +281,9 @@ define([
   };
 
   var closeTabsRight = function(tabID) {
-    tabID = tabID || tabs.indexOf(editor.getSession());
+    tabID = tabID || state.tabs.indexOf(editor.getSession());
     var toClose = [];
-    for (var i = tabs.length - 1; i > tabID; i--) {
+    for (var i = state.tabs.length - 1; i > tabID; i--) {
       toClose.push(i);
     }
     M.serial(toClose, removeTab);
@@ -304,7 +307,7 @@ define([
         syntax.append(option);
       });
     })
-    if (!tabs.length) addTab("");
+    if (!state.tabs.length) addTab("");
     renderTabs();
     enableTabDragDrop();
     enableTabMiddleClick();
@@ -313,7 +316,7 @@ define([
   };
 
   var reset = function() {
-    tabs.forEach(function(tab) {
+    state.tabs.forEach(function(tab) {
       tab.detectSyntax();
     });
   };
@@ -341,24 +344,24 @@ define([
       renderTabs();
     },
     getAllTabs: function() {
-      return tabs;
+      return state.tabs;
     },
     getCurrent: function() {
       return editor.getSession();
     },
     getTabByIndex: function(index) {
-      return tabs[index];
+      return state.tabs[index];
     },
     getTabByName: function(name) {
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].fileName == name) {
-          return tabs[i];
+        if (state.tabs[i].fileName == name) {
+          return state.tabs[i];
         }
       }
       return null;
     },
     getFilenames: function() {
-      return tabs.map(function(t) { return t.fileName });
+      return state.tabs.map(function(t) { return t.fileName });
     },
     setCurrent: raiseTab,
     raiseBlurred: raiseBlurred,
