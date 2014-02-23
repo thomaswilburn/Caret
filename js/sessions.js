@@ -176,7 +176,7 @@ define([
     shift = shift || 1;
     var current = editor.getSession();
     var currentIndex = state.tabs.indexOf(current);
-    var shifted = (currentIndex + shift) % tabs.length;
+    var shifted = (currentIndex + shift) % state.tabs.length;
     if (shifted < 0) {
       shifted = state.tabs.length + shifted;
     }
@@ -353,7 +353,7 @@ define([
       return state.tabs[index];
     },
     getTabByName: function(name) {
-      for (var i = 0; i < tabs.length; i++) {
+      for (var i = 0; i < state.tabs.length; i++) {
         if (state.tabs[i].fileName == name) {
           return state.tabs[i];
         }
