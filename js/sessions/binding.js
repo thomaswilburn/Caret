@@ -9,7 +9,7 @@ define([
     var draggedTab = null;
     tabContainer.on("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
-      e.target.style.opacity = .4;
+      e.target.style.opacity = 0;
       setTimeout(function() {
         e.target.addClass("dragging");
       }, 50);
