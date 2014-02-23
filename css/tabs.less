@@ -27,8 +27,8 @@
       width: 100%;
     }
     
-    transition: max-width .5s linear, -webkit-transform .2s ease, border-width .5s ease, opacity .2s ease;
-    transition: max-width .5s linear, transform .2s ease, border-width .5s ease, opacity .2s ease;
+    transition: max-width .5s linear, -webkit-transform .2s ease, border-width .2s ease, opacity .2s ease;
+    transition: max-width .5s linear, transform .2s ease, border-width .2s ease, opacity .2s ease;
     
     &.active {
       padding-bottom: 0px;
@@ -49,11 +49,13 @@
     &.dragging {
       width: 0;
       padding: 0;
+      flex-grow: 0;
+      overflow: hidden;
     }
     
     &.hovering {
       border-color: @faded;
-      border-left-width: 50px;
+      border-left-width: 25px;
       border-left-style: solid;
     }
     

@@ -29,6 +29,17 @@ define([
       e.preventDefault();
       e.stopPropagation();
       e.dropEffect = "move";
+      var old = tabContainer.find(".hovering")
+      if (old) old.removeClass("hovering");
+      var tab = e.target.findUp(".tab:not(.hovering)");
+      if (tab) {
+        tab.addClass("hovering");
+      }
+    });
+    tabContainer.on("dragleave", function(e) {
+      if (e.target !== tabContainer) return;
+      var hovered = tabContainer.find(".hovering");
+      if (hovered) hovered.removeClass("hovering");
     });
     tabContainer.on("drop", function(e) {
       if (!draggedTab) return;
