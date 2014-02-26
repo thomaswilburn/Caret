@@ -7,8 +7,9 @@ define([
     "ui/dialog",
     "ui/contextMenus",
     "editor",
+    "util/template!templates/projectDir.html,templates/projectFile.html",
     "util/dom2"
-  ], function(Settings, command, sessions, File, M, dialog, context, editor) {
+  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate) {
     
   /*
   It's tempting to store projects in local storage, similar to the way that we 
@@ -26,6 +27,8 @@ define([
   var guidCounter = 0;
 
   //FSNodes are used to track filesystem state inside projects
+  //We don't use the typical File object, because we're not really reading them
+  //Nodes form a tree starting at the root directory
   var FSNode = function(entry) {
     this.children = [];
     this.id = guidCounter++;
@@ -42,6 +45,7 @@ define([
       this.label = entry.name;
       this.isDirectory = entry.isDirectory;
     },
+    //walk will asynchronously collect the file tree
     walk: function(done) {
       var self = this;
       var entries = [];
@@ -170,19 +174,15 @@ define([
       this.element.addClass("show");
       var walker = function(node) {
         var li = document.createElement("li");
-        var a = document.createElement("a");
-        a.setAttribute("tabindex", -1);
-        li.append(a);
         if (node.isDirectory) {
-          a.innerHTML = node.label;
-          a.setAttribute("data-full-path", node.entry.fullPath);
-          a.addClass("directory");
-          if (self.directories.indexOf(node) != -1) {
-            a.href = context.makeURL("root/directory", node.id);
-          } else {
-            a.href = context.makeURL("directory", node.id);
-          }
-          a.setAttribute("command", null);
+          var isRoot = self.directories.indexOf(node) != -1;
+          var nodeData = {
+            label: node.label,
+            path: node.entry.fullPath,
+            contextMenu: context.makeURL(isRoot ? "root/directory" : "directory", node.id)
+          };
+          var a = inflate.get("templates/projectDir.html", nodeData);
+          li.append(a);
           if (self.expanded[node.entry.fullPath]) {
             li.addClass("expanded");
           }
@@ -201,12 +201,14 @@ define([
           }
           li.append(ul);
         } else {
-          var path = node.entry.fullPath;
-          a.innerHTML = node.label;
-          a.href = context.makeURL("file", node.entry.fullPath.replace(/[\/\\]/g, "@"));
-          a.setAttribute("argument", path);
-          a.setAttribute("command", "project:open-file");
-          self.pathMap[path] = node;
+          var nodeData = {
+            path: node.entry.fullPath,
+            contextMenu: context.makeURL("file", node.entry.fullPath.replace(/[\/\\]/g, "@")),
+            label: node.label
+          };
+          var a = inflate.get("templates/projectFile.html", nodeData)
+          li.append(a);
+          self.pathMap[node.entry.fullPath] = node;
         }
         return li;
       };
