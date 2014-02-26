@@ -12,13 +12,13 @@
     max-width: 200px;
     margin-right: 3px;
     opacity: .6;
-    background: @background;
+    background: radial-gradient(ellipse 200px 20px at top center, lighten(@background, 20%), darken(@background, 10%));
     border-radius: 2px 2px 0 0;
     color: @foreground;
     padding: 0;
     flex: 1 1 auto;
     position: relative;
-    box-shadow: inset 0px -4px 8px rgba(128, 128, 128, .3);
+    box-shadow: 0px -4px 16px rgba(0, 0, 0, .3);
     
     a {
       text-decoration: none;
@@ -35,7 +35,7 @@
       border-bottom: 4px solid @accent;
       color: @foreground;
       opacity: 1;
-      box-shadow: none;
+      z-index: 9;
       
       .close {
         color: @accent;
