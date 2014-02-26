@@ -147,7 +147,7 @@ define([
       chrome.fileSystem.isRestorable(id, function(is) {
         if (is) {
           chrome.fileSystem.restoreEntry(id, function(entry) {
-            if (!entry) return fail("restoreEntry() failed for " + id);
+            if (!entry) return deferred.fail("restoreEntry() failed for " + id);
             self.entry = entry;
             deferred.done();
           });
