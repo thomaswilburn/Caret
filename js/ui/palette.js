@@ -199,8 +199,8 @@ define([
       
       if (file) {
         var fuzzyFile = new RegExp(file
-          .split("")
           .replace(/ /g, "")
+          .split("")
           .map(function(char) { return char.replace(antiregex, "\\$1") })
           .join(".*"), 
         "i");
@@ -228,7 +228,7 @@ define([
         return {
           tab: t,
           line: line
-        }
+        };
       });
       
       if (search) {
