@@ -4,7 +4,7 @@ define([
   
   /*
   
-  Unfortunately, mimicking Node isn't really feasible given the Chrome OS security model, but we still don't want to deal with the annoying Chrome filesystem APIs. This module wraps those in a more usable File object.
+  The File object provides storage backed by the local HDD via the chrome.fileSystem API.
     
   */
   

@@ -6,10 +6,16 @@ define([
     "util/manos",
     "util/dom2"
   ], function(command, state, addRemove, contextMenus, M) {
+    
+  /*
+  This module returns a function that will bind for event delegation to the
+  tab container. Most of it is support for drag/drop.
+  */
 
   var enableTabDragDrop = function() {
     var tabContainer = document.find(".tabs");
     var draggedTab = null;
+    
     tabContainer.on("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
       e.target.style.opacity = 0;
@@ -28,22 +34,25 @@ define([
         e.target.removeClass("dragging");
       };
     });
+    
     tabContainer.on("dragover", function(e) {
       e.preventDefault();
       e.stopPropagation();
       e.dropEffect = "move";
-      var old = tabContainer.find(".hovering")
+      var old = tabContainer.find(".hovering");
       if (old) old.removeClass("hovering");
       var tab = e.target.findUp(".tab:not(.hovering)");
       if (tab) {
         tab.addClass("hovering");
       }
     });
+    
     tabContainer.on("dragleave", function(e) {
       if (e.target !== tabContainer) return;
       var hovered = tabContainer.find(".hovering");
       if (hovered) hovered.removeClass("hovering");
     });
+    
     tabContainer.on("drop", function(e) {
       if (!draggedTab) return;
       e.stopPropagation();
@@ -82,6 +91,7 @@ define([
       }
       command.fire("session:render");
     });
+    
   };
   
   var enableTabMiddleClick = function() {

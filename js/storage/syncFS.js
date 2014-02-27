@@ -1,4 +1,5 @@
 define(function() {
+  
   /*
   SyncFS is a crappy way to use chrome.storage.sync for entries larger than 4KB.
   This will work until chrome.syncFileSystem is more offline-friendly.

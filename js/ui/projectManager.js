@@ -80,6 +80,10 @@ define([
     }
   };
   
+  // The Project Manager actually handles rendering and interfacing with the rest
+  // of the code. Commands are bound to a singleton instance, but it's technically
+  // not picky about being the only one.
+  
   var ProjectManager = function(element) {
     this.directories = [];
     this.pathMap = {};

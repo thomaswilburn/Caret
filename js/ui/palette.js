@@ -200,6 +200,7 @@ define([
       if (file) {
         var fuzzyFile = new RegExp(file
           .split("")
+          .replace(/ /g, "")
           .map(function(char) { return char.replace(antiregex, "\\$1") })
           .join(".*"), 
         "i");

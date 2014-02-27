@@ -28,7 +28,6 @@ define([
       mode = session.syntaxMode;
     }
     syntax.value = mode;
-    editor.focus();
   });
 
   var renderTabs = function() {

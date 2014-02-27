@@ -10,29 +10,26 @@ define([
   var project = {};
   
   var clone = function(item) {
+    var copy = function(value) {
+      if (value instanceof Array) {
+        return cloneArray(value);
+      } else if (typeof value == "object") {
+        return cloneObject(value);
+      } else {
+        return value;
+      }
+    };
     var cloneArray = function(a) {
       var n = [];
       for (var i = 0; i < a.length; i++) {
-        if (a[i] instanceof Array) {
-          n[i] = cloneArray(a[i]);
-        } else if (typeof a[i] == "object") {
-          n[i] = cloneObject(a[i]);
-        } else {
-          n[i] = a[i];
-        }
+        n[i] = copy(a[i]);
       }
       return n;
     };
     var cloneObject = function(o) {
       var n = {};
       for (var key in o) {
-        if (o[key] instanceof Array) {
-          n[key] = cloneArray(o[key]);
-        } else if (typeof o[key] == "object") {
-          n[key] = cloneObject(o[key]);
-        } else {
-          n[key] = o[key];
-        }
+        n[key] = copy(o[key]);
       }
       return n;
     };
@@ -50,11 +47,12 @@ define([
       name = name + ".json";
       var comments = /\/\*[\s\S]*?\*\/|\/\/.*$/gm;
       var original = clone(JSON.parse(defaults[name].replace(comments, "")));
-      var custom = {};
+      var custom;
       try {
         custom = JSON.parse(local[name].replace(comments, ""));
       } catch (e) {
         //parse failed
+        return original;
       }
       //flat arrays (like menus.json) just get returned, not merged
       if (custom && custom instanceof Array) {

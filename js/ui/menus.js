@@ -7,8 +7,7 @@ define([
     "util/dom2"
   ], function(Settings, editor, dialog, command, inflate) {
   
-  var commands = editor.commands.commands;
-  
+  // walker() renders the menu and returns a document fragment
   var walker = function(list, depth) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < list.length; i++) {
@@ -46,6 +45,7 @@ define([
     return fragment;
   };
   
+  // We load match commands to the key config, so they're always current
   var findKeyCombo = function(command, arg) {
     var keys = Settings.get("keys");
     //check key config
@@ -140,5 +140,7 @@ define([
       );
     });
   });
+  
+  return menu;
   
 });

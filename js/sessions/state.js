@@ -1,4 +1,4 @@
 define({
   tabs: [],
   stack: []
-})
+});

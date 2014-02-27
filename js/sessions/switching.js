@@ -4,6 +4,10 @@ define([
     "command"
   ], function(state, editor, command) {
     
+  /*
+  Various functions for swapping between tags, either from clicks or keyboard.
+  */
+    
   var stackOffset = 0;
       
   var raiseTab = function(tab) {
@@ -16,7 +20,7 @@ define([
 
   var raiseBlurred = function(tab) {
     editor.setSession(tab);
-    syntax.value = tab.syntaxMode || "plain_text";
+    command.fire("session:syntax", tab.syntaxMode || "plain_text");
     command.fire("session:render");
     command.fire("session:check-file");
   };
@@ -37,6 +41,7 @@ define([
 
   var ctrl = false;
 
+  // most-recent order
   var switchTab = function(arg, c) {
     arg = arg || 1;
     if (!ctrl) {
@@ -50,6 +55,7 @@ define([
     if (c) c();
   };
 
+  //left-to-right order
   var switchTabLinear = function(shift, c) {
     shift = shift || 1;
     var current = editor.getSession();
