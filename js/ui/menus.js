@@ -78,7 +78,7 @@ define([
     this.element = document.find(".toolbar");
     this.active = false;
     this.bindEvents();
-  }
+  };
   Menu.prototype = {
     create: function() {
       var cfg = Settings.get("menus");

@@ -55,7 +55,7 @@ module.exports = function(grunt) {
       });
       files.forEach(function(f) {
         grunt.file.copy(f.src[0], f.dest);
-      })
+      });
     });
   });
 
@@ -72,7 +72,7 @@ module.exports = function(grunt) {
       win32: '"' + (process.env["ProgramFiles(x86)"] || process.env.ProgramFiles) + "\\Google\\Chrome\\Application\\chrome.exe" + '"',
       linux: "/opt/google/chrome/google-chrome",
       osx: "Beats me."
-    }
+    };
 
     var cmd = [ chrome[process.platform] ];
     cmd.push("--pack-extension=" + path.join(here, "build/unpacked"));
@@ -99,6 +99,6 @@ module.exports = function(grunt) {
   grunt.registerTask("cleanup", "Removes the build/unpacked directory", function() {
     var c = this.async();
     exec("rm -rf ./build/*", c);
-  })
+  });
   
 };

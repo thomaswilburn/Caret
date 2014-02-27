@@ -2,6 +2,10 @@ define([
     "editor",
     "command"
   ], function(editor, command) {
+    
+    /*
+    A module for changing the status text at the bottom of the window.
+    */
 
     var external = "";
     var element = document.find(".status-text");
@@ -42,9 +46,9 @@ define([
           external = "";
           update();
           toastTimeout = null;
-        }, seconds ? seconds * 1000 : 5000)
+        }, seconds ? seconds * 1000 : 5000);
       }
-    }
+    };
     
     command.on("status:set", interface.setMessage);
     command.on("status:clear", interface.clearMessage);

@@ -14,6 +14,9 @@ define([
   
   var themes = document.querySelector(".theme");
   
+  //disable focusing on the editor except by program
+  document.find("textarea").setAttribute("tabindex", -1);
+  
   //one-time startup
   var init = function() {
     aceConfig.themes.forEach(function(theme) {
@@ -67,7 +70,7 @@ define([
     var adjusted = current + delta;
     editor.container.style.fontSize = adjusted + "px";
     if (c) c();
-  }
+  };
   
   command.on("editor:default-zoom", defaultFontSize);
   command.on("editor:adjust-zoom", adjustFontSize);
@@ -81,9 +84,6 @@ define([
     editor.focus();
     if (c) c();
   });
-
-  //disable focusing on the editor except by program
-  document.find("textarea").setAttribute("tabindex", -1);
   
   command.on("editor:print", function(c) {
     ace.require("ace/config").loadModule("ace/ext/static_highlight", function(static) {
@@ -100,7 +100,7 @@ define([
         iframe.contentWindow.print();
         setTimeout(function() {
           iframe.remove();
-        })
+        });
       });
     });
   });

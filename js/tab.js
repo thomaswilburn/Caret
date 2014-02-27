@@ -5,6 +5,14 @@ define([
     "settings!ace",
     "util/template!templates/tab.html"
   ], function(command, File, M, Settings, inflate) {
+    
+  /*
+  
+  Tabs are just augmented versions of regular Ace sessions. We add properties
+  to track the attached file, detect syntax, render the tab UI, and fire events
+  when the tab is removed.
+  
+  */
 
   var EditSession = ace.require("ace/edit_session").EditSession;
   

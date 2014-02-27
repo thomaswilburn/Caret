@@ -8,29 +8,14 @@ define([
     "util/manos",
     "ui/projectManager"
   ], function(sessions, editor, File, dialog, command, Settings, M, projectManager) {
-
-  var openFile = function(c) {
-    //have to call chooseEntry manually to support multiple files
-    var args = {
-      type: "openWritableFile"
-    };
-    if (chrome.version >= 30) {
-      args.acceptsMultiple = true;
-    }
-    chrome.fileSystem.chooseEntry(args, function(files) {
-      //annoying array function test, since it's not apparently a real array
-      if (!files.slice) {
-        files = [ files ];
-      };
-      files.map(function(entry) {
-        var f = new File(entry);
-        return f.read().then(function(data) {
-          sessions.addFile(data, f);
-        }, dialog);
-      });
-      Promise.all(files).then(c);
-    });
-  };
+    
+  /*
+  FileManager splits out the session code that specifically deals with I/O.
+  Pretty much the whole file is just bindings to various commands.
+  
+  Now that session.js is refactored, this could probably move into a submodule,
+  except that it gets loaded explicitly on startup.
+  */
   
   var openFromLaunchData = function() {
     if (window.launchData) {
@@ -42,8 +27,8 @@ define([
       });
     }
   };
-
-  var openFromDropEvent = function(items) {
+  
+  command.on("session:open-dragdrop", function(items) {
     [].forEach.call(items, function(entry){
       //only process files
       if (entry.kind !== "file") return;
@@ -60,7 +45,7 @@ define([
         projectManager.insertDirectory(entry);
       }
     });
-  };
+  });
 
   document.body.on("dragover", function(e) {
     e.preventDefault();
@@ -71,17 +56,40 @@ define([
     if (e.dataTransfer.types.indexOf("Files") === -1) return;
     command.fire("session:open-dragdrop", e.dataTransfer.items);
   });
-  
-  command.on("session:open-dragdrop", openFromDropEvent);
 
   command.on("session:new-file", function(content) { return sessions.addFile(content) });
-  command.on("session:open-file", openFile);
+  
+  command.on("session:open-file", function(c) {
+    //have to call chooseEntry manually to support multiple files
+    var args = {
+      type: "openWritableFile"
+    };
+    if (chrome.version >= 30) {
+      args.acceptsMultiple = true;
+    }
+    chrome.fileSystem.chooseEntry(args, function(files) {
+      //annoying array function test, since it's not apparently a real array
+      if (!files.slice) {
+        files = [ files ];
+      }
+      files.map(function(entry) {
+        var f = new File(entry);
+        return f.read().then(function(data) {
+          sessions.addFile(data, f);
+        }, dialog);
+      });
+      Promise.all(files).then(c);
+    });
+  });
+  
   command.on("session:save-file", function(c) { 
     sessions.getCurrent()
       .save(c)
       .then(function() {
         command.fire("session:syntax");
-      }); });
+      });
+  });
+  
   command.on("session:save-file-as", function(c) { 
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {
@@ -102,8 +110,8 @@ define([
       c();
     });
   });
-  
-  var setRetained = function() {
+
+  command.on("session:retain-tabs", function() {
     var tabs = sessions.getAllTabs();
     var keep = [];
     tabs.forEach(function(tab, i) {
@@ -114,9 +122,7 @@ define([
     if (keep.length) {
       chrome.storage.local.set({ retained: keep });
     }
-  };
-  
-  command.on("session:retain-tabs", setRetained);
+  });
   
   command.on("session:check-file", function() {
     var tab = sessions.getCurrent();

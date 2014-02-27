@@ -3,6 +3,12 @@ define([
     "util/template!templates/dialog.html",
     "util/dom2"
   ], function(editor, inflate) {
+    
+  /*
+  You can call dialog() to present a modal, since alert() isn't allowed.
+  
+  Currently, your callback will be passed the value set for the button pressed. Form support is coming.
+  */
 
   return function(text, buttons, callback) {
     if (typeof buttons == "function" || typeof buttons == "undefined") {
@@ -59,7 +65,7 @@ define([
           editor.focus();
           if (callback) callback(options.value);
         }
-      })
+      });
     }
 
     var clickButton = function(e) {
@@ -79,6 +85,6 @@ define([
     modal.onkeypress = onKeyPress;
     modal.onclick = clickButton;
 
-  }
+  };
 
 });

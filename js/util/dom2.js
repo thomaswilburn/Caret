@@ -3,12 +3,15 @@ define(function() {
 
 /*
 
-Yes, you're not supposed to extend native prototypes. But in ChromeOS, who cares? Nobody's sharing your context. Why not paper over the cracks in the DOM? This library extends elements to do the following:
+Yes, you're not supposed to extend native prototypes. But in Chrome OS, who cares? Nobody's sharing your context. Why not paper over the cracks in the DOM? This library extends elements to do the following:
 
-- create a query() method that returns an array, instead of a nodeList
+- create a findAll() method that returns an array, instead of a nodeList
+- create a findUp() method to work up through ancestors
 - create remove() and append() that work the way you expect them to.
 - alias event listener methods to the much shorter on() and off()
 - add a style method that handles prefixed CSS
+- ensure that elements have a matches() method
+- provide convenience methods for the classList
 
 */
 
@@ -17,6 +20,8 @@ var doc = Document.prototype;
 var frag = DocumentFragment.prototype;
 var win = Window.prototype;
 
+
+//alias of querySelector and qSA
 el.find = doc.find = frag.find = function(selector) {
     return this.querySelector(selector);
 };
@@ -27,6 +32,7 @@ el.findAll = doc.findAll = frag.findAll = function(selector) {
     return a;
 };
 
+//equivalent of $().closest()
 el.findUp = function(selector) {
   var target = this;
   while (target && !target.matches(selector)) {

@@ -214,7 +214,7 @@ define([
               sublabel: path,
               command: "project:open-file",
               argument: path
-          }
+          };
         });
       } else {
         var current = this.homeTab; 
@@ -251,7 +251,7 @@ define([
             lines.push(position.row);
             var result = {
               tab: t.tab
-            }
+            };
             result.label = result.tab.fileName;
             result.sublabel = sanitize(result.tab.getLine(position.row));
             result.line = position.row;

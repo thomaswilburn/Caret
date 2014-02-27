@@ -91,7 +91,7 @@ define([
     this.project = null;
     this.projectFile = null;
     if (element) {
-      this.setElement(element)
+      this.setElement(element);
     }
     var self = this;
     chrome.storage.local.get("retainedProject", function(data) {
@@ -109,7 +109,7 @@ define([
           });
         });
       }
-    })
+    });
   };
   ProjectManager.prototype = {
     element: null,
@@ -156,7 +156,7 @@ define([
         if (counter = self.directories.length) {
           self.render();
         }
-      }
+      };
       this.directories.forEach(function(d) {
         d.walk(check);
       });
@@ -271,7 +271,7 @@ define([
             var file = new File(node.entry);
             file.read(function(err, data) {
               sessions.addFile(data, file);
-            })
+            });
           }
         );
       });

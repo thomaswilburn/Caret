@@ -15,10 +15,6 @@ require([
   
   var frame = chrome.app.window.current();
   
-  command.on("app:exit", function() {
-    frame.close();
-  });
-  
   var setTheme = function() {
     Settings.pull("user").then(function(data) {
       var themes = {
@@ -30,7 +26,9 @@ require([
       document.find("#theme").setAttribute("href", url);
     });
   }
+  setTheme();
 
+  //these are modules that must be loaded before init:complete
   var loadedModules = {
     "editor": false, 
     "fileManager": false, 
@@ -51,8 +49,8 @@ require([
     command.fire("init:complete");
   });
   command.on("init:restart", setTheme);
-  setTheme();
   
+  //code to enable update checking
   var updateID = "caret:update";
   
   var checkUpdates = function(isManual) {
@@ -81,6 +79,10 @@ require([
     if (index == 0) {
       chrome.runtime.reload();
     }
+  });
+  
+  command.on("app:exit", function() {
+    frame.close();
   });
   
 });
