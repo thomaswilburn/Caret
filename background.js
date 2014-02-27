@@ -1,3 +1,9 @@
+/*
+The background process is responsible for opening Caret windows in response to 
+app launches, choosing a file in the Files app on Chrome OS, and external
+messages.
+*/
+
 var mainWindow = null;
 var pending = null;
 var upgrading = false;
@@ -8,6 +14,7 @@ var openWindow = function() {
   
   //if window exists, re-use it
   if (mainWindow) {
+    //attach any new files to the window, and re-trigger "open from launch"
     mainWindow.contentWindow.launchData = files;
     mainWindow.contentWindow.require(["command"], function(c) {
       c.fire("session:open-launch");
@@ -49,10 +56,12 @@ var launch = function(launchData) {
   if (launchData && launchData.items) files.push.apply(files, launchData.items);
   //we delay opening the actual window to give multiple file events time to fire
   if (pending !== null) return;
+  //do not open windows when an upgrade is running
   if (upgrading) return;
   pending = setTimeout(openWindow, 250);
   
 };
+chrome.app.runtime.onLaunched.addListener(launch);
 
 var onMessage = function(message, sender, sendResponse) {
   //main window will pick up the message, if it's open
@@ -69,24 +78,22 @@ var onMessage = function(message, sender, sendResponse) {
     sender: sender,
     sendResponse: sendResponse
   });
+  //as with files, delay to accumulate multiple messages
   if (pending !== null) return;
   if (upgrading) return;
   pending = setTimeout(openWindow, 250);
 };
+chrome.runtime.onMessageExternal.addListener(onMessage);
 
-chrome.app.runtime.onLaunched.addListener(launch);
-
-//We shouldn't always relaunch, only if a window was open at shutdown
+//relaunch on reboot, if the window was open at shutdown
 chrome.app.runtime.onRestarted.addListener(function() {
   chrome.storage.local.get("isOpen", function(data) {
     if (data.isOpen) launch();
   });
 });
 
-chrome.runtime.onMessageExternal.addListener(onMessage);
-
-// setup for app button menus
-
+// setup for launcher context menus
+// currently this is just for emergency reset
 chrome.contextMenus.create({
   title: "Emergency Reset",
   contexts: [ "launcher" ],
