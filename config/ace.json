@@ -73,6 +73,7 @@
     { "name": "r", "label": "R", "extensions": ["r"] },
     { "name": "ruby", "label": "Ruby", "extensions": ["rb"] },
     { "name": "sass", "label": "Sass", "extensions": ["sass"] },
+    { "name": "scala", "label": "Scala", "extensions": ["scala"] },
     { "name": "scss", "label": "SCSS", "extensions": ["scss"] },
     { "name": "sql", "label": "SQL", "extensions": ["sql"] },
     { "name": "stylus", "label": "Stylus", "extensions": ["styl"] },
