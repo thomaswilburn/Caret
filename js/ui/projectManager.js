@@ -239,6 +239,7 @@ define([
           var path = target.getAttribute("data-full-path");
           self.expanded[path] = !!!self.expanded[path]; 
         }
+        editor.focus();
       });
     },
     openFile: function(path) {

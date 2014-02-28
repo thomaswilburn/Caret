@@ -38,7 +38,16 @@ module.exports = function(grunt) {
         ]
       }
     },
-    copy:  ["config/**", "js/**", "css/*.css", "**/*.html", "require.js", "background.js", "installer.js", "*.png"]
+    copy:  [
+      "config/**",
+      "js/**",
+      "css/*.css",//leave the LESS behind
+      "**/*.html",//both main.html and the templates
+      "require.js",
+      "background.js",
+      "installer.js",
+      "**/*.png" //in case we add images at some point
+    ]
   });
   
   grunt.registerTask("default", ["less", "watch"]);
