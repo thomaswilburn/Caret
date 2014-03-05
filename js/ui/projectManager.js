@@ -1,5 +1,5 @@
 define([
-    "storage/settingsProvider",
+    "settings!user",
     "command",
     "sessions",
     "storage/file",
@@ -10,17 +10,17 @@ define([
     "util/template!templates/projectDir.html,templates/projectFile.html",
     "util/dom2"
   ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate) {
-    
+
   /*
-  It's tempting to store projects in local storage, similar to the way that we 
-  retain files for tabs, but this would be a mistake. Reading from storage is a 
-  pain, because it wants to store a single level deep, and we'll want to alter 
+  It's tempting to store projects in local storage, similar to the way that we
+  retain files for tabs, but this would be a mistake. Reading from storage is a
+  pain, because it wants to store a single level deep, and we'll want to alter
   parts of the setup individually.
-  
-  Instead, we'll retain a single file handle to the project file, which (as 
-  JSON) will store the IDs of individual directories, the project-specific 
-  settings, and (hopefully, one day) build systems. This also gets us around 
-  the issues of restored directory order and constantly updating the retained 
+
+  Instead, we'll retain a single file handle to the project file, which (as
+  JSON) will store the IDs of individual directories, the project-specific
+  settings, and (hopefully, one day) build systems. This also gets us around
+  the issues of restored directory order and constantly updating the retained
   file list--we'll just update it when the project file is saved.
   */
 
@@ -66,7 +66,15 @@ define([
         self.children = [];
         for (var i = 0; i < entries.length; i++) {
           var entry = entries[i];
+          //skip dot dirs, but not files
           if (entry.name[0] == "." && entry.isDirectory) continue;
+          //skip ignored files
+          var blacklist = Settings.get("user").ignoreFiles;
+          if (blacklist) {
+            blacklist = new RegExp(blacklist);
+            if (blacklist.test(entry.name)) continue;
+          }
+
           var node = new FSNode(entry);
           self.children.push(node);
           if (node.isDirectory) {
@@ -79,11 +87,11 @@ define([
       reader.readEntries(collect);
     }
   };
-  
+
   // The Project Manager actually handles rendering and interfacing with the rest
   // of the code. Commands are bound to a singleton instance, but it's technically
   // not picky about being the only one.
-  
+
   var ProjectManager = function(element) {
     this.directories = [];
     this.pathMap = {};
@@ -237,7 +245,7 @@ define([
         if (target.hasClass("directory")) {
           target.parentElement.toggle("expanded");
           var path = target.getAttribute("data-full-path");
-          self.expanded[path] = !!!self.expanded[path]; 
+          self.expanded[path] = !!!self.expanded[path];
         }
         editor.focus();
       });
@@ -377,7 +385,7 @@ define([
       return Object.keys(this.pathMap);
     }
   };
-  
+
   var pm = new ProjectManager(document.find(".project"));
   command.on("project:add-dir", pm.addDirectory.bind(pm));
   command.on("project:remove-all", pm.removeAllDirectories.bind(pm));
@@ -387,9 +395,9 @@ define([
   command.on("project:open", pm.openProjectFile.bind(pm));
   command.on("project:edit", pm.editProjectFile.bind(pm));
   command.on("project:clear", pm.clearProject.bind(pm));
-  
+
   context.register("Remove from Project", "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
-  
+
   return pm;
 
 });

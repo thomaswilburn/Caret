@@ -1,7 +1,7 @@
 {
   //If you want to disable update checks at startup, change this
   "promptForUpdates": true,
-  
+
   "defaultTheme": "chrome", //This should be any of the supported Ace themes
   /*
   Ace theme names are usually underscored, lowercase versions of the "friendly" names:
@@ -38,7 +38,7 @@
   "uiTheme": "light", //dark or light, your pick
   "cursor": "slim", //"ace", "slim", "smooth", "wide",
   "highlightLine": false,
-  
+
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
   "indentation": 2, //indentation size
   "useTabs": false, //will turn off Ace's setUseSoftTabs() option and use tab characters instead
@@ -48,22 +48,24 @@
   "lineEndings": "auto", //newline format - "windows", "unix", or "auto"
   "scrollPastEnd": true, //allow the editor to scroll past the end of the document
   "trimTrailingWhitespace": true, //remove whitespace from the end of lines on save
-  
+
   //only fixed-width fonts supported, for now
   "fontFamily": "",
   "fontSize": 13,
-  
+
   //Web workers are used for code hinting in PHP, JavaScript, and JSON.
   //We don't yet have a way to set the worker options, but you can disable it.
   "useWorker": true,
   //autocomplete triggers on Ctrl-Space
   "autocomplete": true,
-  
+
   //By default, the palette searches the current file only unless you widen the scope.
   //If you'd like it to search all open files by default, set this option to true.
   "searchAllFiles": false,
-  
+  //set a regex to ignore in project view/search
+  "ignoreFiles": "node_modules",
+
   //Crazy? You might like Vim keybindings. Only takes effect on restart
   "emulateVim": false
-  
+
 }
