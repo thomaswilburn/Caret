@@ -9,7 +9,7 @@ define([
     command.on("init:restart", function() {
       userConfig = Settings.get("user");
     });
-    
+
     //load the syntax commands and set them up in the command listings
     var aceConfig = Settings.get("ace");
     for (var i = 0; i < aceConfig.modes.length; i++) {
@@ -35,7 +35,7 @@ define([
       editor.execCommand("selecttolineend");
       if (c) c();
     });
-    
+
     command.on("sublime:expand-to-paragraph", function(c) {
       var session = editor.getSession();
       var selection = editor.getSelection();
@@ -64,7 +64,7 @@ define([
       selection.selectTo(endLine);
       if (c) c();
     });
-    
+
     command.on("sublime:expand-to-matching", function(c) {
       var Range = ace.require("ace/range").Range;
       var position = editor.getCursorPosition();
@@ -105,7 +105,7 @@ define([
       editor.execCommand("selecttomatching");
       if (c) c();
     });
-    
+
     command.on("sublime:tabs-to-spaces", function(c) {
       var session = editor.getSession();
       var text = session.getValue();
@@ -114,7 +114,7 @@ define([
       session.setValue(text);
       if (c) c();
     });
-    
+
     command.on("sublime:spaces-to-tabs", function(c) {
       var session = editor.getSession();
       var text = session.getValue();
@@ -123,28 +123,29 @@ define([
       session.setValue(text);
       if (c) c();
     });
-    
+
     command.on("ace:trim-whitespace", function(c) {
       var session = editor.getSession();
       var doc = session.doc;
       var selection = editor.getSelection();
-      var length = session.getLength();
-      for (var i = 0; i < length; i++) {
+      var lines = doc.getAllLines();
+      lines.forEach(function(line, i) {
         var range = selection.getLineRange(i);
-        var line = doc.getTextRange(range);
-        line = line.replace(/\s+([\n\r$])/, "$1");
-        doc.replace(selection.getLineRange(i), line);
-      }
+        range.end.row = range.start.row;
+        range.end.column = line.length;
+        line = line.replace(/\s+$/, "");
+        doc.replace(range, line);
+      });
       if (c) c();
     });
 
     //we also add a command redirect for firing Ace commands via regular command attributes
     command.on("ace:command", editor.execCommand.bind(editor));
-    
+
     //unbind the keys for the palette, whatever it does.
     editor.commands.bindKey("Ctrl-P", null);
     editor.commands.bindKey("Ctrl-Shift-P", null);
-    
+
     //filter some Ace commands for UI purposes
     var isRecording = false;
     command.on("ace:togglemacro", function(c) {
@@ -158,7 +159,7 @@ define([
       }
       if (c) c();
     });
-    
+
     //API bindings
     command.on("editor:insert", function(text, c) {
       editor.insert(text);
