@@ -123,6 +123,20 @@ define([
       session.setValue(text);
       if (c) c();
     });
+    
+    command.on("ace:trim-whitespace", function(c) {
+      var session = editor.getSession();
+      var doc = session.doc;
+      var selection = editor.getSelection();
+      var length = session.getLength();
+      for (var i = 0; i < length; i++) {
+        var range = selection.getLineRange(i);
+        var line = doc.getTextRange(range);
+        line = line.replace(/\s+([\n\r$])/, "$1");
+        doc.replace(selection.getLineRange(i), line);
+      }
+      if (c) c();
+    });
 
     //we also add a command redirect for firing Ace commands via regular command attributes
     command.on("ace:command", editor.execCommand.bind(editor));

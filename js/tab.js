@@ -2,7 +2,7 @@ define([
     "command",
     "storage/file",
     "util/manos",
-    "settings!ace",
+    "settings!ace,user",
     "util/template!templates/tab.html"
   ], function(command, File, M, Settings, inflate) {
     
@@ -58,6 +58,12 @@ define([
       c = as;
       as = false;
     }
+    
+    //strip final whitespace, if enabled
+    if (Settings.get("user").trimTrailingWhitespace) {
+      command.fire("ace:trim-whitespace");
+    }
+    
     var content = this.getValue();
     var self = this;
     var deferred = M.deferred();

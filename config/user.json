@@ -47,6 +47,7 @@
   "showMargin": false,
   "lineEndings": "auto", //newline format - "windows", "unix", or "auto"
   "scrollPastEnd": true, //allow the editor to scroll past the end of the document
+  "trimTrailingWhitespace": true, //remove whitespace from the end of lines on save
   
   //only fixed-width fonts supported, for now
   "fontFamily": "",

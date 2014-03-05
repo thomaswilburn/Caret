@@ -32,6 +32,7 @@
   
   { "label": "Convert Tabs to Spaces", "command": "sublime:tabs-to-spaces" },
   { "label": "Convert Spaces to Tabs", "command": "sublime:spaces-to-tabs" },
+  { "label": "Trim Trailing Whitespace", "command": "ace:trim-whitespace" },
   { "label": "Sort Lines", "command": "ace:command", "argument": "sortlines" },
   { "label": "Split Line", "command": "ace:command", "argument": "splitline" },
   { "label": "To Uppercase", "command": "ace:command", "argument": "touppercase" },
