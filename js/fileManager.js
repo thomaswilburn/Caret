@@ -236,5 +236,7 @@ define([
   
   command.on("init:startup", init);
   command.on("init:restart", reset);
+  
+  window.on("focus", command.fire.bind(null, "session:check-file"));
 
 });
