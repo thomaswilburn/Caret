@@ -28,13 +28,18 @@ define([
   var guidCounter = 0;
   var pathIDs = {};
 
-  var sortDirItems = function(a, b) {
-    if (a.isDirectory != b.isDirectory) {
-      //sneaky casting trick
-      return ~~b.isDirectory - ~~a.isDirectory;
-    }
-    if (a.label < b.label) return -1;
-    if (a.label > b.label) return 1;
+  var sortProjectItems = function(a, b) {
+    var aa = a.childNodes[0];
+    var bb = b.childNodes[0];
+    var aData = aa.dataset['fullPath'] || aa.getAttribute('argument');
+    var bData = bb.dataset['fullPath'] || bb.getAttribute('argument');
+
+    if (aData > bData)
+      return 1;
+
+    if (aData < bData)
+      return -1;
+
     return 0;
   };
 
@@ -47,6 +52,7 @@ define([
         contextMenu: context.makeURL(isRoot ? "root/directory" : "directory", pathIDs[entry.fullPath])
       };
       var a = inflate.get("templates/projectDir.html", nodeData);
+      // a.addClass('loading');
       li.append(a);
       if (this.expanded[entry.fullPath]) {
         li.addClass("expanded");
@@ -69,6 +75,7 @@ define([
   var fsOnProgress = function(data) {
     if (pathIDs[data.entry.fullPath] === undefined)
       pathIDs[data.entry.fullPath] = guidCounter++;
+
     this.renderDirectory(data);
   }
 
@@ -126,11 +133,11 @@ define([
     insertDirectory: function(entry) {
       var root;
       //ensure we aren't duplicating
-      this.directories.forEach(function(directoryNode) {
-        if (directoryNode.entry.fullPath === entry.fullPath) {
+      for (var i in this.directories) {
+        if (this.directories[i].entry.fullPath === entry.fullPath)
           root = directoryNode;
-        }
-      });
+      }
+
       if (!root) {
         root = new FSExplorer(entry);
         this.directories.push(root);
@@ -145,21 +152,28 @@ define([
       root.run(fsOnProgress.bind(this), fsOnDone.bind(this), fsOnError.bind(this));
     },
     removeDirectory: function(args) {
-      return console.log('removeDirectory', args);
-      this.directories = this.directories.filter(function(node) {
-        return node.id != args.id;
-      });
+      var xpath;
+      this.directories = this.directories.filter(function(dir) {
+        if (pathIDs[dir.entry.fullPath] != args.id)
+          return true;
+        
+        dir.stop();
+        xpath = './/li/a[@data-full-path="' + dir.entry.fullPath + '"]/..';
+        document.evaluate(xpath, this.elementUl).iterateNext().remove();
+      }.bind(this));
       this.render();
     },
     removeAllDirectories: function() {
-      this.directories.forEach(function(dir) { dir.stop(); });
+      for (var i in this.directories) {
+        this.directories[i].stop();
+      }
       this.directories = [];
       this.render();
     },
     refresh: function() {
-      this.directories.forEach(function(dir) {
-        dir.run(fsOnProgress.bind(this), fsOnDone.bind(this), fsOnError.bind(this));
-      }.bind(this));
+      for (var i in this.directories) {
+        this.directories[i].run(fsOnProgress.bind(this), fsOnDone.bind(this), fsOnError.bind(this));
+      }
     },
     render: function() {
       if (!this.element) return;
@@ -170,6 +184,7 @@ define([
       }, 500);
       if (this.directories.length == 0) {
         this.element.removeClass("show");
+        this.element.innerHTML = "";
         return;
       }
       var self = this;
@@ -196,49 +211,81 @@ define([
       }
 
       var liul = document.evaluate('./ul', li).iterateNext();
-      var loadingLi = document.evaluate('./li[@data-loading]', liul).iterateNext();
+      var liA = document.evaluate('./a[@data-full-path]', li).iterateNext();
 
       switch (data.status) {
         case 'loading':
-          if (loadingLi === null) {
-            loadingLi = document.createElement("li");
-            loadingLi.innerHTML = "Loading...";
-            loadingLi.dataset['loading'] = true;
-            liul.appendChild(loadingLi);
-          }
+          // if (!liA.hasClass('loading'))
+          //   liA.addClass('loading');
           break;
 
         case 'done':
-          if (loadingLi !== null) {
-            loadingLi.remove();
-          }
+          if (liA.hasClass('loading'))
+            liA.removeClass('loading');
 
-          // TODO: maybe avoid clearing the div and recreating all children?
-          while (liul.hasChildNodes()) {
-            liul.removeChild(liul.lastChild);
-          }
+          var existingMap = {};
+          var i;
+          var item;
+          var argName;
 
-          data.items.sort(sortDirItems);
-          data.items.forEach(function(item) {
-            liul.appendChild(createProjectElement.bind(this)(item));
+          for (i in data.items) {
+            item = data.items[i];
+
+            argName = 'data-full-path';
+            if (!item.isDirectory)
+              argName = 'argument';
+
+            xpath = './li/a[@' + argName + '="' + item.fullPath + '"]/..';
+            if (document.evaluate(xpath, liul).iterateNext() == null)
+              liul.appendChild(createProjectElement.bind(this)(item));
+
             if (this.expanded[item.fullPath])
               this.directoryPriorityLoad(item.fullPath);
-          }.bind(this));
+
+            existingMap[item.fullPath] = true;
+          }
+
+          var dirItems = [];
+          var fileItems = [];
+          var toRemove = [];
+          var res;
+          var resA;
+          var iter = document.evaluate('./li', liul);
+          while (res = iter.iterateNext()) {
+            resA = res.childNodes[0];
+
+            if (existingMap[resA.dataset['fullPath'] || resA.getAttribute('argument')] === undefined)
+              toRemove.push(res);
+            else {
+              if (resA.hasClass('directory'))
+                dirItems.push(res);
+              else
+                fileItems.push(res);
+            }
+          }
+
+          dirItems.sort(sortProjectItems);
+          fileItems.sort(sortProjectItems);
+
+          for (i in dirItems) {
+            liul.appendChild(dirItems[i]);
+          }
+          for (i in fileItems) {
+            liul.appendChild(fileItems[i]);
+          }
+          for (i in toRemove) {
+            toRemove[i].remove();
+          }
+
           break;
       }
     },
     directoryPriorityLoad: function(path) {
       if (this.directoriesMap['/' + path.split('/')[1]].loadFirst(path)){
-        var xpath = './/li/a[@data-full-path="' + path + '"]/../ul';
-        var liul = document.evaluate(xpath, this.elementUl).iterateNext();
-        var loadingLi = document.evaluate('./li[@data-loading]', liul).iterateNext();
-
-        if (loadingLi === null) {
-          loadingLi = document.createElement("li");
-          loadingLi.innerHTML = "Loading...";
-          loadingLi.dataset['loading'] = true;
-          liul.appendChild(loadingLi);
-        }
+        var xpath = './/li/a[@data-full-path="' + path + '"]';
+        var liA = document.evaluate(xpath, this.elementUl).iterateNext();
+        if (!liA.hasClass('loading'))
+          liA.addClass('loading');
       }
     },
     setElement: function(el) {
@@ -252,7 +299,7 @@ define([
         var target = e.target;
         if (target.hasClass("directory")) {
           target.parentElement.toggle("expanded");
-          var path = target.getAttribute("data-full-path");
+          var path = target.dataset["fullPath"];
           self.expanded[path] = !!!self.expanded[path];
           self.directoryPriorityLoad(path);
         }
@@ -353,7 +400,9 @@ define([
       if (project.settings) {
         Settings.setProject(project.settings);
       }
-      this.directories.forEach(function(dir) { dir.stop(); });
+      for (var i in this.directories) {
+        this.directories[i].stop();
+      }
       //restore directory entries that can be restored
       this.directories = [];
       this.render();
@@ -385,7 +434,9 @@ define([
     },
     clearProject: function(keepRetained) {
       this.projectFile = null;
-      this.directories.forEach(function(dir) { dir.stop(); });
+      for (var i in this.directories) {
+        this.directories[i].stop();
+      }
       this.directories = [];
       this.project = {};
       Settings.clearProject();

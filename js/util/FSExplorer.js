@@ -47,8 +47,8 @@ define(['lib/async'], function(async) {
             if (!mustStop)
               onProgress({entry: entry, status: 'loading'});
 
-            setTimeout(function() {reader.readEntries(collect, cb)}, 300);
-            // reader.readEntries(collect, cb);
+            // setTimeout(function() {reader.readEntries(collect, cb)}, 300);
+            reader.readEntries(collect, cb);
           } else {
             // item already done, skipping
             cb();
