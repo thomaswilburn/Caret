@@ -405,22 +405,15 @@ define([
       }
       //restore directory entries that can be restored
       this.directories = [];
-      this.render();
-      M.map(
-        project.folders,
-        function(folder, index, c) {
-          chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
-            //remember, you can only restore project directories you'd previously opened
-            if (!entry) return c();
-            var node = new FSExplorer(entry);
-            self.directories.push(node);
-            self.directoriesMap[entry.fullPath] = node;
-            node.run(fsOnProgress.bind(this), fsOnDone.bind(this), fsOnError.bind(this));
-          });
-        },
-        function() {
-        }
-      );
+      var folder;
+      for (var i in project.folders) {
+        folder = project.folders[i];
+        chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
+          if (!entry)
+            return;
+          self.insertDirectory(entry);
+        });
+      }
     },
     editProjectFile: function() {
       if (!this.projectFile) {
