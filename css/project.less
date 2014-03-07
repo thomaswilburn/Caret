@@ -1,3 +1,18 @@
+@-webkit-keyframes loader {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes loader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animation(@animation) {
+  -webkit-animation: @animation;
+  animation: @animation;
+}
+
 .project {
   @background: #444;
   @foreground: white;
@@ -75,6 +90,17 @@
     
     &:hover:before {
       opacity: 1;
+    }
+
+    &.loading:after {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 1px;
+      background: darken(@foreground, 30%);
+      margin-left: 0px;
+      margin-bottom: 3px;
+      .animation(loader .5s infinite linear);
     }
   }
   
