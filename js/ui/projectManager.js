@@ -1,5 +1,5 @@
 define([
-    "storage/settingsProvider",
+    "settings!user",
     "command",
     "sessions",
     "storage/file",
@@ -75,6 +75,14 @@ define([
   var fsOnProgress = function(data) {
     if (pathIDs[data.entry.fullPath] === undefined)
       pathIDs[data.entry.fullPath] = guidCounter++;
+
+    //skip ignored dirs
+    var blacklist = Settings.get("user").ignoreFiles;
+    if (blacklist) {
+      blacklist = new RegExp(blacklist);
+      if (blacklist.test(data.entry.name))
+        return;
+    }
 
     this.renderDirectory(data);
   }
@@ -228,8 +236,17 @@ define([
           var item;
           var argName;
 
+          var blacklist = Settings.get("user").ignoreFiles;
+
           for (i in data.items) {
             item = data.items[i];
+
+            //skip ignored files/dirs
+            if (blacklist) {
+              blacklist = new RegExp(blacklist);
+              if (blacklist.test(item.name))
+                continue;
+            }
 
             argName = 'data-full-path';
             if (!item.isDirectory)
