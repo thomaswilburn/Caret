@@ -4,96 +4,106 @@ define([
     "sessions",
     "storage/file",
     "util/manos",
+    "util/FSExplorer",
     "ui/dialog",
     "ui/contextMenus",
     "editor",
     "util/template!templates/projectDir.html,templates/projectFile.html",
     "util/dom2"
-  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate) {
-
+  ], function(Settings, command, sessions, File, M, FSExplorer, dialog, context, editor, inflate) {
+    
   /*
-  It's tempting to store projects in local storage, similar to the way that we
-  retain files for tabs, but this would be a mistake. Reading from storage is a
-  pain, because it wants to store a single level deep, and we'll want to alter
+  It's tempting to store projects in local storage, similar to the way that we 
+  retain files for tabs, but this would be a mistake. Reading from storage is a 
+  pain, because it wants to store a single level deep, and we'll want to alter 
   parts of the setup individually.
-
-  Instead, we'll retain a single file handle to the project file, which (as
-  JSON) will store the IDs of individual directories, the project-specific
-  settings, and (hopefully, one day) build systems. This also gets us around
-  the issues of restored directory order and constantly updating the retained
+  
+  Instead, we'll retain a single file handle to the project file, which (as 
+  JSON) will store the IDs of individual directories, the project-specific 
+  settings, and (hopefully, one day) build systems. This also gets us around 
+  the issues of restored directory order and constantly updating the retained 
   file list--we'll just update it when the project file is saved.
   */
 
   var guidCounter = 0;
+  var pathIDs = {};
 
-  //FSNodes are used to track filesystem state inside projects
-  //We don't use the typical File object, because we're not really reading them
-  //Nodes form a tree starting at the root directory
-  var FSNode = function(entry) {
-    this.children = [];
-    this.id = guidCounter++;
-    if (entry) this.setEntry(entry);
+  var sortProjectItems = function(a, b) {
+    var aa = a.childNodes[0];
+    var bb = b.childNodes[0];
+    var aData = aa.dataset['fullPath'] || aa.getAttribute('argument');
+    var bData = bb.dataset['fullPath'] || bb.getAttribute('argument');
+
+    if (aData > bData)
+      return 1;
+
+    if (aData < bData)
+      return -1;
+
+    return 0;
   };
-  FSNode.prototype = {
-    isDirectory: false,
-    entry: null,
-    tab: null,
-    id: null,
-    label: null,
-    setEntry: function(entry, c) {
-      this.entry = entry;
-      this.label = entry.name;
-      this.isDirectory = entry.isDirectory;
-    },
-    //walk will asynchronously collect the file tree
-    walk: function(done) {
-      var self = this;
-      var entries = [];
-      var reader = this.entry.createReader();
-      var inc = 1;
-      var check = function() {
-        inc--;
-        if (inc == 0) {
-          return done(self);
-        }
-      };
-      var collect = function(list) {
-        if (list.length == 0) return complete();
-        entries.push.apply(entries, list);
-        reader.readEntries(collect);
-      };
-      var complete = function() {
-        self.children = [];
-        for (var i = 0; i < entries.length; i++) {
-          var entry = entries[i];
-          //skip dot dirs, but not files
-          if (entry.name[0] == "." && entry.isDirectory) continue;
-          //skip ignored files
-          var blacklist = Settings.get("user").ignoreFiles;
-          if (blacklist) {
-            blacklist = new RegExp(blacklist);
-            if (blacklist.test(entry.name)) continue;
-          }
 
-          var node = new FSNode(entry);
-          self.children.push(node);
-          if (node.isDirectory) {
-            inc++;
-            node.walk(check);
-          }
-        }
-        check();
+  var createProjectElement = function(entry, isRoot) {
+    var li = document.createElement("li");
+    if (entry.isDirectory) {
+      var nodeData = {
+        label: entry.name,
+        path: entry.fullPath,
+        contextMenu: context.makeURL(isRoot ? "root/directory" : "directory", pathIDs[entry.fullPath])
       };
-      reader.readEntries(collect);
+      var a = inflate.get("templates/projectDir.html", nodeData);
+      // a.addClass('loading');
+      li.append(a);
+      if (this.expanded[entry.fullPath]) {
+        li.addClass("expanded");
+      }
+      var ul = document.createElement("ul");
+      li.append(ul);
+    } else {
+      var nodeData = {
+        path: entry.fullPath,
+        contextMenu: context.makeURL("file", entry.fullPath.replace(/[\/\\]/g, "@")),
+        label: entry.name
+      };
+      var a = inflate.get("templates/projectFile.html", nodeData)
+      li.append(a);
+      this.pathMap[entry.fullPath] = entry;
     }
+    return li;
   };
 
+  var fsOnProgress = function(data) {
+    if (pathIDs[data.entry.fullPath] === undefined)
+      pathIDs[data.entry.fullPath] = guidCounter++;
+
+    //skip ignored dirs
+    var blacklist = Settings.get("user").ignoreFiles;
+    if (blacklist) {
+      blacklist = new RegExp(blacklist);
+      if (blacklist.test(data.entry.name))
+        return;
+    }
+
+    this.renderDirectory(data);
+  }
+
+  var fsOnDone = function() {
+    // onDone
+    console.log('done');
+  }
+
+  var fsOnError = function(err) {
+    // onError
+    console.log('error', err);
+  }
+  
   // The Project Manager actually handles rendering and interfacing with the rest
   // of the code. Commands are bound to a singleton instance, but it's technically
   // not picky about being the only one.
-
+  
   var ProjectManager = function(element) {
     this.directories = [];
+    this.directoriesMap = {};
     this.pathMap = {};
     this.expanded = {};
     this.project = null;
@@ -131,43 +141,47 @@ define([
     insertDirectory: function(entry) {
       var root;
       //ensure we aren't duplicating
-      this.directories.forEach(function(directoryNode){
-        if (directoryNode.entry.fullPath === entry.fullPath) {
+      for (var i in this.directories) {
+        if (this.directories[i].entry.fullPath === entry.fullPath)
           root = directoryNode;
-        }
-      });
-      if (!root) {
-        root = new FSNode(entry);
-        this.directories.push(root);
       }
+
+      if (!root) {
+        root = new FSExplorer(entry);
+        this.directories.push(root);
+        this.directoriesMap[entry.fullPath] = root;
+      }
+
+      this.render();
 
       //if the directory was there, we still want
       //to refresh it, in response to the users
       //interaction
-      root.walk(this.render.bind(this));
+      root.run(fsOnProgress.bind(this), fsOnDone.bind(this), fsOnError.bind(this));
     },
     removeDirectory: function(args) {
-      this.directories = this.directories.filter(function(node) {
-        return node.id != args.id;
-      });
+      var xpath;
+      this.directories = this.directories.filter(function(dir) {
+        if (pathIDs[dir.entry.fullPath] != args.id)
+          return true;
+        
+        dir.stop();
+        xpath = './/li/a[@data-full-path="' + dir.entry.fullPath + '"]/..';
+        document.evaluate(xpath, this.elementUl).iterateNext().remove();
+      }.bind(this));
       this.render();
     },
     removeAllDirectories: function() {
+      for (var i in this.directories) {
+        this.directories[i].stop();
+      }
       this.directories = [];
       this.render();
     },
     refresh: function() {
-      var counter = 0;
-      var self = this;
-      var check = function() {
-        counter++;
-        if (counter = self.directories.length) {
-          self.render();
-        }
-      };
-      this.directories.forEach(function(d) {
-        d.walk(check);
-      });
+      for (var i in this.directories) {
+        this.directories[i].run(fsOnProgress.bind(this), fsOnDone.bind(this), fsOnError.bind(this));
+      }
     },
     render: function() {
       if (!this.element) return;
@@ -176,62 +190,120 @@ define([
       setTimeout(function() {
         editor.resize();
       }, 500);
-      this.element.innerHTML = "";
-      this.pathMap = {};
       if (this.directories.length == 0) {
         this.element.removeClass("show");
+        this.element.innerHTML = "";
         return;
       }
       var self = this;
       this.element.addClass("show");
-      var walker = function(node) {
-        var li = document.createElement("li");
-        if (node.isDirectory) {
-          var isRoot = self.directories.indexOf(node) != -1;
-          var nodeData = {
-            label: node.label,
-            path: node.entry.fullPath,
-            contextMenu: context.makeURL(isRoot ? "root/directory" : "directory", node.id)
-          };
-          var a = inflate.get("templates/projectDir.html", nodeData);
-          li.append(a);
-          if (self.expanded[node.entry.fullPath]) {
-            li.addClass("expanded");
-          }
-          var ul = document.createElement("ul");
-          node.children.sort(function(a, b) {
-            if (a.isDirectory != b.isDirectory) {
-              //sneaky casting trick
-              return ~~b.isDirectory - ~~a.isDirectory;
+      if (!this.element.hasChildNodes()) {
+        this.elementUl = document.createElement("ul");
+        this.element.appendChild(this.elementUl);
+      }
+    },
+    renderDirectory: function(data) {
+      var isRoot = (data.entry.fullPath.split('/').length - 1) == 1;
+      var xpath = './/li/a[@data-full-path="' + data.entry.fullPath + '"]/..';
+      var li = document.evaluate(xpath, this.elementUl).iterateNext();
+
+      if (li === null && isRoot) {
+        li = createProjectElement.bind(this)(data.entry, isRoot);
+        li.classList.add("root");
+        li.classList.add("expanded");
+        this.elementUl.appendChild(li);
+      }
+
+      if (li === null) {
+        throw "li is null";
+      }
+
+      var liul = document.evaluate('./ul', li).iterateNext();
+      var liA = document.evaluate('./a[@data-full-path]', li).iterateNext();
+
+      switch (data.status) {
+        case 'loading':
+          // if (!liA.hasClass('loading'))
+          //   liA.addClass('loading');
+          break;
+
+        case 'done':
+          if (liA.hasClass('loading'))
+            liA.removeClass('loading');
+
+          var existingMap = {};
+          var i;
+          var item;
+          var argName;
+
+          var blacklist = Settings.get("user").ignoreFiles;
+
+          for (i in data.items) {
+            item = data.items[i];
+
+            //skip ignored files/dirs
+            if (blacklist) {
+              blacklist = new RegExp(blacklist);
+              if (blacklist.test(item.name))
+                continue;
             }
-            if (a.label < b.label) return -1;
-            if (a.label > b.label) return 1;
-            return 0;
-          });
-          for (var i = 0; i < node.children.length; i++) {
-            ul.append(walker(node.children[i]));
+
+            argName = 'data-full-path';
+            if (!item.isDirectory)
+              argName = 'argument';
+
+            xpath = './li/a[@' + argName + '="' + item.fullPath + '"]/..';
+            if (document.evaluate(xpath, liul).iterateNext() == null)
+              liul.appendChild(createProjectElement.bind(this)(item));
+
+            if (this.expanded[item.fullPath])
+              this.directoryPriorityLoad(item.fullPath);
+
+            existingMap[item.fullPath] = true;
           }
-          li.append(ul);
-        } else {
-          var nodeData = {
-            path: node.entry.fullPath,
-            contextMenu: context.makeURL("file", node.entry.fullPath.replace(/[\/\\]/g, "@")),
-            label: node.label
-          };
-          var a = inflate.get("templates/projectFile.html", nodeData)
-          li.append(a);
-          self.pathMap[node.entry.fullPath] = node;
-        }
-        return li;
-      };
-      var trees = this.directories.map(walker);
-      var list = document.createElement("ul");
-      trees.forEach(function(dir) {
-        dir.classList.add("root");
-        dir.classList.add("expanded");
-        list.appendChild(dir);
-      });
-      this.element.appendChild(list);
+
+          var dirItems = [];
+          var fileItems = [];
+          var toRemove = [];
+          var res;
+          var resA;
+          var iter = document.evaluate('./li', liul);
+          while (res = iter.iterateNext()) {
+            resA = res.childNodes[0];
+
+            if (existingMap[resA.dataset['fullPath'] || resA.getAttribute('argument')] === undefined)
+              toRemove.push(res);
+            else {
+              if (resA.hasClass('directory'))
+                dirItems.push(res);
+              else
+                fileItems.push(res);
+            }
+          }
+
+          dirItems.sort(sortProjectItems);
+          fileItems.sort(sortProjectItems);
+
+          for (i in dirItems) {
+            liul.appendChild(dirItems[i]);
+          }
+          for (i in fileItems) {
+            liul.appendChild(fileItems[i]);
+          }
+          for (i in toRemove) {
+            toRemove[i].remove();
+          }
+
+          break;
+      }
+    },
+    directoryPriorityLoad: function(path) {
+      if (this.directoriesMap['/' + path.split('/')[1]].loadFirst(path)){
+        var xpath = './/li/a[@data-full-path="' + path + '"]';
+        var liA = document.evaluate(xpath, this.elementUl).iterateNext();
+        if (!liA.hasClass('loading'))
+          liA.addClass('loading');
+      }
     },
     setElement: function(el) {
       this.element = el;
@@ -244,20 +316,21 @@ define([
         var target = e.target;
         if (target.hasClass("directory")) {
           target.parentElement.toggle("expanded");
-          var path = target.getAttribute("data-full-path");
+          var path = target.dataset["fullPath"];
           self.expanded[path] = !!!self.expanded[path];
+          if (self.expanded[path])
+            self.refresh();
         }
-        editor.focus();
       });
     },
     openFile: function(path) {
       var self = this;
       var found = false;
-      var node = this.pathMap[path];
-      if (!node) return;
+      var entry = this.pathMap[path];
+      if (entry === undefined) return;
       //walk through existing tabs to see if it's already open
       var tabs = sessions.getAllTabs();
-      chrome.fileSystem.getDisplayPath(node.entry, function(path) {
+      chrome.fileSystem.getDisplayPath(entry, function(path) {
         //look through the tabs for matching display paths
         M.map(
           tabs,
@@ -277,7 +350,7 @@ define([
           //if no match found, create a tab
           function() {
             if (found) return;
-            var file = new File(node.entry);
+            var file = new File(entry);
             file.read(function(err, data) {
               sessions.addFile(data, file);
             });
@@ -345,23 +418,20 @@ define([
       if (project.settings) {
         Settings.setProject(project.settings);
       }
+      for (var i in this.directories) {
+        this.directories[i].stop();
+      }
       //restore directory entries that can be restored
       this.directories = [];
-      M.map(
-        project.folders,
-        function(folder, index, c) {
-          chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
-            //remember, you can only restore project directories you'd previously opened
-            if (!entry) return c();
-            var node = new FSNode(entry);
-            self.directories.push(node);
-            node.walk(c);
-          });
-        },
-        function() {
-          self.render();
-        }
-      );
+      var folder;
+      for (var i in project.folders) {
+        folder = project.folders[i];
+        chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
+          if (!entry)
+            return;
+          self.insertDirectory(entry);
+        });
+      }
     },
     editProjectFile: function() {
       if (!this.projectFile) {
@@ -375,6 +445,9 @@ define([
     },
     clearProject: function(keepRetained) {
       this.projectFile = null;
+      for (var i in this.directories) {
+        this.directories[i].stop();
+      }
       this.directories = [];
       this.project = {};
       Settings.clearProject();
@@ -385,7 +458,7 @@ define([
       return Object.keys(this.pathMap);
     }
   };
-
+  
   var pm = new ProjectManager(document.find(".project"));
   command.on("project:add-dir", pm.addDirectory.bind(pm));
   command.on("project:remove-all", pm.removeAllDirectories.bind(pm));
@@ -395,9 +468,9 @@ define([
   command.on("project:open", pm.openProjectFile.bind(pm));
   command.on("project:edit", pm.editProjectFile.bind(pm));
   command.on("project:clear", pm.clearProject.bind(pm));
-
+  
   context.register("Remove from Project", "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
-
+  
   return pm;
 
 });
