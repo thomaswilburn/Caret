@@ -3,11 +3,11 @@ module.exports = function(grunt) {
   var exec = require("child_process").exec;
   var path = require("path");
   var fs = require("fs");
-  
+
   grunt.loadNpmTasks("grunt-contrib-less");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-contrib-compress");
-  
+
   grunt.initConfig({
     less: {
       light: {
@@ -38,15 +38,24 @@ module.exports = function(grunt) {
         ]
       }
     },
-    copy:  ["config/**", "js/**", "css/*.css", "**/*.html", "require.js", "background.js", "installer.js", "*.png"]
+    copy:  [
+      "config/**",
+      "js/**",
+      "css/*.css",//leave the LESS behind
+      "**/*.html",//both main.html and the templates
+      "require.js",
+      "background.js",
+      "installer.js",
+      "**/*.png" //in case we add images at some point
+    ]
   });
-  
+
   grunt.registerTask("default", ["less", "watch"]);
   grunt.registerTask("prep", ["less", "cleanup", "copyUnpacked"]);
   grunt.registerTask("package", ["prep", "chrome", "webstore", "compress:store"]);
   grunt.registerTask("store", ["prep", "webstore", "compress:store"]);
   grunt.registerTask("crx", ["prep", "chrome"]);
-  
+
   grunt.registerTask("copyUnpacked", "Copies files to the build directory", function() {
     var srcPatterns = grunt.config.get("copy");
     srcPatterns.forEach(function(pattern) {
@@ -100,5 +109,18 @@ module.exports = function(grunt) {
     var c = this.async();
     exec("rm -rf ./build/*", c);
   });
-  
+
+  grunt.registerTask("types", "Update supported file types from ace.json", function() {
+    var json = JSON.parse(fs.readFileSync("config/ace.json", { encoding: "utf8" }));
+    var types = {};
+    json.modes.forEach(function(mode) {
+      mode.extensions.forEach(function(ext) {
+        types[ext] = true;
+      });
+    });
+    var manifest = JSON.parse(fs.readFileSync("manifest.json"));
+    manifest.file_handlers.text.extensions = Object.keys(types).sort();
+    fs.writeFileSync("manifest.json", JSON.stringify(manifest, null, 2));
+  });
+
 };

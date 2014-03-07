@@ -48,7 +48,7 @@ define([
     });
     
     tabContainer.on("dragleave", function(e) {
-      if (e.target !== tabContainer) return;
+      if (e.currentTarget !== tabContainer) return;
       var hovered = tabContainer.find(".hovering");
       if (hovered) hovered.removeClass("hovering");
     });

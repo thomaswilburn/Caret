@@ -8,11 +8,11 @@ define([
     "util/template!templates/paletteItem.html",
     "util/dom2"
   ], function(sessions, command, editor, Settings, status, project, inflate) {
-    
+
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
   var refTest = /identifier|variable|function/;
   var jsRefTest = /entity\.name\.function/;
-  
+
   //build a regex that finds special regex characters for sanitization
   var antiregex = new RegExp("(\\\\|\\" + "?.*+[](){}|^$".split("").join("|\\") + ")", "g");
   var sanitize = function(text) {
@@ -26,19 +26,19 @@ define([
     reference: /@([^:#]*)/,
     search: /#([^:@]*)/
   };
-  
+
   var prefixes = {
     ":": "line",
     "@": "reference",
     "#": "search"
   };
-  
+
   var modes = {
     "line": ":",
     "search": "#",
     "reference": "@"
   };
-  
+
   var Palette = function() {
     this.homeTab = null;
     this.results = [];
@@ -59,7 +59,7 @@ define([
       input.on("blur", function() {
         self.deactivate();
       });
-      
+
       input.on("keydown", function(e) {
         if (e.keyCode == 27) {
           sessions.restoreLocation();
@@ -81,7 +81,7 @@ define([
         }
         self.selected = 0;
       });
-      
+
       input.on("keyup", function(e) {
         self.parse(input.value);
       });
@@ -194,15 +194,15 @@ define([
       var reference = re.reference.test(query) && re.reference.exec(query)[1];
       var results = [];
       var self = this;
-      
+
       var tabs, projectFiles = [];
-      
+
       if (file) {
         var fuzzyFile = new RegExp(file
           .replace(/ /g, "")
           .split("")
           .map(function(char) { return char.replace(antiregex, "\\$1") })
-          .join(".*"), 
+          .join(".*"),
         "i");
         tabs = sessions.getAllTabs().filter(function(tab) {
           return fuzzyFile.test(tab.fileName);
@@ -217,20 +217,20 @@ define([
           };
         });
       } else {
-        var current = this.homeTab; 
+        var current = this.homeTab;
         tabs = [ current ];
         if (this.searchAll) {
           tabs.push.apply(tabs, sessions.getAllTabs().filter(function(t) { return t !== current }));
         }
       }
-      
+
       tabs = tabs.map(function(t) {
         return {
           tab: t,
           line: line
         };
       });
-      
+
       if (search) {
         try {
           var crawl = new RegExp(search.replace(antiregex, "\\$1"), "gi");
@@ -280,7 +280,7 @@ define([
         tabs = results;
       }
 
-      this.results = tabs.concat(projectFiles);
+      this.results = tabs.concat(projectFiles).slice(0, 10);
 
       if (this.results.length) {
         var current = this.results[this.selected];
@@ -348,14 +348,14 @@ define([
       });
     }
   };
-  
+
   var palette = new Palette();
-  
+
   command.on("palette:open", function(mode) {
     sessions.saveLocation();
     palette.activate(mode);
   });
 
   return palette;
-  
+
 });

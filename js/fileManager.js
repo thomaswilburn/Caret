@@ -106,6 +106,7 @@ define([
     tab.file.read().then(function(data) {
       tab.setValue(data);
       tab.modified = false;
+      tab.modifiedAt = new Date();
       sessions.renderTabs();
       c();
     });
@@ -236,5 +237,7 @@ define([
   
   command.on("init:startup", init);
   command.on("init:restart", reset);
+  
+  window.on("focus", command.fire.bind(null, "session:check-file"));
 
 });
