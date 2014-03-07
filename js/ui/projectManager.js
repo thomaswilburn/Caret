@@ -318,7 +318,8 @@ define([
           target.parentElement.toggle("expanded");
           var path = target.dataset["fullPath"];
           self.expanded[path] = !!!self.expanded[path];
-          self.directoryPriorityLoad(path);
+          if (self.expanded[path])
+            self.refresh();
         }
       });
     },
