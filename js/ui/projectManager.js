@@ -173,6 +173,12 @@ define([
           root = directoryNode;
         }
       });
+      
+      //if this is the first, go ahead and start the slideout
+      if (!this.directories.length) {
+        this.element.addClass("show");
+      }
+      
       if (!root) {
         root = new FSNode(entry);
         this.directories.push(root);
@@ -181,7 +187,12 @@ define([
       //if the directory was there, we still want
       //to refresh it, in response to the users
       //interaction
-      root.walk(this.render.bind(this));
+      var self = this;
+      tick(function() {
+        root.walk(function() {
+          self.render()
+        });
+      });
     },
 
     removeDirectory: function(args) {
@@ -224,6 +235,7 @@ define([
       this.pathMap = {};
       if (this.directories.length == 0 && !this.loading) {
         this.element.removeClass("show");
+        tree.innerHTML = "";
         return;
       }
       var self = this;
