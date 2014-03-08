@@ -1,3 +1,8 @@
+@-webkit-keyframes progress {
+  0% { width: 1%; }
+  100% { width: 100%; }
+}
+
 .project {
   @background: #444;
   @foreground: white;
@@ -7,6 +12,7 @@
   box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .4);
   background: @background;
   flex-shrink: 0;
+  position: relative;
 
   transition: width .3s;
   //display: none;
@@ -99,5 +105,32 @@
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
   }
+
+  .load-ui {
+    display: none;
+    position: absolute;
+    width: 100%;
+    background: darken(@background, 20%);
+    color: @foreground;
+    font-weight: bold;
+    text-align: center;
+    top: 0;
+    left: 0;
+    padding-top: 8px;
+    z-index: 9;
+
+    .progress {
+      background: @accent;
+      height: 2px;
+      margin-top: 6px;
+      -webkit-animation: progress 2s infinite ease-in-out;
+    }
+
+  }
+
+  &.loading .load-ui {
+    display: block;
+  }
+
   
 }

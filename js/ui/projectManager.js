@@ -25,6 +25,28 @@ define([
   */
 
   var guidCounter = 0;
+  
+  //pseudo-worker to let the UI thread breathe
+  var queue = [];
+  var working = false;
+  var tick = function(fn) {
+    if (fn) queue.push(fn);
+    if (fn && working) return;
+    working = true;
+    //start work on the next frame
+    setTimeout(function() {
+      var then = Date.now();
+      while (queue.length) {
+        var now = Date.now();
+        if (now - then > 15) {
+          return setTimeout(tick);
+        }
+        var next = queue.shift();
+        next();
+      }
+      working = false;
+    });
+  };
 
   //FSNodes are used to track filesystem state inside projects
   //We don't use the typical File object, because we're not really reading them
@@ -34,6 +56,7 @@ define([
     this.id = guidCounter++;
     if (entry) this.setEntry(entry);
   };
+
   FSNode.prototype = {
     isDirectory: false,
     entry: null,
@@ -45,45 +68,50 @@ define([
       this.label = entry.name;
       this.isDirectory = entry.isDirectory;
     },
+    
     //walk will asynchronously collect the file tree
     walk: function(done) {
       var self = this;
       var entries = [];
       var reader = this.entry.createReader();
       var inc = 1;
+      
       var check = function() {
         inc--;
         if (inc == 0) {
           return done(self);
         }
       };
+      
       var collect = function(list) {
         if (list.length == 0) return complete();
         entries.push.apply(entries, list);
         reader.readEntries(collect);
       };
+      
       var complete = function() {
         self.children = [];
-        for (var i = 0; i < entries.length; i++) {
-          var entry = entries[i];
+        entries.forEach(function(entry) {
           //skip dot dirs, but not files
-          if (entry.name[0] == "." && entry.isDirectory) continue;
+          if (entry.name[0] == "." && entry.isDirectory) return;
           //skip ignored files
           var blacklist = Settings.get("user").ignoreFiles;
           if (blacklist) {
             blacklist = new RegExp(blacklist);
-            if (blacklist.test(entry.name)) continue;
+            if (blacklist.test(entry.name)) return;
           }
-
+          
           var node = new FSNode(entry);
           self.children.push(node);
           if (node.isDirectory) {
             inc++;
-            node.walk(check);
+            //give the UI thread a chance to breathe
+            tick(function() { node.walk(check); });
           }
-        }
+        });
         check();
       };
+      
       reader.readEntries(collect);
     }
   };
@@ -101,13 +129,18 @@ define([
     if (element) {
       this.setElement(element);
     }
+    this.loading = false;
     var self = this;
     chrome.storage.local.get("retainedProject", function(data) {
       if (data.retainedProject) {
+        self.loading = true;
+        self.render();
         var file = new File();
         file.onWrite = self.watchProjectFile.bind(self);
         file.restore(data.retainedProject, function(err, f) {
           if (err) {
+            self.loading = false;
+            self.render();
             return chrome.storage.local.remove("retainedProject");
           }
           file.read(function(err, data) {
@@ -119,8 +152,10 @@ define([
       }
     });
   };
+  
   ProjectManager.prototype = {
     element: null,
+    
     addDirectory: function(c) {
       var self = this;
       chrome.fileSystem.chooseEntry({ type: "openDirectory" }, function(d) {
@@ -128,8 +163,10 @@ define([
         self.insertDirectory(d);
       });
     },
+    
     insertDirectory: function(entry) {
       var root;
+      this.element.addClass("loading");
       //ensure we aren't duplicating
       this.directories.forEach(function(directoryNode){
         if (directoryNode.entry.fullPath === entry.fullPath) {
@@ -140,22 +177,26 @@ define([
         root = new FSNode(entry);
         this.directories.push(root);
       }
-
+      
       //if the directory was there, we still want
       //to refresh it, in response to the users
       //interaction
       root.walk(this.render.bind(this));
     },
+
     removeDirectory: function(args) {
+      this.element.addClass("loading");
       this.directories = this.directories.filter(function(node) {
         return node.id != args.id;
       });
       this.render();
     },
+    
     removeAllDirectories: function() {
       this.directories = [];
       this.render();
     },
+    
     refresh: function() {
       var counter = 0;
       var self = this;
@@ -169,21 +210,28 @@ define([
         d.walk(check);
       });
     },
+    
     render: function() {
       if (!this.element) return;
+      
       //Ace doesn't know about non-window resize events
       //moving the panel will screw up its dimensions
       setTimeout(function() {
         editor.resize();
       }, 500);
-      this.element.innerHTML = "";
+
+      var tree = this.element.find(".tree");
       this.pathMap = {};
-      if (this.directories.length == 0) {
+      if (this.directories.length == 0 && !this.loading) {
         this.element.removeClass("show");
         return;
       }
       var self = this;
       this.element.addClass("show");
+      if (this.loading) {
+        this.element.addClass("loading");
+      }
+      
       var walker = function(node) {
         var li = document.createElement("li");
         if (node.isDirectory) {
@@ -224,19 +272,30 @@ define([
         }
         return li;
       };
-      var trees = this.directories.map(walker);
-      var list = document.createElement("ul");
-      trees.forEach(function(dir) {
-        dir.classList.add("root");
-        dir.classList.add("expanded");
-        list.appendChild(dir);
+      
+      //we give the load bar a chance to display before rendering
+      tick(function() {
+        var trees = self.directories.map(walker);
+        var list = document.createElement("ul");
+        trees.forEach(function(dir) {
+          dir.classList.add("root");
+          dir.classList.add("expanded");
+          list.appendChild(dir);
+        });
+        
+        tree.innerHTML = "";
+        tree.appendChild(list);
+        if (!self.loading) {
+          self.element.removeClass("loading");
+        }
       });
-      this.element.appendChild(list);
     },
+    
     setElement: function(el) {
       this.element = el;
       this.bindEvents();
     },
+    
     bindEvents: function() {
       var self = this;
       this.element.on("click", function(e) {
@@ -250,6 +309,7 @@ define([
         editor.focus();
       });
     },
+    
     openFile: function(path) {
       var self = this;
       var found = false;
@@ -285,6 +345,7 @@ define([
         );
       });
     },
+    
     generateProject: function() {
       var project = this.project || {};
       //everything but "folders" is left as-is
@@ -313,6 +374,7 @@ define([
       }
       return json;
     },
+    
     openProjectFile: function() {
       var file = new File();
       var self = this;
@@ -327,6 +389,7 @@ define([
         file.onWrite = self.watchProjectFile;
       });
     },
+    
     watchProjectFile: function() {
       var self = this;
       this.projectFile.read(function(err, data) {
@@ -334,6 +397,7 @@ define([
         self.loadProject(data);
       });
     },
+    
     loadProject: function(project) {
       var self = this;
       //project is the JSON from a project file
@@ -345,6 +409,7 @@ define([
       if (project.settings) {
         Settings.setProject(project.settings);
       }
+      this.loading = true;
       //restore directory entries that can be restored
       this.directories = [];
       M.map(
@@ -359,10 +424,12 @@ define([
           });
         },
         function() {
+          self.loading = false;
           self.render();
         }
       );
     },
+    
     editProjectFile: function() {
       if (!this.projectFile) {
         return dialog("No project opened.");
@@ -373,6 +440,7 @@ define([
         sessions.addFile(data, self.projectFile);
       });
     },
+    
     clearProject: function(keepRetained) {
       this.projectFile = null;
       this.directories = [];
@@ -381,6 +449,7 @@ define([
       if (!keepRetained) chrome.storage.local.remove("retainedProject");
       this.render();
     },
+    
     getPaths: function() {
       return Object.keys(this.pathMap);
     }
