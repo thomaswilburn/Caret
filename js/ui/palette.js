@@ -48,7 +48,6 @@ define([
     this.allFiles = [];
     this.files = [];
     this.pending = null;
-    this.previousSearch = "";
     this.selected = 0;
     this.element = document.find(".palette");
     this.input = this.element.find("input");
@@ -97,7 +96,7 @@ define([
       });
       
       input.on("keyup", function(e) {
-        if (this.pending) {
+        if (self.pending) {
           return;
         }
         self.pending = setTimeout(function() {
