@@ -34,20 +34,21 @@ define([
     if (fn && working) return;
     working = true;
     //start work on the next frame
-    setTimeout(function() {
+    var process = function() {
       var then = Date.now();
       while (queue.length) {
         var now = Date.now();
-        if (now - then > 15) {
-          return setTimeout(tick);
+        if (now - then > 10) {
+          return setTimeout(process);
         }
         var next = queue.shift();
         next();
       }
       working = false;
-    });
+    };
+    setTimeout(process);
   };
-
+  
   //FSNodes are used to track filesystem state inside projects
   //We don't use the typical File object, because we're not really reading them
   //Nodes form a tree starting at the root directory

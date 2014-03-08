@@ -69,6 +69,9 @@ define([
         } else {
           replacement = "";
         }
+      } else if (tag == ".") { //straight value substitution
+        after = template.substr(found.index + found[0].length);
+        replacement = data;
       } else { //regular substitution
         after = template.substr(found.index + found[0].length);
         replacement = typeof data[tag] != "undefined" ? data[tag] : "";
