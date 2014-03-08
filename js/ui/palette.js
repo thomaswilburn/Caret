@@ -8,41 +8,47 @@ define([
     "util/template!templates/paletteItem.html",
     "util/dom2"
   ], function(sessions, command, editor, Settings, status, project, inflate) {
-
+  
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
   var refTest = /identifier|variable|function/;
   var jsRefTest = /entity\.name\.function/;
-
+  
   //build a regex that finds special regex characters for sanitization
   var antiregex = new RegExp("(\\\\|\\" + "?.*+[](){}|^$".split("").join("|\\") + ")", "g");
   var sanitize = function(text) {
     //turn HTML into escaped text for presentation
     return text.replace(/\</g, "&lt;").replace(/\>/g, "&gt;").trim();
   };
-
+  
   var re = {
     file: /^([^:#@]*)/,
     line: /:(\d*)/,
     reference: /@([^:#]*)/,
     search: /#([^:@]*)/
   };
-
+  
   var prefixes = {
     ":": "line",
     "@": "reference",
     "#": "search"
   };
-
+  
   var modes = {
     "line": ":",
     "search": "#",
     "reference": "@"
   };
-
+  
+  var DEBOUNCE = 100;
+  
   var Palette = function() {
     this.homeTab = null;
     this.results = [];
     this.cache = {};
+    this.allFiles = [];
+    this.files = [];
+    this.pending = null;
+    this.previousSearch = "";
     this.selected = 0;
     this.element = document.find(".palette");
     this.input = this.element.find("input");
@@ -55,23 +61,26 @@ define([
     bindInput: function() {
       var input = this.input;
       var self = this;
-
+      
       input.on("blur", function() {
         self.deactivate();
       });
-
+      
       input.on("keydown", function(e) {
+        //escape
         if (e.keyCode == 27) {
           sessions.restoreLocation();
           editor.clearSelection();
           return input.blur();
         }
+        //enter
         if (e.keyCode == 13) {
           e.stopImmediatePropagation();
           e.preventDefault();
           self.executeCurrent();
           return;
         }
+        //up/down
         if (e.keyCode == 38 || e.keyCode == 40) {
           e.preventDefault();
           e.stopImmediatePropagation();
@@ -79,13 +88,25 @@ define([
           self.render();
           return;
         }
+        //backspace -- falls through
+        if (e.keyCode == 8) {
+          //clear search progress cache
+          self.files = self.allFiles;
+        }
         self.selected = 0;
       });
-
+      
       input.on("keyup", function(e) {
-        self.parse(input.value);
+        if (this.pending) {
+          return;
+        }
+        self.pending = setTimeout(function() {
+          self.pending = null;
+          self.parse(input.value);
+        }, DEBOUNCE);
       });
     },
+    
     parse: function(query) {
       var startsWith = query[0];
       if (startsWith in prefixes) {
@@ -98,6 +119,7 @@ define([
       }
       this.render();
     },
+    
     findCommands: function(query) {
       if (query.length == 0) return this.results = [];
       var fuzzyCommand = new RegExp(query
@@ -140,6 +162,7 @@ define([
         }
       }
     },
+    
     getTabValues: function(tab) {
       var name = tab.fileName;
       if (!this.cache[name]) {
@@ -153,6 +176,7 @@ define([
       }
       return this.cacheTab(tab);
     },
+    
     cacheTab: function(tab) {
       //create cache entry
       var entry = {
@@ -187,6 +211,7 @@ define([
       }
       return entry;
     },
+    
     findLocations: function(query) {
       var file = re.file.test(query) && re.file.exec(query)[1];
       var line = re.line.test(query) && Number(re.line.exec(query)[1]) - 1;
@@ -194,9 +219,9 @@ define([
       var reference = re.reference.test(query) && re.reference.exec(query)[1];
       var results = [];
       var self = this;
-
+      
       var tabs, projectFiles = [];
-
+      
       if (file) {
         var fuzzyFile = new RegExp(file
           .replace(/ /g, "")
@@ -208,7 +233,8 @@ define([
           return fuzzyFile.test(tab.fileName);
         });
         //check the project for matches as well
-        projectFiles = project.getPaths().filter(function(path) { return fuzzyFile.test(path) }).map(function(path) {
+        this.files = this.files.filter(function(path) { return fuzzyFile.test(path) })
+        projectFiles = this.files.map(function(path) {
           return {
               label: path.substr(path.search(/[^\/\\]+$/)),
               sublabel: path,
@@ -223,14 +249,14 @@ define([
           tabs.push.apply(tabs, sessions.getAllTabs().filter(function(t) { return t !== current }));
         }
       }
-
+      
       tabs = tabs.map(function(t) {
         return {
           tab: t,
           line: line
         };
       });
-
+      
       if (search) {
         try {
           var crawl = new RegExp(search.replace(antiregex, "\\$1"), "gi");
@@ -279,9 +305,9 @@ define([
         });
         tabs = results;
       }
-
+      
       this.results = tabs.concat(projectFiles).slice(0, 10);
-
+      
       if (this.results.length) {
         var current = this.results[this.selected];
         if (!current.tab) return;
@@ -295,6 +321,7 @@ define([
         }
       }
     },
+    
     executeCurrent: function() {
       var current = this.results[this.selected];
       if (!current) return;
@@ -308,10 +335,12 @@ define([
       this.deactivate();
       if (!current.retainFocus) editor.focus();
     },
+    
     activate: function(mode) {
       this.homeTab = sessions.getCurrent();
       this.results = [];
       this.cache = {};
+      this.allFiles = this.files = project.getPaths();
       this.selected = 0;
       this.searchAll = Settings.get("user").searchAllFiles;
       this.commandMode = mode == "command";
@@ -320,9 +349,12 @@ define([
       this.element.addClass("active");
       this.input.focus();
     },
+    
     deactivate: function() {
       this.element.removeClass("active");
+      if (this.pending) clearTimeout(this.pending);
     },
+    
     navigateList: function(interval) {
       this.selected = (this.selected + interval) % this.results.length;
       if (this.selected < 0) {
@@ -334,6 +366,7 @@ define([
       }
       this.render();
     },
+    
     render: function() {
       var self = this;
       this.element.find(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
@@ -348,14 +381,14 @@ define([
       });
     }
   };
-
+  
   var palette = new Palette();
-
+  
   command.on("palette:open", function(mode) {
     sessions.saveLocation();
     palette.activate(mode);
   });
-
+  
   return palette;
-
+  
 });
