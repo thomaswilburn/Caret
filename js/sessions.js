@@ -42,6 +42,8 @@ define([
       }
       tabContainer.append(element);
     });
+
+    tabContainer.innerHTML += addRemove.newTabButtonHtml();    
     setTimeout(function() {
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });

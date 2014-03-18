@@ -8,6 +8,14 @@ define([
     "command"
   ], function(state, switching, Tab, editor, status, dialog, command) {
 
+ /*
+  This is the html code for the "new tab" button;
+  It should be loaded from a template file (templates/newTabButton.html);
+ */
+  var newTabButtonHtml = function() {
+    return '<span class="tab newtab"><a class="close" command="session:new-file">+</a></span>';
+  };
+
   var addTab = function(contents, file) {
     var current = editor.getSession();
     var tab;
