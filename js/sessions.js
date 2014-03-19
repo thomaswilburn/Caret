@@ -6,9 +6,10 @@ define([
     "editor",
     "command",
     "storage/settingsProvider",
+    "util/template!templates/newTabButton.html",
     "aceBindings"
   ],
-  function(state, addRemove, switching, bindEvents, editor, command, Settings) {
+  function(state, addRemove, switching, bindEvents, editor, command, Settings, inflate) {
     
   /*
   
@@ -42,6 +43,11 @@ define([
       }
       tabContainer.append(element);
     });
+    
+    if (Settings.get("user").showNewTabButton === true) {
+      tabContainer.append(inflate.get("templates/newTabButton.html"));
+    }
+
     setTimeout(function() {
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });
@@ -61,6 +67,7 @@ define([
       });
     })
     if (!state.tabs.length) addRemove.add("");
+
     renderTabs();
     bindEvents();
     reset();
@@ -70,7 +77,7 @@ define([
   var reset = function() {
     state.tabs.forEach(function(tab) {
       tab.detectSyntax();
-    });
+    });    
   };
 
   command.on("init:startup", init);
