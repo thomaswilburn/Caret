@@ -39,7 +39,7 @@ define([
     "reference": "@"
   };
   
-  var DEBOUNCE = 100;
+  var DEBOUNCE = 50;
   
   var Palette = function() {
     this.homeTab = null;
@@ -211,6 +211,7 @@ define([
       return entry;
     },
     
+    //note: this function is WAY TOO LONG
     findLocations: function(query) {
       var file = re.file.test(query) && re.file.exec(query)[1];
       var line = re.line.test(query) && Number(re.line.exec(query)[1]) - 1;
@@ -222,17 +223,56 @@ define([
       var tabs, projectFiles = [];
       
       if (file) {
+        //search through open files by name
         var fuzzyFile = new RegExp(file
           .replace(/ /g, "")
           .split("")
           .map(function(char) { return char.replace(antiregex, "\\$1") })
-          .join(".*"),
+          .join(".*?"),
         "i");
         tabs = sessions.getAllTabs().filter(function(tab) {
           return fuzzyFile.test(tab.fileName);
         });
         //check the project for matches as well
-        this.files = this.files.filter(function(path) { return fuzzyFile.test(path) })
+        this.files = this.files.filter(function(path) { return fuzzyFile.test(path) });
+        
+        //sort files by relevance
+        this.files.sort(function(a, b) {
+          //first check the filename for each
+          var aFile = a.split(/[\/\\]/).pop();
+          var bFile = b.split(/[\/\\]/).pop();
+          var aMatch = fuzzyFile.exec(aFile);
+          var bMatch = fuzzyFile.exec(bFile);
+          //if either file matches...
+          if (aMatch || bMatch) {
+            //and if one doesn't, the match wins
+            if (!aMatch) {
+              return 1;
+            } else if (!bMatch) {
+              return -1
+            } else {
+              var aScore = aMatch.pop().length + aMatch.index;
+              var bScore = bMatch.pop().length + bMatch.index;
+              var comparison = aScore - bScore;
+              //identical scores? sort on path
+              if (comparison == 0) {
+                return a < b ? -1 : 1;
+              }
+              return comparison;
+            }
+          }
+          //otherwise, sort shorter full-path match sequences higher
+          var aResult = fuzzyFile.exec(a).pop();
+          var bResult = fuzzyFile.exec(b).pop();
+          var len = aResult.length - bResult.length;
+          //identical lengths, sort on path
+          if (len == 0) {
+            return a < b ? -1 : 1;
+          }
+          return len;
+        });
+        
+        //transform into result objects
         projectFiles = this.files.map(function(path) {
           return {
               label: path.substr(path.search(/[^\/\\]+$/)),
@@ -242,6 +282,7 @@ define([
           };
         });
       } else {
+        //the search domain is the current tab
         var current = this.homeTab;
         tabs = [ current ];
         if (this.searchAll) {
@@ -257,6 +298,7 @@ define([
       });
       
       if (search) {
+        //find text in open tab(s)
         try {
           var crawl = new RegExp(search.replace(antiregex, "\\$1"), "gi");
         } catch (e) {
@@ -286,6 +328,7 @@ define([
         });
         tabs = results;
       } else if (reference !== false) {
+        //search by symbol reference
         try {
           var crawl = new RegExp(reference.replace(antiregex, "\\$1"), "i");
         } catch (e) {
