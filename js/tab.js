@@ -51,6 +51,11 @@ define([
     this.file = file;
     this.fileName = file.entry.name;
     this.modifiedAt = new Date();
+    var self = this;
+    file.getPath().then(function(path) {
+      self.path = path;
+      command.fire("session:render");
+    })
   }
   
   Tab.prototype.save = function(as, c) {
@@ -116,7 +121,8 @@ define([
       index: index,
       fileName: this.fileName,
       modified: this.modified,
-      animation: this.animationClass
+      animation: this.animationClass,
+      path: this.path
     });
     this.animationClass = "";
     return element;
