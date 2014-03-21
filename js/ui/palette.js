@@ -124,9 +124,10 @@ define([
       var fuzzyCommand = new RegExp(query
         .split("")
         .map(function(char) { return char.replace(antiregex, "\\$1")})
-        .join(".*"),
+        .join(".*?"),
       "i");
       var results = [];
+      //load matches from the menu
       var menus = Settings.get("menus");
       var menuWalker = function(menu) {
         for (var i = 0; i < menu.length; i++) {
@@ -143,23 +144,27 @@ define([
         }
       };
       menuWalker(menus);
-      this.results = results.slice(0, 10);
-      if (this.results.length < 10) {
-        var commandMap = {};
-        //do not duplicate results from menu
-        this.results.forEach(function(r) { commandMap[r.command] = true; });
-        for (var i = 0; i < command.list.length; i++) {
-          var c = command.list[i];
-          if (c.command in commandMap) continue;
-          if (fuzzyCommand.test(c.label)) {
-            this.results.push(c);
-            //once we have 10, quit
-            if (this.results.length >= 10) {
-              break;
-            }
-          }
+      //also load from the command list
+      var uniques = {};
+      //do not duplicate results from menu
+      results.forEach(function(r) { uniques[r.command] = true; });
+      for (var i = 0; i < command.list.length; i++) {
+        var c = command.list[i];
+        if (c.command in uniques) continue;
+        if (fuzzyCommand.test(c.label)) {
+          results.push(c);
         }
       }
+      //sort the results into best-match
+      results.sort(function(a, b) {
+        var aMatch = fuzzyCommand.exec(a.palette || a.label);
+        var bMatch = fuzzyCommand.exec(b.palette || b.label);
+        var aScore = aMatch.index + aMatch[0].length;
+        var bScore = bMatch.index + bMatch[0].length;
+        if (aScore == bScore) return (a.label < b.label ? -1 : 1);
+        return aScore - bScore;
+      });
+      this.results = results.slice(0, 10);
     },
     
     getTabValues: function(tab) {
