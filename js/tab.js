@@ -52,7 +52,7 @@ define([
     this.fileName = file.entry.name;
     this.modifiedAt = new Date();
     var self = this;
-    file.getPath().then(function(path) {
+    if (!this.file.virtual) file.getPath().then(function(path) {
       self.path = path;
       command.fire("session:render");
     })
