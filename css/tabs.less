@@ -89,25 +89,21 @@
     }
 
     &.newtab {
-      width: 40px;
       opacity: .25;
-      max-width: 40px;      
-      background: none;
-
-      &:hover {
-        opacity: 1;
-        background: radial-gradient(ellipse 200px 25px at top center, lighten(@background, 15%), darken(@background, 10%));
-      }
-
-      a {
-        padding: 1px 0;
-      }
+      min-width: 30px;
+      max-width: 30px;
+      margin: 2px 0 4px 0;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-content: center;
 
       .big-label {
-        width: 100%;
+        font-size: 24px;
+        color: lighten(@foreground, 60%);
+        font-weight: bold;
         text-align: center;
-        font-size: 18px;
-        color: @accent;
       }
     }    
   }

@@ -17,6 +17,8 @@
     eclipse
     github
     idle_fingers
+    katzenmilch
+    kuroir
     merbivore
     merbivore_soft
     monokai
@@ -24,6 +26,7 @@
     pastel_on_dark
     solarized_dark
     solarized_light
+    son_of_obsidian
     terminal
     textmate
     tomorrow
@@ -36,7 +39,6 @@
     xcode
   */
   "uiTheme": "light", //dark or light, your pick
-  "cursor": "slim", //"ace", "slim", "smooth", "wide",
   "highlightLine": false,
 
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
@@ -69,5 +71,5 @@
   "emulateVim": false,
 
   //Whether to show the "New file" tab button on the tab bar;
-  "showNewTabButton": true
+  "showNewTabButton": false
 }
