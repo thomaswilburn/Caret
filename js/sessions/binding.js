@@ -1,12 +1,13 @@
 define([
+    "settings!user",
     "command",
     "sessions/state",
     "sessions/addRemove",
     "ui/contextMenus",
     "util/manos",
     "util/dom2"
-  ], function(command, state, addRemove, contextMenus, M) {
-    
+  ], function(Settings, command, state, addRemove, contextMenus, M) {
+  
   /*
   This module returns a function that will bind for event delegation to the
   tab container. Most of it is support for drag/drop.
@@ -113,6 +114,15 @@ define([
     M.serial(toClose, addRemove.remove);
   };
 
+  var enableDblClickNewTab = function() {
+    var tabContainer = document.find(".tabs");
+    tabContainer.on("dblclick", function(e) {      
+      e.preventDefault();
+      if (Settings.get("user").newTabOnDoubleClick === true && e.button == 0)
+        command.fire("session:new-file");
+    });
+  };
+
   command.on("session:close-to-right", closeTabsRight);
 
   contextMenus.register("Close", "closeTab", "tabs/:id", function(args) {
@@ -125,6 +135,7 @@ define([
   return function() {
     enableTabDragDrop();
     enableTabMiddleClick();
+    enableDblClickNewTab();    
   };
 
 });

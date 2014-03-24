@@ -87,5 +87,29 @@
         color: @foreground;
       }
     }
+
+    &.newtab {
+      width: 40px;
+      opacity: .25;
+      max-width: 40px;
+      transition: none;   
+
+      &:hover {
+        border-bottom: 4px solid @accent;
+        opacity: 1;
+      }
+
+      a {
+        padding: 1px 0;
+      }
+
+      .big-label {
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        color: @accent;
+      }
+    }
+    
   }
 }
