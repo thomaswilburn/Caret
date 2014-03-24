@@ -113,6 +113,15 @@ define([
     M.serial(toClose, addRemove.remove);
   };
 
+  var enableDblClickNewTab = function() {
+    var tabContainer = document.find(".tabs");
+    tabContainer.on("dblclick", function(e) {      
+      e.preventDefault();
+      if (e.button == 0)
+        command.fire("session:new-file");
+    });
+  };
+
   command.on("session:close-to-right", closeTabsRight);
 
   contextMenus.register("Close", "closeTab", "tabs/:id", function(args) {
@@ -125,6 +134,7 @@ define([
   return function() {
     enableTabDragDrop();
     enableTabMiddleClick();
+    enableDblClickNewTab();
   };
 
 });

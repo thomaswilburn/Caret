@@ -66,6 +66,8 @@
   "ignoreFiles": "node_modules",
 
   //Crazy? You might like Vim keybindings. Only takes effect on restart
-  "emulateVim": false
+  "emulateVim": false,
 
+  //Whether to show the "New file" tab button on the tab bar;
+  "showNewTabButton": true
 }
