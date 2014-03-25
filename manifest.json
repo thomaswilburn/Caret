@@ -8,13 +8,14 @@
   },
   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCh9A0p0K76KGXnEYMf4tVxhHUBXQTRh984XrkVSuzX6Tp4al9cj7NgXh3Sjx+0+KctLzpmvCw9bwgWueAE13LhjQ+dJONaR5xhte0KTAfaVRGV5EKCBx6KwzcaBGWBHv3V1b/8CbTENivW3/eVTg0/gmyB0tzfqzEoXy/lnRkZdQIDAQAB",
   "update_url": "http://thomaswilburn.net/caret/updates.xml",
-
   "app": {
     "background": {
-      "scripts": [ "background.js", "installer.js" ]
+      "scripts": [
+        "background.js",
+        "installer.js"
+      ]
     }
   },
-  
   "permissions": [
     "clipboardRead",
     "clipboardWrite",
@@ -23,13 +24,15 @@
     "notifications",
     "syncFileSystem",
     {
-      "fileSystem": [ "write", "retainEntries", "directory" ]
+      "fileSystem": [
+        "write",
+        "retainEntries",
+        "directory"
+      ]
     }
   ],
-
   "kiosk_enabled": false,
   "offline_enabled": true,
-  
   "file_handlers": {
     "text": {
       "extensions": [
@@ -43,9 +46,9 @@
         "cfc",
         "cfm",
         "cgi",
-        "cpp",
         "coffee",
         "conf",
+        "cpp",
         "cs",
         "csh",
         "css",
@@ -53,10 +56,14 @@
         "dart",
         "diff",
         "do",
-        "el",
         "ejs",
+        "el",
+        "glsl",
         "go",
         "h",
+        "haml",
+        "handlebars",
+        "haxe",
         "hs",
         "htm",
         "html",
@@ -76,12 +83,14 @@
         "md",
         "mdoc",
         "me",
+        "obc",
         "patch",
         "php",
         "pl",
         "pm",
         "ps",
         "py",
+        "r",
         "rake",
         "rb",
         "sass",
@@ -90,10 +99,14 @@
         "sh",
         "shtml",
         "sql",
+        "styl",
         "svg",
+        "tex",
         "text",
+        "ts",
         "tsv",
         "txt",
+        "vbs",
         "vcf",
         "xml",
         "yaml",
@@ -101,7 +114,7 @@
         "zsh"
       ],
       "title": "Caret",
-      "types": [ 
+      "types": [
         "application/javascript",
         "application/json",
         "application/x-shellscript",

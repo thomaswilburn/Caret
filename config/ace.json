@@ -82,6 +82,7 @@
     { "name": "svg", "label": "SVG", "extensions": ["svg"] },
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
     { "name": "typescript", "label": "TypeScript", "extensions": ["ts"] },
+    { "name": "vbscript", "label": "VBScript", "extensions": ["vbs"] },
     { "name": "ini", "label": "Windows INI", "extensions": ["ini"] },
     { "name": "xml", "label": "XML", "extensions": ["xml"] },
     { "name": "yaml", "label": "YAML", "extensions": ["yaml"] }
