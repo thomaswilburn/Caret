@@ -85,4 +85,9 @@ require([
     frame.close();
   });
   
+  //It's nice to be able to launch the debugger from a command stroke
+  command.on("app:debug", function() {
+    debugger;
+  });
+  
 });

@@ -37,5 +37,8 @@
   "Ctrl-Shift-Q": { "ace": "replaymacro" },
   "Ctrl--": { "command": "editor:adjust-zoom", "argument": -1 },
   "Ctrl-=": { "command": "editor:adjust-zoom", "argument": 1 },
-  "Ctrl-0": { "command": "editor:default-zoom" }
+  "Ctrl-0": { "command": "editor:default-zoom" },
+  
+  //dev mode
+  "Ctrl-Esc": { "command": "app:debug" }
 }

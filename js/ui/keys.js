@@ -8,6 +8,7 @@ define([
   var keycodes = {
     9: "Tab",
     13: "Return",
+    27: "Esc",
     32: "Space",
     33: "PageUp",
     34: "PageDown",
