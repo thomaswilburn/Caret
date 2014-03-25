@@ -388,6 +388,7 @@ define([
       this.results = [];
       this.cache = {};
       this.allFiles = this.files = project.getPaths();
+      this.pending = null;
       this.selected = 0;
       this.searchAll = Settings.get("user").searchAllFiles;
       this.commandMode = mode == "command";
