@@ -90,4 +90,8 @@ require([
     debugger;
   });
   
+  command.on("app:restart", function() {
+    chrome.runtime.reload();
+  })
+  
 });
