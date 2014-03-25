@@ -120,6 +120,7 @@ module.exports = function(grunt) {
     });
     var manifest = JSON.parse(fs.readFileSync("manifest.json"));
     manifest.file_handlers.text.extensions.forEach(function(type) {
+      if (!types[type]) console.log("Warning: Extension", type, "does not exist in ace.json");
       types[type] = true;
     });
     manifest.file_handlers.text.extensions = Object.keys(types).sort();
