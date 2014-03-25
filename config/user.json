@@ -69,5 +69,11 @@
   "emulateVim": false,
 
   //Whether to show the "New file" tab button on the tab bar;
-  "showNewTabButton": true
+  "showNewTabButton": true,
+
+  //Show image previews when hovering over image files (jpg/jpeg/png/gif) in the project explorer panel;
+  "showImagePreviews": true,
+
+  //A list of comma separated file types that will not open in the editor (to avoid accidental modifications of binary files);
+  "ignoredBinaryTypes": "jpg,jpeg,gif,png,pdf,exe"
 }

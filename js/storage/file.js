@@ -67,6 +67,30 @@ define([
       return deferred.promise();
     },
     
+    readAsDataUri: function(c) {
+      var self = this;
+      var deferred = M.deferred();
+      
+      if (!self.entry) {
+        console.error(self);
+        deferred.fail("File not opened");
+      }
+      var reader = new FileReader();
+      reader.onload = function() {
+        deferred.done(reader.result);
+      };
+      reader.onerror = function(err) {
+        console.error("File read error!");
+        deferred.fail(err);
+      };
+      self.entry.file(function(f) {
+        reader.readAsDataURL(f);
+      });
+      
+      if (c && typeof c == "function") M.pton(deferred, c);
+      return deferred.promise();
+    },
+
     write: function(data, c) {
       var self = this;
       if (!self.entry) {

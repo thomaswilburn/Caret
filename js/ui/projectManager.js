@@ -277,15 +277,32 @@ define([
           var nodeData = {
             path: node.entry.fullPath,
             contextMenu: context.makeURL("file", node.entry.fullPath.replace(/[\/\\]/g, "@")),
-            label: node.label
+            label: node.label            
           };
-          var a = inflate.get("templates/projectFile.html", nodeData)
+          var a = inflate.get("templates/projectFile.html", nodeData);
+
+          //If the file entry is an image file, store it in the corresponding dom element;
+          var fileType = node.entry.fullPath.split(".").slice(-1).toString().toLowerCase();
+
+          if (["jpg", "jpeg", "png", "gif"].indexOf(fileType) != -1)
+            a.storedNodeEntry = node.entry;
+
+          //Do not open specified binary file types in the editor;
+          var ibt = Settings.get("user").ignoredBinaryTypes.split(",");
+          if (ibt.indexOf(fileType) != -1) {
+            a.on("click", function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            });
+          };
+          
           li.append(a);
           self.pathMap[node.entry.fullPath] = node;
         }
         return li;
       };
-      
+
       //we give the load bar a chance to display before rendering
       tick(function() {
         var trees = self.directories.map(walker);
@@ -300,10 +317,42 @@ define([
         tree.appendChild(list);
         if (!self.loading) {
           self.element.removeClass("loading");
+          self.attachImagePreviewTooltip();
         }
       });
     },
     
+    attachImagePreviewTooltip: function() {
+      var imageFiles = document.querySelectorAll(".project .tree a");
+      for (var i=0; i<imageFiles.length; i++){
+        var elm = imageFiles[i];
+        if (typeof elm.storedNodeEntry !== "undefined") {
+            var tt = document.getElementById("image-preview-tooltip");
+            var ti = tt.firstElementChild;
+            var td = document.getElementById("image-preview-description");            
+            elm
+              .on("mouseenter", function(e){
+                if (!Settings.get("user").showImagePreviews)
+                  return;
+                tt.addClass("tooltip-on");                
+                var tf = this.getAttribute("argument").split("/").slice(-1).toString();
+                var file = new File(this.storedNodeEntry);
+                file.readAsDataUri(function(err, data) {                  
+                  ti.src = data;
+                  td.innerHTML = tf + " [" + ti.width + " x " + ti.height + "]";
+                });
+              })
+              .on("mousemove", function(e){                
+                tt.style.left = e.clientX + 15 + "px";
+                tt.style.top = e.clientY - 6 + "px";                
+              })
+              .on("mouseleave", function(e){
+                tt.removeClass("tooltip-on");
+              });
+        }
+      }
+    },
+
     setElement: function(el) {
       this.element = el;
       this.bindEvents();
