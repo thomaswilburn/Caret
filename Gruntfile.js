@@ -119,8 +119,12 @@ module.exports = function(grunt) {
       });
     });
     var manifest = JSON.parse(fs.readFileSync("manifest.json"));
+    manifest.file_handlers.text.extensions.forEach(function(type) {
+      types[type] = true;
+    });
     manifest.file_handlers.text.extensions = Object.keys(types).sort();
-    fs.writeFileSync("manifest.json", JSON.stringify(manifest, null, 2));
+    var output = JSON.stringify(manifest, null, 2);
+    fs.writeFileSync("manifest.json", output);
   });
 
 };
