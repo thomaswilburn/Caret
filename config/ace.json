@@ -64,7 +64,7 @@
     { "name": "lisp", "label": "Lisp", "extensions": [] },
     { "name": "lua", "label": "Lua", "extensions": ["lua", "love"] },
     { "name": "makefile", "label": "Make", "extensions": ["make"] },
-    { "name": "markdown", "label": "Markdown", "extensions": ["md"] },
+    { "name": "markdown", "label": "Markdown", "extensions": ["md", "markdown"] },
     { "name": "matlab", "label": "MATLAB", "extensions": ["m", "mat"] },
     { "name": "mysql", "label": "MySQL", "extensions": ["sql"] },
     { "name": "objectivec", "label": "Objective C", "extensions": ["obc"] },
