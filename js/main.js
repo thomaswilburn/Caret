@@ -85,6 +85,14 @@ require([
     frame.close();
   });
   
+  command.on("app:minimize", function() {
+    frame.minimize();
+  });
+  
+  command.on("app:maximize", function() {
+    frame.isMaximized() ? frame.restore() : frame.maximize();
+  })
+  
   //It's nice to be able to launch the debugger from a command stroke
   command.on("app:debug", function() {
     debugger;
