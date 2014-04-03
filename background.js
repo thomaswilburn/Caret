@@ -36,7 +36,9 @@ var openWindow = function() {
   chrome.app.window.create("main.html", {
       bounds: defaults,
       id: "caret:main",
-      frame: "none"
+      frame: "none",
+      minWidth: 640,
+      minHeight: 480
   }, function(win) {
     mainWindow = win;
     win.contentWindow.launchData = files;
