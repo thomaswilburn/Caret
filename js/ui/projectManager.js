@@ -479,6 +479,18 @@ define([
   command.on("project:clear", pm.clearProject.bind(pm));
 
   context.register("Remove from Project", "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
+  
+  var setAutoHide = function() {
+    var hide = Settings.get("user").autoHideProject;
+    if (hide) {
+      pm.element.classList.add("autohide");
+    } else {
+      pm.element.classList.remove("autohide");
+    }
+  }
+  
+  command.on("init:startup", setAutoHide);
+  command.on("init:restart", setAutoHide);
 
   return pm;
 

@@ -39,6 +39,7 @@
     xcode
   */
   "uiTheme": "light", //dark or light, your pick
+  "autoHideProject": false, //collapse the project view until you hover
   "highlightLine": false,
 
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
