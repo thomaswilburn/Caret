@@ -90,7 +90,7 @@ require([
   });
   
   command.on("app:maximize", function() {
-    frame.isMaximized() ? frame.restore() : frame.maximize();
+    frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
   })
   
   //It's nice to be able to launch the debugger from a command stroke
