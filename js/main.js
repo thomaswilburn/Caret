@@ -9,6 +9,7 @@ require([
     "fileManager",
     "ui/menus",
     "ui/palette",
+    "ui/cli",
     "api",
     "storage/syncfile"
   ], function(command, Settings, dialog) {

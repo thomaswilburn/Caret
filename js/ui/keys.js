@@ -18,8 +18,13 @@ define([
     39: "Right",
     38: "Up",
     40: "Down",
+    186: ";",
     187: "=",
-    189: "-"
+    189: "-",
+    190: ".",
+    192: "`",
+    220: "\\",
+    222: "'"
   };
   
   var defaultAceCommands = ace.require("./commands/default_commands").commands;
