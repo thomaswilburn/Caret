@@ -130,13 +130,18 @@ require([
   });
   
   //handle immersive fullscreen
-  frame.onFullscreened.addListener(function() {
+  var onFullscreen = function() {
     Settings.pull("user").then(function(data) {
       if (data.user.immersiveFullscreen) {
         document.find("body").addClass("immersive");
       }
     });
-  });
+  }
+  
+  frame.onFullscreened.addListener(onFullscreen);
+  if (frame.isFullscreen()) {
+    onFullscreen();
+  }
   
   frame.onRestored.addListener(function() {
     document.find("body").removeClass("immersive");
