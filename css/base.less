@@ -76,3 +76,31 @@ a[target] {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
+
+//immersive mode
+
+.immersive {
+  .titlebar, .bottom-bar {
+    display: none;
+  }
+  
+  .central {
+    margin-top: 5px;
+  }
+  
+  .tabs {
+    height: 6px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    overflow: hidden;
+    transition: height .3s ease;
+    align-items: flex-end;
+    z-index: 999;
+    
+    &:hover {
+      height: 30px;
+    }
+  }
+}

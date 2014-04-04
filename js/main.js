@@ -91,8 +91,8 @@ require([
   });
   
   command.on("app:maximize", function() {
-    frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
-  })
+    frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.fullscreen();
+  });
   
   //It's nice to be able to launch the debugger from a command stroke
   command.on("app:debug", function() {
@@ -101,6 +101,19 @@ require([
   
   command.on("app:restart", function() {
     chrome.runtime.reload();
-  })
+  });
+  
+  //handle immersive fullscreen
+  frame.onFullscreened.addListener(function() {
+    Settings.pull("user").then(function(user) {
+      if (user.immersiveFullscreen) {
+        document.find("body").addClass("immersive");
+      }
+    }
+  });
+  
+  frame.onRestored.addListener(function() {
+    document.find("body").removeClass("immersive");
+  });
   
 });
