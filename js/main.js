@@ -109,7 +109,7 @@ require([
       if (user.immersiveFullscreen) {
         document.find("body").addClass("immersive");
       }
-    }
+    });
   });
   
   frame.onRestored.addListener(function() {
