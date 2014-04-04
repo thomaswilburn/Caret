@@ -117,7 +117,7 @@ require([
   });
   
   command.on("app:maximize", function() {
-    frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.fullscreen();
+    frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
   });
   
   //It's nice to be able to launch the debugger from a command stroke
@@ -131,8 +131,8 @@ require([
   
   //handle immersive fullscreen
   frame.onFullscreened.addListener(function() {
-    Settings.pull("user").then(function(user) {
-      if (user.immersiveFullscreen) {
+    Settings.pull("user").then(function(data) {
+      if (data.user.immersiveFullscreen) {
         document.find("body").addClass("immersive");
       }
     });

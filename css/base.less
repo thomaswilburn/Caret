@@ -96,11 +96,16 @@ a[target] {
     left: 0;
     overflow: hidden;
     transition: height .3s ease;
-    align-items: flex-end;
+    align-items: stretch;
+    align-content: stretch;
     z-index: 999;
     
+    .tab {
+      overflow: hidden;
+    }
+    
     &:hover {
-      height: 30px;
+      height: 34px;
     }
   }
 }
