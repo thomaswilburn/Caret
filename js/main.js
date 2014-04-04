@@ -4,6 +4,8 @@ require([
     "command",
     "storage/settingsProvider",
     "ui/dialog",
+    "sessions",
+    "util/manos",
     "ui/projectManager",
     "ui/keys",
     "fileManager",
@@ -12,7 +14,7 @@ require([
     "ui/cli",
     "api",
     "storage/syncfile"
-  ], function(command, Settings, dialog) {
+  ], function(command, Settings, dialog, sessions, M) {
   
   var frame = chrome.app.window.current();
   
@@ -83,7 +85,31 @@ require([
   });
   
   command.on("app:exit", function() {
-    frame.close();
+    var cancelled = false;
+    var tabs = sessions.getAllTabs();
+    M.serial(tabs, function(tab, c) {
+      if (!tab.file || (tab.file && tab.modified)) {
+        return dialog(
+          tab.fileName + " has unsaved work.",
+          [
+            { label: "Save", value: "save", shortcut: "s" },
+            { label: "Discard", value: "discard", shortcut: "n" },
+            { label: "Cancel", value: "cancel", shortcut: "c" }
+          ],
+          function(value) {
+            if (!value || value == "cancel") {
+              cancelled = true;
+            }
+            if (value == "save") {
+              return tab.save(c);
+            }
+            c();
+          });
+      }
+      c();
+    }, function() {
+      if (!cancelled) frame.close();
+    })
   });
   
   command.on("app:minimize", function() {

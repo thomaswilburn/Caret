@@ -72,12 +72,14 @@ define([
       var target = e.target;
       if (!target.matches("button")) return;
       modal.remove();
+      var value;
       try {
-        var value = JSON.parse(target.value);
-        if (callback) callback(value);
+        value = JSON.parse(target.value);
       } catch (err) {
         //do nothing
+        value = target.value;
       }
+      if (callback) callback(value);
       editor.focus();
     };
     
