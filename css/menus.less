@@ -1,0 +1,75 @@
+.toolbar {
+  padding: 0;
+  margin: 0;
+  color: @foreground;
+  line-height: 30px;
+  list-style-type: none;
+  z-index: 99;
+  
+  hr {
+    border: none;
+    border-top: 1px solid rgba(128, 128, 128, .2);
+    margin: 4px 8px;
+  }
+
+  .shortcut {
+    color: fade(@foreground, 50%);
+    margin-left: 1em;
+  }
+
+  //nested menus (default)
+  li {
+    transition: opacity .2s;
+    display: flex;
+    padding: 4px 8px;
+    justify-content: space-between;
+    position: relative;
+
+    &:hover, &.active {
+      background: mix(@background, #888, 80%);
+    }
+
+    &.parent:hover, &.active {
+
+      & > .menu {
+        display: block;
+      }
+
+    }
+
+    .menu {
+      display: none;
+      min-width: 250px;
+      position: absolute;
+      margin-left: 90%;
+      margin-top: -2em;
+      z-index: 999;
+      background: @background;
+      padding: 8px 0;
+      box-shadow: 4px 8px 16px rgba(0, 0, 0, .25);
+    }
+
+    &.parent::after {
+      content: "►";
+      font-family: serif;
+      position: absolute;
+      right: 4px;
+      top: 0;
+      color: fade(@foreground, 50%);
+    }
+
+  }
+
+  //base-level menus
+  & > li {
+    display: inline-block;
+    padding: 4px 8px;
+    line-height: initial;
+
+    & > .menu {
+      margin-left: -8px;
+      margin-top: 4px;
+    }
+  }
+  
+}
