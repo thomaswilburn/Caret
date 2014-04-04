@@ -34,7 +34,8 @@
       width: 40px;
       display: block;
       margin-left: 1px;
-      font-size: 20px;
+      font-family: monospace;
+      font-size: 18px;
       font-weight: bold;
       text-align: center;
       background: mix(@background, #888, 65%);
@@ -42,7 +43,6 @@
       transition: opacity .3s ease;
       opacity: .8;
       color: @foreground;
-      vertical-align: middle;
       
       &:hover {
         opacity: 1;
@@ -51,6 +51,7 @@
       
       &.close {
         background: @accent;
+        color: white;
       }
     }
   }

@@ -18,7 +18,7 @@
   transition: width .3s ease, border-width .3s ease, padding .3s linear;
   //display: none;
   width: 0px;
-  padding: 4px 8px;
+  padding: 4px 0;
   
   &.autohide.show {
     padding: 4px 0;
@@ -34,6 +34,7 @@
   
   &.show:not(.autohide) {
     width: @width;
+    padding: 4px 8px;
   }
   
   a {
