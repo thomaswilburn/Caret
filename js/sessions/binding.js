@@ -6,7 +6,7 @@ define([
     "util/manos",
     "util/dom2"
   ], function(command, state, addRemove, contextMenus, M) {
-    
+
   /*
   This module returns a function that will bind for event delegation to the
   tab container. Most of it is support for drag/drop.
@@ -15,7 +15,7 @@ define([
   var enableTabDragDrop = function() {
     var tabContainer = document.find(".tabs");
     var draggedTab = null;
-    
+
     tabContainer.on("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
       e.target.style.opacity = 0;
@@ -34,7 +34,7 @@ define([
         e.target.removeClass("dragging");
       };
     });
-    
+
     tabContainer.on("dragover", function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -46,13 +46,13 @@ define([
         tab.addClass("hovering");
       }
     });
-    
+
     tabContainer.on("dragleave", function(e) {
       if (e.currentTarget !== tabContainer) return;
       var hovered = tabContainer.find(".hovering");
       if (hovered) hovered.removeClass("hovering");
     });
-    
+
     tabContainer.on("drop", function(e) {
       if (!draggedTab) return;
       e.stopPropagation();
@@ -91,9 +91,9 @@ define([
       }
       command.fire("session:render");
     });
-    
+
   };
-  
+
   var enableTabMiddleClick = function() {
     var tabContainer = document.find(".tabs");
     tabContainer.on("click", function(e) {
@@ -103,7 +103,7 @@ define([
       command.fire("session:close-tab", e.target.getAttribute("argument"));
     });
   };
-  
+
   var closeTabsRight = function(tabID) {
     tabID = tabID || state.tabs.indexOf(editor.getSession());
     var toClose = [];
@@ -124,13 +124,26 @@ define([
 
   command.on("session:close-to-right", closeTabsRight);
 
+
+  var closeAllTabs = function() {
+    var toClose = [];
+    for (var i = state.tabs.length -1; i > -1; i--) {
+      toClose.push(i);
+    }
+
+    M.serial(toClose, addRemove.remove);
+  };
+
+  command.on("session:close-all", closeAllTabs);
+
   contextMenus.register("Close", "closeTab", "tabs/:id", function(args) {
     command.fire("session:close-tab", args.id);
   });
+
   contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", function(args) {
     closeTabsRight(args.id);
   });
-  
+
   return function() {
     enableTabDragDrop();
     enableTabMiddleClick();
