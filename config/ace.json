@@ -79,7 +79,7 @@
     { "name": "sass", "label": "Sass", "extensions": ["sass"] },
     { "name": "scala", "label": "Scala", "extensions": ["scala"] },
     { "name": "scss", "label": "SCSS", "extensions": ["scss"] },
-    { "name": "sql", "label": "SQL", "extensions": ["sql"] },
+    { "name": "sql", "label": "SQL", "extensions": ["sql", "pks", "pkb", "pls", "pkg"] },
     { "name": "stylus", "label": "Stylus", "extensions": ["styl"] },
     { "name": "svg", "label": "SVG", "extensions": ["svg"] },
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
