@@ -134,6 +134,7 @@ require([
     Settings.pull("user").then(function(data) {
       if (data.user.immersiveFullscreen) {
         document.find("body").addClass("immersive");
+        editor.resize();
       }
     });
   }
