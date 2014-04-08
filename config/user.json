@@ -47,11 +47,12 @@
   "indentation": 2, //indentation size
   "useTabs": false, //will turn off Ace's setUseSoftTabs() option and use tab characters instead
   "wordWrap": true,
-  "wrapLimit":false, //Set to the number of characters you want or false for full window
+  "wrapLimit": false, //Set to the number of characters you want or false for full window
   "showMargin": false,
   "lineEndings": "auto", //newline format - "windows", "unix", or "auto"
   "scrollPastEnd": true, //allow the editor to scroll past the end of the document
-  "trimTrailingWhitespace": true, //remove whitespace from the end of lines on save
+  "trimTrailingWhitespace": true, //run "Trim Trailing Whitespace" on save
+  "trimEmptyLines": false, //should the trim whitespace command also truncate empty lines?
 
   //only fixed-width fonts supported, for now
   "fontFamily": "",
@@ -63,7 +64,7 @@
   //autocomplete triggers on Ctrl-Space
   "autocomplete": true,
 
-  //By default, the palette searches the current file only unless you widen the scope.
+  //By default, the palette searches the current file's text only unless you widen the scope.
   //If you'd like it to search all open files by default, set this option to true.
   "searchAllFiles": false,
   //set a regex to ignore in project view/search

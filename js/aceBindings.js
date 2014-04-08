@@ -133,7 +133,11 @@ define([
         var range = selection.getLineRange(i);
         range.end.row = range.start.row;
         range.end.column = line.length;
-        line = line.replace(/(\S)\s+$/, "$1");
+        if (userConfig.trimEmptyLines) {
+          line = line.replace(/\s+$/, "");
+        } else {
+          line = line.replace(/(\S)\s+$/, "$1");
+        }
         doc.replace(range, line);
       });
       if (c) c();
