@@ -100,7 +100,7 @@ define([
       if (!e.target.matches(".tab")) return;
       if (e.button != 1) return;
       e.preventDefault();
-      command.fire("session:close-tab", e.target.getAttribute("argument"));
+      command.fire("session:close-tab", e.target.find(".label").getAttribute("argument"));
     });
   };
   
