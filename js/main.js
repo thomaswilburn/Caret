@@ -148,4 +148,12 @@ require([
     document.find("body").removeClass("immersive");
   });
   
+  //kill middle clicks if not handled
+  
+  document.body.on("click", function(e) {
+    if (e.button == 1) {
+      e.preventDefault();
+    }
+  });
+  
 });

@@ -97,10 +97,10 @@ define([
   var enableTabMiddleClick = function() {
     var tabContainer = document.find(".tabs");
     tabContainer.on("click", function(e) {
-      if (!e.target.matches(".tab")) return;
+      if (!e.target.matches(".label")) return;
       if (e.button != 1) return;
       e.preventDefault();
-      command.fire("session:close-tab", e.target.find(".label").getAttribute("argument"));
+      command.fire("session:close-tab", e.target.getAttribute("argument"));
     });
   };
   
