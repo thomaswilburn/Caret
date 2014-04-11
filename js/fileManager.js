@@ -187,7 +187,9 @@ define([
             var file = new File();
             file
               .restore(id)
-              .then(file.read.bind(file))
+              .then(function() {
+                return file.read();
+              })
               .then(function(data) {
                 c({
                   value: data,
