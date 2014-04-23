@@ -85,11 +85,13 @@ define([
   return {
     addFile: addRemove.add,
     addDefaultsFile: function(name) {
-      var tab = addRemove.add(Settings.getAsString(name, true));
-      tab.syntaxMode = "javascript";
-      tab.detectSyntax();
-      tab.fileName = name + ".json";
-      renderTabs();
+      Settings.load(name, function() {
+        var tab = addRemove.add(Settings.getAsString(name, true));
+        tab.syntaxMode = "javascript";
+        tab.detectSyntax();
+        tab.fileName = name + ".json";
+        renderTabs();  
+      });
     },
     getAllTabs: function() {
       return state.tabs;
