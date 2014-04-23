@@ -88,7 +88,7 @@ require([
     var cancelled = false;
     var tabs = sessions.getAllTabs();
     M.serial(tabs, function(tab, c) {
-      if (!tab.file || (tab.file && tab.modified)) {
+      if (tab.modified && (!tab.file || !tab.file.virtual)) {
         return dialog(
           tab.fileName + " has unsaved work.",
           [
