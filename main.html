@@ -11,9 +11,9 @@
       <b class="app-name">Caret</b>
       <ul class="toolbar"></ul>
       <div class="window-controls">
-        <a command="app:minimize">-</a>
-        <a command="app:maximize">+</a>
-        <a class="close" command="app:exit">~</a>
+        <a command="app:minimize" title="Minimize">-</a>
+        <a command="app:maximize" title="Maximize">+</a>
+        <a class="close" command="app:exit" title="Close">~</a>
       </div>
     </div>
     
@@ -37,14 +37,14 @@
     <div class="bottom-bar">
       <div class="status-text"></div>
       <div class="mode-theme">
-        <select class="syntax" command="session:syntax" tabindex=-1></select>
-        <select class="theme" command="editor:theme" tabindex=-1></select>
+        <select class="syntax" command="session:syntax" tabindex=-1 title="Select syntax"></select>
+        <select class="theme" command="editor:theme" tabindex=-1 title="Select editor theme"></select>
       </div>
     </div>
     
     <div class="command-line">
       <input type="text" placeholder="caret:command arguments">
-      <a command="app:hide-prompt" class="close">&times;</a>
+      <a command="app:hide-prompt" class="close" title="Hide prompt">&times;</a>
     </div>
     
     <div class="palette">
