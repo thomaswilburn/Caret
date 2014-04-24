@@ -120,11 +120,6 @@ require([
     frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
   });
   
-  //It's nice to be able to launch the debugger from a command stroke
-  command.on("app:debug", function() {
-    debugger;
-  });
-  
   command.on("app:restart", function() {
     chrome.runtime.reload();
   });
@@ -146,6 +141,15 @@ require([
   
   frame.onRestored.addListener(function() {
     document.find("body").removeClass("immersive");
+  });
+  
+  //It's nice to be able to launch the debugger from a command stroke
+  command.on("app:debug", function() {
+    debugger;
+  });
+  
+  command.on("app:browse", function(url) {
+    window.open(url, "target=_blank");
   });
   
   //kill middle clicks if not handled

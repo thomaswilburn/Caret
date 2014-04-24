@@ -93,7 +93,7 @@
         ]
       },
       "divider",
-      { "label": "Help", "command": "session:open-settings-defaults", "argument": "help" },
+      { "label": "Help", "command": "app:browse", "argument": "https:\/\/github.com\/thomaswilburn\/Caret\/wiki" },
       { "label": "Check for Updates", "command": "app:check-for-updates", "argument": "manual" },
       { "label": "About Caret", "command": "app:about", "retainFocus": true }
     ]
