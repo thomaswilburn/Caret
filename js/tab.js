@@ -58,11 +58,7 @@ define([
     })
   }
   
-  Tab.prototype.save = function(as, c) {
-    if (typeof as == "function") {
-      c = as;
-      as = false;
-    }
+  Tab.prototype.save = function(as) {
     
     //strip final whitespace, if enabled
     if (Settings.get("user").trimTrailingWhitespace) {
@@ -99,7 +95,6 @@ define([
       whenOpen();
     }
     
-    if (c) M.pton(deferred, c);
     return deferred.promise();
   };
   

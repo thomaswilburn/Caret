@@ -30,21 +30,20 @@ define([
   };
   SyncFile.prototype = {
     name: "",
-    open: function(name, c) {
+    open: function(name) {
       this.name = name;
       this.entry.name = name;
       var self = this;
       var promise = new Promise(function(ok, fail) {
         resolve(self);
       });
-      if (c) M.pton(promise, c);
       return promise;
     },
-    read: function(c) {
+    read: function() {
       var name = this.name;
       return sync.get(this.name);
     },
-    write: function(content, c) {
+    write: function(content) {
       var self = this;
       return sync.set(this.name, content).then(function() {
         command.fire("settings:change-local");

@@ -16,12 +16,8 @@ define([
   };
   
   File.prototype = {
-    open: function(mode, c) {
+    open: function(mode) {
       var self = this;
-      if (typeof mode == "function") {
-        c = mode;
-        mode = "open";
-      }
       mode = mode || "open";
       //mode is "open" or "save"
       var modes = {
@@ -38,12 +34,11 @@ define([
         self.entry = entry;
         deferred.done(self)
       });
-    
-      if (c) M.pton(deferred, c);
+      
       return deferred.promise();
     },
     
-    read: function(c) {
+    read: function() {
       var self = this;
       var deferred = M.deferred();
       
@@ -63,11 +58,10 @@ define([
         reader.readAsText(f);
       });
       
-      if (c && typeof c == "function") M.pton(deferred, c);
       return deferred.promise();
     },
     
-    write: function(data, c) {
+    write: function(data) {
       var self = this;
       if (!self.entry) {
         //guard against cases where we accidentally write before opening
@@ -118,11 +112,10 @@ define([
         }
       );
       
-      if (c) M.pton(deferred, c);
       return deferred.promise();
     },
     
-    stat: function(c) {
+    stat: function() {
       var self = this;
       var promise = new Promise(function(ok, fail) {
         if (self.entry) {
@@ -132,7 +125,6 @@ define([
         }
         fail("No file entry");
       });
-      if (c) M.pton(promise, c);
       return promise;
     },
     
@@ -140,7 +132,7 @@ define([
       return chrome.fileSystem.retainEntry(this.entry);
     },
     
-    restore: function(id, c) {
+    restore: function(id) {
       var self = this;
       var deferred = M.deferred();
       
@@ -156,17 +148,15 @@ define([
         }
       });
       
-      if (c) M.pton(deferred, c);
       return deferred.promise();
     },
     
-    getPath: function(c) {
+    getPath: function() {
       var self = this;
       var promise = new Promise(function(ok, fail) {
         if (!self.entry) return fail("No backing entry, cannot get path")
         chrome.fileSystem.getDisplayPath(self.entry, ok);
       });
-      if (c) M.pton(promise, c);
       return promise;
     }
   };

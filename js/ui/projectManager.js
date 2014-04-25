@@ -138,17 +138,15 @@ define([
         self.render();
         var file = new File();
         file.onWrite = self.watchProjectFile.bind(self);
-        file.restore(data.retainedProject, function(err, f) {
-          if (err) {
-            self.loading = false;
-            self.render();
-            return chrome.storage.local.remove("retainedProject");
-          }
-          file.read(function(err, data) {
-            if (err) return;
+        file.restore(data.retainedProject).then(function(f) {
+          file.read().then(function(data) {
             self.projectFile = file;
             self.loadProject(JSON.parse(data));
           });
+        }, function(err) {
+          self.loading = false;
+          self.render();
+          return chrome.storage.local.remove("retainedProject");
         });
       }
     });
@@ -351,7 +349,7 @@ define([
           function() {
             if (found) return;
             var file = new File(node.entry);
-            file.read(function(err, data) {
+            file.read().then(function(data) {
               sessions.addFile(data, file);
             });
           }
@@ -391,22 +389,21 @@ define([
     openProjectFile: function() {
       var file = new File();
       var self = this;
-      file.open(function() {
-        file.read(function(err, data) {
-          if (err) return;
+      file
+        .open()
+        .then(file.read.bind(file))
+        .then(function(data) {
           self.loadProject(data);
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
           self.projectFile = file;
         });
-        file.onWrite = self.watchProjectFile;
-      });
+      file.onWrite = self.watchProjectFile;
     },
     
     watchProjectFile: function() {
       var self = this;
-      this.projectFile.read(function(err, data) {
-        if (err) return;
+      this.projectFile.read().then(function(data) {
         self.loadProject(data);
       });
     },
@@ -448,8 +445,7 @@ define([
         return dialog("No project opened.");
       }
       var self = this;
-      this.projectFile.read(function(err, data) {
-        if (err) return;
+      this.projectFile.read().then(function(data) {
         sessions.addFile(data, self.projectFile);
       });
     },
