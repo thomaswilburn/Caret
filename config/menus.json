@@ -95,7 +95,9 @@
         "sub": [
           { "label": "User Preferences", "command": "settings:delete-local", "argument": "user", "palette": "Reset User Preferences" },
           { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys", "palette": "Reset Keyboard" },
-          { "label": "Menus", "command": "settings:delete-local", "argument": "menus", "palette": "Reset Menus" }
+          { "label": "Menus", "command": "settings:delete-local", "argument": "menus", "palette": "Reset Menus" },
+          "divider",
+          { "label": "Emergency Reset", "command": "settings:emergency-reset", "palette": "Emergency Reset" }
         ]
       },
       "divider",

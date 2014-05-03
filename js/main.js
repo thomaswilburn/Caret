@@ -60,13 +60,15 @@ require([
     chrome.runtime.requestUpdateCheck(function(status, details) {
       if (status == "update_available") {
         chrome.runtime.onUpdateAvailable.addListener(function() {
-          chrome.notifications.create(updateID, {
-            type: "basic",
-            iconUrl: "icon-128.png",
-            title: "Caret: Update Available",
-            message: "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
-            buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
-          }, function(id) { updateID = id });
+          chrome.notifications.clear(updateID, function() {
+            chrome.notifications.create(updateID, {
+              type: "basic",
+              iconUrl: "icon-128.png",
+              title: "Caret: Update Available",
+              message: "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
+              buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
+            }, function(id) { updateID = id });
+          });
         });
       }
     });

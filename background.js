@@ -103,8 +103,7 @@ chrome.contextMenus.create({
   id: "app:factory-reset"
 });
 
-chrome.contextMenus.onClicked.addListener(function(data) {
-  if (data.menuItemId != "app:factory-reset") return;
+var emergencyReset = function() {
   if (mainWindow) mainWindow.close();
   var cleared = {
     local: false,
@@ -123,4 +122,9 @@ chrome.contextMenus.onClicked.addListener(function(data) {
   };
   chrome.storage.local.clear(check.bind(null, "local"));
   chrome.storage.sync.clear(check.bind(null, "sync"));
+};
+
+chrome.contextMenus.onClicked.addListener(function(data) {
+  if (data.menuItemId != "app:factory-reset") return;
+  emergencyReset();
 });

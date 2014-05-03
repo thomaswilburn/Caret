@@ -65,5 +65,6 @@
   { "label": "Menus (Default)", "command": "session:open-settings-defaults", "argument": "menus" },
   { "label": "Reset User Preferences", "command": "settings:delete-local", "argument": "user" },
   { "label": "Reset Keyboard", "command": "settings:delete-local", "argument": "keys" },
-  { "label": "Reset Menus", "command": "settings:delete-local", "argument": "menus" }
+  { "label": "Reset Menus", "command": "settings:delete-local", "argument": "menus" },
+  { "label": "Emergency Reset", "command": "settings:emergency-reset" }
 ]

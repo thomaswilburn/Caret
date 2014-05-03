@@ -163,6 +163,30 @@ define([
       });
     });
   });
+  
+  command.on("settings:emergency-reset", function() {
+    //unlike the menu item, let's confirm it here in case someone fat-fingers the menu/palette
+    chrome.notifications.clear("settings:emergency-reset-confirm", function() {
+      chrome.notifications.create("settings:emergency-reset-confirm", {
+        type: "basic",
+        iconUrl: "icon-128.png",
+        title: "Confirm Emergency Reset",
+        message: "This will wipe out all your settings and return Caret to its initial condition. Are you sure you want to do this?",
+        buttons: [
+          { title: "Yes, reset all data" },
+          { title: "Cancel emergency reset" }
+        ]
+      }, function() {});
+    });
+  });
+  
+  chrome.notifications.onButtonClicked.addListener(function(id, index) {
+    if (id != "settings:emergency-reset-confirm") return;
+    if (index !== 0) return;
+    chrome.runtime.getBackgroundPage(function(page) {
+      page.emergencyReset();
+    });
+  });
 
   return Settings;
 
