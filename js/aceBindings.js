@@ -123,6 +123,11 @@ define([
       session.setValue(text);
       if (c) c();
     });
+    
+    command.on("ace:set-newline-mode", function(type, c) {
+      editor.session.doc.setNewLineMode(type);
+      if (c) c();
+    });
 
     command.on("ace:trim-whitespace", function(c) {
       var session = editor.getSession();

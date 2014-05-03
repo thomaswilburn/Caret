@@ -32,6 +32,12 @@
       { "label": "Block Comment", "command": "ace:command", "argument": "toggleBlockComment" },
       { "label": "Convert Tabs to Spaces", "command": "sublime:tabs-to-spaces" },
       { "label": "Convert Spaces to Tabs", "command": "sublime:spaces-to-tabs" },
+      { "label": "Set Newline Mode",
+        "sub": [
+          { "label": "UNIX", "command": "ace:set-newline-mode", "argument": "unix" },
+          { "label": "Windows", "command": "ace:set-newline-mode", "argument": "windows" }
+        ]
+      },
       { "label": "Trim Trailing Whitespace", "command": "ace:trim-whitespace" },
       "divider",
       { "label": "Sort Lines", "command": "ace:command", "argument": "sortlines" },
