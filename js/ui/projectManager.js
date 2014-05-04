@@ -336,7 +336,7 @@ define([
             if (!tab.file || tab.file.virtual) {
               return c(false);
             }
-            tab.file.getPath(function(err, p) {
+            tab.file.getPath().then(function(p) {
               if (p == path) {
                 sessions.setCurrent(tab);
                 found = true;
@@ -375,7 +375,7 @@ define([
         var file = new File();
         var watch = this.watchProjectFile.bind(this);
         var self = this;
-        file.open("save", function() {
+        file.open("save").then(function() {
           file.write(json);
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});

@@ -1,5 +1,5 @@
 /*
-The background process is responsible for opening Caret windows in response to 
+The background process is responsible for opening Caret windows in response to
 app launches, choosing a file in the Files app on Chrome OS, and external
 messages.
 */
