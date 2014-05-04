@@ -16,20 +16,6 @@ require([
     "storage/syncfile"
   ], function(command, Settings, dialog, sessions, M) {
   
-  //Promises appear to be buggy during startup, but resolving one will fix it
-  //Rinse and repeat until init:complete fires
-  //TODO: remove once we can, this is stupid
-  var promiseBug = false;
-  command.on("init:complete", function() {
-    promiseBug = true;
-  });
-  var cycle = function() {
-    new Promise(function(p) { p() });
-    console.log("waiting");
-    if (!promiseBug) setTimeout(cycle);
-  };
-  cycle();
-  
   var frame = chrome.app.window.current();
   
   var setTheme = function() {

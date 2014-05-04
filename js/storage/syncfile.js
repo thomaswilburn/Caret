@@ -30,27 +30,25 @@ define([
   };
   SyncFile.prototype = {
     name: "",
-    open: function(name) {
+    open: function(name, c) {
       this.name = name;
       this.entry.name = name;
-      var self = this;
-      var promise = new Promise(function(ok, fail) {
-        resolve(self);
-      });
-      return promise;
+      if (c) c(null, this);
     },
-    read: function() {
+    read: function(c) {
       var name = this.name;
-      return sync.get(this.name);
+      sync.get(this.name).then(function(data) {
+        c(null, data);
+      });
     },
-    write: function(content) {
-      var self = this;
+    write: function(content, c) {
       return sync.set(this.name, content).then(function() {
         command.fire("settings:change-local");
+        c();
       });
     },
     retain: function() { return false; },
-    restore: function() { return new Promise.reject() }
+    restore: function(c) { c("Cannot restore sync storage files") }
   };
   
   return SyncFile;

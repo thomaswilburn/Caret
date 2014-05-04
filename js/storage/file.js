@@ -16,7 +16,7 @@ define([
   };
   
   File.prototype = {
-    open: function(mode) {
+    open: function(mode, c) {
       var self = this;
       mode = mode || "open";
       //mode is "open" or "save"
@@ -24,53 +24,46 @@ define([
         "open": "openWritableFile",
         "save": "saveFile"
       };
-      var deferred = M.deferred();
       
       chrome.fileSystem.chooseEntry({
         type: modes[mode]
       }, function(entry) {
         //cancelling acts like an error, but isn't.
-        if (!entry) return deferred.fail(chrome.runtime.lastError);
+        if (!entry) return c(chrome.runtime.lastError);
         self.entry = entry;
-        deferred.done(self)
+        c(null, self);
       });
-      
-      return deferred.promise();
     },
     
-    read: function() {
+    read: function(c) {
       var self = this;
-      var deferred = M.deferred();
       
       if (!self.entry) {
         console.error(self);
-        deferred.fail("File not opened");
+        c("File not opened");
       }
       var reader = new FileReader();
       reader.onload = function() {
-        deferred.done(reader.result);
+        c(null, reader.result);
       };
       reader.onerror = function(err) {
         console.error("File read error!");
-        deferred.fail(err);
+        c(err);
       };
       self.entry.file(function(f) {
         reader.readAsText(f);
       });
-      
-      return deferred.promise();
     },
     
-    write: function(data) {
+    write: function(data, c) {
       var self = this;
+      c = c || function() {};
       if (!self.entry) {
         //guard against cases where we accidentally write before opening
         return self.open("save").then(function() {
           return self.write(data, c);
         });
       }
-      
-      var deferred = M.deferred();
       
       M.chain(
         //check permissions
@@ -85,7 +78,7 @@ define([
                 self.entry = entry;
                 next();
               } else {
-                deferred.fail("Couldn't open file as writable");
+                c("Couldn't open file as writable");
               }
             });
           }
@@ -96,12 +89,12 @@ define([
           self.entry.createWriter(function(writer) {
             writer.onerror = function(err) {
               console.error(err);
-              deferred.fail(err);
+              c(err);
             }
             writer.onwriteend = function() {
               //after truncation, actually write the file
               writer.onwriteend = function() {
-                deferred.done();
+                c();
                 self.onWrite();
               }
               var blob = new Blob([data]);
@@ -111,53 +104,44 @@ define([
           });
         }
       );
-      
-      return deferred.promise();
     },
     
-    stat: function() {
+    stat: function(c) {
       var self = this;
-      var promise = new Promise(function(ok, fail) {
-        if (self.entry) {
-          return self.entry.file(function(f) {
-            ok(f);
-          });
-        }
-        fail("No file entry");
-      });
-      return promise;
+      if (self.entry) {
+        return self.entry.file(function(f) {
+          c(null, f);
+        });
+      }
+      c("No file entry");
     },
     
     retain: function() {
       return chrome.fileSystem.retainEntry(this.entry);
     },
     
-    restore: function(id) {
+    restore: function(id, c) {
       var self = this;
-      var deferred = M.deferred();
       
       chrome.fileSystem.isRestorable(id, function(is) {
         if (is) {
           chrome.fileSystem.restoreEntry(id, function(entry) {
-            if (!entry) return deferred.fail("restoreEntry() failed for " + id);
+            if (!entry) return c("restoreEntry() failed for " + id);
             self.entry = entry;
-            deferred.done();
+            c();
           });
         } else {
-          deferred.fail("isRestorable() returned false for " + id);
+          c("isRestorable() returned false for " + id);
         }
       });
-      
-      return deferred.promise();
     },
     
-    getPath: function() {
+    getPath: function(c) {
       var self = this;
-      var promise = new Promise(function(ok, fail) {
-        if (!self.entry) return fail("No backing entry, cannot get path")
-        chrome.fileSystem.getDisplayPath(self.entry, ok);
+      if (!self.entry) return fail("No backing entry, cannot get path");
+      chrome.fileSystem.getDisplayPath(self.entry, function(path) {
+        c(null, path);
       });
-      return promise;
     }
   };
   

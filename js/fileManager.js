@@ -21,7 +21,7 @@ define([
     if (window.launchData) {
       window.launchData.forEach(function(file) {
         var f = new File(file.entry);
-        f.read().then(function(contents) {
+        f.read(function(err, contents) {
           sessions.addFile(contents, f);
         }, dialog);
       });
@@ -37,7 +37,7 @@ define([
       //files get opened in a tab
       if (entry.isFile) {
         var f = new File(entry);
-        return f.read().then(function(data) {
+        return f.read(function(err, data) {
           sessions.addFile(data, f);
         }, dialog);
       //directories get added to project
@@ -74,7 +74,7 @@ define([
       }
       files.map(function(entry) {
         var f = new File(entry);
-        return f.read().then(function(data) {
+        return f.read(function(err, data) {
           sessions.addFile(data, f);
         }, dialog);
       });
@@ -103,12 +103,12 @@ define([
   command.on("session:revert-file", function(c) {
     var tab = sessions.getCurrent();
     if (!tab.file) return;
-    tab.file.read().then(function(data) {
+    tab.file.read(function(err, data) {
       tab.setValue(data);
       tab.modified = false;
       tab.modifiedAt = new Date();
       sessions.renderTabs();
-      c();
+      if (c) c();
     });
   });
 
@@ -166,8 +166,10 @@ define([
   
   command.on("session:insert-from-file", function(c) {
     var f = new File();
-    f.open().then(f.read.bind(f)).then(function(text) {
-      editor.execCommand("insertstring", text);
+    f.open(function() {
+      f.read(function(err, text) {
+        editor.execCommand("insertstring", text);
+      });
     });
   });
   
@@ -185,20 +187,18 @@ define([
           data.retained,
           function(id, i, c) {
             var file = new File();
-            file
-              .restore(id)
-              .then(function() {
-                return file.read();
-              })
-              .then(function(data) {
+            file.restore(id, function() {
+              file.read(function(err, data) {
+                if (err) {
+                  failures.push(id);
+                  return c(null);
+                }
                 c({
                   value: data,
                   file: file
                 });
-              }, function(err) {
-                failures.push(id);
-                c(null);
               });
+            });
           },
           function(restored) {
             restored = restored.filter(function(d) { return d });
@@ -222,18 +222,15 @@ define([
   
   var reset = function() {
     var tabs = sessions.getAllTabs();
-    var virtuals = [];
     tabs.forEach(function(tab) {
       if (tab.file && tab.file.virtual) {
-        var v = tab.file.read().then(function(data) {
+        virtuals++;
+        tab.file.read(function(err, data) {
           tab.setValue(data);
           tab.modified = false;
+          session.renderTabs();
         });
-        virtuals.push(v);
       }
-    });
-    Promise.all(virtuals).then(function() {
-      setTimeout(sessions.renderTabs, 10);
     });
   };
   

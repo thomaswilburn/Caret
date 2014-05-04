@@ -138,15 +138,16 @@ define([
         self.render();
         var file = new File();
         file.onWrite = self.watchProjectFile.bind(self);
-        file.restore(data.retainedProject).then(function(f) {
-          file.read().then(function(data) {
+        file.restore(data.retainedProject, function(err, f) {
+          file.read(function(err, data) {
+            if (err) {
+              self.loading = false;
+              self.render();
+              return chrome.storage.local.remove("retainedProject");
+            }
             self.projectFile = file;
             self.loadProject(JSON.parse(data));
           });
-        }, function(err) {
-          self.loading = false;
-          self.render();
-          return chrome.storage.local.remove("retainedProject");
         });
       }
     });
@@ -336,7 +337,7 @@ define([
             if (!tab.file || tab.file.virtual) {
               return c(false);
             }
-            tab.file.getPath().then(function(p) {
+            tab.file.getPath(function(err, p) {
               if (p == path) {
                 sessions.setCurrent(tab);
                 found = true;
@@ -349,7 +350,7 @@ define([
           function() {
             if (found) return;
             var file = new File(node.entry);
-            file.read().then(function(data) {
+            file.read(function(err, data) {
               sessions.addFile(data, file);
             });
           }
@@ -375,7 +376,7 @@ define([
         var file = new File();
         var watch = this.watchProjectFile.bind(this);
         var self = this;
-        file.open("save").then(function() {
+        file.open("save", function() {
           file.write(json);
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
@@ -389,21 +390,20 @@ define([
     openProjectFile: function() {
       var file = new File();
       var self = this;
-      file
-        .open()
-        .then(file.read.bind(file))
-        .then(function(data) {
+      file.open(function() {
+        file.read(function(err, data) {
           self.loadProject(data);
           var id = file.retain();
           chrome.storage.local.set({retainedProject: id});
           self.projectFile = file;
+          file.onWrite = self.watchProjectFile.bind(self);
         });
-      file.onWrite = self.watchProjectFile;
+      });
     },
     
     watchProjectFile: function() {
       var self = this;
-      this.projectFile.read().then(function(data) {
+      this.projectFile.read(function(err, data) {
         self.loadProject(data);
       });
     },
@@ -445,7 +445,7 @@ define([
         return dialog("No project opened.");
       }
       var self = this;
-      this.projectFile.read().then(function(data) {
+      this.projectFile.read(function(err, data) {
         sessions.addFile(data, self.projectFile);
       });
     },

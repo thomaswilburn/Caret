@@ -52,10 +52,10 @@ define([
     this.fileName = file.entry.name;
     this.modifiedAt = new Date();
     var self = this;
-    if (!this.file.virtual) file.getPath().then(function(path) {
+    if (!this.file.virtual) file.getPath(function(err, path) {
       self.path = path;
       command.fire("session:render");
-    })
+    });
   }
   
   Tab.prototype.save = function(as) {
@@ -70,27 +70,30 @@ define([
     var deferred = M.deferred();
 
     var whenOpen = function() {
-      self.file.write(content).then(function() {
+      self.file.write(content, function(err) {
+        if (err) {
+          return deferred.fail(err);
+        }
         self.modifiedAt = new Date();
         self.modified = false;
         command.fire("session:render");
         deferred.done();
-      }, deferred.fail.bind(deferred));
+      });
     };
 
     if (!self.file || as) {
       var file = new File();
-      file.open("save")
-        .then(function() {
-          self.file = file;
-          self.fileName = file.entry.name;
-          delete self.syntaxMode;
-          self.detectSyntax();
-        }, function(err) {
+      file.open("save", function(err) {
+        if (err) {
           dialog(err);
-          deferred.fail();
-        })
-        .then(whenOpen);
+          return deferred.fail(err);
+        }
+        self.file = file;
+        self.fileName = file.entry.name;
+        delete self.syntaxMode;
+        self.detectSyntax();
+        whenOpen();
+      });
     } else {
       whenOpen();
     }
