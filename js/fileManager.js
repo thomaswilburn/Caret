@@ -224,7 +224,6 @@ define([
     var tabs = sessions.getAllTabs();
     tabs.forEach(function(tab) {
       if (tab.file && tab.file.virtual) {
-        virtuals++;
         tab.file.read(function(err, data) {
           tab.setValue(data);
           tab.modified = false;
