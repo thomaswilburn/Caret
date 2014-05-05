@@ -6,10 +6,10 @@ define([
     "editor",
     "command",
     "storage/settingsProvider",
-    "util/template!templates/newTabButton.html",
+    "util/elementData",
     "aceBindings"
   ],
-  function(state, addRemove, switching, bindEvents, editor, command, Settings, inflate) {
+  function(state, addRemove, switching, bindEvents, editor, command, Settings, elementData) {
     
   /*
   
@@ -33,19 +33,30 @@ define([
 
   var renderTabs = function() {
     var tabContainer = document.find(".tabs");
-    var contents = "";
     var current = editor.getSession();
-    tabContainer.innerHTML = "";
+    //find and destroy tabs that do not exist anymore
+    tabContainer.findAll(".tab").forEach(function(element) {
+      var tab = element.data();
+      if (state.tabs.indexOf(tab) == -1) {
+        element.remove();
+      }
+    });
     state.tabs.forEach(function(tab, i) {
-      var element = tab.render(i);
+      var element = elementData.get(tab);
+      if (!element) {
+        element = tab.render(i);
+        element.data(tab);
+        element.addClass("enter");
+      }
+      element.setAttribute("tab-id", i);
+      element.find(".label").setAttribute("argument", i);
       if (tab === current) {
         element.addClass("active");
+      } else {
+        element.removeClass("active");
       }
       tabContainer.append(element);
     });
-    if (Settings.get("user").showNewTabButton === true) {
-      tabContainer.append(inflate.get("templates/newTabButton.html"));
-    }    
     setTimeout(function() {
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });
@@ -90,7 +101,7 @@ define([
         tab.syntaxMode = "javascript";
         tab.detectSyntax();
         tab.fileName = name + ".json";
-        renderTabs();  
+        renderTabs();
       });
     },
     getAllTabs: function() {
