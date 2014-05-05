@@ -1,17 +1,11 @@
-<span
-  draggable="true"
-  class="tab {{animation}}"
-  tab-id="{{index}}"
->
-  <a
-    href="tabs/{{index}}"
-    class="label"
-    title="{{path}}"
-    command="session:raise-tab"
-    argument="{{index}}"
-  >{{fileName}}</a>
-  <a class="close" command="session:close-tab" argument={{index}}>
-    {{#modified}}&#9675;{{/modified}}
-    {{^modified}}&times;{{/modified}}
-  </a>
-</span>
+<a
+  href="tabs/{{index}}"
+  class="label"
+  title="{{path}}"
+  command="session:raise-tab"
+  argument="{{index}}"
+>{{fileName}}</a>
+<a class="close" command="session:close-tab" argument={{index}}>
+  {{#modified}}&#9675;{{/modified}}
+  {{^modified}}&times;{{/modified}}
+</a>

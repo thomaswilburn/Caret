@@ -96,6 +96,7 @@ define([
         });
         state.tabs = reordered;
       }
+      tabContainer.find(".hovering").removeClass("hovering");
       command.fire("session:render");
     });
     
