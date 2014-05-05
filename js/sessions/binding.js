@@ -39,16 +39,23 @@ define([
       e.preventDefault();
       e.stopPropagation();
       e.dropEffect = "move";
-      var old = tabContainer.find(".hovering");
-      if (old) old.removeClass("hovering");
       var tab = e.target.findUp(".tab:not(.hovering)");
-      if (tab) {
-        tab.addClass("hovering");
+      if (tab || e.target == tabContainer) {
+        var old = tabContainer.find(".hovering");
+        if (old) old.removeClass("hovering");
+        if (tab) tab.addClass("hovering");
       }
     });
     
-    tabContainer.on("dragleave", function(e) {
-      if (e.currentTarget !== tabContainer) return;
+    //cancel hover appearance when leaving the tab bar
+    tabContainer.on("drag", function(e) {
+      var tabCoords = tabContainer.getBoundingClientRect();
+      if (
+        e.clientX > tabCoords.left &&
+        e.clientX < tabCoords.left + tabCoords.width &&
+        e.clientY > tabCoords.top &&
+        e.clientY < tabCoords.top + tabCoords.top
+      ) return;
       var hovered = tabContainer.find(".hovering");
       if (hovered) hovered.removeClass("hovering");
     });
@@ -115,7 +122,7 @@ define([
 
   var enableDblClickNewTab = function() {
     var tabContainer = document.find(".tabs");
-    tabContainer.on("dblclick", function(e) {      
+    tabContainer.on("dblclick", function(e) {
       e.preventDefault();
       if (e.button == 0)
         command.fire("session:new-file");
