@@ -39,9 +39,6 @@ define([
       self.modified = true;
       command.fire("session:render");
     });
-    
-    this.animationClass = "enter";
-    
   };
   
   //hopefully this never screws up unaugmented Ace sessions.
@@ -115,14 +112,12 @@ define([
   };
   
   Tab.prototype.render = function(index) {
-    var element = inflate.get("templates/tab.html", {
+    var element = inflate.getHTML("templates/tab.html", {
       index: index,
       fileName: this.fileName,
       modified: this.modified,
-      animation: this.animationClass,
       path: this.path
     });
-    this.animationClass = "";
     return element;
   }
   

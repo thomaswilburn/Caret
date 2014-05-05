@@ -44,12 +44,13 @@ define([
     state.tabs.forEach(function(tab, i) {
       var element = elementData.get(tab);
       if (!element) {
-        element = tab.render(i);
+        element = document.createElement("span");
+        element.className = "tab enter";
+        element.setAttribute("draggable", true);
         element.data(tab);
-        element.addClass("enter");
       }
+      element.innerHTML = tab.render(i);
       element.setAttribute("tab-id", i);
-      element.find(".label").setAttribute("argument", i);
       if (tab === current) {
         element.addClass("active");
       } else {

@@ -89,6 +89,7 @@ define([
         });
         state.tabs = reordered;
       }
+      tabContainer.find(".hovering").removeClass("hovering");
       command.fire("session:render");
     });
     
@@ -115,7 +116,7 @@ define([
 
   var enableDblClickNewTab = function() {
     var tabContainer = document.find(".tabs");
-    tabContainer.on("dblclick", function(e) {      
+    tabContainer.on("dblclick", function(e) {
       e.preventDefault();
       if (e.button == 0)
         command.fire("session:new-file");
