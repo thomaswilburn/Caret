@@ -128,23 +128,25 @@ define([
       editor.session.doc.setNewLineMode(type);
       if (c) c();
     });
-
+    
     command.on("ace:trim-whitespace", function(c) {
       var session = editor.getSession();
       var doc = session.doc;
       var selection = editor.getSelection();
       var lines = doc.getAllLines();
+      var folds = session.getAllFolds();
       lines.forEach(function(line, i) {
         var range = selection.getLineRange(i);
-        range.end.row = range.start.row;
-        range.end.column = line.length;
         if (userConfig.trimEmptyLines) {
           line = line.replace(/\s+$/, "");
         } else {
           line = line.replace(/(\S)\s+$/, "$1");
         }
-        doc.replace(range, line);
+        doc.replace(range, line + doc.getNewLineCharacter());
       });
+      //currently, restoring folds is hard because they depend on character positions that change after trimming
+      //if we can figure out how to update the indexes, we'll restore folds after saving
+      //session.addFolds(folds);
       if (c) c();
     });
 
