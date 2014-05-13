@@ -131,22 +131,23 @@ define([
     
     command.on("ace:trim-whitespace", function(c) {
       var session = editor.getSession();
-      var doc = session.doc;
-      var selection = editor.getSelection();
-      var lines = doc.getAllLines();
       var folds = session.getAllFolds();
-      lines.forEach(function(line, i) {
-        var range = selection.getLineRange(i);
-        if (userConfig.trimEmptyLines) {
-          line = line.replace(/\s+$/, "");
-        } else {
-          line = line.replace(/(\S)\s+$/, "$1");
-        }
-        doc.replace(range, line + doc.getNewLineCharacter());
+      var doc = session.doc;
+      var trimEmpty = userConfig.trimEmptyLines;
+      var Search = ace.require("./search").Search;
+      var re = trimEmpty ? /\s+$/ : /(\S)\s+$/;
+      var search = new Search().set({
+        wrap: true,
+        needle: re
       });
-      //currently, restoring folds is hard because they depend on character positions that change after trimming
-      //if we can figure out how to update the indexes, we'll restore folds after saving
-      //session.addFolds(folds);
+      var ranges = search.findAll(session);
+      ranges.forEach(function(range) {
+        var original = session.getTextRange(range);
+        var replaced = original.replace(re, trimEmpty ? "" : "$1");
+        doc.replace(range, replaced);
+      });
+      session.unfold();
+      session.addFolds(folds);
       if (c) c();
     });
 
