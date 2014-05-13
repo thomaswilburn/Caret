@@ -31,7 +31,17 @@ define([
       buttons: buttons
     });
     
+    modal.on("click", function(e) {
+      if (e.target != modal) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    });
+    
     document.body.append(modal);
+    setTimeout(function() {
+      //trigger enter animations
+      modal.removeClass("enter");
+    });
     
     var defaultButton = modal.find("button.default");
     if (!defaultButton) defaultButton = modal.find("button");
