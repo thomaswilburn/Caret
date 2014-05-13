@@ -82,7 +82,7 @@ define([
     });
   });
   
-  command.on("session:save-file", function(c) { 
+  command.on("session:save-file", function(c) {
     sessions.getCurrent()
       .save(c)
       .then(function() {
@@ -90,7 +90,7 @@ define([
       });
   });
   
-  command.on("session:save-file-as", function(c) { 
+  command.on("session:save-file-as", function(c) {
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {
       var mode = tab.detectSyntax();
@@ -227,7 +227,7 @@ define([
         tab.file.read(function(err, data) {
           tab.setValue(data);
           tab.modified = false;
-          session.renderTabs();
+          command.fire("session:render");
         });
       }
     });
