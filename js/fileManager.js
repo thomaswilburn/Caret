@@ -82,7 +82,7 @@ define([
     });
   });
   
-  command.on("session:save-file", function(c) { 
+  command.on("session:save-file", function(c) {
     sessions.getCurrent()
       .save(c)
       .then(function() {
@@ -90,7 +90,7 @@ define([
       });
   });
   
-  command.on("session:save-file-as", function(c) { 
+  command.on("session:save-file-as", function(c) {
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {
       var mode = tab.detectSyntax();
@@ -220,21 +220,7 @@ define([
     });
   };
   
-  var reset = function() {
-    var tabs = sessions.getAllTabs();
-    tabs.forEach(function(tab) {
-      if (tab.file && tab.file.virtual) {
-        tab.file.read(function(err, data) {
-          tab.setValue(data);
-          tab.modified = false;
-          session.renderTabs();
-        });
-      }
-    });
-  };
-  
   command.on("init:startup", init);
-  command.on("init:restart", reset);
   
   window.on("focus", command.fire.bind(null, "session:check-file"));
 

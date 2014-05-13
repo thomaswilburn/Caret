@@ -58,6 +58,7 @@ define([
       }
       tabContainer.append(element);
     });
+    
     setTimeout(function() {
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });
@@ -65,7 +66,15 @@ define([
     command.fire("session:retain-tabs");
   };
 
-  command.on("session:render", renderTabs);
+  var renderPending = false;
+  command.on("session:render", function(c) {
+    if (renderPending) return;
+    renderPending = setTimeout(function() {
+      renderTabs();
+      renderPending = false;
+      if (c) c();
+    })
+  }, 100);
 
   var init = function() {
     Settings.pull("ace").then(function(data) {
