@@ -220,21 +220,7 @@ define([
     });
   };
   
-  var reset = function() {
-    var tabs = sessions.getAllTabs();
-    tabs.forEach(function(tab) {
-      if (tab.file && tab.file.virtual) {
-        tab.file.read(function(err, data) {
-          tab.setValue(data);
-          tab.modified = false;
-          command.fire("session:render");
-        });
-      }
-    });
-  };
-  
   command.on("init:startup", init);
-  command.on("init:restart", reset);
   
   window.on("focus", command.fire.bind(null, "session:check-file"));
 
