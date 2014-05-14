@@ -25,11 +25,6 @@ define([
       option.setAttribute("value", theme.name);
       themes.append(option);
     });
-    if (userConfig.emulateVim) {
-      ace.require("ace/lib/net").loadScript("js/ace/keybinding-vim.js", function() {
-        editor.setKeyboardHandler(ace.require("ace/keyboard/vim").handler);
-      });
-    }
     reset();
     //let main.js know this module is ready
     return "editor";

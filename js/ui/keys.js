@@ -1,8 +1,9 @@
 define([
-    "settings!keys",
+    "settings!keys,user",
     "command",
     "editor",
-    "util/dom2"
+    "util/dom2",
+    "util/aceLoad!js/ace/keybinding-vim.js"
   ], function(Settings, command, editor) {
   
   var keycodes = {
@@ -29,6 +30,7 @@ define([
   
   var defaultAceCommands = ace.require("./commands/default_commands").commands;
   var AceCommandManager = ace.require("./commands/command_manager").CommandManager;
+  var vimHandler = ace.require("ace/keyboard/vim").handler;
   
   //back-compat: we now use Ace-style bindings (Ctrl-X) instead of Vim-style (^-x)
   var normalizeKeys = function(config) {
@@ -50,7 +52,7 @@ define([
   
   //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = function() {
-    editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler());
+    while (editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
     var handler = new AceCommandManager("win", defaultAceCommands);
     var bindings = normalizeKeys(Settings.get("keys"));
     var ckb = handler.commandKeyBinding;
@@ -68,6 +70,9 @@ define([
     }
     handler.commandKeyBinding = ckb;
     editor.keyBinding.setDefaultHandler(handler);
+    if (Settings.get("user").emulateVim) {
+      editor.setKeyboardHandler(vimHandler);
+    }
   };
   command.on("init:startup", bindAce);
   command.on("init:restart", bindAce);
