@@ -396,6 +396,12 @@ define([
       this.render();
       this.element.addClass("active");
       this.input.focus();
+      //trigger animation
+      var self = this;
+      this.element.addClass("enter");
+      setTimeout(function() {
+        self.element.removeClass("enter");
+      });
     },
     
     deactivate: function() {
