@@ -50,14 +50,24 @@ define([
   
   //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = function() {
+    editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler());
     var handler = new AceCommandManager("win", defaultAceCommands);
-    editor.setKeyboardHandler(handler);
     var bindings = normalizeKeys(Settings.get("keys"));
+    var ckb = handler.commandKeyBinding;
     for (var k in bindings) {
       var action = bindings[k];
       //if (!action.ace) continue;
-      handler.bindKey(k, action.command == "ace:command" ? action.argument : action.ace);
+      var parsed = handler.parseKeys(k);
+      var existing = handler.findKeyCommand(parsed.hashId, parsed.key);
+      var aceCommand = action.command == "ace:command" ? action.argument : action.ace;
+      if (!aceCommand) {
+        delete ckb[parsed.hashId][parsed.key];
+      } else {
+        handler.bindKey(k, aceCommand);
+      }
     }
+    handler.commandKeyBinding = ckb;
+    editor.keyBinding.setDefaultHandler(handler);
   };
   command.on("init:startup", bindAce);
   command.on("init:restart", bindAce);
