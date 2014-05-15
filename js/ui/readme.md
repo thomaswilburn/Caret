@@ -1,5 +1,11 @@
 # Module description - ui/*
 
+## cli.js
+
+Creates the UI and bindings for a "command line" that can run Caret commands
+directly. Useful when testing a new command, since you don't need to change
+keys.json or menu.json in order to run it.
+
 ## contextMenus.js
 
 Simplifies the process of adding Chrome context menus to page links, including
