@@ -52,7 +52,6 @@ define([
   
   //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = function() {
-    while(editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
     var handler = new AceCommandManager("win", defaultAceCommands);
     var bindings = normalizeKeys(Settings.get("keys"));
     var ckb = handler.commandKeyBinding;
@@ -69,6 +68,9 @@ define([
       }
     }
     handler.commandKeyBinding = ckb;
+    //remove all existing bindings
+    while(editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
+    //add our new bindings
     editor.keyBinding.setDefaultHandler(handler);
     if (Settings.get("user").emulateVim) {
       editor.setKeyboardHandler(vimHandler);
