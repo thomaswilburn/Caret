@@ -23,6 +23,7 @@
   "Home": { "ace": "gotolinestart" },
   "Alt-End": { "ace": "gotolineend" },
   "End": { "ace": "gotolineend" },
+  "Ctrl-Space": { "ace": "startAutocomplete" },
   
   //Sublime compatibility
   "Ctrl-L": "sublime:expand-to-line",
