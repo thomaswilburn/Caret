@@ -176,12 +176,15 @@ define([
   command.on("session:open-launch", openFromLaunchData);
   
   var init = function(complete) {
-    openFromLaunchData();
+    var done = function() {
+      openFromLaunchData();
+      complete("fileManager");
+    };
     Settings.pull("user").then(function(data) {
-      if (data.user.disableTabRestore) complete("fileManager");
+      if (data.user.disableTabRestore) done();
       chrome.storage.local.get("retained", function(data) {
         var failures = [];
-        if (!data.retained || !data.retained.length) return complete("fileManager");
+        if (!data.retained || !data.retained.length) return done();
           //try to restore items in order
         M.map(
           data.retained,
@@ -206,7 +209,7 @@ define([
               var tab = restored[i];
               sessions.addFile(tab.value, tab.file);
             }
-            complete("fileManager");
+            done();
             if (!failures.length) return;
             chrome.storage.local.get("retained", function(data) {
               if (!data.retained) return;
