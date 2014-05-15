@@ -52,7 +52,7 @@ define([
   
   //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = function() {
-    while (editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
+    while(editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
     var handler = new AceCommandManager("win", defaultAceCommands);
     var bindings = normalizeKeys(Settings.get("keys"));
     var ckb = handler.commandKeyBinding;
@@ -62,7 +62,7 @@ define([
       var parsed = handler.parseKeys(k);
       var existing = handler.findKeyCommand(parsed.hashId, parsed.key);
       var aceCommand = action.command == "ace:command" ? action.argument : action.ace;
-      if (!aceCommand) {
+      if (!aceCommand && ckb[parsed.hashId] && ckb[parsed.hashId][parsed.key]) {
         delete ckb[parsed.hashId][parsed.key];
       } else {
         handler.bindKey(k, aceCommand);
