@@ -31,8 +31,19 @@ define([
 
     //this is a place to put bindings that don't have direct equivalents in Ace, but are required for Sublime compatibility
     command.on("sublime:expand-to-line", function(c) {
-      editor.execCommand("gotolinestart");
-      editor.execCommand("selecttolineend");
+      editor.execCommand({
+          exec:function() {
+            var isBackwards = editor.selection.isBackwards();
+            var selectionStart = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
+            var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
+            
+            editor.clearSelection();
+            
+            editor.selection.moveCursorTo(selectionStart.row, 0);
+            editor.selection.selectTo(selectionEnd.row + 1, 0);
+          },
+          multiSelectAction: "forEach"
+      })
       if (c) c();
     });
 
@@ -121,6 +132,81 @@ define([
       var replace = new RegExp(new Array(userConfig.indentation + 1).join(" "), "g");
       text = text.replace(replace, "\t");
       session.setValue(text);
+      if (c) c();
+    });
+
+    command.on("sublime:join-selection", function(c) {
+      editor.execCommand({
+          exec:function() {
+            var lang = ace.require("ace/lib/lang");
+            var isBackwards = editor.selection.isBackwards();
+            var selectionStart = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
+            var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
+            var selectedRange = editor.selection.getRange();
+            var selectedText = editor.session.doc.getTextRange(selectedRange);
+            var newLine = editor.session.doc.getLine(selectionStart.row) + " ";
+
+            for (var i = selectionStart.row + 1; i <= selectionEnd.row; i++) {
+              var curLine = editor.session.doc.getLine(i);
+              newLine += lang.stringTrimLeft(lang.stringTrimRight(curLine)) + " ";
+            };
+
+            newLine += editor.session.doc.getNewLineCharacter();
+            editor.clearSelection();
+            editor.selection.moveCursorTo(selectionStart.row, 0);
+            editor.selection.selectTo(selectionEnd.row + 1, 0);
+            selectedRange = editor.selection.getRange();
+            editor.session.doc.replace(selectedRange, newLine);
+          },
+          multiSelectAction: "forEach"
+      })
+      if (c) c();
+    });
+
+    command.on("sublime:invert-selection", function(c) {
+      var Range = ace.require("ace/range").Range;
+      var endRow = editor.session.doc.getLength() - 1;
+      var endCol = editor.session.doc.getLine(endRow).length;
+      var initialScroll = editor.session.getScrollTop();
+      var ranges = editor.selection.rangeList.ranges;
+      var newRanges = [];
+      var tmpRanges = ranges;
+
+      // If multiple selections don't exist, rangeList will return 0 so replace with single range
+      if (ranges.length < 1) {
+        ranges = [editor.selection.getRange()];
+      }
+
+      for (var i = 0; i < ranges.length; i++) {
+        if (i == (ranges.length - 1)) {
+          // The last selection must connect to the end of the document, unless it already does
+          if (!(ranges[i].end.row === endRow && ranges[i].end.column === endCol)) {
+              newRanges.push(new Range(ranges[i].end.row, ranges[i].end.column, endRow, endCol));
+          }
+        }
+
+        if (i === 0) {
+          // The first selection must connect to the start of the document, unless it already does
+          if (!(ranges[i].start.row === 0 && ranges[i].start.column === 0)) {
+              newRanges.push(new Range(0, 0, ranges[i].start.row, ranges[i].start.column));
+          }
+        } else {
+          newRanges.push(new Range(ranges[i-1].end.row, ranges[i-1].end.column, ranges[i].start.row, ranges[i].start.column));
+        }
+      }
+      
+      editor.exitMultiSelectMode();
+      editor.clearSelection();
+
+      // Set the main cursor to the last range that will be seen
+      editor.selection.moveCursorTo(newRanges[newRanges.length-1].end.row, newRanges[newRanges.length-1].end.column, false);
+      
+      for(var i = 0; i < newRanges.length; i++) {
+          editor.selection.addRange(newRanges[i], false);
+      }
+      
+      // Make it so the user sees no change in scrolling
+      editor.session.setScrollTop(initialScroll);
       if (c) c();
     });
     

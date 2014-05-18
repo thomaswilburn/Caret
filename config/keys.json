@@ -27,6 +27,7 @@
   
   //Sublime compatibility
   "Ctrl-L": "sublime:expand-to-line",
+  "Ctrl-J": "sublime:join-selection",
   "Ctrl-D": { "ace": "selectMoreAfter" },
   "Ctrl-P": { "command": "palette:open" },
   "Ctrl-Shift-P": { "command": "palette:open", "argument": "command" },
