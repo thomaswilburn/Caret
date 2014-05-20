@@ -35,6 +35,8 @@
   { "label": "Trim Trailing Whitespace", "command": "ace:trim-whitespace" },
   { "label": "Sort Lines", "command": "ace:command", "argument": "sortlines" },
   { "label": "Split Line", "command": "ace:command", "argument": "splitline" },
+  { "label": "Join Lines", "command": "sublime:join-lines" },
+  { "label": "Invert Selection", "command": "sublime:invert-selection" },
   { "label": "To Uppercase", "command": "ace:command", "argument": "touppercase" },
   { "label": "To Lowercase", "command": "ace:command", "argument": "tolowercase" },
   { "label": "Move Lines Up", "command": "ace:command", "argument": "movelinesup" },
