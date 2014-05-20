@@ -32,17 +32,17 @@ define([
     //this is a place to put bindings that don't have direct equivalents in Ace, but are required for Sublime compatibility
     command.on("sublime:expand-to-line", function(c) {
       editor.execCommand({
-          exec:function() {
-            var isBackwards = editor.selection.isBackwards();
-            var selectionStart = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
-            var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
-            
-            editor.clearSelection();
-            
-            editor.selection.moveCursorTo(selectionStart.row, 0);
-            editor.selection.selectTo(selectionEnd.row + 1, 0);
-          },
-          multiSelectAction: "forEach"
+        exec:function() {
+          var isBackwards = editor.selection.isBackwards();
+          var selectionStart = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
+          var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
+          editor.clearSelection();
+          editor.selection.moveCursorTo(selectionStart.row, 0);
+          editor.selection.selectTo(selectionEnd.row + 1, 0);
+        },
+        multiSelectAction: "forEach",
+        scrollIntoView: "cursor",
+        readOnly: true
       })
       if (c) c();
     });
@@ -55,7 +55,7 @@ define([
       var endLine = currentLine;
       while (startLine > 0) {
         startLine--;
-        var line = session.getLine(startLine);
+        var line = session.getLine(startLine).replace(/\s+/, "");
         if (line == "") {
           //we'll skip the preceding space
           startLine += 1;
@@ -65,14 +65,14 @@ define([
       var length = session.getLength();
       while (endLine < length) {
         endLine++;
-        var line = session.getLine(endLine);
+        var line = session.getLine(endLine).replace(/\s+/, "");
         if (line == "") {
           break;
         }
       }
       editor.clearSelection();
-      editor.moveCursorTo(startLine);
-      selection.selectTo(endLine);
+      editor.moveCursorTo(startLine, 0);
+      selection.selectTo(endLine, 0);
       if (c) c();
     });
 
@@ -137,96 +137,84 @@ define([
 
     command.on("sublime:join-lines", function(c) {
       editor.execCommand({
-          exec:function() {
-            var lang = ace.require("ace/lib/lang");
-            var Range = ace.require("ace/range").Range;
-            var isBackwards = editor.selection.isBackwards();
-            var selectionStart = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
-            var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
-            var firstLineEndCol = editor.session.doc.getLine(selectionStart.row).length
-            var selectedText = editor.session.doc.getTextRange(editor.selection.getRange());
-            var insertLine = editor.session.doc.getLine(selectionStart.row);
-
-            selectedText = selectedText.replace(/\n\s*/, " ");
-            var selectedCount = selectedText.length;
-
-            for (var i = selectionStart.row + 1; i <= selectionEnd.row + 1; i++) {
-              var curLine = lang.stringTrimLeft(lang.stringTrimRight(editor.session.doc.getLine(i)));
-              
-              if (curLine.length !== 0) {
-                  curLine = " " + curLine;
-              }
-
-              insertLine += curLine;
-            };
-
-            if (selectionEnd.row + 1 < (editor.session.doc.getLength() - 1)) {
-              // Don't insert a newline at the end of the document
-              insertLine += editor.session.doc.getNewLineCharacter();
+        exec:function() {
+          var lang = ace.require("ace/lib/lang");
+          var Range = ace.require("ace/range").Range;
+          var isBackwards = editor.selection.isBackwards();
+          var selectionStart = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
+          var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
+          var firstLineEndCol = editor.session.doc.getLine(selectionStart.row).length
+          var selectedText = editor.session.doc.getTextRange(editor.selection.getRange());
+          var insertLine = editor.session.doc.getLine(selectionStart.row);
+          selectedText = selectedText.replace(/\n\s*/, " ");
+          var selectedCount = selectedText.length;
+          for (var i = selectionStart.row + 1; i <= selectionEnd.row + 1; i++) {
+            var curLine = lang.stringTrimLeft(lang.stringTrimRight(editor.session.doc.getLine(i)));
+            if (curLine.length !== 0) {
+                curLine = " " + curLine;
             }
-
-            editor.clearSelection();
-            editor.session.doc.replace(new Range(selectionStart.row, 0, selectionEnd.row + 2, 0), insertLine);
-
-            if (selectedCount > 0) {
-              // Select the text that was previously selected
-              editor.selection.moveCursorTo(selectionStart.row, selectionStart.column);
-              editor.selection.selectTo(selectionStart.row, selectionStart.column + selectedCount);
-            } else {
-              // If the joined line had something in it, start the cursor at that something
-              firstLineEndCol = editor.session.doc.getLine(selectionStart.row).length > firstLineEndCol ? (firstLineEndCol + 1) : firstLineEndCol;
-              editor.selection.moveCursorTo(selectionStart.row, firstLineEndCol);
-            }
-          },
-          multiSelectAction: "forEach"
+            insertLine += curLine;
+          };
+          if (selectionEnd.row + 1 < (editor.session.doc.getLength() - 1)) {
+            // Don't insert a newline at the end of the document
+            insertLine += editor.session.doc.getNewLineCharacter();
+          }
+          editor.clearSelection();
+          editor.session.doc.replace(new Range(selectionStart.row, 0, selectionEnd.row + 2, 0), insertLine);
+          if (selectedCount > 0) {
+            // Select the text that was previously selected
+            editor.selection.moveCursorTo(selectionStart.row, selectionStart.column);
+            editor.selection.selectTo(selectionStart.row, selectionStart.column + selectedCount);
+          } else {
+            // If the joined line had something in it, start the cursor at that something
+            firstLineEndCol = editor.session.doc.getLine(selectionStart.row).length > firstLineEndCol ? (firstLineEndCol + 1) : firstLineEndCol;
+            editor.selection.moveCursorTo(selectionStart.row, firstLineEndCol);
+          }
+        },
+        multiSelectAction: "forEach",
+        readOnly: true
       })
       if (c) c();
     });
 
     command.on("sublime:invert-selection", function(c) {
-      var Range = ace.require("ace/range").Range;
-      var endRow = editor.session.doc.getLength() - 1;
-      var endCol = editor.session.doc.getLine(endRow).length;
-      var initialScroll = editor.session.getScrollTop();
-      var ranges = editor.selection.rangeList.ranges;
-      var newRanges = [];
-      var tmpRanges = ranges;
-
-      // If multiple selections don't exist, rangeList will return 0 so replace with single range
-      if (ranges.length < 1) {
-        ranges = [editor.selection.getRange()];
-      }
-
-      for (var i = 0; i < ranges.length; i++) {
-        if (i == (ranges.length - 1)) {
-          // The last selection must connect to the end of the document, unless it already does
-          if (!(ranges[i].end.row === endRow && ranges[i].end.column === endCol)) {
-              newRanges.push(new Range(ranges[i].end.row, ranges[i].end.column, endRow, endCol));
+      editor.execCommand({
+        exec:function() {
+          var Range = ace.require("ace/range").Range;
+          var endRow = editor.session.doc.getLength() - 1;
+          var endCol = editor.session.doc.getLine(endRow).length;
+          var ranges = editor.selection.rangeList.ranges;
+          var newRanges = [];
+          var tmpRanges = ranges;
+          // If multiple selections don't exist, rangeList will return 0 so replace with single range
+          if (ranges.length < 1) {
+            ranges = [editor.selection.getRange()];
           }
-        }
-
-        if (i === 0) {
-          // The first selection must connect to the start of the document, unless it already does
-          if (!(ranges[i].start.row === 0 && ranges[i].start.column === 0)) {
-              newRanges.push(new Range(0, 0, ranges[i].start.row, ranges[i].start.column));
+          for (var i = 0; i < ranges.length; i++) {
+            if (i == (ranges.length - 1)) {
+              // The last selection must connect to the end of the document, unless it already does
+              if (!(ranges[i].end.row === endRow && ranges[i].end.column === endCol)) {
+                  newRanges.push(new Range(ranges[i].end.row, ranges[i].end.column, endRow, endCol));
+              }
+            }
+            if (i === 0) {
+              // The first selection must connect to the start of the document, unless it already does
+              if (!(ranges[i].start.row === 0 && ranges[i].start.column === 0)) {
+                  newRanges.push(new Range(0, 0, ranges[i].start.row, ranges[i].start.column));
+              }
+            } else {
+              newRanges.push(new Range(ranges[i-1].end.row, ranges[i-1].end.column, ranges[i].start.row, ranges[i].start.column));
+            }
           }
-        } else {
-          newRanges.push(new Range(ranges[i-1].end.row, ranges[i-1].end.column, ranges[i].start.row, ranges[i].start.column));
-        }
-      }
-      
-      editor.exitMultiSelectMode();
-      editor.clearSelection();
-
-      // Set the main cursor to the last range that will be seen
-      editor.selection.moveCursorTo(newRanges[newRanges.length-1].end.row, newRanges[newRanges.length-1].end.column, false);
-      
-      for(var i = 0; i < newRanges.length; i++) {
-          editor.selection.addRange(newRanges[i], false);
-      }
-      
-      // Make it so the user sees no change in scrolling
-      editor.session.setScrollTop(initialScroll);
+          editor.exitMultiSelectMode();
+          editor.clearSelection();
+          for(var i = 0; i < newRanges.length; i++) {
+              editor.selection.addRange(newRanges[i], false);
+          }
+        },
+        readOnly: true,
+        scrollIntoView: "none"
+      })
       if (c) c();
     });
     
@@ -254,6 +242,70 @@ define([
       });
       session.unfold();
       session.addFolds(folds);
+      if (c) c();
+    });
+    
+    command.on("sublime:wrap", function(c) {
+      var Range = ace.require("ace/range").Range;
+      var lang = ace.require("ace/lib/lang");
+      var session = editor.getSession();
+      var selection = editor.getSelection();
+      var isBackwards = editor.selection.isBackwards();
+      var selectionLead = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
+      var selectionAnchor = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
+      var startLine = selectionLead.row;
+      var endLine = selectionAnchor.row;
+      while (startLine > 0) {
+        startLine--;
+        var line = session.getLine(startLine).replace(/\s+/, "");
+        if (line == "") {
+          //we'll skip the preceding space
+          startLine += 1;
+          break;
+        }
+      }
+      var length = session.getLength();
+      while (endLine < length) {
+        endLine++;
+        var line = session.getLine(endLine).replace(/\s+/, "");
+        if (line == "") {
+          break;
+        }
+      }
+      editor.clearSelection();
+      editor.moveCursorTo(startLine, 0);
+      selection.selectTo(endLine, 0);
+      var indentStartCol = session.getLine(startLine).length - lang.stringTrimLeft(session.getLine(startLine)).length;
+      var selectedText = lang.stringTrimLeft(session.doc.getTextRange(new Range(startLine, 0, endLine, 0)).replace(/\n/g, " "));
+      var selectedTextParts = selectedText.split(" ");
+      var partCount = 0;
+      var rulerColumn = editor.renderer.getPrintMarginColumn() - 1;
+      var textToAdd = "";
+      var indentValue = indentStartCol > 0 ? new Array(indentStartCol/*userConfig.indentation*//*session.getTabSize()*/ + 1).join(' ') : "";
+      var lineToAdd = indentValue;
+      while (partCount < selectedTextParts.length) {
+        if (selectedTextParts[partCount].length + lineToAdd.length + 1 < rulerColumn) {
+          lineToAdd += (partCount === 0 ? "" : " ") + selectedTextParts[partCount];
+        } else {
+          lineToAdd = lang.stringTrimRight(lineToAdd);
+          if (lineToAdd.length > 0) {
+            lineToAdd += session.doc.getNewLineCharacter();
+            textToAdd += lineToAdd;
+          }
+          if (selectedTextParts[partCount].length + indentValue.length >= rulerColumn) {
+            lineToAdd = indentValue + selectedTextParts[partCount].slice(0, rulerColumn - (indentValue.length + 1));
+            lineToAdd = lang.stringTrimRight(lineToAdd);
+            lineToAdd += session.doc.getNewLineCharacter();
+            textToAdd += lineToAdd;
+            lineToAdd = indentValue + selectedTextParts[partCount].slice(rulerColumn - (indentValue.length + 1));
+          } else {
+            lineToAdd = indentValue + selectedTextParts[partCount];
+          }
+        };
+        partCount++;
+      }
+      textToAdd += lang.stringTrimRight(lineToAdd) + session.doc.getNewLineCharacter();
+      editor.session.doc.replace(new Range(startLine, 0, endLine, 0), textToAdd);
       if (c) c();
     });
 
