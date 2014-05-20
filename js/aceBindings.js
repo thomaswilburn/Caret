@@ -33,12 +33,10 @@ define([
     command.on("sublime:expand-to-line", function(c) {
       editor.execCommand({
         exec:function() {
-          var isBackwards = editor.selection.isBackwards();
-          var selectionStart = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
-          var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
-          editor.clearSelection();
-          editor.selection.moveCursorTo(selectionStart.row, 0);
-          editor.selection.selectTo(selectionEnd.row + 1, 0);
+          var range = editor.selection.getRange();
+          range.start.column = range.end.column = 0;
+          range.end.row += 1;
+          editor.selection.setRange(range, false);
         },
         multiSelectAction: "forEach",
         scrollIntoView: "cursor",
@@ -145,9 +143,8 @@ define([
           var selectionEnd = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
           var firstLineEndCol = editor.session.doc.getLine(selectionStart.row).length
           var selectedText = editor.session.doc.getTextRange(editor.selection.getRange());
+          var selectedCount = selectedText.replace(/\n\s*/, " ").length;
           var insertLine = editor.session.doc.getLine(selectionStart.row);
-          selectedText = selectedText.replace(/\n\s*/, " ");
-          var selectedCount = selectedText.length;
           for (var i = selectionStart.row + 1; i <= selectionEnd.row + 1; i++) {
             var curLine = lang.stringTrimLeft(lang.stringTrimRight(editor.session.doc.getLine(i)));
             if (curLine.length !== 0) {
@@ -185,7 +182,6 @@ define([
           var endCol = editor.session.doc.getLine(endRow).length;
           var ranges = editor.selection.rangeList.ranges;
           var newRanges = [];
-          var tmpRanges = ranges;
           // If multiple selections don't exist, rangeList will return 0 so replace with single range
           if (ranges.length < 1) {
             ranges = [editor.selection.getRange()];
