@@ -23,6 +23,7 @@
       { "label": "Select Line", "command": "sublime:expand-to-line" },
       { "label": "Select Paragraph", "command": "sublime:expand-to-paragraph" },
       { "label": "Select to Matching", "command": "sublime:expand-to-matching" },
+      { "label": "Wrap Paragraph to Print Margin", "command": "sublime:wrap" },
       "divider",
       { "label": "Find", "command": "ace:command", "argument": "find" },
       { "label": "Find/Replace", "command": "ace:command", "argument": "replace" },
