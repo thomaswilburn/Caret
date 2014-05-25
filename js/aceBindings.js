@@ -2,8 +2,9 @@ define([
     "command",
     "editor",
     "ui/statusbar",
-    "settings!user,ace"
-  ], function(command, editor, status, Settings) {
+    "settings!user,ace",
+    "ui/extendedDialog"
+  ], function(command, editor, status, Settings, extendedDialog) {
 
     var userConfig = Settings.get("user");
     command.on("init:restart", function() {
@@ -148,6 +149,83 @@ define([
       });
       session.unfold();
       session.addFolds(folds);
+      if (c) c();
+    });
+
+    command.on("npp:column-editor", function(c) {
+      var initNum = 0;
+      var incNum = 0;
+      var leadingZero = false;
+      var base = 10;
+      extendedDialog(
+        "Column editor",
+        [{pretext: "Initial number: ", type: "text", name: "initnum", value: "0", misc: "size=\"4\""},
+         {pretext: "Increment by: ", type: "text", name: "incnum", value: "1", misc: "size=\"4\"", br: "<br>"},
+         {type: "checkbox", name: "padding", value: "pad", posttext: "Leading zeroes", br: "<br>"},
+         {type: "radio", name: "base", value: "decimal", misc: "checked=\"checked\"", posttext: "Decimal"},
+         {type: "radio", name: "base", value: "hex", posttext: "Hex"},
+         {type: "radio", name: "base", value: "octal", posttext: "Octal"},
+         {type: "radio", name: "base", value: "binary", posttext: "Binary", br:"<br>"}],
+        [{label: "OK", value: true, focus: true, shortcut: "\r"}],
+        function(inputs) {
+          // inputs[0] = type, inputs[1] = name, inputs[2] = value, inputs[3] = checked (if radio/checkbox)
+          for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i][0] == "text") {
+              if (inputs[i][1] == "initnum") {
+                initNum = parseInt(inputs[i][2]);
+              } else if (inputs[i][1] == "incnum") {
+                incNum = parseInt(inputs[i][2]);
+              }
+            } else if (inputs[i][0] == "checkbox") {
+              if (inputs[i][1] == "padding") {
+                leadingZero = inputs[i][3];
+              }
+            } else if (inputs[i][0] == "radio") {
+              if ((inputs[i][1] == "base") && inputs[i][3]) {
+                switch (inputs[i][2])
+                {
+                  case "binary":
+                    base = 2;
+                    break;
+                  case "octal":
+                    base = 8;
+                    break;
+                  case "hex":
+                    base = 16;
+                    break;
+                  case "decimal":
+                  default:
+                    base = 10;
+                    break;
+                }
+              }
+            }
+          }
+          editor.execCommand({
+            exec:function() {
+              var Range = ace.require("ace/range").Range;
+              var ranges = editor.selection.rangeList.ranges;
+              var maxNumLength = (((ranges.length - 1) * incNum) + initNum).toString(base).length;
+              var padZero = new Array(maxNumLength + 1).join('0');
+              var counter = initNum - incNum;
+              // If multiple selections don't exist, rangeList will return 0 so replace with single range
+              if (ranges.length < 1) {
+                ranges = [editor.selection.getRange()];
+              }
+              for (var i = 0; i < ranges.length; i++) {
+                var number = (counter + incNum).toString(base).toUpperCase();
+                if (leadingZero && (number.length < maxNumLength)) {
+                  number = (padZero + number).substr(-maxNumLength);
+                }
+                editor.session.doc.replace(ranges[i], number);
+                counter += incNum;
+              }
+            },
+            readOnly: true,
+            scrollIntoView: "none"
+          })
+        }
+      );
       if (c) c();
     });
 

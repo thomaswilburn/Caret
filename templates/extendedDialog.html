@@ -1,0 +1,17 @@
+<div class="modal-overlay enter">
+  <div class="dialog">
+    <span class="text">{{text}}</span>
+    <div id="form" align="center">
+      <form action="">
+        {{#forms}}
+        {{pretext}}<input type={{type}} name={{name}} value={{value}} {{misc}}>{{posttext}}{{br}}
+        {{/forms}}
+      </form>
+    </div>
+    <div class="button-row">
+      {{#buttons}}
+      <button value="{{value}}" {{#focus}}class="default"{{/focus}}>{{label}}</button>
+      {{/buttons}}
+    </div>
+  </div>
+</div>

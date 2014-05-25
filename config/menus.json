@@ -57,6 +57,7 @@
       { "label": "Go To Reference", "command": "palette:open", "argument": "reference", "retainFocus": true },
       { "label": "Command Palette", "command": "palette:open", "argument": "command", "retainFocus": true },
       "divider",
+      { "label": "Column Editor", "command": "npp:column-editor" },
       { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
       { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
       { "label": "Word Count", "command": "editor:word-count" }
