@@ -106,6 +106,7 @@ define([
     var characters = text.length + " characters";
     var words = text.match(/\b\S+\b/g);
     words = words ? words.length : 0;
+    words += " words";
     command.fire("status:toast", [characters, words, lines].join(", "));
   });
   
