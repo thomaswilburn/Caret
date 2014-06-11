@@ -63,11 +63,11 @@ define([
     bindInput: function() {
       var input = this.input;
       var self = this;
-
+      
       input.on("blur", function() {
         self.deactivate();
       });
-
+      
       input.on("keydown", function(e) {
         //escape
         if (e.keyCode == 27) {
@@ -97,12 +97,12 @@ define([
         }
         self.selected = 0;
       });
-
+      
       input.on("keyup", function(e) {
         if (self.pending) {
           clearTimeout(self.pending);
         }
-
+        
         self.pending = setTimeout(function() {
           self.pending = null;
           self.parse(input.value);
@@ -243,8 +243,8 @@ define([
           return fuzzyFile.test(tab.fileName);
         });
         
+        //first find matches that have base names starting with the query
         var exact = file.replace(/ /g, "").replace(antiregex, "\\$1");
-        //regex to find base names that start with the query
         var exactBeginsBase = new RegExp("^" + exact, "i");
         
         var results = this.files.filter(function(path) {
@@ -254,7 +254,7 @@ define([
         if (results.length < sortResultsLimit)
           results.sort();
         
-        //regex to find base names that contain the query
+        //now find matches that have base names containing the query
         var exactInBase = new RegExp(exact, "i");
         if (results.length < findResultsLimit) {
           var exactInBaseMatches = this.files.filter(function(path) {
@@ -268,6 +268,7 @@ define([
           results = results.concat(exactInBaseMatches);
         }
         
+        //now find fuzzy matches
         if (results.length < findResultsLimit) {
           var fuzzyMatches = this.files.filter(function(path) {
             var baseName = path.split(/[\/\\]/).pop();
@@ -280,7 +281,7 @@ define([
           
           results = results.concat(fuzzyMatches);
         }
-        //check the project for matches as well
+
         this.files = results;
         
         //transform into result objects
