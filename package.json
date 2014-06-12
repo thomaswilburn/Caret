@@ -6,5 +6,9 @@
     "grunt-contrib-watch": "*",
     "grunt-contrib-less": "*",
     "grunt-contrib-compress": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thomaswilburn/Caret.git"
   }
 }
