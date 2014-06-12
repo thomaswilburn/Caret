@@ -20,6 +20,9 @@ define([
     return text.replace(/\</g, "&lt;").replace(/\>/g, "&gt;").trim();
   };
   
+  var findResultsLimit = 10;
+  var sortResultsLimit = 1000;
+  
   var re = {
     file: /^([^:#@]*)/,
     line: /:(\d*)/,
@@ -45,7 +48,6 @@ define([
     this.homeTab = null;
     this.results = [];
     this.cache = {};
-    this.allFiles = [];
     this.files = [];
     this.pending = null;
     this.selected = 0;
@@ -54,6 +56,7 @@ define([
     this.resultList = this.element.find(".results");
     this.commandMode = false;
     this.searchAll = false;
+    this.needParseScheduled = false;
     this.bindInput();
   };
   Palette.prototype = {
@@ -87,18 +90,25 @@ define([
           self.render();
           return;
         }
-        //backspace -- falls through
-        if (e.keyCode == 8) {
-          //clear search progress cache
-          self.files = self.allFiles;
+        //left/right
+        if (e.keyCode == 37 || e.keyCode == 39) {
+          //don't reset selected index or parse the query
+          return;
         }
+        self.needParseScheduled = true;
         self.selected = 0;
       });
       
       input.on("keyup", function(e) {
-        if (self.pending) {
+        if (!self.needParseScheduled) {
           return;
         }
+  
+        self.needParseScheduled = false;
+        if (self.pending) {
+          clearTimeout(self.pending);
+        }
+        
         self.pending = setTimeout(function() {
           self.pending = null;
           self.parse(input.value);
@@ -164,7 +174,7 @@ define([
         if (aScore == bScore) return ((a.palette || a.label) < (b.palette || b.label) ? -1 : 1);
         return aScore - bScore;
       });
-      this.results = results.slice(0, 10);
+      this.results = results.slice(0, findResultsLimit);
     },
     
     getTabValues: function(tab) {
@@ -238,47 +248,48 @@ define([
         tabs = sessions.getAllTabs().filter(function(tab) {
           return fuzzyFile.test(tab.fileName);
         });
-        //check the project for matches as well
-        this.files = this.files.filter(function(path) { return fuzzyFile.test(path) });
         
-        //sort files by relevance
-        this.files.sort(function(a, b) {
-          //first check the filename for each
-          var aFile = a.split(/[\/\\]/).pop();
-          var bFile = b.split(/[\/\\]/).pop();
-          var aMatch = fuzzyFile.exec(aFile);
-          var bMatch = fuzzyFile.exec(bFile);
-          //if either file matches...
-          if (aMatch || bMatch) {
-            //and if one doesn't, the match wins
-            if (!aMatch) {
-              return 1;
-            } else if (!bMatch) {
-              return -1
-            } else {
-              var aScore = aMatch.pop().length + aMatch.index;
-              var bScore = bMatch.pop().length + bMatch.index;
-              var comparison = aScore - bScore;
-              //identical scores? sort on path
-              if (comparison == 0) {
-                return a < b ? -1 : 1;
-              }
-              return comparison;
-            }
-          }
-          //otherwise, sort shorter full-path match sequences higher
-          var aResult = fuzzyFile.exec(a).pop();
-          var bResult = fuzzyFile.exec(b).pop();
-          var len = aResult.length - bResult.length;
-          //identical lengths, sort on path
-          if (len == 0) {
-            return a < b ? -1 : 1;
-          }
-          return len;
+        //first find matches that have base names starting with the query
+        var exact = file.replace(/ /g, "").replace(antiregex, "\\$1");
+        var exactBeginsBase = new RegExp("^" + exact, "i");
+        
+        var results = this.files.filter(function(path) {
+          var baseName = path.split(/[\/\\]/).pop();
+          return exactBeginsBase.test(baseName)
         });
+        if (results.length < sortResultsLimit)
+          results.sort();
         
+        //now find matches that have base names containing the query
+        var exactInBase = new RegExp(exact, "i");
+        if (results.length < findResultsLimit) {
+          var exactInBaseMatches = this.files.filter(function(path) {
+            var baseName = path.split(/[\/\\]/).pop();
+            return !exactBeginsBase.test(baseName) && exactInBase.test(baseName);
+          });
+          
+          if (exactInBaseMatches.length < sortResultsLimit)
+            exactInBaseMatches.sort();
+          
+          results = results.concat(exactInBaseMatches);
+        }
+        
+        //now find fuzzy matches
+        if (results.length < findResultsLimit) {
+          var fuzzyMatches = this.files.filter(function(path) {
+            var baseName = path.split(/[\/\\]/).pop();
+            return !exactBeginsBase.test(baseName) && !exactInBase.test(baseName)
+                && fuzzyFile.test(path);
+          });
+          
+          if (fuzzyMatches.length < sortResultsLimit)
+            fuzzyMatches.sort();
+          
+          results = results.concat(fuzzyMatches);
+        }
+
         //transform into result objects
-        projectFiles = this.files.map(function(path) {
+        projectFiles = results.map(function(path) {
           return {
               label: path.substr(path.search(/[^\/\\]+$/)),
               sublabel: path,
@@ -311,7 +322,7 @@ define([
         }
         var results = [];
         tabs.forEach(function(t) {
-          if (results.length >= 10) return;
+          if (results.length >= findResultsLimit) return;
           var found;
           var lines = [];
           var text = self.getTabValues(t.tab).text;
@@ -328,7 +339,7 @@ define([
             result.sublabel = sanitize(result.tab.getLine(position.row));
             result.line = position.row;
             results.push(result);
-            if (results.length >= 10) return;
+            if (results.length >= findResultsLimit) return;
           }
         });
         tabs = results;
@@ -341,19 +352,19 @@ define([
         }
         var results = [];
         tabs.forEach(function(t) {
-          if (results.length >= 10) return;
+          if (results.length >= findResultsLimit) return;
           var refs = self.getTabValues(t.tab).refs;
           for (var i = 0; i < refs.length; i++) {
             if (crawl.test(refs[i].value)) {
               var len = results.push(refs[i]);
-              if (len >= 10) return;
+              if (len >= findResultsLimit) return;
             }
           }
         });
         tabs = results;
       }
       
-      this.results = tabs.concat(projectFiles).slice(0, 10);
+      this.results = tabs.concat(projectFiles).slice(0, findResultsLimit);
       
       if (this.results.length) {
         var current = this.results[this.selected];
@@ -387,7 +398,7 @@ define([
       this.homeTab = sessions.getCurrent();
       this.results = [];
       this.cache = {};
-      this.allFiles = this.files = project.getPaths();
+      this.files = project.getPaths();
       this.pending = null;
       this.selected = 0;
       this.searchAll = Settings.get("user").searchAllFiles;
@@ -425,7 +436,7 @@ define([
       var self = this;
       this.element.find(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
       this.resultList.innerHTML = "";
-      this.results.slice(0, 10).forEach(function(r, i) {
+      this.results.slice(0, findResultsLimit).forEach(function(r, i) {
         var element = inflate.get("templates/paletteItem.html", {
           label: r.palette || r.label || (r.tab ? r.tab.fileName : ""),
           sublabel: r.sublabel,
