@@ -48,7 +48,6 @@ define([
     this.homeTab = null;
     this.results = [];
     this.cache = {};
-    this.allFiles = [];
     this.files = [];
     this.pending = null;
     this.selected = 0;
@@ -57,6 +56,7 @@ define([
     this.resultList = this.element.find(".results");
     this.commandMode = false;
     this.searchAll = false;
+    this.needParseScheduled = false;
     this.bindInput();
   };
   Palette.prototype = {
@@ -90,15 +90,21 @@ define([
           self.render();
           return;
         }
-        //backspace -- falls through
-        if (e.keyCode == 8) {
-          //clear search progress cache
-          self.files = self.allFiles;
+        //left/right
+        if (e.keyCode == 37 || e.keyCode == 39) {
+          //don't reset selected index or parse the query
+          return;
         }
+        self.needParseScheduled = true;
         self.selected = 0;
       });
       
       input.on("keyup", function(e) {
+        if (!self.needParseScheduled) {
+          return;
+        }
+  
+        self.needParseScheduled = false;
         if (self.pending) {
           clearTimeout(self.pending);
         }
@@ -282,10 +288,8 @@ define([
           results = results.concat(fuzzyMatches);
         }
 
-        this.files = results;
-        
         //transform into result objects
-        projectFiles = this.files.map(function(path) {
+        projectFiles = results.map(function(path) {
           return {
               label: path.substr(path.search(/[^\/\\]+$/)),
               sublabel: path,
@@ -394,7 +398,7 @@ define([
       this.homeTab = sessions.getCurrent();
       this.results = [];
       this.cache = {};
-      this.allFiles = this.files = project.getPaths();
+      this.files = project.getPaths();
       this.pending = null;
       this.selected = 0;
       this.searchAll = Settings.get("user").searchAllFiles;
