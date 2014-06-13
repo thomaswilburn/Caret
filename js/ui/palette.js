@@ -261,11 +261,13 @@ define([
           results.sort();
         
         //now find matches that have base names containing the query
-        var exactInBase = new RegExp(exact, "i");
         if (results.length < findResultsLimit) {
+          var exactInBase = new RegExp(exact, "i");
           var exactInBaseMatches = this.files.filter(function(path) {
+            if (results.indexOf(path) != -1)
+              return false;
             var baseName = path.split(/[\/\\]/).pop();
-            return !exactBeginsBase.test(baseName) && exactInBase.test(baseName);
+            return exactInBase.test(baseName);
           });
           
           if (exactInBaseMatches.length < sortResultsLimit)
@@ -277,9 +279,9 @@ define([
         //now find fuzzy matches
         if (results.length < findResultsLimit) {
           var fuzzyMatches = this.files.filter(function(path) {
-            var baseName = path.split(/[\/\\]/).pop();
-            return !exactBeginsBase.test(baseName) && !exactInBase.test(baseName)
-                && fuzzyFile.test(path);
+            if (results.indexOf(path) != -1)
+              return false;
+            return fuzzyFile.test(path);
           });
           
           if (fuzzyMatches.length < sortResultsLimit)
