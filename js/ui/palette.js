@@ -21,6 +21,7 @@ define([
   };
   
   var findResultsLimit = 10;
+  //limit sorting in very large projects
   var sortResultsLimit = 1000;
   
   var re = {
@@ -257,19 +258,21 @@ define([
           var baseName = path.split(/[\/\\]/).pop();
           return exactBeginsBase.test(baseName)
         });
-        if (results.length < sortResultsLimit)
+        if (results.length < sortResultsLimit) {
           results.sort();
+        }
         
         //now find matches that have base names containing the query
         var exactInBase = new RegExp(exact, "i");
         if (results.length < findResultsLimit) {
           var exactInBaseMatches = this.files.filter(function(path) {
             var baseName = path.split(/[\/\\]/).pop();
-            return !exactBeginsBase.test(baseName) && exactInBase.test(baseName);
+            return results.indexOf(path) == -1 && exactInBase.test(baseName);
           });
           
-          if (exactInBaseMatches.length < sortResultsLimit)
+          if (exactInBaseMatches.length < sortResultsLimit) {
             exactInBaseMatches.sort();
+          }
           
           results = results.concat(exactInBaseMatches);
         }
@@ -278,12 +281,12 @@ define([
         if (results.length < findResultsLimit) {
           var fuzzyMatches = this.files.filter(function(path) {
             var baseName = path.split(/[\/\\]/).pop();
-            return !exactBeginsBase.test(baseName) && !exactInBase.test(baseName)
-                && fuzzyFile.test(path);
+            return results.indexOf(path) == -1 && fuzzyFile.test(path);
           });
           
-          if (fuzzyMatches.length < sortResultsLimit)
+          if (fuzzyMatches.length < sortResultsLimit) {
             fuzzyMatches.sort();
+          }
           
           results = results.concat(fuzzyMatches);
         }
