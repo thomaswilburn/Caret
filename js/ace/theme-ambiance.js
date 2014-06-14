@@ -41,6 +41,9 @@ color: #222;\
 .ace-ambiance .ace_gutter-layer {\
 background: repeat left top;\
 }\
+.ace-ambiance .ace_gutter-active-line {\
+background-color: #3F3F3F;\
+}\
 .ace-ambiance .ace_fold-widget {\
 text-align: center;\
 }\

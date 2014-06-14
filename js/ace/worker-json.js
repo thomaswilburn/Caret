@@ -1406,7 +1406,9 @@ var Anchor = exports.Anchor = function(doc, row, column) {
                 row += end.row - start.row;
             }
         } else if (delta.action === "insertLines") {
-            if (start.row <= row) {
+            if (start.row === row && column === 0 && this.$insertRight) {
+            }
+            else if (start.row <= row) {
                 row += end.row - start.row;
             }
         } else if (delta.action === "removeText") {
