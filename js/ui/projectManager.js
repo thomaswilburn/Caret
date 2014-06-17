@@ -26,27 +26,6 @@ define([
 
   var guidCounter = 0;
   
-  var startTime = 0;
-  var ticks = 0;
-  var lastTime = 0;
-
-  var resetStats = function() {
-    startTime = Date.now();
-    lastTime = startTime;
-    ticks = 0;
-  }
-  
-  var printStats = function(msg) {
-    console.log(msg);
-    var now = Date.now();
-    console.log('Total time: ' + (now - startTime));
-    console.log('Delta: ' + (now - lastTime));
-    lastTime = now;
-    console.log('Ticks: ' + ticks);
-  }
-  
-  resetStats();
-  
   //pseudo-worker to let the UI thread breathe
   var queue = [];
   var working = false;
@@ -56,7 +35,6 @@ define([
     working = true;
     //start work on the next frame
     var process = function() {
-      ticks++;
       var then = Date.now();
       while (queue.length) {
         var now = Date.now();
@@ -98,8 +76,7 @@ define([
       var entries = [];
       var reader = this.entry.createReader();
       var inc = 1;
-      var lastEntryTime = Date.now();
-      
+
       var check = function() {
         inc--;
         if (inc == 0) {
@@ -133,7 +110,6 @@ define([
         });
         check();
       };
-      lastEntryTime = Date.now();
       reader.readEntries(collect);
     }
   };
@@ -218,7 +194,6 @@ define([
       //to refresh it, in response to the users
       //interaction
       var self = this;
-      resetStats();
       tick(function() {
         root.walk(blacklistRegExp(), function() {
           self.render()
@@ -248,19 +223,15 @@ define([
           self.render();
         }
       };
-      resetStats();
       blacklist = blacklistRegExp();
       this.directories.forEach(function(d) {
-        console.log('walking');
         d.walk(blacklist, check);
       });
     },
     
     render: function() {
       if (!this.element) return;
-
-      printStats('Rendering');
-
+      
       //Ace doesn't know about non-window resize events
       //moving the panel will screw up its dimensions
       setTimeout(function() {
@@ -336,7 +307,6 @@ define([
         if (!self.loading) {
           self.element.removeClass("loading");
         }
-        printStats('Rendered');
       });
     },
     
