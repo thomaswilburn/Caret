@@ -29,13 +29,11 @@ define([
   var startTime = 0;
   var ticks = 0;
   var lastTime = 0;
-  var entryReadTime = 0;
 
   var resetStats = function() {
     startTime = Date.now();
     lastTime = startTime;
     ticks = 0;
-    entryReadTime = 0;
   }
   
   var printStats = function(msg) {
@@ -44,7 +42,6 @@ define([
     console.log('Total time: ' + (now - startTime));
     console.log('Delta: ' + (now - lastTime));
     lastTime = now;
-    console.log('Entry read time: ' + entryReadTime);
     console.log('Ticks: ' + ticks);
   }
   
@@ -96,7 +93,7 @@ define([
     },
     
     //walk will asynchronously collect the file tree
-    walk: function(done) {
+    walk: function(blacklist, done) {
       var self = this;
       var entries = [];
       var reader = this.entry.createReader();
@@ -111,15 +108,8 @@ define([
       };
       
       var collect = function(list) {
-        if (lastEntryTime == 0) {
-          console.log('Oh bugger');
-        } else {
-          entryReadTime += Date.now() - lastEntryTime;
-          lastEntryTime = 0;
-        }
         if (list.length == 0) return complete();
         entries.push.apply(entries, list);
-        lastEntryTime = Date.now();
         reader.readEntries(collect);
       };
       
@@ -129,9 +119,7 @@ define([
           //skip dot dirs, but not files
           if (entry.name[0] == "." && entry.isDirectory) return;
           //skip ignored files
-          var blacklist = Settings.get("user").ignoreFiles;
           if (blacklist) {
-            blacklist = new RegExp(blacklist);
             if (blacklist.test(entry.name)) return;
           }
           
@@ -140,7 +128,7 @@ define([
           if (node.isDirectory) {
             inc++;
             //give the UI thread a chance to breathe
-            tick(function() { node.walk(check); });
+            tick(function() { node.walk(blacklist, check); });
           }
         });
         check();
@@ -186,6 +174,15 @@ define([
     });
   };
   
+  var blacklistRegExp = function() {
+    var blacklist = Settings.get("user").ignoreFiles;
+    if (blacklist) {
+      return new RegExp(blacklist);
+    }
+    
+    return null;
+  }
+  
   ProjectManager.prototype = {
     element: null,
     
@@ -223,7 +220,7 @@ define([
       var self = this;
       resetStats();
       tick(function() {
-        root.walk(function() {
+        root.walk(blacklistRegExp(), function() {
           self.render()
         });
       });
@@ -252,9 +249,10 @@ define([
         }
       };
       resetStats();
+      blacklist = blacklistRegExp();
       this.directories.forEach(function(d) {
         console.log('walking');
-        d.walk(check);
+        d.walk(blacklist, check);
       });
     },
     
@@ -461,6 +459,7 @@ define([
       this.loading = true;
       //restore directory entries that can be restored
       this.directories = [];
+      blacklist = blacklistRegExp();
       M.map(
         project.folders,
         function(folder, index, c) {
@@ -469,7 +468,7 @@ define([
             if (!entry) return c();
             var node = new FSNode(entry);
             self.directories.push(node);
-            node.walk(c);
+            node.walk(blacklist, c);
           });
         },
         function() {
