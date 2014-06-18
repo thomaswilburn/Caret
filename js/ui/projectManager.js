@@ -71,12 +71,12 @@ define([
     },
     
     //walk will asynchronously collect the file tree
-    walk: function(done) {
+    walk: function(blacklist, done) {
       var self = this;
       var entries = [];
       var reader = this.entry.createReader();
       var inc = 1;
-      
+
       var check = function() {
         inc--;
         if (inc == 0) {
@@ -96,9 +96,7 @@ define([
           //skip dot dirs, but not files
           if (entry.name[0] == "." && entry.isDirectory) return;
           //skip ignored files
-          var blacklist = Settings.get("user").ignoreFiles;
           if (blacklist) {
-            blacklist = new RegExp(blacklist);
             if (blacklist.test(entry.name)) return;
           }
           
@@ -107,12 +105,11 @@ define([
           if (node.isDirectory) {
             inc++;
             //give the UI thread a chance to breathe
-            tick(function() { node.walk(check); });
+            tick(function() { node.walk(blacklist, check); });
           }
         });
         check();
       };
-      
       reader.readEntries(collect);
     }
   };
@@ -153,6 +150,15 @@ define([
     });
   };
   
+  var blacklistRegExp = function() {
+    var blacklist = Settings.get("user").ignoreFiles;
+    if (blacklist) {
+      return new RegExp(blacklist);
+    }
+    
+    return null;
+  }
+  
   ProjectManager.prototype = {
     element: null,
     
@@ -189,7 +195,7 @@ define([
       //interaction
       var self = this;
       tick(function() {
-        root.walk(function() {
+        root.walk(blacklistRegExp(), function() {
           self.render()
         });
       });
@@ -217,8 +223,9 @@ define([
           self.render();
         }
       };
+      blacklist = blacklistRegExp();
       this.directories.forEach(function(d) {
-        d.walk(check);
+        d.walk(blacklist, check);
       });
     },
     
@@ -422,6 +429,7 @@ define([
       this.loading = true;
       //restore directory entries that can be restored
       this.directories = [];
+      blacklist = blacklistRegExp();
       M.map(
         project.folders,
         function(folder, index, c) {
@@ -430,7 +438,7 @@ define([
             if (!entry) return c();
             var node = new FSNode(entry);
             self.directories.push(node);
-            node.walk(c);
+            node.walk(blacklist, c);
           });
         },
         function() {
