@@ -211,6 +211,7 @@ define([
     refresh: function() {
       var counter = 0;
       var self = this;
+      this.element.addClass("loading");
       var check = function() {
         counter++;
         if (counter = self.directories.length) {
@@ -420,6 +421,7 @@ define([
         Settings.setProject(project.settings);
       }
       this.loading = true;
+      this.element.addClass("loading");
       //restore directory entries that can be restored
       this.directories = [];
       M.map(
@@ -429,6 +431,10 @@ define([
             //remember, you can only restore project directories you'd previously opened
             if (!entry) return c();
             var node = new FSNode(entry);
+            //if this is the first, go ahead and start the slideout
+            if (!self.directories.length) {
+              self.element.addClass("show");
+            }
             self.directories.push(node);
             node.walk(c);
           });
