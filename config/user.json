@@ -42,6 +42,7 @@
   "autoHideProject": false, //collapse the project view until you hover
   "immersiveFullscreen": false, //hides menus/tabs in Chrome OS fullscreen mode
   "highlightLine": false,
+  "hideGutter": false, //set to true to hide the line numbering
 
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
   "indentation": 2, //indentation size
