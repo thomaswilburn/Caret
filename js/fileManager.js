@@ -17,17 +17,6 @@ define([
   except that it gets loaded explicitly on startup.
   */
   
-  var openFromLaunchData = function() {
-    if (window.launchData) {
-      window.launchData.forEach(function(file) {
-        var f = new File(file.entry);
-        f.read(function(err, contents) {
-          sessions.addFile(contents, f);
-        }, dialog);
-      });
-    }
-  };
-  
   command.on("session:open-dragdrop", function(items) {
     [].forEach.call(items, function(entry){
       //only process files
@@ -173,53 +162,99 @@ define([
     });
   });
   
+  var openFromLaunchData = function() {
+    if (window.launchData) {
+      window.launchData.forEach(function(file) {
+        var f = new File(file.entry);
+        f.read(function(err, contents) {
+          sessions.addFile(contents, f);
+        }, dialog);
+      });
+    }
+  };
+  
+  var openFromRetained = function(done) {
+    chrome.storage.local.get("retained", function(data) {
+      var failures = [];
+      if (!data.retained || !data.retained.length) return done();
+      
+      //convert raw retained IDs into typed retention objects
+      var retained = data.retained.map(function(item) {
+        if (typeof item == "string") {
+          return {
+            type: "file",
+            id: item
+          };
+        }
+      });
+      
+      //constructors for restorable types
+      var restoreTypes = {
+        file: File,
+        settings: null, //not yet, will be regular SyncFile
+        buffer: null //not yet, will be HTML5 filesystem for scratch files
+      }
+      
+      console.log(retained);
+      
+      //try to restore items in order
+      M.map(
+        retained,
+        function(item, i, c) {
+          var Type = restoreTypes[item.type] || File;
+          var file = new Type();
+          file.restore(item.id, function() {
+            file.read(function(err, data) {
+              if (err) {
+                failures.push(item);
+                return c(null);
+              }
+              c({
+                value: data,
+                file: file
+              });
+            });
+          });
+        },
+        function(restored) {
+          restored = restored.filter(function(d) { return d });
+          for (var i = 0; i < restored.length; i++) {
+            var tab = restored[i];
+            sessions.addFile(tab.value, tab.file);
+          }
+          if (!failures.length) return;
+          console.log(failures);
+          chrome.storage.local.get("retained", function(data) {
+            if (!data.retained) return;
+            chrome.storage.local.set({
+              retained: data.retained.filter(function(d) {
+                if (typeof d == "string") {
+                  d = {
+                    type: "file",
+                    id: d
+                  };
+                }
+                return !failures.some(function(fail) {
+                  return fail.type == d.type && fail.id == d.id;
+                });
+              })
+            });
+          });
+          if (done) done();
+        }
+      );
+    });
+  }
+  
   command.on("session:open-launch", openFromLaunchData);
   
   var init = function(complete) {
-    var done = function() {
-      openFromLaunchData();
-      complete("fileManager");
-    };
     Settings.pull("user").then(function(data) {
       if (data.user.disableTabRestore) done();
-      chrome.storage.local.get("retained", function(data) {
-        var failures = [];
-        if (!data.retained || !data.retained.length) return done();
-          //try to restore items in order
-        M.map(
-          data.retained,
-          function(id, i, c) {
-            var file = new File();
-            file.restore(id, function() {
-              file.read(function(err, data) {
-                if (err) {
-                  failures.push(id);
-                  return c(null);
-                }
-                c({
-                  value: data,
-                  file: file
-                });
-              });
-            });
-          },
-          function(restored) {
-            restored = restored.filter(function(d) { return d });
-            for (var i = 0; i < restored.length; i++) {
-              var tab = restored[i];
-              sessions.addFile(tab.value, tab.file);
-            }
-            done();
-            if (!failures.length) return;
-            chrome.storage.local.get("retained", function(data) {
-              if (!data.retained) return;
-              chrome.storage.local.set({
-                retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
-              });
-            });
-          }
-        );
-      });
+      openFromRetained(function() {
+        openFromLaunchData();
+        complete("fileManager");
+      })
     });
   };
   
