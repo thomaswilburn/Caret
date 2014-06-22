@@ -431,6 +431,10 @@ define([
       var current = this.results[this.selected];
       if (current && current.tab) {
         sessions.raiseBlurred(current.tab);
+        if (current.line) {
+          editor.clearSelection();
+          editor.moveCursorTo(current.line, current.column || 0);
+        }
       }
       this.render();
     },
