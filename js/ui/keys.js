@@ -46,6 +46,27 @@ define([
           .replace(/-([A-Z]+)$/, "-Shift-$1")
           .replace(/-([a-z]+)$/, function(match) { return match.toUpperCase() });
       }
+        
+      //convert to Ace-style binding (use Command rather than Cmd)
+      key = key
+        .replace("Cmd-", "Command-")
+        .replace("Opt-", "Option-")
+        .replace("Control-", "Ctrl-");
+
+      //Conversion between Mac and Windows
+      if(useragent.isMac) {
+          key = key
+            .replace("Alt", "Option")
+            .replace("Ctrl", "Command")
+          //use MacCtrl to replace real Control on Mac
+            .replace("MacCtrl", "Ctrl");
+      } else {
+          key = key
+            .replace("Option", "Alt")
+            .replace("Command", "Ctrl")
+            .replace("MacCtrl", "Ctrl");
+      }
+          
       converted[key.toLowerCase()] = value;
     }
     return converted;
@@ -53,7 +74,7 @@ define([
   
   //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = function() {
-    var handler = new AceCommandManager("win", defaultAceCommands);
+    var handler = new AceCommandManager(useragent.isMac ? "mac" : "win", defaultAceCommands);
     var bindings = normalizeKeys(Settings.get("keys"));
     var ckb = handler.commandKeyBinding;
     for (var k in bindings) {
@@ -88,9 +109,9 @@ define([
     }
     var prefixes = [];
     //Make Command key on Mac works as Ctrl key
-    if (useragent.isMac && e.metaKey) prefixes.push("Ctrl");
+    if (useragent.isMac && e.metaKey) prefixes.push("Command");
     if (e.ctrlKey) prefixes.push("Ctrl");
-    if (e.altKey) prefixes.push("Alt");
+    if (e.altKey) prefixes.push(useragent.isMac ? "Option" : "Alt");
     if (e.shiftKey) prefixes.push("Shift");
     var combo = prefixes.length ? prefixes.join("-") + "-" + char : char;
     combo = combo.toLowerCase();

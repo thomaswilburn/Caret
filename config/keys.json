@@ -7,8 +7,6 @@
   "Ctrl-N": "session:new-file",
   "Ctrl-Tab": "session:change-tab",
   "Ctrl-Shift-Tab": { "command": "session:change-tab", "argument": -1 },
-  "Ctrl-Z": {"command": "ace:command", "argument": "undo" },
-  "Ctrl-Shift-Z": { "command": "ace:command", "argument": "redo" },
   
   //Chromebook fixes
   "Ctrl-Up": { "ace": "addCursorAbove" },
