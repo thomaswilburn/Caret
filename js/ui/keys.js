@@ -31,7 +31,8 @@ define([
   var defaultAceCommands = ace.require("./commands/default_commands").commands;
   var AceCommandManager = ace.require("./commands/command_manager").CommandManager;
   var vimHandler = ace.require("ace/keyboard/vim").handler;
-  
+  var useragent = ace.require("ace/lib/useragent");
+
   //back-compat: we now use Ace-style bindings (Ctrl-X) instead of Vim-style (^-x)
   var normalizeKeys = function(config) {
     var converted = {};
@@ -86,6 +87,8 @@ define([
       char = keycodes[e.keyCode];
     }
     var prefixes = [];
+    //Make Command key on Mac works as Ctrl key
+    if (useragent.isMac && e.metaKey) prefixes.push("Ctrl");
     if (e.ctrlKey) prefixes.push("Ctrl");
     if (e.altKey) prefixes.push("Alt");
     if (e.shiftKey) prefixes.push("Shift");
