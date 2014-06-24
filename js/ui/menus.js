@@ -7,6 +7,8 @@ define([
     "util/dom2"
   ], function(Settings, editor, dialog, command, inflate) {
   
+  var useragent = ace.require("ace/lib/useragent");
+  
   // walker() renders the menu and returns a document fragment
   var walker = function(list, depth) {
     var fragment = document.createDocumentFragment();
@@ -63,12 +65,56 @@ define([
           .replace(/M-/g, "Alt-")
           //capitalize keys for lazy people
           .replace(/(^|-)([a-z])/g, function(match) { return match.toUpperCase(); });
+          
+          //convert to Ace-style binding (use Command rather than Cmd)
+          key = key
+            .replace("Cmd-", "Command-")
+            .replace("Opt-", "Option-")
+            .replace("Control-", "Ctrl-");
+
+          //Conversion between Mac and Windows
+          if(useragent.isMac) {
+              key = key
+                .replace("Alt", "Option")
+                .replace("Ctrl", "Command")
+              //use MacCtrl to replace real Control on Mac
+                .replace("MacCtrl", "Ctrl");
+          } else {
+              key = key
+                .replace("Option", "Alt")
+                .replace("Command", "Ctrl")
+                .replace("MacCtrl", "Ctrl");
+          }
+          
+          //Mac-style key symbol display
+          if(useragent.isMac) {
+              key = key
+                .replace("Command-", "⌘")
+                .replace("Ctrl-", "⌃")
+                .replace("Option-", "⌥")
+                .replace("Alt-", "⎇")
+                .replace("Shift-", "⇧");
+          }
+          
         return key;
       }
     }
     for (var cmd in editor.commands.commands) {
-      if (cmd == command && editor.commands.commands[cmd].bindKey.win) {
-        return editor.commands.commands[cmd].bindKey.win.split("|").shift();
+      if(useragent.isMac) {
+          if (cmd == command && editor.commands.commands[cmd].bindKey.mac) {
+              key = editor.commands.commands[cmd].bindKey.mac.split("|").shift();
+              key = key
+                .replace(/Command-/g, "⌘")
+                .replace(/Ctrl-/g, "⌃")
+                .replace(/Option-/g, "⌥")
+                .replace("Alt-", "⎇")
+                .replace(/Shift-/g, "⇧");
+            return key;
+          }
+      } else {
+          if (cmd == command && editor.commands.commands[cmd].bindKey.win) {
+            return editor.commands.commands[cmd].bindKey.win.split("|").shift();
+          }
       }
     }
     return false;
