@@ -6,6 +6,9 @@ define([
     "util/template!templates/menuItem.html",
     "util/dom2"
   ], function(Settings, editor, dialog, command, inflate) {
+    
+  //default "Windows", will be adjusted during menu creation because async
+  var platform = "win";
   
   // walker() renders the menu and returns a document fragment
   var walker = function(list, depth) {
@@ -18,18 +21,29 @@ define([
           case "divider":
             preset = document.createElement("hr");
             break;
+          //other special string keys go here - spacer? dynamic menus?
         }
         fragment.append(preset);
         continue;
       }
+      //version testing to hide entries that this version of Chrome can't run
+      //originally for project support, should remove soon
       if (entry.minVersion && entry.minVersion > chrome.version) {
         continue;
       }
       var isAce = entry.command == "ace:command";
+      var keyCombo = isAce ? findKeyCombo(entry.argument) : findKeyCombo(entry.command, entry.argument);
+      if (keyCombo && platform == "mac") {
+        //special snowflake keyboard adjustment
+        keyCombo = keyCombo
+          .replace("Command-", "Cmd-")
+          .replace("Ctrl-", "Cmd-")
+          .replace("Alt-", "Option-");
+      }
       var data = {
         command: entry.command,
         argument: entry.argument,
-        shortcut: isAce ? findKeyCombo(entry.argument) : findKeyCombo(entry.command, entry.argument),
+        shortcut: keyCombo,
         hasChildren: entry.sub && !!entry.sub.length,
         isRoot: !depth,
         retainFocus: entry.retainFocus,
@@ -48,6 +62,7 @@ define([
   // We load match commands to the key config, so they're always current
   var findKeyCombo = function(command, arg) {
     var keys = Settings.get("keys");
+    var aceCommands = editor.commands.commands;
     //check key config
     for (var key in keys) {
       var action = keys[key];
@@ -66,9 +81,9 @@ define([
         return key;
       }
     }
-    for (var cmd in editor.commands.commands) {
-      if (cmd == command && editor.commands.commands[cmd].bindKey.win) {
-        return editor.commands.commands[cmd].bindKey.win.split("|").shift();
+    for (var cmd in aceCommands) {
+      if (cmd == command && aceCommands[cmd].bindKey[platform]) {
+        return aceCommands[cmd].bindKey[platform].split("|").shift();
       }
     }
     return false;
@@ -82,9 +97,13 @@ define([
   Menu.prototype = {
     create: function() {
       var cfg = Settings.get("menus");
-      var elements = walker(cfg, 0);
-      this.element.innerHTML = "";
-      this.element.append(elements);
+      var self = this;
+      chrome.runtime.getPlatformInfo(function(info) {
+        if (info.os == "mac") platform = "mac";
+        var elements = walker(cfg, 0);
+        self.element.innerHTML = "";
+        self.element.append(elements);
+      })
     },
     bindEvents: function() {
       var self = this;
