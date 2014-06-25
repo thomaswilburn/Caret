@@ -96,7 +96,8 @@ define([
     var combo = prefixes.length ? prefixes.join("-") + "-" + char : char;
     combo = combo.toLowerCase();
     var keyConfig = normalizeKeys(Settings.get("keys"));
-    if (combo in keyConfig) {
+    //if the key is set with a valid command in the config
+    if (combo in keyConfig && keyConfig[combo]) {
       e.preventDefault();
       var action = keyConfig[combo];
       if (typeof action == "string") {

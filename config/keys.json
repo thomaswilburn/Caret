@@ -1,4 +1,6 @@
 {
+  //To disable a key completely, set its value to null
+  
   //basic navigation/application keys
   "Ctrl-O": "session:open-file",
   "Ctrl-W": "session:close-tab",
