@@ -70,6 +70,9 @@
   "searchAllFiles": false,
   //set a regex to ignore in project view/search
   "ignoreFiles": "node_modules",
+  //set this to enable autosave every X minutes
+  "autosaveInterval": 0,
+  "autosaveOnBlur": false,
 
   //Crazy? You might like Vim keybindings.
   "emulateVim": false,

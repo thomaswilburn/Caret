@@ -103,7 +103,7 @@ define([
         var elements = walker(cfg, 0);
         self.element.innerHTML = "";
         self.element.append(elements);
-      })
+      });
     },
     bindEvents: function() {
       var self = this;

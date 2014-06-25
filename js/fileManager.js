@@ -6,8 +6,9 @@ define([
     "command",
     "storage/settingsProvider",
     "util/manos",
-    "ui/projectManager"
-  ], function(sessions, editor, File, dialog, command, Settings, M, projectManager) {
+    "ui/projectManager",
+    "ui/statusbar"
+  ], function(sessions, editor, File, dialog, command, Settings, M, projectManager, status) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.
@@ -86,6 +87,39 @@ define([
       sessions.renderTabs();
       command.fire("session:syntax", mode);
       if (c) c();
+    });
+  });
+  
+  var autosaveTimeout = null;
+  var scheduleAutosave = function() {
+    if (autosaveTimeout) clearTimeout(autosaveTimeout);
+    Settings.pull("user").then(function(settings) {
+      if(settings.user.autosaveInterval) {
+        //schedule next save in minutes
+        autosaveTimeout = setTimeout(autosave, settings.user.autosaveInterval * 60 * 1000);
+      }
+    });
+  }
+  
+  var autosave = function() {
+    status.toast("Executing autosave for all tabs...");
+    var tabs = sessions.getAllTabs();
+    tabs.forEach(function(tab) {
+      if (tab.file && !tab.file.virtual) {
+        tab.save();
+      }
+    });
+    scheduleAutosave();
+  };
+  
+  scheduleAutosave();
+  command.on("init:restart", scheduleAutosave);
+  
+  window.on("blur", function() {
+    Settings.pull("user").then(function(settings) {
+      if (settings.user.autosaveOnBlur) {
+        autosave();
+      }
     });
   });
   
@@ -252,7 +286,7 @@ define([
       openFromRetained(function() {
         openFromLaunchData();
         complete("fileManager");
-      })
+      });
     });
   };
   
