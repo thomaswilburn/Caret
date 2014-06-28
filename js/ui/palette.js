@@ -341,6 +341,7 @@ define([
             result.label = result.tab.fileName;
             result.sublabel = sanitize(result.tab.getLine(position.row));
             result.line = position.row;
+            result.column = position.column;
             results.push(result);
             if (results.length >= findResultsLimit) return;
           }
@@ -370,16 +371,7 @@ define([
       this.results = tabs.concat(projectFiles).slice(0, findResultsLimit);
       
       if (this.results.length) {
-        var current = this.results[this.selected];
-        if (!current.tab) return;
-        sessions.raiseBlurred(current.tab);
-        if (current.line) {
-          editor.clearSelection();
-          editor.moveCursorTo(current.line, current.column || 0);
-          if (current.column) {
-            editor.execCommand("selectwordright");
-          }
-        }
+        this.navigateList(0);
       }
     },
     
@@ -433,7 +425,7 @@ define([
         sessions.raiseBlurred(current.tab);
         if (current.line) {
           editor.clearSelection();
-          editor.moveCursorTo(current.line, current.column || 0);
+          editor.gotoLine(current.line + 1, current.column || 0, true);
         }
       }
       this.render();
