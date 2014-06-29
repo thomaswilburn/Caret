@@ -66,6 +66,7 @@ define([
     //check key config
     for (var key in keys) {
       var action = keys[key];
+      if (!action) continue;
       var verb = action.ace || action.command || action;
       var object = action.argument;
       if (verb == command) {

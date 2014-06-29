@@ -6,10 +6,11 @@ define([
     "command",
     "storage/settingsProvider",
     "util/manos",
-    "ui/projectManager",
-    "ui/statusbar",
-    "storage/nullfile"
-  ], function(sessions, editor, File, dialog, command, Settings, M, projectManager, status, NullFile) {
+    "storage/nullfile",
+    //these next modules are self-contained
+    "sessions/dragdrop",
+    "sessions/autosave"
+  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.
@@ -18,35 +19,6 @@ define([
   Now that session.js is refactored, this could probably move into a submodule,
   except that it gets loaded explicitly on startup.
   */
-  
-  command.on("session:open-dragdrop", function(items) {
-    [].forEach.call(items, function(entry){
-      //only process files
-      if (entry.kind !== "file") return;
-      entry = entry.webkitGetAsEntry();
-
-      //files get opened in a tab
-      if (entry.isFile) {
-        var f = new File(entry);
-        return f.read(function(err, data) {
-          sessions.addFile(data, f);
-        }, dialog);
-      //directories get added to project
-      } else if (entry.isDirectory) {
-        projectManager.insertDirectory(entry);
-      }
-    });
-  });
-
-  document.body.on("dragover", function(e) {
-    e.preventDefault();
-  });
-
-  document.body.on("drop", function(e) {
-    e.preventDefault();
-    if (e.dataTransfer.types.indexOf("Files") === -1) return;
-    command.fire("session:open-dragdrop", e.dataTransfer.items);
-  });
 
   command.on("session:new-file", function(content) { return sessions.addFile(content) });
   
@@ -67,7 +39,7 @@ define([
         var f = new File(entry);
         return f.read(function(err, data) {
           sessions.addFile(data, f);
-        }, dialog);
+        });
       });
       Promise.all(files).then(c);
     });
@@ -88,39 +60,6 @@ define([
       sessions.renderTabs();
       command.fire("session:syntax", mode);
       if (c) c();
-    });
-  });
-  
-  var autosaveTimeout = null;
-  var scheduleAutosave = function() {
-    if (autosaveTimeout) clearTimeout(autosaveTimeout);
-    Settings.pull("user").then(function(settings) {
-      if(settings.user.autosaveInterval) {
-        //schedule next save in minutes
-        autosaveTimeout = setTimeout(autosave, settings.user.autosaveInterval * 60 * 1000);
-      }
-    });
-  }
-  
-  var autosave = function() {
-    status.toast("Executing autosave for all tabs...");
-    var tabs = sessions.getAllTabs();
-    tabs.forEach(function(tab) {
-      if (tab.file && !tab.file.virtual) {
-        tab.save();
-      }
-    });
-    scheduleAutosave();
-  };
-  
-  scheduleAutosave();
-  command.on("init:restart", scheduleAutosave);
-  
-  window.on("blur", function() {
-    Settings.pull("user").then(function(settings) {
-      if (settings.user.autosaveOnBlur) {
-        autosave();
-      }
     });
   });
   
@@ -210,7 +149,7 @@ define([
         var f = new File(file.entry);
         f.read(function(err, contents) {
           sessions.addFile(contents, f);
-        }, dialog);
+        });
       });
     }
   };

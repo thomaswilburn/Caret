@@ -59,6 +59,7 @@ define([
       var ckb = handler.commandKeyBinding;
       for (var k in bindings) {
         var action = bindings[k];
+        if (!action) continue;
         //if (!action.ace) continue;
         var parsed = handler.parseKeys(k);
         var existing = handler.findKeyCommand(parsed.hashId, parsed.key);
