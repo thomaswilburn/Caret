@@ -120,7 +120,11 @@ define([
     },
     
     retain: function() {
-      return chrome.fileSystem.retainEntry(this.entry);
+      var id = chrome.fileSystem.retainEntry(this.entry);
+      return {
+        type: "file",
+        id: id
+      };
     },
     
     restore: function(id, c) {
