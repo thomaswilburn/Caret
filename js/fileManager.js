@@ -7,8 +7,9 @@ define([
     "storage/settingsProvider",
     "util/manos",
     "ui/projectManager",
-    "ui/statusbar"
-  ], function(sessions, editor, File, dialog, command, Settings, M, projectManager, status) {
+    "ui/statusbar",
+    "storage/nullfile"
+  ], function(sessions, editor, File, dialog, command, Settings, M, projectManager, status, NullFile) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.
@@ -183,8 +184,15 @@ define([
   
   //defaults don't get loaded as files, just as content
   command.on("session:open-settings-defaults", function(name, c) {
-    sessions.addDefaultsFile(name);
-    if (c) c();
+    Settings.load(name, function() {
+      var text = Settings.getAsString(name, true);
+      var tab = sessions.addFile(text);
+      tab.syntaxMode = "javascript";
+      tab.detectSyntax();
+      tab.fileName = name + ".json";
+      tab.file = new NullFile(text);
+      if (c) c();
+    });
   });
   
   command.on("session:insert-from-file", function(c) {
