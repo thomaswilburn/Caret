@@ -1,6 +1,7 @@
 define([
+    "util/i18n",
     "util/dom2"
-  ], function() {
+  ], function(i18n) {
     
   /*
   
@@ -102,7 +103,7 @@ define([
   var load = function(path) {
     return new Promise(function(ok) {
       require(["util/text!" + path], function(text) {
-        cache[path] = text;
+        cache[path] = i18n.process(text);
         ok();
       });
     });

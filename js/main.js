@@ -6,6 +6,7 @@ require([
     "ui/dialog",
     "sessions",
     "util/manos",
+    "util/i18n",
     "ui/projectManager",
     "ui/keys",
     "fileManager",
@@ -14,7 +15,10 @@ require([
     "ui/cli",
     "api",
     "storage/syncfile"
-  ], function(command, Settings, dialog, sessions, M) {
+  ], function(command, Settings, dialog, sessions, M, i18n) {
+  
+  //translate inline strings
+  i18n.page();
   
   var frame = chrome.app.window.current();
   
@@ -33,8 +37,8 @@ require([
 
   //these are modules that must be loaded before init:complete
   var loadedModules = {
-    "editor": false, 
-    "fileManager": false, 
+    "editor": false,
+    "fileManager": false,
     "sessions": false
   };
   

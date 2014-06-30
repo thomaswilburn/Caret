@@ -40,6 +40,7 @@ module.exports = function(grunt) {
     },
     copy:  [
       "config/**",
+      "_locales/**",
       "js/**",
       "css/*.css",//leave the LESS behind
       "**/*.html",//both main.html and the templates
