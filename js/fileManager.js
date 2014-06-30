@@ -167,6 +167,7 @@ define([
             id: item
           };
         }
+        return item;
       });
       
       //constructors for restorable types
