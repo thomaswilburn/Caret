@@ -1,8 +1,9 @@
 define([
   "command",
   "sessions/addRemove",
-  "ui/projectManager"
-], function(command, addRemove, projectManager) {
+  "ui/projectManager",
+  "storage/file"
+], function(command, addRemove, projectManager, File) {
   
     command.on("session:open-dragdrop", function(items) {
     [].forEach.call(items, function(entry){
@@ -15,7 +16,7 @@ define([
         var f = new File(entry);
         return f.read(function(err, data) {
           addRemove.add(data, f);
-        }, dialog);
+        });
       //directories get added to project
       } else if (entry.isDirectory) {
         projectManager.insertDirectory(entry);
