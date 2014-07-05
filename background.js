@@ -55,14 +55,12 @@ var openWindow = function() {
 }
 
 var launch = function(launchData) {
-  
   if (launchData && launchData.items) files.push.apply(files, launchData.items);
   //we delay opening the actual window to give multiple file events time to fire
   if (pending !== null) return;
   //do not open windows when an upgrade is running
   if (upgrading) return;
   pending = setTimeout(openWindow, 250);
-  
 };
 chrome.app.runtime.onLaunched.addListener(launch);
 

@@ -177,15 +177,22 @@ define([
         buffer: null //not yet, will be HTML5 filesystem for scratch files
       }
       
+      console.log("Retained tabs", retained);
       //try to restore items in order
       M.map(
         retained,
         function(item, i, c) {
           var Type = restoreTypes[item.type] || File;
           var file = new Type();
-          file.restore(item.id, function() {
+          file.restore(item.id, function(err) {
+            if (err) {
+              console.log("Fail restore", file);
+              failures.push(item)
+              return c(null);
+            }
             file.read(function(err, data) {
               if (err) {
+                console.log("Failed reading", file)
                 failures.push(item);
                 return c(null);
               }
@@ -202,8 +209,11 @@ define([
             var tab = restored[i];
             sessions.addFile(tab.value, tab.file);
           }
-          if (!failures.length) return;
-          console.log(failures);
+          if (!failures.length) {
+            if (done) done();
+            return;
+          }
+          console.log("Removing failed restore IDs", failures);
           chrome.storage.local.get("retained", function(data) {
             if (!data.retained) return;
             chrome.storage.local.set({

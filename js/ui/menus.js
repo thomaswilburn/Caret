@@ -4,8 +4,9 @@ define([
     "ui/dialog",
     "command",
     "util/template!templates/menuItem.html",
+    "util/i18n",
     "util/dom2"
-  ], function(Settings, editor, dialog, command, inflate) {
+  ], function(Settings, editor, dialog, command, inflate, i18n) {
     
   //default "Windows", will be adjusted during menu creation because async
   var platform = "win";
@@ -47,7 +48,7 @@ define([
         hasChildren: entry.sub && !!entry.sub.length,
         isRoot: !depth,
         retainFocus: entry.retainFocus,
-        label: entry.label
+        label: i18n.get(entry.label)
       };
       var element = inflate.get("templates/menuItem.html", data);
       if (entry.sub) {

@@ -14,6 +14,10 @@ define(["util/dom2"], function() {
         var translated = chrome.i18n.getMessage(original);
         if (translated) element.innerHTML = translated;
       });
+    },
+    //get a message, or return the untranslated text
+    get: function(message) {
+      return chrome.i18n.getMessage(message) || message;
     }
   }
   
