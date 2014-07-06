@@ -134,13 +134,19 @@ define([
         self.loading = true;
         self.render();
         var file = new File();
+        var onFail = function() {
+          self.loading = false;
+          self.render();
+          chrome.storage.local.remove("retainedProject");
+        }
         file.onWrite = self.watchProjectFile.bind(self);
         file.restore(data.retainedProject, function(err, f) {
+          if (err) {
+            return onFail();
+          }
           file.read(function(err, data) {
             if (err) {
-              self.loading = false;
-              self.render();
-              return chrome.storage.local.remove("retainedProject");
+              return onFail();
             }
             self.projectFile = file;
             self.loadProject(JSON.parse(data));
@@ -202,7 +208,6 @@ define([
     },
 
     removeDirectory: function(args) {
-      this.element.addClass("loading");
       this.directories = this.directories.filter(function(node) {
         return node.id != args.id;
       });
@@ -221,6 +226,8 @@ define([
       var check = function() {
         counter++;
         if (counter = self.directories.length) {
+          //render() should get rid of the class, but let's be sure
+          this.element.removeClass("loading");
           self.render();
         }
       };
