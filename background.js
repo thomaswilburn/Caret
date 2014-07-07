@@ -98,7 +98,7 @@ chrome.app.runtime.onRestarted.addListener(function() {
 chrome.contextMenus.create({
   title: "Emergency Reset",
   contexts: [ "launcher" ],
-  id: "app:factory-reset"
+  id: chrome.runtime.id + ":factory-reset"
 });
 
 var emergencyReset = function() {
@@ -123,6 +123,6 @@ var emergencyReset = function() {
 };
 
 chrome.contextMenus.onClicked.addListener(function(data) {
-  if (data.menuItemId != "app:factory-reset") return;
+  if (data.menuItemId != chrome.runtime.id + ":factory-reset") return;
   emergencyReset();
 });

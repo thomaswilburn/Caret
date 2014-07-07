@@ -2,10 +2,12 @@ define(function() {
   
   //track all assigned context menus in order to respond
   var registry = {};
+  var appID = chrome.runtime.id;
   
   //all context menus created here are handled via onClick
   var onClick = function(info) {
-    var handler = registry[info.menuItemId];
+    var id = info.menuItemId + ":" + appID;
+    var handler = registry[id];
     if (handler) {
       var params = handler.parse(info.linkUrl);
       handler.callback(params);
@@ -14,7 +16,7 @@ define(function() {
   
   //provides a chrome-extension:// URL for menus based on a filter string
   var makeURL = function(filter, id) {
-    var url = "chrome-extension://" + chrome.runtime.id + "/" + filter;
+    var url = "chrome-extension://" + appID + "/" + filter;
     if (typeof id != "undefined") {
       url += "/" + id;
     }
@@ -63,7 +65,11 @@ define(function() {
         title: label,
         targetUrlPatterns: [ compiled.url ],
         contexts: ["link"],
-        id: id
+        id: id+":"+appID
+      }, function() {
+        if (chrome.runtime.lastError) {
+          console.log(chrome.runtime.lastError);
+        }
       });
     },
     makeURL: makeURL
