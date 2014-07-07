@@ -75,7 +75,9 @@ define([
     });
   });
 
-  command.on("session:retain-tabs", function() {
+  //we now autoretain starting after load, every n seconds
+  var retainInterval = 5
+  var retainLoop = function(c) {
     var tabs = sessions.getAllTabs();
     var keep = [];
     tabs.forEach(function(tab, i) {
@@ -83,11 +85,11 @@ define([
       keep[i] = tab.file.retain();
     });
     keep = keep.filter(function(m) { return m });
-    if (keep.length) {
-      chrome.storage.local.set({ retained: keep });
-    }
-  });
-  
+    chrome.storage.local.set({ retained: keep }, function() {
+      setTimeout(retainLoop, retainInterval * 1000);
+    });
+  };
+
   command.on("session:check-file", function() {
     var tab = sessions.getCurrent();
     if (!tab.file || tab.file.virtual) return;
@@ -177,7 +179,6 @@ define([
         buffer: null //not yet, will be HTML5 filesystem for scratch files
       }
       
-      console.log("Retained tabs", retained);
       //try to restore items in order
       M.map(
         retained,
@@ -240,9 +241,11 @@ define([
   
   var init = function(complete) {
     Settings.pull("user").then(function(data) {
-      if (data.user.disableTabRestore) done();
+      if (data.user.disableTabRestore) return;
       openFromRetained(function() {
         openFromLaunchData();
+        //start the retention process
+        retainLoop();
         complete("fileManager");
       });
     });

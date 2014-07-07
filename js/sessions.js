@@ -50,7 +50,6 @@ define([
       //wait for render before triggering the enter animation
       tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });
     });
-    command.fire("session:retain-tabs");
   };
 
   var renderPending = false;

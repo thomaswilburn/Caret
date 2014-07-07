@@ -68,7 +68,8 @@ define(function() {
         id: id+":"+appID
       }, function() {
         if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError);
+          //It'll complain about re-registration, but there's no harm in it.
+          //console.log(chrome.runtime.lastError);
         }
       });
     },
