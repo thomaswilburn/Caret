@@ -1,5 +1,7 @@
 define(["util/dom2"], function() {
   
+  var translationCache = {};
+  
   return {
     //process a chunk of template HTML for i18n strings
     process: function(html) {
@@ -16,8 +18,19 @@ define(["util/dom2"], function() {
       });
     },
     //get a message, or return the untranslated text
+    //caches results for speed
     get: function(message) {
-      return chrome.i18n.getMessage(message) || message;
+      var translated;
+      if (translationCache[message]) {
+        translated = translationCache[message];
+      } else {
+        translated = chrome.i18n.getMessage(message) || message;
+        translationCache[message] = translated;
+      }
+      for (var i = 1; i < arguments.length; i++) {
+        translated = translated.replace(new RegExp("\$" + i, "g"), arguments[i]);
+      }
+      return translated;
     }
   }
   

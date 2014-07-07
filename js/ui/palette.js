@@ -6,8 +6,9 @@ define([
     "ui/statusbar",
     "ui/projectManager",
     "util/template!templates/paletteItem.html",
+    "util/i18n",
     "util/dom2"
-  ], function(sessions, command, editor, Settings, status, project, inflate) {
+  ], function(sessions, command, editor, Settings, status, project, inflate, i18n) {
   
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
   var refTest = /identifier|variable|function/;
@@ -146,7 +147,8 @@ define([
           //skip dividers and other special cases
           if (typeof item == "string") continue;
           if (item.minVersion && item.minVersion > window.navigator.version) continue;
-          if (item.command && fuzzyCommand.test(item.palette || item.label)) {
+          var label = i18n.get(item.palette || item.label);
+          if (item.command && fuzzyCommand.test(label)) {
             results.push(item);
           }
           if (item.sub) {
@@ -168,11 +170,13 @@ define([
       }
       //sort the results into best-match
       results.sort(function(a, b) {
-        var aMatch = fuzzyCommand.exec(a.palette || a.label);
-        var bMatch = fuzzyCommand.exec(b.palette || b.label);
+        var aLabel = i18n.get(a.palette || a.label);
+        var bLabel = i18n.get(b.palette || b.label);
+        var aMatch = fuzzyCommand.exec(aLabel);
+        var bMatch = fuzzyCommand.exec(bLabel);
         var aScore = aMatch.index + aMatch[0].length;
         var bScore = bMatch.index + bMatch[0].length;
-        if (aScore == bScore) return ((a.palette || a.label) < (b.palette || b.label) ? -1 : 1);
+        if (aScore == bScore) return ((aLabel) < (b.Label) ? -1 : 1);
         return aScore - bScore;
       });
       this.results = results.slice(0, findResultsLimit);
@@ -436,8 +440,9 @@ define([
       this.element.find(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
       this.resultList.innerHTML = "";
       this.results.slice(0, findResultsLimit).forEach(function(r, i) {
+        var label = r.palette || r.label || (r.tab ? r.tab.fileName : "")
         var element = inflate.get("templates/paletteItem.html", {
-          label: r.palette || r.label || (r.tab ? r.tab.fileName : ""),
+          label: i18n.get(label),
           sublabel: r.sublabel,
           isCurrent: i == self.selected
         });

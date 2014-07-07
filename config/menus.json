@@ -1,110 +1,109 @@
 [
   {
-    "label": "File",
+    "label": "menuFile",
     "sub": [
-      { "label": "New File", "command": "session:new-file" },
-      { "label": "Open File", "command": "session:open-file" },
-      { "label": "Save", "command": "session:save-file" },
-      { "label": "Save As", "command": "session:save-file-as" },
-      { "label": "Revert", "command": "session:revert-file" },
-      { "label": "Close", "command": "session:close-tab" },
-      { "label": "Print", "command": "editor:print" },
-      { "label": "Exit", "command": "app:exit" }
+      { "label": "menuNewFile", "command": "session:new-file" },
+      { "label": "menuOpenFile", "command": "session:open-file" },
+      { "label": "menuSave", "command": "session:save-file" },
+      { "label": "menuSaveAs", "command": "session:save-file-as" },
+      { "label": "menuRevert", "command": "session:revert-file" },
+      { "label": "menuClose", "command": "session:close-tab" },
+      { "label": "menuPrint", "command": "editor:print" },
+      { "label": "menuExit", "command": "app:exit" }
     ]
   },
   {
-    "label": "Edit",
+    "label": "menuEdit",
     "sub": [
-      { "label": "Undo", "command": "ace:command", "argument": "undo" },
-      { "label": "Redo", "command": "ace:command", "argument": "redo" },
+      { "label": "menuUndo", "command": "ace:command", "argument": "undo" },
+      { "label": "menuRedo", "command": "ace:command", "argument": "redo" },
       "divider",
-      { "label": "Insert from File", "command": "session:insert-from-file" },
-      { "label": "Select Word", "command": "ace:command", "argument": "selectMoreAfter" },
-      { "label": "Select Line", "command": "sublime:expand-to-line" },
-      { "label": "Select Paragraph", "command": "sublime:expand-to-paragraph" },
-      { "label": "Select to Matching", "command": "sublime:expand-to-matching" },
-      { "label": "Wrap Paragraph to Print Margin", "command": "sublime:wrap" },
+      { "label": "menuInsertFromFile", "command": "session:insert-from-file" },
+      { "label": "menuSelectWord", "command": "ace:command", "argument": "selectMoreAfter" },
+      { "label": "menuSelectLine", "command": "sublime:expand-to-line" },
+      { "label": "menuSelectP", "command": "sublime:expand-to-paragraph" },
+      { "label": "menuSelectToMatch", "command": "sublime:expand-to-matching" },
+      { "label": "menuWrapToPrint", "command": "sublime:wrap" },
       "divider",
-      { "label": "Find", "command": "ace:command", "argument": "find" },
-      { "label": "Find/Replace", "command": "ace:command", "argument": "replace" },
-      { "label": "Find Next", "command": "ace:command", "argument": "findnext" },
+      { "label": "menuFind", "command": "ace:command", "argument": "find" },
+      { "label": "menuFindReplace", "command": "ace:command", "argument": "replace" },
+      { "label": "menuFindNext", "command": "ace:command", "argument": "findnext" },
       "divider",
-      { "label": "Toggle Comment", "command": "ace:command", "argument": "togglecomment" },
-      { "label": "Block Comment", "command": "ace:command", "argument": "toggleBlockComment" },
-      { "label": "Convert Tabs to Spaces", "command": "sublime:tabs-to-spaces" },
-      { "label": "Convert Spaces to Tabs", "command": "sublime:spaces-to-tabs" },
-      { "label": "Set Newline Mode",
+      { "label": "menuToggleComment", "command": "ace:command", "argument": "togglecomment" },
+      { "label": "menuBlockComment", "command": "ace:command", "argument": "toggleBlockComment" },
+      { "label": "menuTabsToSpaces", "command": "sublime:tabs-to-spaces" },
+      { "label": "menuSpacesToTabs", "command": "sublime:spaces-to-tabs" },
+      { "label": "menuSetNewline",
         "sub": [
           { "label": "UNIX", "command": "ace:set-newline-mode", "argument": "unix" },
           { "label": "Windows", "command": "ace:set-newline-mode", "argument": "windows" }
         ]
       },
-      { "label": "Trim Trailing Whitespace", "command": "ace:trim-whitespace" },
+      { "label": "menuTrimWhitespace", "command": "ace:trim-whitespace" },
       "divider",
-      { "label": "Sort Lines", "command": "ace:command", "argument": "sortlines" },
-      { "label": "Split Line", "command": "ace:command", "argument": "splitline" },
-      { "label": "To Uppercase", "command": "ace:command", "argument": "touppercase" },
-      { "label": "To Lowercase", "command": "ace:command", "argument": "tolowercase" },
-      { "label": "Move Lines Up", "command": "ace:command", "argument": "movelinesup" },
-      { "label": "Move Lines Down", "command": "ace:command", "argument": "movelinesdown" }
+      { "label": "menuSortLines", "command": "ace:command", "argument": "sortlines" },
+      { "label": "menuSplitLine", "command": "ace:command", "argument": "splitline" },
+      { "label": "menuToUppercase", "command": "ace:command", "argument": "touppercase" },
+      { "label": "menuToLowercase", "command": "ace:command", "argument": "tolowercase" },
+      { "label": "menuMoveLinesUp", "command": "ace:command", "argument": "movelinesup" },
+      { "label": "menuMoveLinesDown", "command": "ace:command", "argument": "movelinesdown" }
     ]
   },
   {
-    "label": "Tools",
+    "label": "menuTools",
     "sub": [
-      { "label": "Go To Anything", "command": "palette:open", "retainFocus": true },
-      { "label": "Go To Line", "command": "palette:open", "argument": "line", "retainFocus": true },
-      { "label": "Go To Search", "command": "palette:open", "argument": "search", "retainFocus": true },
-      { "label": "Go To Reference", "command": "palette:open", "argument": "reference", "retainFocus": true },
-      { "label": "Command Palette", "command": "palette:open", "argument": "command", "retainFocus": true },
+      { "label": "menuGoToAnything", "command": "palette:open", "retainFocus": true },
+      { "label": "menuGoToLine", "command": "palette:open", "argument": "line", "retainFocus": true },
+      { "label": "menuGoToSearch", "command": "palette:open", "argument": "search", "retainFocus": true },
+      { "label": "menuGoToRef", "command": "palette:open", "argument": "reference", "retainFocus": true },
+      { "label": "menuCommandPalette", "command": "palette:open", "argument": "command", "retainFocus": true },
       "divider",
-      { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
-      { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
-      { "label": "Word Count", "command": "editor:word-count" }
+      { "label": "menuToggleMacro", "command": "ace:togglemacro" },
+      { "label": "menuReplayMacro", "command": "ace:command", "argument": "replaymacro" },
+      { "label": "menuWordCount", "command": "editor:word-count" }
     ]
   },
   {
-    "label": "Project",
-    "minVersion": 31,
+    "label": "menuProject",
     "sub": [
-      { "label": "Add Directory", "command": "project:add-dir" },
-      { "label": "Remove All Directories", "command": "project:remove-all" },
-      { "label": "Refresh Directory", "command": "project:refresh-dir" },
+      { "label": "menuAddDir", "command": "project:add-dir" },
+      { "label": "menuRemoveAllDirs", "command": "project:remove-all" },
+      { "label": "menuRefreshDir", "command": "project:refresh-dir" },
       "divider",
-      { "label": "Save Project File", "command": "project:generate" },
-      { "label": "Edit Current Project File", "command": "project:edit" },
-      { "label": "Open Project File", "command": "project:open" },
-      { "label": "Clear Project", "command": "project:clear" }
+      { "label": "menuSaveProject", "command": "project:generate" },
+      { "label": "menuEditProject", "command": "project:edit" },
+      { "label": "menuOpenProject", "command": "project:open" },
+      { "label": "menuClearProject", "command": "project:clear" }
     ]
   },
   {
-    "label": "Settings",
+    "label": "menuSettings",
     "sub": [
-      { "label": "User Preferences", "command": "session:open-settings-file", "argument": "user" },
-      { "label": "Keyboard", "command": "session:open-settings-file", "argument": "keys" },
-      { "label": "Menus", "command": "session:open-settings-file", "argument": "menus" },
-      { "label": "External Commands", "command": "session:open-settings-file", "argument": "api" },
+      { "label": "menuUserPrefs", "command": "session:open-settings-file", "argument": "user" },
+      { "label": "menuKeyboard", "command": "session:open-settings-file", "argument": "keys" },
+      { "label": "menuMenus", "command": "session:open-settings-file", "argument": "menus" },
+      { "label": "menuAPI", "command": "session:open-settings-file", "argument": "api" },
       "divider",
-      { "label": "View Defaults",
+      { "label": "menuDefaults",
         "sub": [
-          { "label": "User Preferences", "command": "session:open-settings-defaults", "argument": "user", "palette": "User Preferences (Defaults)" },
-          { "label": "Keyboard", "command": "session:open-settings-defaults", "argument": "keys", "palette": "Keyboard (Defaults)" },
-          { "label": "Menus", "command": "session:open-settings-defaults", "argument": "menus", "palette": "Menus (Defaults)" }
+          { "label": "menuUserPrefs", "command": "session:open-settings-defaults", "argument": "user", "palette": "menuUserPrefsDefault" },
+          { "label": "menuKeyboard", "command": "session:open-settings-defaults", "argument": "keys", "palette": "menuKeyboardDefault" },
+          { "label": "menuMenus", "command": "session:open-settings-defaults", "argument": "menus", "palette": "menuMenusDefault" }
         ]
       },
-      { "label": "Reset",
+      { "label": "menuReset",
         "sub": [
-          { "label": "User Preferences", "command": "settings:delete-local", "argument": "user", "palette": "Reset User Preferences" },
-          { "label": "Keyboard", "command": "settings:delete-local", "argument": "keys", "palette": "Reset Keyboard" },
-          { "label": "Menus", "command": "settings:delete-local", "argument": "menus", "palette": "Reset Menus" },
+          { "label": "menuUserPrefs", "command": "settings:delete-local", "argument": "user", "palette": "menuResetUserPrefs" },
+          { "label": "menuKeyboard", "command": "settings:delete-local", "argument": "keys", "palette": "menuResetKeyboard" },
+          { "label": "menuMenus", "command": "settings:delete-local", "argument": "menus", "palette": "menuResetMenus" },
           "divider",
-          { "label": "Emergency Reset", "command": "settings:emergency-reset", "palette": "Emergency Reset" }
+          { "label": "menuEmergencyReset", "command": "settings:emergency-reset" }
         ]
       },
       "divider",
-      { "label": "Help", "command": "app:browse", "argument": "https:\/\/github.com\/thomaswilburn\/Caret\/wiki" },
-      { "label": "Check for Updates", "command": "app:check-for-updates", "argument": "manual" },
-      { "label": "About Caret", "command": "app:about", "retainFocus": true }
+      { "label": "menuHelp", "command": "app:browse", "argument": "https:\/\/github.com\/thomaswilburn\/Caret\/wiki" },
+      { "label": "menuCheckForUpdates", "command": "app:check-for-updates", "argument": "manual" },
+      { "label": "menuAboutCaret", "command": "app:about", "retainFocus": true }
     ]
   }
 

@@ -7,10 +7,11 @@ define([
     "storage/settingsProvider",
     "util/manos",
     "storage/nullfile",
+    "util/i18n",
     //these next modules are self-contained
     "sessions/dragdrop",
     "sessions/autosave"
-  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile) {
+  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile, i18n) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.
@@ -97,8 +98,10 @@ define([
       if (tab.modifiedAt && entry.lastModifiedDate > tab.modifiedAt) {
         if (tab.modified) {
           dialog(
-            "This file has been modified since the last time it was saved. Would you like to reload?",
-            [{label: "Reload", value: true}, {label: "Cancel", value: false, focus: true}],
+            i18n.get("dialogFileModified"),
+            [
+              {label: i18n.get("dialogReload"), value: true},
+              {label: i18n.get("dialogCancel"), value: false, focus: true}],
             function(confirmed) {
               if (confirmed) {
                 command.fire("session:revert-file");
