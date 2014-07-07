@@ -93,5 +93,12 @@
   "dialogReload": { "message": "Reload" },
   "dialogSave": { "message": "Save" },
   "dialogDiscard": { "message": "Discard" },
-  "dialogUnsaved": { "message": "$1 has unsaved work." }
+  "dialogUnsaved": { "message": "$1 has unsaved work." },
+  
+  "paletteExecuting": { "message": "Executing $1..." },
+  
+  "fileLoaded": { "message": "Loaded $1, $2 bytes" },
+  "fileAutosaving": { "message": "Executing autosave for all tabs..." },
+  
+  "editorWordCount": { "message": "$1 characters, $2 words, $3 lines" }
 }

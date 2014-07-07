@@ -25,7 +25,7 @@ define([
     }
     if (file && !file.virtual) {
       file.entry.file(function(f) {
-        var loaded = ["Loaded ", f.name, ", ", f.size, " bytes"].join("");
+        var loaded = i18n.get("fileLoaded", f.name, f.size);
         status.toast(loaded, 2);
       });
     }

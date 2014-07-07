@@ -2,8 +2,9 @@ define([
     "storage/file",
     "command",
     "settings!ace,user",
+    "util/i18n",
     "util/dom2"
-  ], function(File, command, Settings) {
+  ], function(File, command, Settings, i18n) {
   /*
   Module for loading the editor, adding window resizing and other events. Returns the editor straight from Ace.
   */
@@ -105,12 +106,11 @@ define([
   
   command.on("editor:word-count", function(c) {
     var text = editor.getSession().getValue();
-    var lines = text.split("\n").length + " lines";
-    var characters = text.length + " characters";
+    var lines = text.split("\n").length;
+    var characters = text.length;
     var words = text.match(/\b\S+\b/g);
     words = words ? words.length : 0;
-    words += " words";
-    command.fire("status:toast", [characters, words, lines].join(", "));
+    command.fire("status:toast", i18n.get("editorWordCount", characters, words, lines));
   });
   
   return editor;

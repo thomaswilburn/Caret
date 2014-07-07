@@ -2,8 +2,9 @@ define([
   "command",
   "storage/settingsProvider",
   "ui/statusbar",
-  "sessions/state"
-], function(command, Settings, status, state) {
+  "sessions/state",
+  "util/i18n"
+], function(command, Settings, status, state, i18n) {
   
   var autosaveTimeout = null;
   var scheduleAutosave = function() {
@@ -17,7 +18,7 @@ define([
   };
   
   var autosave = function() {
-    status.toast("Executing autosave for all tabs...");
+    status.toast(i18n.get("fileAutosaving"));
     state.tabs.forEach(function(tab) {
       if (tab.file && !tab.file.virtual) {
         tab.save();
