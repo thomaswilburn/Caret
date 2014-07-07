@@ -20,17 +20,15 @@ define(["util/dom2"], function() {
     //get a message, or return the untranslated text
     //caches results for speed
     get: function(message) {
-      var translated;
-      if (translationCache[message]) {
-        translated = translationCache[message];
-      } else {
-        translated = chrome.i18n.getMessage(message) || message;
+      //rest params trigger uncached behavior for substitution
+      if (!translationCache[message] || arguments.length > 1) {
+        var subs = [];
+        for (var i = 1; i < arguments.length; i++) subs.push(arguments[i]);
+        var translated = chrome.i18n.getMessage(message, subs) || message;
         translationCache[message] = translated;
+        return translated;
       }
-      for (var i = 1; i < arguments.length; i++) {
-        translated = translated.replace(new RegExp("\$" + i, "g"), arguments[i]);
-      }
-      return translated;
+      return translationCache[message];
     }
   }
   

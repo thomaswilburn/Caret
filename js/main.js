@@ -96,11 +96,11 @@ require([
     M.serial(tabs, function(tab, c) {
       if (tab.modified && (!tab.file || !tab.file.virtual)) {
         return dialog(
-          tab.fileName + " has unsaved work.",
+          i18n.get("dialogUnsaved", tab.fileName),
           [
-            { label: "Save", value: "save", shortcut: "s" },
-            { label: "Discard", value: "discard", shortcut: "n" },
-            { label: "Cancel", value: "cancel", shortcut: "c" }
+            { label: i18n.get("dialogSave"), value: "save", shortcut: "s" },
+            { label: i18n.get("dialogDiscard"), value: "discard", shortcut: "n" },
+            { label: i18n.get("dialogCancel"), value: "cancel", shortcut: "c" }
           ],
           function(value) {
             if (!value || value == "cancel") {

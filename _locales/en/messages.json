@@ -86,5 +86,12 @@
   "menuCheckForUpdates": { "message": "Check for Updates" },
   "menuAboutCaret": { "message": "About Caret" },
   
-  "dialogFileModified": { "message": "This file has been modified since the last time it was saved. Would you like to reload?" }
+  "dialogModifiedBackground": { "message": "This file has been modified since the last time it was saved. Would you like to reload?" },
+  "dialogModifiedUnsaved": { "message": "$1 has been modified.\nDo you want to save changes?" },
+  "dialogCancel": { "message": "Cancel" },
+  "dialogOK": { "message": "OK" },
+  "dialogReload": { "message": "Reload" },
+  "dialogSave": { "message": "Save" },
+  "dialogDiscard": { "message": "Discard" },
+  "dialogUnsaved": { "message": "$1 has unsaved work." }
 }
