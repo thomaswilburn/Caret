@@ -32,7 +32,7 @@
   "menuSelectLine": { "message": "Select Line" },
   "menuSelectP": { "message": "Select Paragraph" },
   "menuSelectToMatch": { "message": "Select to Matching" },
-  "menuWrapToPrint": { "message": "Wrap Paragraph to Print Margin" },
+  "menuWrapToPrint": { "message": "Wrap to Print Margin" },
   "menuFind": { "message": "Find" },
   "menuFindReplace": { "message": "Find/Replace" },
   "menuFindNext": { "message": "Find Next" },
