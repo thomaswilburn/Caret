@@ -95,6 +95,8 @@
   "dialogDiscard": { "message": "Discard" },
   "dialogUnsaved": { "message": "$1 has unsaved work." },
   
+  "projectNoCurrentProject": { "message": "No project currently open." },
+  
   "paletteExecuting": { "message": "Executing $1..." },
   
   "fileLoaded": { "message": "Loaded $1, $2 bytes" },

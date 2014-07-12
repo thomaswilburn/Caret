@@ -8,8 +8,9 @@ define([
     "ui/contextMenus",
     "editor",
     "util/template!templates/projectDir.html,templates/projectFile.html",
+    "util/i18n",
     "util/dom2"
-  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate) {
+  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate, i18n) {
 
   /*
   It's tempting to store projects in local storage, similar to the way that we
@@ -463,7 +464,7 @@ define([
     
     editProjectFile: function() {
       if (!this.projectFile) {
-        return dialog("No project opened.");
+        return dialog(i18n.get("projectNoCurrentProject"));
       }
       var self = this;
       this.projectFile.read(function(err, data) {
