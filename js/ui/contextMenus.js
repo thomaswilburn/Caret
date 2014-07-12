@@ -6,7 +6,7 @@ define(function() {
   
   //all context menus created here are handled via onClick
   var onClick = function(info) {
-    var id = info.menuItemId + ":" + appID;
+    var id = info.menuItemId;
     var handler = registry[id];
     if (handler) {
       var params = handler.parse(info.linkUrl);
@@ -60,12 +60,13 @@ define(function() {
   return {
     register: function(label, id, route, handler) {
       var compiled = createRoute(route, handler);
+      id = id + ":" + appID;
       registry[id] = compiled;
       chrome.contextMenus.create({
         title: label,
         targetUrlPatterns: [ compiled.url ],
         contexts: ["link"],
-        id: id+":"+appID
+        id: id
       }, function() {
         if (chrome.runtime.lastError) {
           //It'll complain about re-registration, but there's no harm in it.
