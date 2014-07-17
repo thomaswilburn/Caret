@@ -141,7 +141,7 @@ define([
           chrome.storage.local.remove("retainedProject");
         }
         file.onWrite = self.watchProjectFile.bind(self);
-        file.restore(data.retainedProject, function(err, f) {
+        file.restore(data.retainedProject.id, function(err, f) {
           if (err) {
             return onFail();
           }
@@ -409,8 +409,8 @@ define([
       file.open(function() {
         file.read(function(err, data) {
           self.loadProject(data);
-          var id = file.retain();
-          chrome.storage.local.set({retainedProject: id});
+          var retained = file.retain();
+          chrome.storage.local.set({retainedProject: retained});
           self.projectFile = file;
           file.onWrite = self.watchProjectFile.bind(self);
         });
