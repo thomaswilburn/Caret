@@ -47,7 +47,8 @@ module.exports = function(grunt) {
       "require.js",
       "background.js",
       "installer.js",
-      "**/*.png" //in case we add images at some point
+      "./*.png", //in case we add images at some point
+      "!node_modules/**"
     ]
   });
 
@@ -59,13 +60,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask("copyUnpacked", "Copies files to the build directory", function() {
     var srcPatterns = grunt.config.get("copy");
-    srcPatterns.forEach(function(pattern) {
-      var files = grunt.file.expandMapping(pattern, "./build/unpacked", {
-        filter: "isFile"
-      });
-      files.forEach(function(f) {
-        grunt.file.copy(f.src[0], f.dest);
-      });
+    var files = grunt.file.expandMapping(srcPatterns, "./build/unpacked", {
+      filter: "isFile"
+    });
+    files.forEach(function(f) {
+      grunt.file.copy(f.src[0], f.dest);
     });
   });
 
