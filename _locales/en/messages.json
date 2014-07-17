@@ -42,6 +42,7 @@
   "menuSpacesToTabs": { "message": "Convert Spaces to Tabs" },
   "menuSetNewline": { "message": "Set Newline Mode" },
   "menuTrimWhitespace": { "message": "Trim Trailing Whitespace" },
+  "menuJoinLines": { "message": "Join Lines" },
   "menuSortLines": { "message": "Sort Lines" },
   "menuSplitLine": { "message": "Split Line" },
   "menuToUppercase": { "message": "To Uppercase" },
