@@ -176,7 +176,7 @@ define([
         var bMatch = fuzzyCommand.exec(bLabel);
         var aScore = aMatch.index + aMatch[0].length;
         var bScore = bMatch.index + bMatch[0].length;
-        if (aScore == bScore) return ((aLabel) < (b.Label) ? -1 : 1);
+        if (aScore == bScore) return ((aLabel) < (bLabel) ? -1 : 1);
         return aScore - bScore;
       });
       this.results = results.slice(0, findResultsLimit);
