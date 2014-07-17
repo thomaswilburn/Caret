@@ -226,9 +226,9 @@ define([
       this.element.addClass("loading");
       var check = function() {
         counter++;
-        if (counter = self.directories.length) {
+        if (counter == self.directories.length) {
           //render() should get rid of the class, but let's be sure
-          this.element.removeClass("loading");
+          self.element.removeClass("loading");
           self.render();
         }
       };
