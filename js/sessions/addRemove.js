@@ -29,8 +29,8 @@ define([
         status.toast(loaded, 2);
       });
     }
-    tab.detectSyntax();
     switching.raise(tab);
+    tab.detectSyntax();
     return tab;
   };
 

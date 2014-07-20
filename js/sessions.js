@@ -5,7 +5,7 @@ define([
     "sessions/binding",
     "editor",
     "command",
-    "storage/settingsProvider",
+    "settings!ace",
     "util/template!templates/newTabButton.html",
     "aceBindings"
   ],
@@ -63,14 +63,13 @@ define([
   }, 100);
 
   var init = function() {
-    Settings.pull("ace").then(function(data) {
-      data.ace.modes.forEach(function(mode) {
-        var option = document.createElement("option");
-        option.innerHTML = mode.label;
-        option.value = mode.name;
-        syntax.append(option);
-      });
-    })
+    var ace = Settings.get("ace");
+    ace.modes.forEach(function(mode) {
+      var option = document.createElement("option");
+      option.innerHTML = mode.label;
+      option.value = mode.name;
+      syntax.append(option);
+    });
     if (!state.tabs.length) addRemove.add("");
     renderTabs();
     bindEvents();
