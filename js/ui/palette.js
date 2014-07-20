@@ -383,7 +383,7 @@ define([
       var current = this.results[this.selected];
       if (!current) return;
       if (current.command) {
-        status.toast(i18n.get("paletteExecuting", current.label));
+        status.toast(i18n.get("paletteExecuting", i18n.get(current.label)));
         command.fire(current.command, current.argument);
       } else {
         //must be the file search

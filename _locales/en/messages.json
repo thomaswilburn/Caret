@@ -103,5 +103,9 @@
   "fileLoaded": { "message": "Loaded $1, $2 bytes" },
   "fileAutosaving": { "message": "Executing autosave for all tabs..." },
   
-  "editorWordCount": { "message": "$1 characters, $2 words, $3 lines" }
+  "editorWordCount": { "message": "$1 characters, $2 words, $3 lines" },
+  
+  "recordingMacro": { "message": "Recording macro..." },
+  "setSyntax": { "message": "Set Syntax: $1" },
+  "setTheme": { "message": "Set Theme: $1" }
 }

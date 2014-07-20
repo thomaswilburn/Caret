@@ -2,8 +2,9 @@ define([
     "command",
     "editor",
     "ui/statusbar",
-    "settings!user,ace"
-  ], function(command, editor, status, Settings) {
+    "settings!user,ace",
+    "util/i18n"
+  ], function(command, editor, status, Settings, i18n) {
 
     var userConfig = Settings.get("user");
     command.on("init:restart", function() {
@@ -17,7 +18,7 @@ define([
       command.list.push({
         command: "session:syntax",
         argument: mode.name,
-        label: "Set Syntax: " + mode.label
+        label: i18n.get("setSyntax", mode.label)
       });
     }
     for (var i = 0; i < aceConfig.themes.length; i++) {
@@ -25,7 +26,7 @@ define([
       command.list.push({
         command: "editor:theme",
         argument: theme.name,
-        label: "Set Theme: " + theme.label
+        label: i18n.get("setTheme", theme.label)
       });
     }
 
@@ -238,7 +239,7 @@ define([
       editor.execCommand("togglerecording");
       editor.focus();
       if (isRecording) {
-        status.setMessage("Recording macro...");
+        status.setMessage(i18n.get("recordingMacro"));
       } else {
         status.clearMessage();
       }
