@@ -1,0 +1,107 @@
+{
+  "loading": {
+    "message": "loading"
+  },
+  "aboutWrittenBy": {
+    "message": "Written by <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
+  },
+  "aboutHomePage": {
+    "message": "Home Page"
+  },
+  "aboutSupport": {
+    "message": "Support"
+  },
+  "aboutLicense": {
+    "message": "Caret is available under a GPL license, which means that the <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> is freely available for you to use and modify as you see fit. If you find Caret useful, consider donating to the Free Software Foundation's <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fund to End Software Patents</a>."
+  },
+  "menuFile": { "message": "File" },
+  "menuNewFile": { "message": "New File" },
+  "menuOpenFile": { "message": "Open File" },
+  "menuSave": { "message": "Save File" },
+  "menuSaveAs": { "message": "Save File As..." },
+  "menuRevert": { "message": "Revert" },
+  "menuClose": { "message": "Close File" },
+  "menuPrint": { "message": "Print" },
+  "menuExit": { "message": "Exit" },
+  
+  "menuEdit": { "message": "Edit" },
+  "menuUndo": { "message": "Undo" },
+  "menuRedo": { "message": "Redo" },
+  "menuInsertFromFile": { "message": "Insert From File" },
+  "menuSelectWord": { "message": "Select Word" },
+  "menuSelectLine": { "message": "Select Line" },
+  "menuSelectP": { "message": "Select Paragraph" },
+  "menuSelectToMatch": { "message": "Select to Matching" },
+  "menuWrapToPrint": { "message": "Wrap to Print Margin" },
+  "menuFind": { "message": "Find" },
+  "menuFindReplace": { "message": "Find/Replace" },
+  "menuFindNext": { "message": "Find Next" },
+  "menuToggleComment": { "message": "Toggle Comment" },
+  "menuBlockComment": { "message": "Toggle Block Comment" },
+  "menuTabsToSpaces": { "message": "Convert Tabs to Spaces" },
+  "menuSpacesToTabs": { "message": "Convert Spaces to Tabs" },
+  "menuSetNewline": { "message": "Set Newline Mode" },
+  "menuTrimWhitespace": { "message": "Trim Trailing Whitespace" },
+  "menuJoinLines": { "message": "Join Lines" },
+  "menuSortLines": { "message": "Sort Lines" },
+  "menuSplitLine": { "message": "Split Line" },
+  "menuToUppercase": { "message": "To Uppercase" },
+  "menuToLowercase": { "message": "To Lowercase" },
+  "menuMoveLinesUp": { "message": "Move Lines Up" },
+  "menuMoveLinesDown": { "message": "Move Lines Down" },
+  
+  "menuTools": { "message": "Tools" },
+  "menuGoToAnything": { "message": "Go To..." },
+  "menuGoToLine": { "message": "Go to Line" },
+  "menuGoToSearch": { "message": "Go to Search" },
+  "menuGoToRef": { "message": "Go to Reference" },
+  "menuCommandPalette": { "message": "Open Command Palette" },
+  "menuToggleMacro": { "message": "Toggle Macro Recording" },
+  "menuReplayMacro": { "message": "Replay Macro" },
+  "menuWordCount": { "message": "Word Count" },
+  
+  "menuProject": { "message": "Project" },
+  "menuAddDir": { "message": "Add Directory" },
+  "menuRemoveAllDirs": { "message": "Remove All Directories" },
+  "menuRefreshDir": { "message": "Refresh Directories" },
+  "menuSaveProject": { "message": "Save Project File" },
+  "menuEditProject": { "message": "Edit Current Project" },
+  "menuOpenProject": { "message": "Open Project File" },
+  "menuClearProject": { "message": "Clear Project" },
+  
+  "menuSettings": { "message": "Settings" },
+  "menuUserPrefs": { "message": "User Preferences" },
+  "menuKeyboard": { "message": "Keyboard" },
+  "menuMenus": { "message": "Menus" },
+  "menuAPI": { "message": "External Commands" },
+  "menuDefaults": { "message": "View Defaults" },
+  "menuUserPrefsDefault": { "message": "User Preferences (Defaults)" },
+  "menuKeyboardDefault": { "message": "Keyboard (Defaults)" },
+  "menuMenusDefault": { "message": "Menus (Defaults)" },
+  "menuReset": { "message": "Reset" },
+  "menuResetUserPrefs": { "message": "Reset User Preferences" },
+  "menuResetKeyboard": { "message": "Reset Keyboard" },
+  "menuResetMenus": { "message": "Reset Menus" },
+  "menuEmergencyReset": { "message": "Emergency Reset" },
+  "menuHelp": { "message": "Help" },
+  "menuCheckForUpdates": { "message": "Check for Updates" },
+  "menuAboutCaret": { "message": "About Caret" },
+  
+  "dialogModifiedBackground": { "message": "This file has been modified since the last time it was saved. Would you like to reload?" },
+  "dialogModifiedUnsaved": { "message": "$1 has been modified.\nDo you want to save changes?" },
+  "dialogCancel": { "message": "Cancel" },
+  "dialogOK": { "message": "OK" },
+  "dialogReload": { "message": "Reload" },
+  "dialogSave": { "message": "Save" },
+  "dialogDiscard": { "message": "Discard" },
+  "dialogUnsaved": { "message": "$1 has unsaved work." },
+  
+  "projectNoCurrentProject": { "message": "No project currently open." },
+  
+  "paletteExecuting": { "message": "Executing $1..." },
+  
+  "fileLoaded": { "message": "Loaded $1, $2 bytes" },
+  "fileAutosaving": { "message": "Executing autosave for all tabs..." },
+  
+  "editorWordCount": { "message": "$1 characters, $2 words, $3 lines" }
+}

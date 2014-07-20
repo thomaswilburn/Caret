@@ -12,6 +12,19 @@
   @paletteBackground: lighten(@background, 10%);
   @paletteShadow: 0px 4px 16px rgba(0, 0, 0, .5);
   
+  transition-property: opacity, -webkit-transform;
+  transition-duration: .1s, .2s;
+  transition-timing-function: linear, ease-in-out;
+  
+  -webkit-transform: perspective(1000px) translateY(0px) rotateX(0deg) translateZ(0);
+  opacity: 1;
+  
+  &.enter {
+    opacity: .2;
+    transition-duration: 0s, 0s;
+    -webkit-transform: perspective(1000px) translateY(10px) rotateX(-45deg) translateZ(-20px);
+  }
+  
   &.active {
     display: block;
   }

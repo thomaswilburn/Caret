@@ -1,4 +1,6 @@
 {
+  //To disable a key completely, set its value to null
+  
   //basic navigation/application keys
   "Ctrl-O": "session:open-file",
   "Ctrl-W": "session:close-tab",
@@ -23,9 +25,11 @@
   "Home": { "ace": "gotolinestart" },
   "Alt-End": { "ace": "gotolineend" },
   "End": { "ace": "gotolineend" },
+  "Ctrl-Space": { "ace": "startAutocomplete" },
   
   //Sublime compatibility
   "Ctrl-L": "sublime:expand-to-line",
+  "Alt-Q": "sublime:wrap",
   "Ctrl-D": { "ace": "selectMoreAfter" },
   "Ctrl-P": { "command": "palette:open" },
   "Ctrl-Shift-P": { "command": "palette:open", "argument": "command" },
@@ -38,6 +42,7 @@
   "Ctrl--": { "command": "editor:adjust-zoom", "argument": -1 },
   "Ctrl-=": { "command": "editor:adjust-zoom", "argument": 1 },
   "Ctrl-0": { "command": "editor:default-zoom" },
+  "Ctrl-J": { "ace": "joinlines" },
   
   //dev mode
   "Ctrl-.": { "command": "app:show-prompt" }

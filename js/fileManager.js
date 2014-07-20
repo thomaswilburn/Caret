@@ -6,8 +6,12 @@ define([
     "command",
     "storage/settingsProvider",
     "util/manos",
-    "ui/projectManager"
-  ], function(sessions, editor, File, dialog, command, Settings, M, projectManager) {
+    "storage/nullfile",
+    "util/i18n",
+    //these next modules are self-contained
+    "sessions/dragdrop",
+    "sessions/autosave"
+  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile, i18n) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.
@@ -16,46 +20,6 @@ define([
   Now that session.js is refactored, this could probably move into a submodule,
   except that it gets loaded explicitly on startup.
   */
-  
-  var openFromLaunchData = function() {
-    if (window.launchData) {
-      window.launchData.forEach(function(file) {
-        var f = new File(file.entry);
-        f.read(function(err, contents) {
-          sessions.addFile(contents, f);
-        }, dialog);
-      });
-    }
-  };
-  
-  command.on("session:open-dragdrop", function(items) {
-    [].forEach.call(items, function(entry){
-      //only process files
-      if (entry.kind !== "file") return;
-      entry = entry.webkitGetAsEntry();
-
-      //files get opened in a tab
-      if (entry.isFile) {
-        var f = new File(entry);
-        return f.read(function(err, data) {
-          sessions.addFile(data, f);
-        }, dialog);
-      //directories get added to project
-      } else if (entry.isDirectory) {
-        projectManager.insertDirectory(entry);
-      }
-    });
-  });
-
-  document.body.on("dragover", function(e) {
-    e.preventDefault();
-  });
-
-  document.body.on("drop", function(e) {
-    e.preventDefault();
-    if (e.dataTransfer.types.indexOf("Files") === -1) return;
-    command.fire("session:open-dragdrop", e.dataTransfer.items);
-  });
 
   command.on("session:new-file", function(content) { return sessions.addFile(content) });
   
@@ -76,7 +40,7 @@ define([
         var f = new File(entry);
         return f.read(function(err, data) {
           sessions.addFile(data, f);
-        }, dialog);
+        });
       });
       Promise.all(files).then(c);
     });
@@ -112,7 +76,9 @@ define([
     });
   });
 
-  command.on("session:retain-tabs", function() {
+  //we now autoretain starting after load, every n seconds
+  var retainInterval = 5
+  var retainLoop = function(c) {
     var tabs = sessions.getAllTabs();
     var keep = [];
     tabs.forEach(function(tab, i) {
@@ -120,11 +86,11 @@ define([
       keep[i] = tab.file.retain();
     });
     keep = keep.filter(function(m) { return m });
-    if (keep.length) {
-      chrome.storage.local.set({ retained: keep });
-    }
-  });
-  
+    chrome.storage.local.set({ retained: keep }, function() {
+      setTimeout(retainLoop, retainInterval * 1000);
+    });
+  };
+
   command.on("session:check-file", function() {
     var tab = sessions.getCurrent();
     if (!tab.file || tab.file.virtual) return;
@@ -132,8 +98,10 @@ define([
       if (tab.modifiedAt && entry.lastModifiedDate > tab.modifiedAt) {
         if (tab.modified) {
           dialog(
-            "This file has been modified since the last time it was saved. Would you like to reload?",
-            [{label: "Reload", value: true}, {label: "Cancel", value: false, focus: true}],
+            i18n.get("dialogFileModified"),
+            [
+              {label: i18n.get("dialogReload"), value: true},
+              {label: i18n.get("dialogCancel"), value: false, focus: true}],
             function(confirmed) {
               if (confirmed) {
                 command.fire("session:revert-file");
@@ -160,8 +128,15 @@ define([
   
   //defaults don't get loaded as files, just as content
   command.on("session:open-settings-defaults", function(name, c) {
-    sessions.addDefaultsFile(name);
-    if (c) c();
+    Settings.load(name, function() {
+      var text = Settings.getAsString(name, true);
+      var tab = sessions.addFile(text);
+      tab.syntaxMode = "javascript";
+      tab.detectSyntax();
+      tab.fileName = name + ".json";
+      tab.file = new NullFile(text);
+      if (c) c();
+    });
   });
   
   command.on("session:insert-from-file", function(c) {
@@ -173,49 +148,108 @@ define([
     });
   });
   
+  var openFromLaunchData = function() {
+    if (window.launchData) {
+      window.launchData.forEach(function(file) {
+        var f = new File(file.entry);
+        f.read(function(err, contents) {
+          sessions.addFile(contents, f);
+        });
+      });
+    }
+  };
+  
+  var openFromRetained = function(done) {
+    chrome.storage.local.get("retained", function(data) {
+      var failures = [];
+      if (!data.retained || !data.retained.length) return done();
+      
+      //convert raw retained IDs into typed retention objects
+      var retained = data.retained.map(function(item) {
+        if (typeof item == "string") {
+          return {
+            type: "file",
+            id: item
+          };
+        }
+        return item;
+      });
+      
+      //constructors for restorable types
+      var restoreTypes = {
+        file: File,
+        settings: null, //not yet, will be regular SyncFile
+        buffer: null //not yet, will be HTML5 filesystem for scratch files
+      }
+      
+      //try to restore items in order
+      M.map(
+        retained,
+        function(item, i, c) {
+          var Type = restoreTypes[item.type] || File;
+          var file = new Type();
+          file.restore(item.id, function(err) {
+            if (err) {
+              console.log("Fail restore", file);
+              failures.push(item)
+              return c(null);
+            }
+            file.read(function(err, data) {
+              if (err) {
+                console.log("Failed reading", file)
+                failures.push(item);
+                return c(null);
+              }
+              c({
+                value: data,
+                file: file
+              });
+            });
+          });
+        },
+        function(restored) {
+          restored = restored.filter(function(d) { return d });
+          for (var i = 0; i < restored.length; i++) {
+            var tab = restored[i];
+            sessions.addFile(tab.value, tab.file);
+          }
+          if (!failures.length) {
+            if (done) done();
+            return;
+          }
+          console.log("Removing failed restore IDs", failures);
+          chrome.storage.local.get("retained", function(data) {
+            if (!data.retained) return;
+            chrome.storage.local.set({
+              retained: data.retained.filter(function(d) {
+                if (typeof d == "string") {
+                  d = {
+                    type: "file",
+                    id: d
+                  };
+                }
+                return !failures.some(function(fail) {
+                  return fail.type == d.type && fail.id == d.id;
+                });
+              })
+            });
+          });
+          if (done) done();
+        }
+      );
+    });
+  }
+  
   command.on("session:open-launch", openFromLaunchData);
   
   var init = function(complete) {
-    openFromLaunchData();
     Settings.pull("user").then(function(data) {
-      if (data.user.disableTabRestore) complete("fileManager");
-      chrome.storage.local.get("retained", function(data) {
-        var failures = [];
-        if (!data.retained || !data.retained.length) return complete("fileManager");
-          //try to restore items in order
-        M.map(
-          data.retained,
-          function(id, i, c) {
-            var file = new File();
-            file.restore(id, function() {
-              file.read(function(err, data) {
-                if (err) {
-                  failures.push(id);
-                  return c(null);
-                }
-                c({
-                  value: data,
-                  file: file
-                });
-              });
-            });
-          },
-          function(restored) {
-            restored = restored.filter(function(d) { return d });
-            for (var i = 0; i < restored.length; i++) {
-              var tab = restored[i];
-              sessions.addFile(tab.value, tab.file);
-            }
-            complete("fileManager");
-            if (!failures.length) return;
-            chrome.storage.local.get("retained", function(data) {
-              if (!data.retained) return;
-              chrome.storage.local.set({
-                retained: data.retained.filter(function(d) { return failures.indexOf(d) == -1 })
-              });
-            });
-          }
-        );
+      if (data.user.disableTabRestore) return;
+      openFromRetained(function() {
+        openFromLaunchData();
+        //start the retention process
+        retainLoop();
+        complete("fileManager");
       });
     });
   };

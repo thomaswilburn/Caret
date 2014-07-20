@@ -33,7 +33,7 @@ plugin. Provides the following API:
 - `clearProject` Removes the top-most JSON object, so that only local and default settings are merged.
 - `pull` Calls load/get for you on the list of arguments, and returns a promise that's fullfilled with a hash of the requested settings.
 
-## syncFile.js
+## syncfile.js
 
 A constructor matching the File interface, but backed by chrome.storage.sync.
 Used to open settings "files."

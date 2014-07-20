@@ -60,7 +60,7 @@ define(function() {
         } else {
           var chunks = [];
           for (var i = 0; i < data.length; i += 3000) {
-            chunks.push(data.substr(i, i + 3000));
+            chunks.push(data.substr(i, 3000));
           }
           var hash = {};
           hash[key] = chunks.length;

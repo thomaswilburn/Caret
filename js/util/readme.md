@@ -1,5 +1,9 @@
 # Module descriptions - util
 
+## aceLoad.js
+
+Shims Ace's loadScript() async loader so that AMD modules can simply declare Ace dependencies the same way they declare AMD dependencies.
+
 ## dom2.js
 
 Instead of using an MVC framework like Backbone or a view binding library like
@@ -15,7 +19,7 @@ Chrome OS disallows using `eval()` or `new Function()`, which means many
 template libraries simply won't work without pre-compiling the templates.
 Instead of going that route, recognizing that template speed is almost never a
 bottleneck for Caret, inflate.js provides Mustache-compatible templating that
-can load from the filesystem or the DOM (loaded automatically by ID). Exposes 
+can load from the filesystem or the DOM (loaded automatically by ID). Exposes
 the following methods:
 
 - `load`- Pulls a template from the given filesystem path. Returns a promise that resolves when the template is ready.

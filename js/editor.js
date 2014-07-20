@@ -2,8 +2,9 @@ define([
     "storage/file",
     "command",
     "settings!ace,user",
+    "util/i18n",
     "util/dom2"
-  ], function(File, command, Settings) {
+  ], function(File, command, Settings, i18n) {
   /*
   Module for loading the editor, adding window resizing and other events. Returns the editor straight from Ace.
   */
@@ -25,11 +26,6 @@ define([
       option.setAttribute("value", theme.name);
       themes.append(option);
     });
-    if (userConfig.emulateVim) {
-      ace.require("ace/lib/net").loadScript("js/ace/keybinding-vim.js", function() {
-        editor.setKeyboardHandler(ace.require("ace/keyboard/vim").handler);
-      });
-    }
     reset();
     //let main.js know this module is ready
     return "editor";
@@ -40,7 +36,10 @@ define([
     userConfig = Settings.get("user");
     themes.value = userConfig.defaultTheme;
     editor.setTheme("ace/theme/" + themes.value);
-    editor.setOption("scrollPastEnd", userConfig.scrollPastEnd);
+    editor.setOptions({
+      scrollPastEnd: userConfig.scrollPastEnd,
+      showGutter: !userConfig.hideGutter
+    });
     editor.setShowPrintMargin(userConfig.showMargin || false);
     editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
     editor.setShowInvisibles(userConfig.showWhitespace || false);
@@ -107,11 +106,11 @@ define([
   
   command.on("editor:word-count", function(c) {
     var text = editor.getSession().getValue();
-    var lines = text.split("\n").length + " lines";
-    var characters = text.length + " characters";
+    var lines = text.split("\n").length;
+    var characters = text.length;
     var words = text.match(/\b\S+\b/g);
     words = words ? words.length : 0;
-    command.fire("status:toast", [characters, words, lines].join(", "));
+    command.fire("status:toast", i18n.get("editorWordCount", characters, words, lines));
   });
   
   return editor;

@@ -46,7 +46,7 @@ Exposes no external methods or data.
 
 Manages Caret's tabs, including all UI interaction with the tab bar and the
 process of adding or removing tabs. Exposes a number of methods and
-manipulating the tab structure.
+manipulating the tab structure. Most of the actual session code is loaded from the `/sessions` folder, to make the file more manageable.
 
 ## settings.js
 

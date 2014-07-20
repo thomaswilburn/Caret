@@ -18,7 +18,10 @@ define([
   File.prototype = {
     open: function(mode, c) {
       var self = this;
-      mode = mode || "open";
+      if (typeof mode == "function") {
+        c = mode;
+        mode = "open";
+      }
       //mode is "open" or "save"
       var modes = {
         "open": "openWritableFile",
@@ -117,7 +120,11 @@ define([
     },
     
     retain: function() {
-      return chrome.fileSystem.retainEntry(this.entry);
+      var id = chrome.fileSystem.retainEntry(this.entry);
+      return {
+        type: "file",
+        id: id
+      };
     },
     
     restore: function(id, c) {

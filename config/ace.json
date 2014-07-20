@@ -34,6 +34,7 @@
     { "name": "xcode", "label": "X-Code" }
   ],
   "modes": [
+    { "name": "abap", "label": "ABAP", "extensions": ["sap"] },
     { "name": "actionscript", "label": "AS3", "extensions": ["as", "as3"] },
     { "name": "batchfile", "label": "Batch File", "extensions": ["bat"] },
     { "name": "sh", "label": "Bash Shell", "extensions": ["sh", "ksh", "zsh"] },
@@ -62,6 +63,7 @@
     { "name": "latex", "label": "LaTeX", "extensions": [] },
     { "name": "less", "label": "LESS", "extensions": ["less"] },
     { "name": "lisp", "label": "Lisp", "extensions": [] },
+    { "name": "lsl", "label": "LSL", "extensions": ["lsl"] },
     { "name": "lua", "label": "Lua", "extensions": ["lua", "love"] },
     { "name": "makefile", "label": "Make", "extensions": ["make"] },
     { "name": "markdown", "label": "Markdown", "extensions": ["md", "markdown"] },

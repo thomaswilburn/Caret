@@ -5,8 +5,9 @@ define([
     "editor",
     "ui/statusbar",
     "ui/dialog",
-    "command"
-  ], function(state, switching, Tab, editor, status, dialog, command) {
+    "command",
+    "util/i18n"
+  ], function(state, switching, Tab, editor, status, dialog, command, i18n) {
 
   var addTab = function(contents, file) {
     var current = editor.getSession();
@@ -24,7 +25,7 @@ define([
     }
     if (file && !file.virtual) {
       file.entry.file(function(f) {
-        var loaded = ["Loaded ", f.name, ", ", f.size, " bytes"].join("");
+        var loaded = i18n.get("fileLoaded", f.name, f.size);
         status.toast(loaded, 2);
       });
     }
@@ -67,11 +68,11 @@ define([
 
     if (tab.modified) {
       dialog(
-        tab.fileName + " has been modified.\nDo you want to save changes?",
+        i18n.get("dialogModifiedUnsaved", tab.fileName),
         [
-          {label: "Save", value: true, shortcut: "y" },
-          {label: "Don't save", value: false, shortcut: "n" },
-          { label: "Cancel", shortcut: "c" }
+          {label: i18n.get("dialogSave"), value: true, shortcut: "y" },
+          {label: i18n.get("dialogDiscard"), value: false, shortcut: "n" },
+          { label: i18n.get("dialogCancel"), shortcut: "c" }
         ],
         function(confirm) {
           if (typeof confirm !== "boolean") {

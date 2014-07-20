@@ -155,6 +155,8 @@ define([
     }
     this.setMode("ace/mode/" + syntaxValue);
     this.syntaxMode = syntaxValue;
+    //update the UI
+    command.fire("session:syntax");
     return syntaxValue;
   }
   

@@ -8,8 +8,9 @@ define([
     "ui/contextMenus",
     "editor",
     "util/template!templates/projectDir.html,templates/projectFile.html",
+    "util/i18n",
     "util/dom2"
-  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate) {
+  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate, i18n) {
 
   /*
   It's tempting to store projects in local storage, similar to the way that we
@@ -71,12 +72,12 @@ define([
     },
     
     //walk will asynchronously collect the file tree
-    walk: function(done) {
+    walk: function(blacklist, done) {
       var self = this;
       var entries = [];
       var reader = this.entry.createReader();
       var inc = 1;
-      
+
       var check = function() {
         inc--;
         if (inc == 0) {
@@ -96,9 +97,7 @@ define([
           //skip dot dirs, but not files
           if (entry.name[0] == "." && entry.isDirectory) return;
           //skip ignored files
-          var blacklist = Settings.get("user").ignoreFiles;
           if (blacklist) {
-            blacklist = new RegExp(blacklist);
             if (blacklist.test(entry.name)) return;
           }
           
@@ -107,12 +106,11 @@ define([
           if (node.isDirectory) {
             inc++;
             //give the UI thread a chance to breathe
-            tick(function() { node.walk(check); });
+            tick(function() { node.walk(blacklist, check); });
           }
         });
         check();
       };
-      
       reader.readEntries(collect);
     }
   };
@@ -137,13 +135,19 @@ define([
         self.loading = true;
         self.render();
         var file = new File();
+        var onFail = function() {
+          self.loading = false;
+          self.render();
+          chrome.storage.local.remove("retainedProject");
+        }
         file.onWrite = self.watchProjectFile.bind(self);
-        file.restore(data.retainedProject, function(err, f) {
+        file.restore(data.retainedProject.id, function(err, f) {
+          if (err) {
+            return onFail();
+          }
           file.read(function(err, data) {
             if (err) {
-              self.loading = false;
-              self.render();
-              return chrome.storage.local.remove("retainedProject");
+              return onFail();
             }
             self.projectFile = file;
             self.loadProject(JSON.parse(data));
@@ -152,6 +156,15 @@ define([
       }
     });
   };
+  
+  var blacklistRegExp = function() {
+    var blacklist = Settings.get("user").ignoreFiles;
+    if (blacklist) {
+      return new RegExp(blacklist);
+    }
+    
+    return null;
+  }
   
   ProjectManager.prototype = {
     element: null,
@@ -189,14 +202,13 @@ define([
       //interaction
       var self = this;
       tick(function() {
-        root.walk(function() {
+        root.walk(blacklistRegExp(), function() {
           self.render()
         });
       });
     },
 
     removeDirectory: function(args) {
-      this.element.addClass("loading");
       this.directories = this.directories.filter(function(node) {
         return node.id != args.id;
       });
@@ -211,14 +223,18 @@ define([
     refresh: function() {
       var counter = 0;
       var self = this;
+      this.element.addClass("loading");
       var check = function() {
         counter++;
-        if (counter = self.directories.length) {
+        if (counter == self.directories.length) {
+          //render() should get rid of the class, but let's be sure
+          self.element.removeClass("loading");
           self.render();
         }
       };
+      blacklist = blacklistRegExp();
       this.directories.forEach(function(d) {
-        d.walk(check);
+        d.walk(blacklist, check);
       });
     },
     
@@ -393,8 +409,8 @@ define([
       file.open(function() {
         file.read(function(err, data) {
           self.loadProject(data);
-          var id = file.retain();
-          chrome.storage.local.set({retainedProject: id});
+          var retained = file.retain();
+          chrome.storage.local.set({retainedProject: retained});
           self.projectFile = file;
           file.onWrite = self.watchProjectFile.bind(self);
         });
@@ -420,8 +436,10 @@ define([
         Settings.setProject(project.settings);
       }
       this.loading = true;
+      this.element.addClass("loading");
       //restore directory entries that can be restored
       this.directories = [];
+      blacklist = blacklistRegExp();
       M.map(
         project.folders,
         function(folder, index, c) {
@@ -429,8 +447,12 @@ define([
             //remember, you can only restore project directories you'd previously opened
             if (!entry) return c();
             var node = new FSNode(entry);
+            //if this is the first, go ahead and start the slideout
+            if (!self.directories.length) {
+              self.element.addClass("show");
+            }
             self.directories.push(node);
-            node.walk(c);
+            node.walk(blacklist, c);
           });
         },
         function() {
@@ -442,7 +464,7 @@ define([
     
     editProjectFile: function() {
       if (!this.projectFile) {
-        return dialog("No project opened.");
+        return dialog(i18n.get("projectNoCurrentProject"));
       }
       var self = this;
       this.projectFile.read(function(err, data) {

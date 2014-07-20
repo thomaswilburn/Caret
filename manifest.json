@@ -1,8 +1,9 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.4.8",
+  "version": "1.4.26",
   "manifest_version": 2,
+  "default_locale": "en",
   "icons": {
     "128": "icon-128.png"
   },
@@ -78,6 +79,7 @@
         "less",
         "log",
         "love",
+        "lsl",
         "lua",
         "m",
         "make",
@@ -103,6 +105,7 @@
         "r",
         "rake",
         "rb",
+        "sap",
         "sass",
         "scala",
         "scss",

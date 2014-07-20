@@ -151,6 +151,79 @@ define([
       if (c) c();
     });
 
+    command.on("sublime:wrap", function(c) {
+      var Range = ace.require("ace/range").Range;
+      var lang = ace.require("ace/lib/lang");
+      var session = editor.getSession();
+      var selection = editor.getSelection();
+      var isBackwards = editor.selection.isBackwards();
+      var selectionLead = isBackwards ? editor.selection.getSelectionLead() : editor.selection.getSelectionAnchor();
+      var selectionAnchor = isBackwards ? editor.selection.getSelectionAnchor() : editor.selection.getSelectionLead();
+      var startLine = selectionLead.row;
+      var endLine = selectionAnchor.row;
+      while (startLine > 0) {
+        startLine--;
+        var line = session.getLine(startLine).replace(/\s+/, "");
+        if (line == "") {
+          //we'll skip the preceding space
+          startLine += 1;
+          break;
+        }
+      }
+      var length = session.getLength();
+      while (endLine < length) {
+        endLine++;
+        var line = session.getLine(endLine).replace(/\s+/, "");
+        if (line == "") {
+          break;
+        }
+      }
+      editor.clearSelection();
+      editor.moveCursorTo(startLine, 0);
+      selection.selectTo(endLine, 0);
+      var indentStartCol = session.getLine(startLine).length - lang.stringTrimLeft(session.getLine(startLine)).length;
+      var selectedText = lang.stringTrimLeft(session.doc.getTextRange(new Range(startLine, 0, endLine, 0)).replace(/\n/g, " "));
+      var selectedTextParts = selectedText.split(" ");
+      var partCount = 0;
+      var rulerColumn = editor.renderer.getPrintMarginColumn() - 1;
+      var textToAdd = "";
+      var indentValue = indentStartCol > 0 ? new Array(indentStartCol + 1).join(' ') : "";
+      var lineToAdd = indentValue;
+      while (partCount < selectedTextParts.length) {
+        if (selectedTextParts[partCount].length + lineToAdd.length + 1 < rulerColumn) {
+          lineToAdd += (partCount === 0 ? "" : " ") + selectedTextParts[partCount];
+        } else {
+          lineToAdd = lang.stringTrimRight(lineToAdd);
+          if (lineToAdd.length > 0) {
+            lineToAdd += session.doc.getNewLineCharacter();
+            textToAdd += lineToAdd;
+          }
+          if (selectedTextParts[partCount].length + indentValue.length >= rulerColumn) {
+            var tmpLine = selectedTextParts[partCount];
+            while (tmpLine.length + indentValue.length >= rulerColumn) {
+              lineToAdd = indentValue + tmpLine.slice(0, rulerColumn - (indentValue.length + 1));
+              lineToAdd = lang.stringTrimRight(lineToAdd);
+              lineToAdd += session.doc.getNewLineCharacter();
+              textToAdd += lineToAdd;
+              tmpLine = tmpLine.slice(rulerColumn - (indentValue.length + 1));
+            }
+            lineToAdd = indentValue + tmpLine;
+          } else {
+            lineToAdd = indentValue + selectedTextParts[partCount];
+          }
+        }
+        partCount++;
+      }
+      textToAdd += lang.stringTrimRight(lineToAdd);
+      var theNewText = lang.stringTrimLeft(textToAdd.replace(/\n/g, " "));
+      if (theNewText !== selectedText) {
+        // Add newline if the text has changed
+        textToAdd += session.doc.getNewLineCharacter();
+      }
+      editor.session.doc.replace(new Range(startLine, 0, endLine, 0), textToAdd);
+      if (c) c();
+    });
+
     //we also add a command redirect for firing Ace commands via regular command attributes
     command.on("ace:command", editor.execCommand.bind(editor));
 

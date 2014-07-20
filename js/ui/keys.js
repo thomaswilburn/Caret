@@ -1,8 +1,9 @@
 define([
-    "settings!keys",
+    "settings!keys,user",
     "command",
     "editor",
-    "util/dom2"
+    "util/dom2",
+    "util/aceLoad!js/ace/keybinding-vim.js"
   ], function(Settings, command, editor) {
   
   var keycodes = {
@@ -29,7 +30,8 @@ define([
   
   var defaultAceCommands = ace.require("./commands/default_commands").commands;
   var AceCommandManager = ace.require("./commands/command_manager").CommandManager;
-  
+  var vimHandler = ace.require("ace/keyboard/vim").handler;
+
   //back-compat: we now use Ace-style bindings (Ctrl-X) instead of Vim-style (^-x)
   var normalizeKeys = function(config) {
     var converted = {};
@@ -50,14 +52,33 @@ define([
   
   //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = function() {
-    var handler = new AceCommandManager("win", defaultAceCommands);
-    editor.setKeyboardHandler(handler);
-    var bindings = normalizeKeys(Settings.get("keys"));
-    for (var k in bindings) {
-      var action = bindings[k];
-      //if (!action.ace) continue;
-      handler.bindKey(k, action.command == "ace:command" ? action.argument : action.ace);
-    }
+    chrome.runtime.getPlatformInfo(function(platform) {
+      var os = platform.os == "mac" ? "mac" : "win";
+      var handler = new AceCommandManager(os, defaultAceCommands);
+      var bindings = normalizeKeys(Settings.get("keys"));
+      var ckb = handler.commandKeyBinding;
+      for (var k in bindings) {
+        var action = bindings[k];
+        if (!action) continue;
+        //if (!action.ace) continue;
+        var parsed = handler.parseKeys(k);
+        var existing = handler.findKeyCommand(parsed.hashId, parsed.key);
+        var aceCommand = action.command == "ace:command" ? action.argument : action.ace;
+        if (!aceCommand && ckb[parsed.hashId] && ckb[parsed.hashId][parsed.key]) {
+          delete ckb[parsed.hashId][parsed.key];
+        } else {
+          handler.bindKey(k, aceCommand);
+        }
+      }
+      handler.commandKeyBinding = ckb;
+      //remove all existing bindings
+      while(editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
+      //add our new bindings
+      editor.keyBinding.setDefaultHandler(handler);
+      if (Settings.get("user").emulateVim) {
+        editor.setKeyboardHandler(vimHandler);
+      }
+    });
   };
   command.on("init:startup", bindAce);
   command.on("init:restart", bindAce);
@@ -69,13 +90,15 @@ define([
       char = keycodes[e.keyCode];
     }
     var prefixes = [];
-    if (e.ctrlKey) prefixes.push("Ctrl");
+    //On Mac, Cmd is metakey. Elsewhere, Chrome ignores it, so should be safe.
+    if (e.metaKey || e.ctrlKey) prefixes.push("Ctrl");
     if (e.altKey) prefixes.push("Alt");
     if (e.shiftKey) prefixes.push("Shift");
     var combo = prefixes.length ? prefixes.join("-") + "-" + char : char;
     combo = combo.toLowerCase();
     var keyConfig = normalizeKeys(Settings.get("keys"));
-    if (combo in keyConfig) {
+    //if the key is set with a valid command in the config
+    if (combo in keyConfig && keyConfig[combo]) {
       e.preventDefault();
       var action = keyConfig[combo];
       if (typeof action == "string") {
