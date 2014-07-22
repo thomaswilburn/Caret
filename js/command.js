@@ -76,6 +76,12 @@ define([
       fire(command, arg);
     }
   });
+  
+  //handle command events directly dispatched via DOM
+  document.body.on("caret-command", function(e) {
+    if (!e.detail || !e.detail.command) return;
+    fire(e.detail.command, e.detail.argument);
+  });
 
   //register for post-startup and fire any commands that are pending
   register("init:complete", function() {
