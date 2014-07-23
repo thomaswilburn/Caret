@@ -25,11 +25,12 @@ define([
         if (cmd) {
           command.fire(cmd, arg);
         }
-        
+        break;
       case 27:
         //on escape, also hide the prompt
         cli.removeClass("show");
         editor.focus;
+        break;
     }
   });
   
