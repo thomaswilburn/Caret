@@ -1,0 +1,117 @@
+{
+  "application_title": {
+    "message": "Caret"
+  },
+  "application_description": {
+    "message": "Профессиональный текстовой редактор для Chrome и Chrome OS."
+  },
+  "loading": {
+    "message": "загрузка"
+  },
+  "aboutWrittenBy": {
+    "message": "Автор <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
+  },
+  "aboutHomePage": {
+    "message": "Веб-сайт проекта"
+  },
+  "aboutSupport": {
+    "message": "Поддержка"
+  },
+  "aboutLicense": {
+    "message": "Caret доступен под GPL лицензией, что означает, что его <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>исходный код</a> находится в свободном доступе и вы можете использовать и изменять его по своему усмотрению. Если вы находите Caret полезным, то поддержите Free Software Foundation's <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fund to End Software Patents</a>."
+  },
+  "menuFile": { "message": "Файл" },
+  "menuNewFile": { "message": "Создать" },
+  "menuOpenFile": { "message": "Открыть" },
+  "menuSave": { "message": "Сохранить" },
+  "menuSaveAs": { "message": "Сохранить как..." },
+  "menuRevert": { "message": "Восстановить" },
+  "menuClose": { "message": "Закрыть" },
+  "menuPrint": { "message": "Печать" },
+  "menuExit": { "message": "Выход" },
+  
+  "menuEdit": { "message": "Правка" },
+  "menuUndo": { "message": "Отмена" },
+  "menuRedo": { "message": "Повтор" },
+  "menuInsertFromFile": { "message": "Вставить из файла" },
+  "menuSelectWord": { "message": "Выделить слово" },
+  "menuSelectLine": { "message": "Выделить строку" },
+  "menuSelectP": { "message": "Выделить всё" },
+  "menuSelectToMatch": { "message": "Выделить до совпадения" },
+  "menuWrapToPrint": { "message": "Удалить пробелы и табуляцию" },
+  "menuFind": { "message": "Поиск" },
+  "menuFindReplace": { "message": "Замена" },
+  "menuFindNext": { "message": "Искать далее" },
+  "menuToggleComment": { "message": "Закомментировать строку" },
+  "menuBlockComment": { "message": "Блочный комментарий" },
+  "menuTabsToSpaces": { "message": "Табы в пробелы" },
+  "menuSpacesToTabs": { "message": "Пробелы в табы" },
+  "menuSetNewline": { "message": "Режим новой строки" },
+  "menuTrimWhitespace": { "message": "Удалить пробелы в конце строк" },
+  "menuJoinLines": { "message": "Объединить строки" },
+  "menuSortLines": { "message": "Отсортировать строки по алфавиту" },
+  "menuSplitLine": { "message": "Разбить строки" },
+  "menuToUppercase": { "message": "Преобразовать в ПРОПИСНЫЕ" },
+  "menuToLowercase": { "message": "Преобразовать в строчные" },
+  "menuMoveLinesUp": { "message": "Поднять текущую строку" },
+  "menuMoveLinesDown": { "message": "Опустить текущую строку" },
+  
+  "menuTools": { "message": "Инструменты" },
+  "menuGoToAnything": { "message": "Перейти к..." },
+  "menuGoToLine": { "message": "Перейти к строке" },
+  "menuGoToSearch": { "message": "Поиск по мере ввода" },
+  "menuGoToRef": { "message": "Перейти к ссылке" },
+  "menuCommandPalette": { "message": "Поиск команд" },
+  "menuToggleMacro": { "message": "Старт\стоп записи макроса" },
+  "menuReplayMacro": { "message": "Повторить макрос" },
+  "menuWordCount": { "message": "Подсчёт слов" },
+  
+  "menuProject": { "message": "Проект" },
+  "menuAddDir": { "message": "Добавить папку" },
+  "menuRemoveAllDirs": { "message": "Удалить все папки" },
+  "menuRefreshDir": { "message": "Обновить папки" },
+  "menuSaveProject": { "message": "Сохранить файл проекта" },
+  "menuEditProject": { "message": "Редактировать текущий проект" },
+  "menuOpenProject": { "message": "Открыть файл проекта" },
+  "menuClearProject": { "message": "Очистить проект" },
+  
+  "menuSettings": { "message": "Опции" },
+  "menuUserPrefs": { "message": "Настройки" },
+  "menuKeyboard": { "message": "Быстрые клавиши" },
+  "menuMenus": { "message": "Ред. меню" },
+  "menuAPI": { "message": "Внешние команды" },
+  "menuDefaults": { "message": "Стандартные" },
+  "menuUserPrefsDefault": { "message": "Настройки" },
+  "menuKeyboardDefault": { "message": "Быстрые клавиши" },
+  "menuMenusDefault": { "message": "Меню" },
+  "menuReset": { "message": "Сбросить" },
+  "menuResetUserPrefs": { "message": "Настройки" },
+  "menuResetKeyboard": { "message": "Быстрые клавиши" },
+  "menuResetMenus": { "message": "Меню" },
+  "menuEmergencyReset": { "message": "Сбросить всё" },
+  "menuHelp": { "message": "Справка" },
+  "menuCheckForUpdates": { "message": "Проверить обновления" },
+  "menuAboutCaret": { "message": "О Caret" },
+  
+  "dialogModifiedBackground": { "message": "Этот файл был изменён с момента последнего сохранения. Открыть его заново?" },
+  "dialogModifiedUnsaved": { "message": "$1 был изменён.\nВы хотите сохранить изменения?" },
+  "dialogCancel": { "message": "Отмена" },
+  "dialogOK": { "message": "ОК" },
+  "dialogReload": { "message": "Перезагрузить" },
+  "dialogSave": { "message": "Сохранить" },
+  "dialogDiscard": { "message": "Не сохранять" },
+  "dialogUnsaved": { "message": "$1 имеет несохранённые изменения." },
+  
+  "projectNoCurrentProject": { "message": "Нет открытых проектов." },
+  
+  "paletteExecuting": { "message": "Выполнение $1..." },
+  
+  "fileLoaded": { "message": "Загружено $1, $2 байт" },
+  "fileAutosaving": { "message": "Выполнение автосохранения для всех вкладок..." },
+  
+  "editorWordCount": { "message": "$1 символов, $2 слов, $3 строк" },
+  
+  "recordingMacro": { "message": "Запись макроса..." },
+  "setSyntax": { "message": "Установить синтаксис: $1" },
+  "setTheme": { "message": "Установить тему: $1" }
+}
