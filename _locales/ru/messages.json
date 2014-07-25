@@ -62,7 +62,7 @@
   "menuGoToSearch": { "message": "Поиск по мере ввода" },
   "menuGoToRef": { "message": "Перейти к ссылке" },
   "menuCommandPalette": { "message": "Поиск команд" },
-  "menuToggleMacro": { "message": "Стартстоп записи макроса" },
+  "menuToggleMacro": { "message": "Старт/стоп записи макроса" },
   "menuReplayMacro": { "message": "Повторить макрос" },
   "menuWordCount": { "message": "Подсчёт слов" },
   
