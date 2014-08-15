@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.4.27",
+  "version": "1.4.29",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -62,6 +62,7 @@
         "erb",
         "glsl",
         "go",
+        "groovy",
         "h",
         "haml",
         "handlebars",
