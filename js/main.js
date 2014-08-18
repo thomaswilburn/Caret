@@ -2,6 +2,7 @@ chrome.version = window.navigator.appVersion.match(/Chrome\/(\d+)/)[1] * 1 || 0;
 
 require([
     "command",
+    "editor",
     "storage/settingsProvider",
     "ui/dialog",
     "sessions",
@@ -15,7 +16,7 @@ require([
     "ui/cli",
     "api",
     "storage/syncfile"
-  ], function(command, Settings, dialog, sessions, M, i18n) {
+  ], function(command, editor, Settings, dialog, sessions, M, i18n) {
   
   //translate inline strings
   i18n.page();
@@ -124,6 +125,7 @@ require([
   
   command.on("app:maximize", function() {
     frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
+    editor.focus();
   });
   
   command.on("app:restart", function() {
