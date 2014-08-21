@@ -121,6 +121,7 @@ require([
   
   command.on("app:minimize", function() {
     frame.minimize();
+    editor.focus();
   });
   
   command.on("app:maximize", function() {
