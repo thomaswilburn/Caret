@@ -43,6 +43,8 @@
   "Ctrl-=": { "command": "editor:adjust-zoom", "argument": 1 },
   "Ctrl-0": { "command": "editor:default-zoom" },
   "Ctrl-J": { "ace": "joinlines" },
+  "Ctrl-Shift-Up": { "ace": "movelinesup" },
+  "Ctrl-Shift-Down": { "ace": "movelinesdown" },
   
   //dev mode
   "Ctrl-.": { "command": "app:show-prompt" }
