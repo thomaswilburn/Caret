@@ -28,7 +28,7 @@
   "Ctrl-Space": { "ace": "startAutocomplete" },
   
   //Sublime compatibility
-  "Ctrl-L": "sublime:expand-to-line",
+  "Ctrl-L": { "ace": "expandtoline" },
   "Alt-Q": "sublime:wrap",
   "Ctrl-D": { "ace": "selectMoreAfter" },
   "Ctrl-P": { "command": "palette:open" },

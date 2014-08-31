@@ -20,7 +20,7 @@
       "divider",
       { "label": "menuInsertFromFile", "command": "session:insert-from-file" },
       { "label": "menuSelectWord", "command": "ace:command", "argument": "selectMoreAfter" },
-      { "label": "menuSelectLine", "command": "sublime:expand-to-line" },
+      { "label": "menuSelectLine", "command": "ace:command", "argument": "expandtoline" },
       { "label": "menuSelectP", "command": "sublime:expand-to-paragraph" },
       { "label": "menuSelectToMatch", "command": "sublime:expand-to-matching" },
       { "label": "menuWrapToPrint", "command": "sublime:wrap" },
