@@ -29,7 +29,7 @@ define([
       case 27:
         //on escape, also hide the prompt
         cli.removeClass("show");
-        editor.focus;
+        editor.focus();
     }
   });
   
@@ -41,6 +41,7 @@ define([
   
   command.on("app:hide-prompt", function() {
     cli.removeClass("show");
+    editor.focus();
   })
     
 });
