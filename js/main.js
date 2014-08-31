@@ -108,9 +108,9 @@ require([
               cancelled = true;
             }
             if (value == "save") {
-              return tab.save(c);
+              return tab.save().then(c);
             }
-            c();
+            c(!cancelled);
           });
       }
       c();

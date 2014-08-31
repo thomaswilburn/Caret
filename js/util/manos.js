@@ -33,7 +33,11 @@ define(function() {
     },
     serial: function(a, f, c) {
       var i = -1;
-      var next = function() {
+      var next = function(result) {
+        //early exit signal
+        if (result === false) {
+          if (c) return c(false);
+        }
         i++;
         var item = a[i];
         if (typeof item == "undefined") {
