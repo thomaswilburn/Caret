@@ -7,6 +7,7 @@ define(function() {
     this.content = content;
   };
   NullFile.prototype = {
+    virtual: true,
     open: function(mode, c) {
       if (typeof mode == "function") {
         c = mode;
