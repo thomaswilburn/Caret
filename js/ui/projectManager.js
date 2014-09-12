@@ -132,6 +132,12 @@ define([
     var self = this;
     chrome.storage.local.get("retainedProject", function(data) {
       if (data.retainedProject) {
+        var retained = data.retainedProject;
+        if (typeof retained == "string") {
+          retained = {
+            id: retained
+          };
+        }
         self.loading = true;
         self.render();
         var file = new File();
@@ -141,7 +147,7 @@ define([
           chrome.storage.local.remove("retainedProject");
         }
         file.onWrite = self.watchProjectFile.bind(self);
-        file.restore(data.retainedProject.id, function(err, f) {
+        file.restore(retained.id, function(err, f) {
           if (err) {
             return onFail();
           }
