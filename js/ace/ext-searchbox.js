@@ -288,7 +288,6 @@ var SearchBox = function(editor, range, showReplaceForm) {
             if (sb.activeInput == sb.replaceInput)
                 sb.replace();
             sb.findAll();
-            sb.hide();
         },
         "Tab": function(sb) {
             (sb.activeInput == sb.replaceInput ? sb.searchInput : sb.replaceInput).focus();
@@ -355,6 +354,7 @@ var SearchBox = function(editor, range, showReplaceForm) {
         dom.setCssClass(this.searchBox, "ace_nomatch", noMatch);
         this.editor._emit("findSearchBox", { match: !noMatch });
         this.highlight();
+        this.hide();
     };
     this.replace = function() {
         if (!this.editor.getReadOnly())
