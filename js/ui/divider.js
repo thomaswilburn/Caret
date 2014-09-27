@@ -16,7 +16,7 @@ require([
    *
    *  Initiate dragging on mouse down.
    */
-  divider.addEventListener('mousedown', function(e){
+  divider.on('mousedown', function(e){
     // Don't listen on center button clicks
     if(e.button === 2){
       return;
@@ -26,8 +26,8 @@ require([
     projectWidth = project.offsetWidth;
     
     // add the mousemove and mouseup listeners
-    body.addEventListener('mousemove', moveListener);
-    body.addEventListener('mouseup', upListener);
+    body.on('mousemove', moveListener);
+    body.on('mouseup', upListener);
     
   });
   
@@ -49,7 +49,7 @@ require([
    *  Remove the mousemove and mouseup listeners on mouse up.
    */
   function upListener(e){
-      body.removeEventListener('mousemove', moveListener, false);
-      body.removeEventListener('mouseup', this, false);
+      body.off('mousemove', moveListener, false);
+      body.off('mouseup', this, false);
   }
 });
