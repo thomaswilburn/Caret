@@ -21,6 +21,10 @@ require([
     if(e.button === 2){
       return;
     }
+    
+    //turn off css transition
+    project.addClass('notransition');
+    
     // get the initial x coordinates
     xCord = e.screenX;
     projectWidth = project.offsetWidth;
@@ -51,5 +55,8 @@ require([
   function upListener(e){
       body.off('mousemove', moveListener, false);
       body.off('mouseup', this, false);
+
+      // re-enable css transitions
+      project.removeClass('notransition');
   }
 });
