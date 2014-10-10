@@ -129,7 +129,6 @@
         "yml",
         "zsh"
       ],
-      "title": "Caret",
       "types": [
         "application/javascript",
         "application/json",

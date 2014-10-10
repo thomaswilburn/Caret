@@ -15,7 +15,11 @@
   flex-shrink: 0;
   position: relative;
 
-  transition: width .3s ease, border-width .3s ease, padding .3s linear;
+  transition: width .3s ease-in-out, border-width .3s ease-in-out, padding .3s linear;
+  &.autohide {
+    transition: width .3s ease-in-out .3s, border-width .3s ease-in-out .3s, padding .3s linear .3s;
+  }
+
   //display: none;
   width: 0px;
   padding: 4px 0;
