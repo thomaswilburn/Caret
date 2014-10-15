@@ -62,7 +62,7 @@
     { "name": "julia", "label": "Julia", "extensions": [] },
     { "name": "latex", "label": "LaTeX", "extensions": [] },
     { "name": "less", "label": "LESS", "extensions": ["less"] },
-    { "name": "lisp", "label": "Lisp", "extensions": [] },
+    { "name": "lisp", "label": "Lisp", "extensions": ["rkt","lsp","lisp"] },
     { "name": "lsl", "label": "LSL", "extensions": ["lsl"] },
     { "name": "lua", "label": "Lua", "extensions": ["lua", "love"] },
     { "name": "makefile", "label": "Make", "extensions": ["make"] },
