@@ -244,13 +244,17 @@ define([
   
   var init = function(complete) {
     Settings.pull("user").then(function(data) {
-      if (data.user.disableTabRestore) return;
-      openFromRetained(function() {
+      if (data.user.disableTabRestore) {
         openFromLaunchData();
-        //start the retention process
-        retainLoop();
         complete("fileManager");
-      });
+      } else {
+        openFromRetained(function() {
+          openFromLaunchData();
+          //start the retention process
+          retainLoop();
+          complete("fileManager");
+        });
+      }
     });
   };
   
