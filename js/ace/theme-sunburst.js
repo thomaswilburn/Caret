@@ -67,7 +67,14 @@ background-color:rgba(86, 45, 86, 0.75);}.ace-sunburst .ace_invalid.ace_deprecat
 font-style:italic;\
 color:#FD5FF1;}.ace-sunburst .ace_string{color:#65B042;}.ace-sunburst .ace_string.ace_regexp{color:#E9C062;}.ace-sunburst .ace_comment{font-style:italic;\
 color:#AEAEAE;}.ace-sunburst .ace_variable{color:#3E87E3;}.ace-sunburst .ace_meta.ace_tag{color:#89BDFF;}.ace-sunburst .ace_markup.ace_heading{color:#FEDCC5;\
-background-color:#632D04;}.ace-sunburst .ace_markup.ace_list{color:#E1D4B9;}";
+background-color:#632D04;}.ace-sunburst .ace_markup.ace_list{color:#E1D4B9;}\
+\
+/* MANUALLY ADDED */\
+\
+.ace-sunburst .ace_invisible {\
+  opacity: 0.4;\
+}\
+";
 
 var dom = require("../lib/dom");
 dom.importCssString(exports.cssText, exports.cssClass);
