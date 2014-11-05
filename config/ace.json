@@ -22,6 +22,7 @@
     { "name": "solarized_light", "label": "Solarized" },
     { "name": "solarized_dark", "label": "Solarized Dark" },
     { "name": "son_of_obsidian", "label": "Son of Obsidian" },
+    { "name": "sunburst", "label": "Sunburst" },
     { "name": "terminal", "label": "Terminal" },
     { "name": "textmate", "label": "Textmate" },
     { "name": "tomorrow", "label": "Tomorrow" },

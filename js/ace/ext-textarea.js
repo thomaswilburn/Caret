@@ -524,6 +524,7 @@ function setupSettingPanel(settingDiv, settingOpener, editor) {
             pastel_on_dark:   "Pastel On Dark",
             solarized_dark:   "Solarized Dark",
             solarized_light:  "Solarized Light",
+            sunburst:         "Sunburst",
             textmate:         "Textmate",
             twilight:         "Twilight",
             vibrant_ink:      "Vibrant Ink"

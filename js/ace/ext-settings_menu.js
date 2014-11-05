@@ -263,6 +263,7 @@ var themeData = [
     ["Monokai"              ,"monokai"                 ,  "dark"],
     ["Pastel on dark"       ,"pastel_on_dark"          ,  "dark"],
     ["Solarized Dark"       ,"solarized_dark"          ,  "dark"],
+    ["Sunburst"             ,"sunburst"                ,  "dark"],
     ["Terminal"             ,"terminal"                ,  "dark"],
     ["Tomorrow Night"       ,"tomorrow_night"          ,  "dark"],
     ["Tomorrow Night Blue"  ,"tomorrow_night_blue"     ,  "dark"],
