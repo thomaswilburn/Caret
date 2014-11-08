@@ -98,7 +98,7 @@ define([
       if (tab.modifiedAt && entry.lastModifiedDate > tab.modifiedAt) {
         if (tab.modified) {
           dialog(
-            i18n.get("dialogFileModified"),
+            i18n.get("dialogModifiedBackground"),
             [
               {label: i18n.get("dialogReload"), value: true},
               {label: i18n.get("dialogCancel"), value: false, focus: true}],
