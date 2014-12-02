@@ -85,9 +85,9 @@ define([
   });
   
   command.on("editor:print", function(c) {
-    ace.require("ace/config").loadModule("ace/ext/static_highlight", function(static) {
+    ace.require("ace/config").loadModule("ace/ext/static_highlight", function(highlighter) {
       var session = editor.getSession();
-      var printable = static.renderSync(session.getValue(), session.getMode(), editor.renderer.theme);
+      var printable = highlighter.renderSync(session.getValue(), session.getMode(), editor.renderer.theme);
       var iframe = document.createElement("iframe");
       var css = "<style>" + printable.css + "</style>";
       var doc = css + printable.html;
