@@ -88,6 +88,8 @@
     { "name": "twig", "label": "Twig", "extensions": ["twig"] },
     { "name": "typescript", "label": "TypeScript", "extensions": ["ts"] },
     { "name": "vbscript", "label": "VBScript", "extensions": ["vbs"] },
+    { "name": "verilog", "label": "Verilog", "extensions": ["v", "vh"] },
+    { "name": "vhdl", "label": "VHDL", "extensions": ["vhd", "vhdl"] },
     { "name": "ini", "label": "Windows INI", "extensions": ["ini"] },
     { "name": "assembly_x86", "label": "X86 Assembly", "extensions": ["asm"] },
     { "name": "xml", "label": "XML", "extensions": ["xml", "vcf"] },
