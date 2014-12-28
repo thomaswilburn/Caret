@@ -64,6 +64,8 @@
   "useWorker": true,
   //autocomplete triggers on Ctrl-Space
   "autocomplete": true,
+  //"Behaviors" are the auto-paired quotes and HTML tags in the editor
+  "disableBehaviors": false,
 
   //By default, the palette searches the current file's text only unless you widen the scope.
   //If you'd like it to search all open files by default, set this option to true.

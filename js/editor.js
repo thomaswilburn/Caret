@@ -40,6 +40,7 @@ define([
       scrollPastEnd: userConfig.scrollPastEnd,
       showGutter: !userConfig.hideGutter
     });
+    editor.setBehavioursEnabled(!userConfig.disableBehaviors);
     editor.setShowPrintMargin(userConfig.showMargin || false);
     editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
     editor.setShowInvisibles(userConfig.showWhitespace || false);
