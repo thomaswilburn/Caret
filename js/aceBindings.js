@@ -126,6 +126,14 @@ define([
       if (c) c();
     });
     
+    command.on("sublime:select-or-more-after", function() {
+      if (editor.selection.isEmpty()) {
+        editor.selection.selectWord();
+      } else {
+        editor.execCommand("selectMoreAfter");
+      }
+    });
+    
     command.on("ace:set-newline-mode", function(type, c) {
       editor.session.doc.setNewLineMode(type);
       if (c) c();
