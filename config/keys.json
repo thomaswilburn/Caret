@@ -30,7 +30,7 @@
   //Sublime compatibility
   "Ctrl-L": { "ace": "expandtoline" },
   "Alt-Q": "sublime:wrap",
-  "Ctrl-D": { "ace": "selectMoreAfter" },
+  "Ctrl-D": "sublime:select-or-more-after",
   "Ctrl-P": { "command": "palette:open" },
   "Ctrl-Shift-P": { "command": "palette:open", "argument": "command" },
   "Ctrl-R": { "command": "palette:open", "argument": "reference" },
