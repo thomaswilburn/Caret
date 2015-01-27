@@ -1,0 +1,111 @@
+{
+  "loading": {
+    "message": "加载中"
+  },
+  "aboutWrittenBy": {
+    "message": "作者 <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
+  },
+  "aboutHomePage": {
+    "message": "首页"
+  },
+  "aboutSupport": {
+    "message": "支持"
+  },
+  "aboutLicense": {
+    "message": "Caret is available under a GPL license, which means that the <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> is freely available for you to use and modify as you see fit. If you find Caret useful, consider donating to the Free Software Foundation's <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fund to End Software Patents</a>.汉化:nolanzhou"
+  },
+  "menuFile": { "message": "文件" },
+  "menuNewFile": { "message": "新建" },
+  "menuOpenFile": { "message": "打开" },
+  "menuSave": { "message": "保存" },
+  "menuSaveAs": { "message": "另存为.." },
+  "menuRevert": { "message": "回复" },
+  "menuClose": { "message": "关闭" },
+  "menuPrint": { "message": "打印" },
+  "menuExit": { "message": "退出" },
+
+  "menuEdit": { "message": "编辑" },
+  "menuUndo": { "message": "撤销" },
+  "menuRedo": { "message": "重做" },
+  "menuInsertFromFile": { "message": "从文件插入.." },
+  "menuSelectWord": { "message": "选择单词" },
+  "menuSelectLine": { "message": "选择行" },
+  "menuSelectP": { "message": "选择段落" },
+  "menuSelectToMatch": { "message": "选择区域{...}" },
+  "menuWrapToPrint": { "message": "打印区域换行" },
+  "menuFind": { "message": "查找" },
+  "menuFindReplace": { "message": "查找/替换" },
+  "menuFindNext": { "message": "查找下一个" },
+  "menuToggleComment": { "message": "注释切换" },
+  "menuBlockComment": { "message": "区域注释切换" },
+  "menuTabsToSpaces": { "message": "Tab转空格" },
+  "menuSpacesToTabs": { "message": "空格转Tab" },
+  "menuSetNewline": { "message": "设置行模式" },
+  "menuTrimWhitespace": { "message": "移除行末空格" },
+  "menuJoinLines": { "message": "连接多行" },
+  "menuSortLines": { "message": "排序多行" },
+  "menuSplitLine": { "message": "分割行" },
+  "menuToUppercase": { "message": "所选内容转为大写" },
+  "menuToLowercase": { "message": "所选内容转为小写" },
+  "menuMoveLinesUp": { "message": "上升多行" },
+  "menuMoveLinesDown": { "message": "下降多行" },
+
+  "menuTools": { "message": "工具" },
+  "menuGoToAnything": { "message": "跳转文件.." },
+  "menuGoToLine": { "message": "跳至某行.." },
+  "menuGoToSearch": { "message": "搜索文件并跳转.." },
+  "menuGoToRef": { "message": "搜索内容并跳转.." },
+  "menuCommandPalette": { "message": "命令面板" },
+  "menuToggleMacro": { "message": "开始/结束宏录制" },
+  "menuReplayMacro": { "message": "使用宏" },
+  "menuWordCount": { "message": "内容统计" },
+
+  "menuProject": { "message": "项目" },
+  "menuAddDir": { "message": "添加文件夹" },
+  "menuRemoveAllDirs": { "message": "移除所有文件夹" },
+  "menuRefreshDir": { "message": "刷新" },
+  "menuSaveProject": { "message": "保存项目文件" },
+  "menuEditProject": { "message": "编辑自定义项目" },
+  "menuOpenProject": { "message": "打开项目文件" },
+  "menuClearProject": { "message": "移除项目" },
+
+  "menuSettings": { "message": "设置" },
+  "menuUserPrefs": { "message": "用户偏好" },
+  "menuKeyboard": { "message": "快捷键" },
+  "menuMenus": { "message": "菜单" },
+  "menuAPI": { "message": "外部命令" },
+  "menuDefaults": { "message": "默认配置" },
+  "menuUserPrefsDefault": { "message": "用户偏好 (默认)" },
+  "menuKeyboardDefault": { "message": "快捷键 (默认)" },
+  "menuMenusDefault": { "message": "菜单 (默认)" },
+  "menuReset": { "message": "重置" },
+  "menuResetUserPrefs": { "message": "重置用户配置" },
+  "menuResetKeyboard": { "message": "重置快捷键" },
+  "menuResetMenus": { "message": "重置菜单" },
+  "menuEmergencyReset": { "message": "复位" },
+  "menuHelp": { "message": "帮助" },
+  "menuCheckForUpdates": { "message": "检查更新" },
+  "menuAboutCaret": { "message": "关于Caret" },
+
+  "dialogModifiedBackground": { "message": "文件已发生修改，是否重新载入?" },
+  "dialogModifiedUnsaved": { "message": "$1 已被修改，是否确认保存?" },
+  "dialogCancel": { "message": "取消" },
+  "dialogOK": { "message": "确定" },
+  "dialogReload": { "message": "刷新" },
+  "dialogSave": { "message": "保存" },
+  "dialogDiscard": { "message": "丢弃" },
+  "dialogUnsaved": { "message": "$1未保存." },
+
+  "projectNoCurrentProject": { "message": "目前没有项目打开。" },
+
+  "paletteExecuting": { "message": "正在执行 $1..." },
+
+  "fileLoaded": { "message": "正在读取 $1, $2 bytes" },
+  "fileAutosaving": { "message": "所有文件正在保存中.." },
+
+  "editorWordCount": { "message": "$1 characters, $2 words, $3 lines" },
+
+  "recordingMacro": { "message": "宏录制中.." },
+  "setSyntax": { "message": "设置语言: $1" },
+  "setTheme": { "message": "设置主题: $1" }
+}
