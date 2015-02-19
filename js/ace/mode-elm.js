@@ -1,109 +1,132 @@
-ace.define("ace/mode/applescript_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/elm_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var AppleScriptHighlightRules = function() {
-    var keywords = (
-        "about|above|after|against|and|around|as|at|back|before|beginning|" +
-        "behind|below|beneath|beside|between|but|by|considering|" +
-        "contain|contains|continue|copy|div|does|eighth|else|end|equal|" +
-        "equals|error|every|exit|fifth|first|for|fourth|from|front|" +
-        "get|given|global|if|ignoring|in|into|is|it|its|last|local|me|" +
-        "middle|mod|my|ninth|not|of|on|onto|or|over|prop|property|put|ref|" +
-        "reference|repeat|returning|script|second|set|seventh|since|" +
-        "sixth|some|tell|tenth|that|the|then|third|through|thru|" +
-        "timeout|times|to|transaction|try|until|where|while|whose|with|without"
-    );
-
-    var builtinConstants = (
-        "AppleScript|false|linefeed|return|pi|quote|result|space|tab|true"
-    );
-
-    var builtinFunctions = (
-        "activate|beep|count|delay|launch|log|offset|read|round|run|say|" +
-        "summarize|write"
-    );
-
-    var builtinTypes = (
-        "alias|application|boolean|class|constant|date|file|integer|list|" +
-        "number|real|record|string|text|character|characters|contents|day|" +
-        "frontmost|id|item|length|month|name|paragraph|paragraphs|rest|" +
-        "reverse|running|time|version|weekday|word|words|year"
-    );
-
+var ElmHighlightRules = function() {
     var keywordMapper = this.createKeywordMapper({
-        "support.function": builtinFunctions,
-        "constant.language": builtinConstants,
-        "support.type": builtinTypes,
-        "keyword": keywords
+       "keyword": "as|case|class|data|default|deriving|do|else|export|foreign|" +
+            "hiding|jsevent|if|import|in|infix|infixl|infixr|instance|let|" +
+            "module|newtype|of|open|then|type|where|_|port|\u03BB"
     }, "identifier");
+    
+    var escapeRe = /\\(\d+|['"\\&trnbvf])/;
+    
+    var smallRe = /[a-z_]/.source;
+    var largeRe = /[A-Z]/.source;
+    var idRe = /[a-z_A-Z0-9\']/.source;
 
     this.$rules = {
-        "start": [
-            {
-                token: "comment",
-                regex: "--.*$"
-            },
-            {
-                token : "comment", // multi line comment
-                regex : "\\(\\*",
-                next : "comment"
-            },
-            {
-                token: "string",           // " string
-                regex: '".*?"'
-            },
-            {
-                token: "support.type",
-                regex: '\\b(POSIX file|POSIX path|(date|time) string|quoted form)\\b'
-            },
-            {
-                token: "support.function",
-                regex: '\\b(clipboard info|the clipboard|info for|list (disks|folder)|' +
-          'mount volume|path to|(close|open for) access|(get|set) eof|' +
-          'current date|do shell script|get volume settings|random number|' +
-          'set volume|system attribute|system info|time to GMT|' +
-          '(load|run|store) script|scripting components|' +
-          'ASCII (character|number)|localized string|' +
-          'choose (application|color|file|file name|' +
-          'folder|from list|remote application|URL)|' +
-          'display (alert|dialog))\\b|^\\s*return\\b'
-            },
-            {
-                token: "constant.language",
-                regex: '\\b(text item delimiters|current application|missing value)\\b'
-            },
-            {
-                token: "keyword",
-                regex: '\\b(apart from|aside from|instead of|out of|greater than|' +
-          "isn't|(doesn't|does not) (equal|come before|come after|contain)|" +
-          '(greater|less) than( or equal)?|(starts?|ends|begins?) with|' +
-          'contained by|comes (before|after)|a (ref|reference))\\b'
-            },
-            {
-                token: keywordMapper,
-                regex: "[a-zA-Z][a-zA-Z0-9_]*\\b"
+        start: [{
+            token: "string.start",
+            regex: '"',
+            next: "string"
+        }, {
+            token: "string.character",
+            regex: "'(?:" + escapeRe.source + "|.)'?"
+        }, {
+            regex: /0(?:[xX][0-9A-Fa-f]+|[oO][0-7]+)|\d+(\.\d+)?([eE][-+]?\d*)?/,
+            token: "constant.numeric"
+        }, {
+            token : "keyword",
+            regex : /\.\.|\||:|=|\\|\"|->|<-|\u2192/
+        }, {
+            token : "keyword.operator",
+            regex : /[-!#$%&*+.\/<=>?@\\^|~:\u03BB\u2192]+/
+        }, {
+            token : "operator.punctuation",
+            regex : /[,;`]/
+        }, {
+            regex : largeRe + idRe + "+\\.?",
+            token : function(value) {
+                if (value[value.length - 1] == ".")
+                    return "entity.name.function"; 
+                return "constant.language"; 
             }
-        ],
-        "comment": [
-            {
-                token: "comment", // closing comment
-                regex: "\\*\\)",
-                next: "start"
-            }, {
-                defaultToken: "comment"
+        }, {
+            regex : "^" + smallRe  + idRe + "+",
+            token : function(value) {
+                return "constant.language"; 
             }
-        ]
-    }
-
+        }, {
+            token : keywordMapper,
+            regex : "[\\w\\xff-\\u218e\\u2455-\\uffff]+\\b"
+        }, {
+            regex: "{-#?",
+            token: "comment.start",
+            onMatch: function(value, currentState, stack) {
+                this.next = value.length == 2 ? "blockComment" : "docComment";
+                return this.token;
+            }
+        }, {
+            token: "variable.language",
+            regex: /\[markdown\|/,
+            next: "markdown"
+        }, {
+            token: "paren.lparen",
+            regex: /[\[({]/ 
+        }, {
+            token: "paren.rparen",
+            regex: /[\])}]/
+        }, ],
+        markdown: [{
+            regex: /\|\]/,
+            next: "start"
+        }, {
+            defaultToken : "string"
+        }],
+        blockComment: [{
+            regex: "{-",
+            token: "comment.start",
+            push: "blockComment"
+        }, {
+            regex: "-}",
+            token: "comment.end",
+            next: "pop"
+        }, {
+            defaultToken: "comment"
+        }],
+        docComment: [{
+            regex: "{-",
+            token: "comment.start",
+            push: "docComment"
+        }, {
+            regex: "-}",
+            token: "comment.end",
+            next: "pop" 
+        }, {
+            defaultToken: "doc.comment"
+        }],
+        string: [{
+            token: "constant.language.escape",
+            regex: escapeRe,
+        }, {
+            token: "text",
+            regex: /\\(\s|$)/,
+            next: "stringGap"
+        }, {
+            token: "string.end",
+            regex: '"',
+            next: "start"
+        }],
+        stringGap: [{
+            token: "text",
+            regex: /\\/,
+            next: "string"
+        }, {
+            token: "error",
+            regex: "",
+            next: "start"
+        }],
+    };
+    
     this.normalizeRules();
 };
 
-oop.inherits(AppleScriptHighlightRules, TextHighlightRules);
+oop.inherits(ElmHighlightRules, TextHighlightRules);
 
-exports.AppleScriptHighlightRules = AppleScriptHighlightRules;
+exports.ElmHighlightRules = ElmHighlightRules;
 });
 
 ace.define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
@@ -247,25 +270,24 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-ace.define("ace/mode/applescript",["require","exports","module","ace/lib/oop","ace/mode/text","ace/tokenizer","ace/mode/applescript_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
+ace.define("ace/mode/elm",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/elm_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
-var AppleScriptHighlightRules = require("./applescript_highlight_rules").AppleScriptHighlightRules;
+var HighlightRules = require("./elm_highlight_rules").ElmHighlightRules;
 var FoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    this.HighlightRules = AppleScriptHighlightRules;
+    this.HighlightRules = HighlightRules;
     this.foldingRules = new FoldMode();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
     this.lineCommentStart = "--";
-    this.blockComment = {start: "(*", end: "*)"};
-    this.$id = "ace/mode/applescript";
+    this.blockComment = {start: "{-", end: "-}"};
+    this.$id = "ace/mode/elm";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
