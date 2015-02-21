@@ -12,7 +12,13 @@ define([
   command.on("api:execute", function(id, c) {
     if (!id in targets) return c();
     var config = targets[id];
-    var message = config.message;
+    var message = {};
+    //shallow-copy config message, just in case
+    //TODO: replace with Object.assign()
+    for (var key in config.message) {
+      //if we implement message variables, this would be the place to handle them.
+      message[key] = config.message[key];
+    }
     var send = function() {
       chrome.runtime.sendMessage(config.id, message, null, function() {
         if (chrome.runtime.lastError) {
@@ -23,20 +29,18 @@ define([
     };
     if (config.sendEditorContext) {
       //add context information to the message
-      message.context = {};
+      message.context = {
+        selection: editor.session.getTextRange()
+      };
 
       if (editor.session.file && editor.session.file.getPath) {
         editor.session.file.getPath(function(err, path) {
-          message.context = {
-            path: path,
-            selection: editor.session.getTextRange()
-          };
+          message.context.path = path;
           send();
         });
       } else {
         //no path for Caret config files or unsaved "untitled.txt"
         message.context.path = "";
-        message.context.selection = editor.session.getTextRange();
         send();
       }
 
