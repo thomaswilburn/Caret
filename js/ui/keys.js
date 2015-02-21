@@ -60,12 +60,15 @@ define([
       for (var k in bindings) {
         var action = bindings[k];
         if (!action) continue;
-        //if (!action.ace) continue;
         var parsed = handler.parseKeys(k);
         var existing = handler.findKeyCommand(parsed.hashId, parsed.key);
         var aceCommand = action.command == "ace:command" ? action.argument : action.ace;
         if (!aceCommand && ckb[parsed.hashId] && ckb[parsed.hashId][parsed.key]) {
+          //old-style Ace hashed CommandKeyBinding
           delete ckb[parsed.hashId][parsed.key];
+        } else if (!aceCommand && ckb[k]) {
+          //handle new style CommandKeyBinding
+          delete ckb[k];
         } else {
           handler.bindKey(k, aceCommand);
         }
