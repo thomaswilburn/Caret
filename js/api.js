@@ -12,8 +12,9 @@ define([
   command.on("api:execute", function(id, c) {
     if (!id in targets) return c();
     var config = targets[id];
+    var message = config.message;
     var send = function() {
-      chrome.runtime.sendMessage(config.id, config.message, null, function() {
+      chrome.runtime.sendMessage(config.id, message, null, function() {
         if (chrome.runtime.lastError) {
           console.error(chrome.runtime.lastError);
         }
@@ -22,13 +23,23 @@ define([
     };
     if (config.sendEditorContext) {
       //add context information to the message
-      editor.session.file.getPath(function(err, path) {
-        message.context = {
-          path: path,
-          selection: editor.session.getTextRange()
-        };
+      message.context = {};
+
+      if (editor.session.file && editor.session.file.getPath) {
+        editor.session.file.getPath(function(err, path) {
+          message.context = {
+            path: path,
+            selection: editor.session.getTextRange()
+          };
+          send();
+        });
+      } else {
+        //no path for Caret config files or unsaved "untitled.txt"
+        message.context.path = "";
+        message.context.selection = editor.session.getTextRange();
         send();
-      });
+      }
+
     } else {
       //send message as-is
       send();
