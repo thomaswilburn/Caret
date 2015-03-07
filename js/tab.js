@@ -27,7 +27,7 @@ define([
     if (file) {
       this.setFile(file);
     } else {
-      this.fileName = "untitled.txt";
+      this.fileName = "untitled";
     }
     
     this.modified = false;
