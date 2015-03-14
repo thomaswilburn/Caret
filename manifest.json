@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.4.39",
+  "version": "1.4.40",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -48,6 +48,7 @@
         "cfm",
         "cgi",
         "clj",
+        "cmd",
         "coffee",
         "conf",
         "cpp",
