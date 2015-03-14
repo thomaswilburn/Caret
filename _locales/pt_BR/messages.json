@@ -1,0 +1,111 @@
+{
+  "loading": {
+    "message": "carregando"
+  },
+  "aboutWrittenBy": {
+    "message": "Projeto por <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
+  },
+  "aboutHomePage": {
+    "message": "Página Inicial"
+  },
+  "aboutSupport": {
+    "message": "Suporte"
+  },
+  "aboutLicense": {
+    "message": "Caret está disponível sob o modelo de Licença GPL, isso significa que <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>o código-fonte</a> do software está disponível para você usar e modificar como desejar. Se você acha o Caret útil, considere fazer uma doação para o <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fundo Para Eliminar Patentesde Sofwtare</a>  da Fundação do Software Livre."
+  },
+  "menuFile": { "message": "Arquivo" },
+  "menuNewFile": { "message": "Novo Arquivo" },
+  "menuOpenFile": { "message": "Abrir Arquivo" },
+  "menuSave": { "message": "Salvar Arquivo" },
+  "menuSaveAs": { "message": "Salvar Arquivo Como..." },
+  "menuRevert": { "message": "Reverter" },
+  "menuClose": { "message": "Fechar Arquivo" },
+  "menuPrint": { "message": "Imprimir" },
+  "menuExit": { "message": "Sair" },
+  
+  "menuEdit": { "message": "Editar" },
+  "menuUndo": { "message": "Desfazer" },
+  "menuRedo": { "message": "Refazer" },
+  "menuInsertFromFile": { "message": "Inserir de Arquivo" },
+  "menuSelectWord": { "message": "Selecionar Palavra" },
+  "menuSelectLine": { "message": "Selecionar Linha" },
+  "menuSelectP": { "message": "Selecionar Parágrafo" },
+  "menuSelectToMatch": { "message": "Selecionar Correspondentes" },
+  "menuWrapToPrint": { "message": "Quebrar Linha na Margem de Impressão" },
+  "menuFind": { "message": "Buscar" },
+  "menuFindReplace": { "message": "Buscar/Substituir" },
+  "menuFindNext": { "message": "Buscar Próximo" },
+  "menuToggleComment": { "message": "Alternar Comentário" },
+  "menuBlockComment": { "message": "Alternar Bloco de Comentário" },
+  "menuTabsToSpaces": { "message": "Converter Tabs para Espaços" },
+  "menuSpacesToTabs": { "message": "Converter Espaços para Tabs" },
+  "menuSetNewline": { "message": "Escolher Modo de Nova Linha" },
+  "menuTrimWhitespace": { "message": "Excluir Espaços em Branco ao Fim da Linha" },
+  "menuJoinLines": { "message": "Juntar Linhas" },
+  "menuSortLines": { "message": "Ordenar Linhas" },
+  "menuSplitLine": { "message": "Separar Linha" },
+  "menuToUppercase": { "message": "Maiúsculas" },
+  "menuToLowercase": { "message": "Minúsculas" },
+  "menuMoveLinesUp": { "message": "Mover Linhas Para Cima" },
+  "menuMoveLinesDown": { "message": "Mover Linhas Para Baixo" },
+  
+  "menuTools": { "message": "Ferramentas" },
+  "menuGoToAnything": { "message": "Ir Para..." },
+  "menuGoToLine": { "message": "Ir Para Linha" },
+  "menuGoToSearch": { "message": "Ir Para Busca" },
+  "menuGoToRef": { "message": "Ir Para Referência" },
+  "menuCommandPalette": { "message": "Abrir Paleta de Comandos" },
+  "menuToggleMacro": { "message": "Alternar Gravação de Macro" },
+  "menuReplayMacro": { "message": "Reproduzir Macro" },
+  "menuWordCount": { "message": "Contagem de Palavras" },
+  
+  "menuProject": { "message": "Projeto" },
+  "menuAddDir": { "message": "Adicionar Diretório" },
+  "menuRemoveAllDirs": { "message": "Remover Todos Diretórios" },
+  "menuRefreshDir": { "message": "Recarregar Diretórios" },
+  "menuSaveProject": { "message": "Salvar Arquivo de Projeto" },
+  "menuEditProject": { "message": "Editar Projeto Atual" },
+  "menuOpenProject": { "message": "Abrir Arquivo de Projeto" },
+  "menuClearProject": { "message": "Limpar Projeto" },
+  
+  "menuSettings": { "message": "Configurações" },
+  "menuUserPrefs": { "message": "Preferências do Usuário" },
+  "menuKeyboard": { "message": "Teclado" },
+  "menuMenus": { "message": "Menus" },
+  "menuAPI": { "message": "Comandos Externos" },
+  "menuDefaults": { "message": "Ver Padrões" },
+  "menuUserPrefsDefault": { "message": "Preferências do Usuário (Padrão)" },
+  "menuKeyboardDefault": { "message": "Teclado (Padrão)" },
+  "menuMenusDefault": { "message": "Menus (Padrão)" },
+  "menuReset": { "message": "Restaurar" },
+  "menuResetUserPrefs": { "message": "Restaurar Preferências do Usuário" },
+  "menuResetKeyboard": { "message": "Restaurar Teclado" },
+  "menuResetMenus": { "message": "Restaurar Menus" },
+  "menuEmergencyReset": { "message": "Emergency Reset" },
+  "menuHelp": { "message": "Ajuda" },
+  "menuCheckForUpdates": { "message": "Verificar Atualizações" },
+  "menuAboutCaret": { "message": "Sobre Caret" },
+  
+  "dialogModifiedBackground": { "message": "Esse arquivo foi alterado desde a última vez que foi salvo. Deseja recarregar?" },
+  "dialogModifiedUnsaved": { "message": "$1 foi modificado.\nDeseja salvar as alterações?" },
+  "dialogCancel": { "message": "Cancelar" },
+  "dialogOK": { "message": "OK" },
+  "dialogReload": { "message": "Recarregar" },
+  "dialogSave": { "message": "Salvar" },
+  "dialogDiscard": { "message": "Descartar" },
+  "dialogUnsaved": { "message": "$1 tem alterações não salvas." },
+  
+  "projectNoCurrentProject": { "message": "Nenhum projeto aberto atualmente." },
+  
+  "paletteExecuting": { "message": "Executando $1..." },
+  
+  "fileLoaded": { "message": "Carregado $1, $2 bytes" },
+  "fileAutosaving": { "message": "Executando salvar automático para todas as abas..." },
+  
+  "editorWordCount": { "message": "$1 caracteres, $2 palavras, $3 linhas" },
+  
+  "recordingMacro": { "message": "Gravando macro..." },
+  "setSyntax": { "message": "Escolher Sintaxe: $1" },
+  "setTheme": { "message": "Escolher Tema: $1" }
+}
