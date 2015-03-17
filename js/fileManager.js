@@ -92,6 +92,7 @@ define([
   };
 
   command.on("session:check-file", function() {
+    if (Settings.get("user").disableReload) return;
     var tab = sessions.getCurrent();
     if (!tab.file || tab.file.virtual) return;
     tab.file.entry.file(function(entry) {
