@@ -59,11 +59,30 @@ define([
     }
     return fragment;
   };
+
+  var capitalizeAceKeys = function(s) {
+    return s.replace(/(^\w|\b\w)/g, function(l) { return l.toUpperCase() });
+  };
+
+  var testAceBinding = function(key, binding, command) {
+    if (typeof binding == "string" && binding == command) {
+      return key;
+    } else if (binding instanceof Array) {
+      for (var i = 0; i < binding.length; i++) {
+        var b = testAceBinding(key, binding[i], command);
+        if (b) return b;
+      }
+    } else if (binding.name == command && binding.bindKey[platform]) {
+      return binding.bindKey[platform].split("|").shift();
+    }
+    return false;
+  };
   
   // We load match commands to the key config, so they're always current
   var findKeyCombo = function(command, arg) {
     var keys = Settings.get("keys");
-    var aceCommands = editor.commands.commands;
+    var handler = editor.keyBinding.getKeyboardHandler();
+    var ckb = handler.commandKeyBinding;
     //check key config
     for (var key in keys) {
       var action = keys[key];
@@ -83,10 +102,10 @@ define([
         return key;
       }
     }
-    for (var cmd in aceCommands) {
-      if (cmd == command && aceCommands[cmd].bindKey[platform]) {
-        return aceCommands[cmd].bindKey[platform].split("|").shift();
-      }
+    //fall back to Ace defaults
+    if (command) for (var k in ckb) {
+      var binding = testAceBinding(k, ckb[k], command);
+      if (binding) return capitalizeAceKeys(binding);
     }
     return false;
   };

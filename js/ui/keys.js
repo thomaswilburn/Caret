@@ -58,19 +58,15 @@ define([
       var bindings = normalizeKeys(Settings.get("keys"));
       var ckb = handler.commandKeyBinding;
       for (var k in bindings) {
+        //unbind keys that we take over from Ace
+        if (ckb[k]) {
+          delete ckb[k];
+        }
         var action = bindings[k];
         if (!action) continue;
-        var parsed = handler.parseKeys(k);
-        var existing = handler.findKeyCommand(parsed.hashId, parsed.key);
-        var aceCommand = action.command == "ace:command" ? action.argument : action.ace;
-        if (!aceCommand && ckb[parsed.hashId] && ckb[parsed.hashId][parsed.key]) {
-          //old-style Ace hashed CommandKeyBinding
-          delete ckb[parsed.hashId][parsed.key];
-        } else if (!aceCommand && ckb[k]) {
-          //handle new style CommandKeyBinding
-          delete ckb[k];
-        } else {
-          handler.bindKey(k, aceCommand);
+        //if a key is defined with an Ace command, bind it via their handler
+        if (action.ace || action.command == "ace:command") {
+          handler.bindKey(k, action.ace || action.argument);
         }
       }
       handler.commandKeyBinding = ckb;
@@ -104,6 +100,7 @@ define([
     if (combo in keyConfig && keyConfig[combo]) {
       e.preventDefault();
       var action = keyConfig[combo];
+      if (!action) return;
       if (typeof action == "string") {
         action = {
           command: action
