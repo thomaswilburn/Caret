@@ -506,10 +506,18 @@ define([
   
   var setAutoHide = function() {
     var hide = Settings.get("user").autoHideProject;
+    var divider = document.find(".divider");
     if (hide) {
       pm.element.classList.add("autohide");
+      
+      // style attr was added to manage width, remove when autohiding
+      pm.element.removeAttribute("style");
+      // hide the divider when autohide is enabled
+      divider.css('display', 'none');
     } else {
       pm.element.classList.remove("autohide");
+      // redisplay the divider when autohide is disabled
+      divider.css('display', 'initial');
     }
   }
   
