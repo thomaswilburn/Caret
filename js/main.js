@@ -14,6 +14,7 @@ require([
     "ui/menus",
     "ui/palette",
     "ui/cli",
+    "ui/theme",
     "api",
     "storage/syncfile"
   ], function(command, editor, Settings, dialog, sessions, M, i18n) {

@@ -12,6 +12,8 @@ define([
   var aceConfig = Settings.get("ace");
 
   var editor = window.editor = ace.edit("editor");
+  //disable annoying debug message
+  editor.$blockScrolling = Infinity;
   
   var themes = document.querySelector(".theme");
   
