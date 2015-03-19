@@ -84,12 +84,14 @@
       { "label": "menuKeyboard", "command": "session:open-settings-file", "argument": "keys" },
       { "label": "menuMenus", "command": "session:open-settings-file", "argument": "menus" },
       { "label": "menuAPI", "command": "session:open-settings-file", "argument": "api" },
+      { "label": "menuTheme", "command": "session:open-settings-file", "argument": "theme" },
       "divider",
       { "label": "menuDefaults",
         "sub": [
           { "label": "menuUserPrefs", "command": "session:open-settings-defaults", "argument": "user", "palette": "menuUserPrefsDefault" },
           { "label": "menuKeyboard", "command": "session:open-settings-defaults", "argument": "keys", "palette": "menuKeyboardDefault" },
-          { "label": "menuMenus", "command": "session:open-settings-defaults", "argument": "menus", "palette": "menuMenusDefault" }
+          { "label": "menuMenus", "command": "session:open-settings-defaults", "argument": "menus", "palette": "menuMenusDefault" },
+          { "label": "menuTheme", "command": "session:open-settings-defaults", "argument": "theme", "palette": "menuThemeDefault" }
         ]
       },
       { "label": "menuReset",
@@ -97,6 +99,7 @@
           { "label": "menuUserPrefs", "command": "settings:delete-local", "argument": "user", "palette": "menuResetUserPrefs" },
           { "label": "menuKeyboard", "command": "settings:delete-local", "argument": "keys", "palette": "menuResetKeyboard" },
           { "label": "menuMenus", "command": "settings:delete-local", "argument": "menus", "palette": "menuResetMenus" },
+          { "label": "menuTheme", "command": "settings:delete-local", "argument": "theme", "palette": "menuResetTheme" },
           "divider",
           { "label": "menuEmergencyReset", "command": "settings:emergency-reset" }
         ]
