@@ -1,11 +1,11 @@
-define(["util/manos", "util/dom2"], function(M) {
+define(["util/manos", "util/elementData", "util/dom2"], function(M, elementData) {
   
   var noop = function() {};
   
   var Node = function(entry) {
     this.entry = entry;
     this.name = entry.name
-    this.isOpen = true;
+    this.isOpen = false;
     this.isDirty = true;
     this.isDir = entry.isDirectory;
     this.children = [];
@@ -22,7 +22,12 @@ define(["util/manos", "util/dom2"], function(M) {
     children: null,
     element: null,
     toggle: function(done) {
-      
+      this.isOpen = !this.isOpen;
+      this.render(done);
+    },
+    setElement: function(element) {
+      this.element = element;
+      elementData.set(element, this);
     },
     render: function(done) {
       var self = this;
@@ -31,14 +36,22 @@ define(["util/manos", "util/dom2"], function(M) {
       var a = this.element.find("a.label");
       if (!a) {
         a = document.createElement("a");
-        a.className = "label";
+        if (this.isDir) a.className = "directory";
+        a.addClass("label");
         this.element.append(a);
       }
       a.innerHTML = this.name;
-      if (!this.isOpen) return done();
+      if (!this.isOpen) {
+        this.element.removeClass("expanded");
+        return done();
+      }
+      this.element.addClass("expanded");
       if (this.isDirty && this.isDir) {
         this.readdir(function() {
-          self.renderChildren(done);
+          self.renderChildren(function() {
+            self.isDirty = false;
+            done();
+          });
         });
       } else {
         this.renderChildren(done);
@@ -54,10 +67,10 @@ define(["util/manos", "util/dom2"], function(M) {
       M.map(this.children, function(item, i, c) {
         if (!item.element) {
           var li = document.createElement("li");
-          item.element = li;
+          item.setElement(li);
           ul.append(li);
         }
-        item.render();
+        item.render(c);
       }, done)
     },
     readdir: function(done) {

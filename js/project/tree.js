@@ -1,8 +1,9 @@
 define([
   "project/node",
   "command",
+  "util/elementData",
   "util/dom2"],
-function(Node, command) {
+function(Node, command, elementData) {
   
   var directories = [];
   var container = document.find(".project");
@@ -17,11 +18,19 @@ function(Node, command) {
       var rootElement = document.createElement("li");
       tree.append(element);
       element.append(rootElement);
-      root.element = rootElement;
+      root.setElement(rootElement);
       root.isOpen = true;
       root.render();
       
     })
+  });
+  
+  tree.on("click", function(e) {
+    if (e.target.hasClass("directory")) {
+      var li = e.target.findUp("li");
+      var node = elementData.get(li);
+      node.toggle();
+    }
   });
   
 });

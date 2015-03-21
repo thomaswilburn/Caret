@@ -331,6 +331,7 @@ define([
     },
     
     bindEvents: function() {
+      return;
       var self = this;
       this.element.on("click", function(e) {
         e.preventDefault();
