@@ -33,4 +33,11 @@ function(Node, command, elementData) {
     }
   });
   
+  return {
+    getPaths: function() { return [] },
+    getDirectories: function() { return directories },
+    insertDirectory: function() {},
+    clear: function() {}
+  }
+  
 });

@@ -1,7 +1,7 @@
 define([
   "command",
   "sessions/addRemove",
-  "ui/projectManager",
+  "project/tree",
   "storage/file"
 ], function(command, addRemove, projectManager, File) {
   

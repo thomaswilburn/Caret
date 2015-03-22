@@ -9,7 +9,7 @@ require([
     "util/manos",
     "util/i18n",
     "project/tree",
-    //"ui/projectManager",
+    "project/file",
     "ui/keys",
     "fileManager",
     "ui/menus",

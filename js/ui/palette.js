@@ -4,7 +4,7 @@ define([
     "editor",
     "settings!menus,user",
     "ui/statusbar",
-    "ui/projectManager",
+    "project/tree",
     "util/template!templates/paletteItem.html",
     "util/i18n",
     "util/dom2"
