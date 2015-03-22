@@ -8,8 +8,8 @@ define([
   "util/dom2"
 ], function(M, elementData, sessions, File, inflate, context) {
   
-  //TODO: create a promise for when the directory is ready
-  //TODO: move rendering out into a separate NodeView
+  //TODO: implement a polling-based watch for directories
+  //TODO: pull the blacklist and use it during readdir()
   
   var noop = function() {};
   var guid = 0;

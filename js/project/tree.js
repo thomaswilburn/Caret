@@ -52,6 +52,14 @@ define([
     setVisible();
   };
   
+  var removeAll = function() {
+    tree.innerHTML = "";
+    directories = [];
+    pathmap = {};
+    setVisible();
+  };
+  
+  //toggle directories, or open files directly
   tree.on("click", function(e) {
     var li = e.target.findUp("li");
     var node = elementData.get(li);
@@ -63,18 +71,26 @@ define([
     }
   });
   
-  /* commands to handle:
-  project:refresh-dir
-  project:add-dir
-  project:remove-all
-  project:open-file (for the palette)
-  */
-  
+  command.on("project:refresh-dir", function() {
+    pathMap = {};
+    directories.forEach(function(dir) {
+      M.chain(
+        dir.readdir.bind(dir),
+        dir.render.bind(dir),
+        function() { 
+          dir.walk(function(node) {
+            pathMap[node.entry.fullPath] = node;
+          });
+        }
+      );
+    });
+  });
   command.on("project:add-dir", addDirectory);
   command.on("project:open-file", function(path) {
     var node = pathMap[path];
     if (node) node.openFile();
   });
+  command.on("project:remove-all", removeAll);
   
   context.register(
     i18n.get("projectRemoveDirectory"),
@@ -89,12 +105,7 @@ define([
     getPaths: function() { return Object.keys(pathMap) },
     getDirectories: function() { return directories },
     insertDirectory: addDirectory,
-    clear: function() {
-      tree.innerHTML = "";
-      directories = [];
-      pathmap = {};
-      setVisible();
-    }
+    clear: removeAll
   }
   
 });

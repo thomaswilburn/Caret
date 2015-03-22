@@ -112,12 +112,9 @@ define([
     if (!keepRetained) chrome.storage.local.remove("retainedProject");
   };
   
-  /*
-  commands to handle:
-  project:generate
-  project:open
-  project:edit
-  project:clear
-  */
+  command.on("project:generate", generateProject);
+  command.on("project:open", openProjectFile);
+  command.on("project:edit", editProjectFile);
+  command.on("project:clear", clearProject);
     
 });
