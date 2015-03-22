@@ -33,6 +33,13 @@ function(Node, command, elementData) {
     }
   });
   
+  /* commands to handle:
+  project:refresh-dir
+  project:add-dir
+  project:remove-all
+  project:open-file
+  */
+  
   return {
     getPaths: function() { return [] },
     getDirectories: function() { return directories },
