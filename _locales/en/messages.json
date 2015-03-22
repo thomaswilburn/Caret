@@ -100,6 +100,7 @@
   "dialogUnsaved": { "message": "$1 has unsaved work." },
   
   "projectNoCurrentProject": { "message": "No project currently open." },
+  "projectRemoveDirectory": { "message": "Remove from project" },
   
   "paletteExecuting": { "message": "Executing $1..." },
   

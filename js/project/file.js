@@ -38,7 +38,7 @@ define([
     return json;
   };
   
-  openProjectFile: function() {
+  var openProjectFile = function() {
     var file = new File();
     file.open(function() {
       file.read(function(err, data) {

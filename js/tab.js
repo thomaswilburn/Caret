@@ -3,8 +3,9 @@ define([
     "storage/file",
     "util/manos",
     "settings!ace,user",
-    "util/template!templates/tab.html"
-  ], function(command, File, M, Settings, inflate) {
+    "util/template!templates/tab.html",
+    "ui/dialog"
+  ], function(command, File, M, Settings, inflate, dialog) {
     
   /*
   
