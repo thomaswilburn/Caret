@@ -96,7 +96,7 @@ define([
           item.setElement(li);
           ul.append(li);
         }
-        item.render(c);
+        item.render(c); //recurses on its own if new
       }, done)
     },
     readdir: function(done) {
@@ -110,19 +110,11 @@ define([
         reader.readEntries(collect);
       };
       var complete = function() {
-        M.map(entries, function(entry, i, c) {
-          var node = new Node(entry);
-          if (node.isDir) {
-            return node.readdir(function() {
-              c(node);
-            });
-          }
-          return c(node);
-        }, function(children) {
-          self.children = children;
-          self.isDirty = false;
-          done();
+        self.children = entries.map(function(entry) {
+          return new Node(entry);
         });
+        self.isDirty = false;
+        done();
       };
       reader.readEntries(collect);
       
