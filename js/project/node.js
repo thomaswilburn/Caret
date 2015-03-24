@@ -121,8 +121,9 @@ define([
     },
     walk: function(f, done) {
       M.map(this.children, function(node, i, c) {
-        f(node);
-        node.walk(f, c);
+        f(node, function() {
+          node.walk(f, c);
+        });
       }, done);
     },
     openFile: function() {

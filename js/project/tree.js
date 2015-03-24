@@ -33,8 +33,13 @@ define([
       root.isOpen = true;
       root.isRoot = true;
       root.render(function() {
-        root.walk(function(node) {
+        //after initial render, do the walk for path lookup
+        root.walk(function(node, c) {
           pathMap[node.entry.fullPath] = node;
+          //make sure the children are read and populated
+          node.readdir(function() {
+            c();
+          });
         });
       });
       setVisible();
