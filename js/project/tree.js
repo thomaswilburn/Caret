@@ -4,8 +4,9 @@ define([
   "util/elementData",
   "util/i18n",
   "ui/contextMenus",
+  "util/manos",
   "util/dom2"
-], function(Node, command, elementData, i18n, context) {
+], function(Node, command, elementData, i18n, context, M) {
   
   var directories = [];
   var pathMap = {};
@@ -69,6 +70,7 @@ define([
     var li = e.target.findUp("li");
     var node = elementData.get(li);
     if (!li || !node) return;
+    e.preventDefault();
     if (e.target.hasClass("directory")) {
       node.toggle();
     } else {
@@ -83,8 +85,11 @@ define([
         dir.readdir.bind(dir),
         dir.render.bind(dir),
         function() { 
-          dir.walk(function(node) {
+          dir.walk(function(node, c) {
             pathMap[node.entry.fullPath] = node;
+            if (node.isDir) {
+              node.readdir(c);
+            } else c();
           });
         }
       );

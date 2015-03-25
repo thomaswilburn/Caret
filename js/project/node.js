@@ -11,6 +11,15 @@ define([
   //TODO: implement a polling-based watch for directories
   //TODO: pull the blacklist and use it during readdir()
   
+  var fileListSort = function(a, b) {
+    if (a.isDir != b.isDir) {
+      return ~~b.isDir - ~~a.isDir;
+    }
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
+    return 0;
+  };
+  
   var noop = function() {};
   var guid = 0;
   
@@ -90,6 +99,8 @@ define([
         ul.className = "children";
         this.element.append(ul);
       }
+      if (!this.children.length) return done();
+      this.children.sort(fileListSort);
       M.map(this.children, function(item, i, c) {
         if (!item.element) {
           var li = document.createElement("li");
@@ -101,24 +112,38 @@ define([
     },
     readdir: function(done) {
       if (!this.isDir) return done();
-      //TODO: track entries, compare to existing, do not duplicate
       var self = this;
       var reader = this.entry.createReader();
       var entries = [];
+      var existing = {};
+      this.children.forEach(function(child) {
+        existing[child.name] = child;
+      });
       var collect = function(list) {
         if (!list.length) return complete();
         entries.push.apply(entries, list);
         reader.readEntries(collect);
       };
       var complete = function() {
+        var matched = [];
+        var added = [];
+        var oldChildren = self.children;
         self.children = entries.map(function(entry) {
+          if (existing[entry.name]) {
+            return existing[entry.name];
+          }
           return new Node(entry);
         });
+        //cull files that disappeared
+        oldChildren.forEach(function(child) {
+          if (self.children.indexOf(child) == -1) {
+            if (child.element) child.element.remove();
+          }
+        })
         self.isDirty = false;
         done();
       };
       reader.readEntries(collect);
-      
     },
     walk: function(f, done) {
       M.map(this.children, function(node, i, c) {
