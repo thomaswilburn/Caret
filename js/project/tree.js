@@ -36,10 +36,10 @@ define([
         //after initial render, do the walk for path lookup
         root.walk(function(node, c) {
           pathMap[node.entry.fullPath] = node;
-          //make sure the children are read and populated
-          node.readdir(function() {
-            c();
-          });
+          //make sure the children are read and populated, then continue
+          if (node.isDir) {
+            node.readdir(c);
+          } else c();
         });
       });
       setVisible();

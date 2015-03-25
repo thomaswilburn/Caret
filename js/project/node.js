@@ -100,6 +100,7 @@ define([
       }, done)
     },
     readdir: function(done) {
+      if (!this.isDir) return done();
       //TODO: track entries, compare to existing, do not duplicate
       var self = this;
       var reader = this.entry.createReader();
