@@ -40,6 +40,7 @@
   */
   "uiTheme": "light", //dark or light, your pick
   "autoHideProject": false, //collapse the project view until you hover
+                            //set to "hidden" if you want it completely hidden
   "immersiveFullscreen": false, //hides menus/tabs in Chrome OS fullscreen mode
   "highlightLine": false,
   "hideGutter": false, //set to true to hide the line numbering
