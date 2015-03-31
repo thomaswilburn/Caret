@@ -506,9 +506,12 @@ define([
   
   var setAutoHide = function() {
     var hide = Settings.get("user").autoHideProject;
-    if (hide) {
-      pm.element.classList.add("autohide");
+    if (hide == "hidden") {
+      pm.element.classList.remove("show", "autohide");
+    } else if (hide) {
+      pm.element.classList.add("show", "autohide");
     } else {
+      pm.element.classList.add("show");
       pm.element.classList.remove("autohide");
     }
   }
