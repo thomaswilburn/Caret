@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -37,8 +37,11 @@
   "file_handlers": {
     "text": {
       "extensions": [
+        "adoc",
         "as",
         "as3",
+        "asc",
+        "asciidoc",
         "asm",
         "bat",
         "c",
@@ -66,6 +69,7 @@
         "erb",
         "ex",
         "exs",
+        "feature",
         "glsl",
         "go",
         "groovy",
@@ -126,6 +130,7 @@
         "sql",
         "styl",
         "svg",
+        "tcl",
         "tex",
         "text",
         "ts",

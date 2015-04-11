@@ -37,6 +37,7 @@
   "modes": [
     { "name": "abap", "label": "ABAP", "extensions": ["sap"] },
     { "name": "actionscript", "label": "AS3", "extensions": ["as", "as3"] },
+    { "name": "asciidoc", "label": "AsciiDoc", "extensions": ["asciidoc", "adoc", "asc"] },
     { "name": "batchfile", "label": "Batch File", "extensions": ["bat", "cmd"] },
     { "name": "sh", "label": "Bash Shell", "extensions": ["sh", "ksh", "zsh"] },
     { "name": "c_cpp", "label": "C/C++", "extensions": ["c", "cpp", "h", "cc"] },
@@ -52,6 +53,7 @@
     { "name": "elixir", "label": "Elixir", "extensions": ["ex", "exs"] },
     { "name": "elm", "label": "Elm", "extensions": ["elm"] },
     { "name": "erlang", "label": "Erlang", "extensions": ["el"] },
+    { "name": "gherkin", "label": "Gherkin", "extensions": ["feature"] },
     { "name": "glsl", "label": "GL Shader Language", "extensions": ["glsl"] },
     { "name": "golang", "label": "Go", "extensions": ["go"] },
     { "name": "haml", "label": "HAML", "extensions": ["haml"] },
@@ -89,6 +91,7 @@
     { "name": "sql", "label": "SQL", "extensions": ["sql", "pks", "pkb", "pls", "pkg"] },
     { "name": "stylus", "label": "Stylus", "extensions": ["styl"] },
     { "name": "svg", "label": "SVG", "extensions": ["svg"] },
+    { "name": "tcl", "label": "Tcl", "extensions": ["tcl"] },
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
     { "name": "twig", "label": "Twig", "extensions": ["twig"] },
     { "name": "typescript", "label": "TypeScript", "extensions": ["ts"] },
