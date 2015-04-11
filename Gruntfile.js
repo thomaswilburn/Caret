@@ -44,6 +44,7 @@ module.exports = function(grunt) {
       "js/**",
       "css/*.css",//leave the LESS behind
       "**/*.html",//both main.html and the templates
+      "templates/*",
       "require.js",
       "background.js",
       "installer.js",

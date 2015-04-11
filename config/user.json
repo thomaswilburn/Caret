@@ -77,6 +77,8 @@
   "autosaveOnBlur": false,
   //If the editor jumps to the top on focus change, set this:
   "disableReload": false,
+  //Set this to stop the editor from restoring the last set of tabs it had open
+  "disableTabRestore": false,
 
   //Wildly eccentric? You might like Vim keybindings.
   "emulateVim": false,
