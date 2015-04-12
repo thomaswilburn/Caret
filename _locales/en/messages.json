@@ -110,5 +110,12 @@
   
   "recordingMacro": { "message": "Recording macro..." },
   "setSyntax": { "message": "Set Syntax: $1" },
-  "setTheme": { "message": "Set Theme: $1" }
+  "setTheme": { "message": "Set Theme: $1" },
+  
+  "notificationUpdateAvailable": { "message": "Caret: Update available" },
+  "notificationUpdateDetail": { "message": "An update to version $1 is available. Would you like to update and restart now?" },
+  "notificationNoUpdateTitle": { "message": "No updates available" },
+  "notificationNoUpdateDetail": { "message": "There aren't any updates for Caret at this time." },
+  "notificationUpdateOK": { "message": "Yes, update and restart" },
+  "notificationUpdateWait": { "message": "No thanks" }
 }
