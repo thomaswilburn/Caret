@@ -117,5 +117,7 @@
   "notificationNoUpdateTitle": { "message": "No updates available" },
   "notificationNoUpdateDetail": { "message": "There aren't any updates for Caret at this time." },
   "notificationUpdateOK": { "message": "Yes, update and restart" },
-  "notificationUpdateWait": { "message": "No thanks" }
+  "notificationUpdateWait": { "message": "No thanks" },
+  "notificationUpdated": { "message": "Caret has been updated" },
+  "notificationUpdatedDetail": { "message": "Now at version $1. Click to see the changelog in the Chrome store." }
 }
