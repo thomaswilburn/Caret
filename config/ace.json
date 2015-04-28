@@ -65,6 +65,7 @@
     { "name": "java", "label": "Java", "extensions": ["java", "groovy"] },
     { "name": "javascript", "label": "JavaScript", "extensions": ["js"] },
     { "name": "json", "label": "JSON", "extensions": ["json", "caret-project"] },
+    { "name": "jsx", "label": "JSX", "extensions": ["jsx"] },
     { "name": "julia", "label": "Julia", "extensions": [] },
     { "name": "latex", "label": "LaTeX", "extensions": [] },
     { "name": "less", "label": "LESS", "extensions": ["less"] },
