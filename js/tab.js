@@ -85,8 +85,8 @@ define([
     if (!self.file || as) {
       var file = new File();
       file.open("save", function(err) {
-        if (err && err.message != "User cancelled") {
-          dialog(err.message);
+        if (err) {
+          if (err.message != "User cancelled") dialog(err.message);
           return deferred.fail(err);
         }
         self.file = file;
