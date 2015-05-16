@@ -1,132 +1,101 @@
-ace.define("ace/mode/elm_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
-"use strict";
+ace.define("ace/mode/abc_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function (require, exports, module) {
+    "use strict";
 
-var oop = require("../lib/oop");
-var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+    var oop = require("../lib/oop");
+    var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var ElmHighlightRules = function() {
-    var keywordMapper = this.createKeywordMapper({
-       "keyword": "as|case|class|data|default|deriving|do|else|export|foreign|" +
-            "hiding|jsevent|if|import|in|infix|infixl|infixr|instance|let|" +
-            "module|newtype|of|open|then|type|where|_|port|\u03BB"
-    }, "identifier");
-    
-    var escapeRe = /\\(\d+|['"\\&trnbvf])/;
-    
-    var smallRe = /[a-z_]/.source;
-    var largeRe = /[A-Z]/.source;
-    var idRe = /[a-z_A-Z0-9\']/.source;
+    var ABCHighlightRules = function () {
 
-    this.$rules = {
-        start: [{
-            token: "string.start",
-            regex: '"',
-            next: "string"
-        }, {
-            token: "string.character",
-            regex: "'(?:" + escapeRe.source + "|.)'?"
-        }, {
-            regex: /0(?:[xX][0-9A-Fa-f]+|[oO][0-7]+)|\d+(\.\d+)?([eE][-+]?\d*)?/,
-            token: "constant.numeric"
-        }, {
-            token : "keyword",
-            regex : /\.\.|\||:|=|\\|\"|->|<-|\u2192/
-        }, {
-            token : "keyword.operator",
-            regex : /[-!#$%&*+.\/<=>?@\\^|~:\u03BB\u2192]+/
-        }, {
-            token : "operator.punctuation",
-            regex : /[,;`]/
-        }, {
-            regex : largeRe + idRe + "+\\.?",
-            token : function(value) {
-                if (value[value.length - 1] == ".")
-                    return "entity.name.function"; 
-                return "constant.language"; 
-            }
-        }, {
-            regex : "^" + smallRe  + idRe + "+",
-            token : function(value) {
-                return "constant.language"; 
-            }
-        }, {
-            token : keywordMapper,
-            regex : "[\\w\\xff-\\u218e\\u2455-\\uffff]+\\b"
-        }, {
-            regex: "{-#?",
-            token: "comment.start",
-            onMatch: function(value, currentState, stack) {
-                this.next = value.length == 2 ? "blockComment" : "docComment";
-                return this.token;
-            }
-        }, {
-            token: "variable.language",
-            regex: /\[markdown\|/,
-            next: "markdown"
-        }, {
-            token: "paren.lparen",
-            regex: /[\[({]/ 
-        }, {
-            token: "paren.rparen",
-            regex: /[\])}]/
-        }, ],
-        markdown: [{
-            regex: /\|\]/,
-            next: "start"
-        }, {
-            defaultToken : "string"
-        }],
-        blockComment: [{
-            regex: "{-",
-            token: "comment.start",
-            push: "blockComment"
-        }, {
-            regex: "-}",
-            token: "comment.end",
-            next: "pop"
-        }, {
-            defaultToken: "comment"
-        }],
-        docComment: [{
-            regex: "{-",
-            token: "comment.start",
-            push: "docComment"
-        }, {
-            regex: "-}",
-            token: "comment.end",
-            next: "pop" 
-        }, {
-            defaultToken: "doc.comment"
-        }],
-        string: [{
-            token: "constant.language.escape",
-            regex: escapeRe,
-        }, {
-            token: "text",
-            regex: /\\(\s|$)/,
-            next: "stringGap"
-        }, {
-            token: "string.end",
-            regex: '"',
-            next: "start"
-        }],
-        stringGap: [{
-            token: "text",
-            regex: /\\/,
-            next: "string"
-        }, {
-            token: "error",
-            regex: "",
-            next: "start"
-        }],
+        this.$rules = {
+            start: [
+                {
+                    token: ['zupfnoter.information.comment.line.percentage', 'information.keyword', 'in formation.keyword.embedded'],
+                    regex: '(%%%%)(hn\\.[a-z]*)(.*)',
+                    comment: 'Instruction Comment'
+                },
+                {
+                    token: ['information.comment.line.percentage', 'information.keyword.embedded'],
+                    regex: '(%%)(.*)',
+                    comment: 'Instruction Comment'
+                },
+
+                {
+                    token: 'comment.line.percentage',
+                    regex: '%.*',
+                    comment: 'Comments'
+                },
+
+                {
+                    token: 'barline.keyword.operator',
+                    regex: '[\\[:]*[|:][|\\]:]*(?:\\[?[0-9]+)?|\\[[0-9]+',
+                    comment: 'Bar lines'
+                },
+                {
+                    token: ['information.keyword.embedded', 'information.argument.string.unquoted'],
+                    regex: '(\\[[A-Za-z]:)([^\\]]*\\])',
+                    comment: 'embedded Header lines'
+                },
+                {
+                    token: ['information.keyword', 'information.argument.string.unquoted'],
+                    regex: '^([A-Za-z]:)([^%\\\\]*)',
+                    comment: 'Header lines'
+                },
+                {
+                    token: ['text', 'entity.name.function', 'string.unquoted', 'text'],
+                    regex: '(\\[)([A-Z]:)(.*?)(\\])',
+                    comment: 'Inline fields'
+                },
+                {
+                    token: ['accent.constant.language', 'pitch.constant.numeric', 'duration.constant.numeric'],
+                    regex: '([\\^=_]*)([A-Ga-gz][,\']*)([0-9]*/*[><0-9]*)',
+                    comment: 'Notes'
+                },
+                {
+                    token: 'zupfnoter.jumptarget.string.quoted',
+                    regex: '[\\"!]\\^\\:.*?[\\"!]',
+                    comment: 'Zupfnoter jumptarget'
+                }, {
+                    token: 'zupfnoter.goto.string.quoted',
+                    regex: '[\\"!]\\^\\@.*?[\\"!]',
+                    comment: 'Zupfnoter goto'
+                },
+                {
+                    token: 'zupfnoter.annotation.string.quoted',
+                    regex: '[\\"!]\\^\\!.*?[\\"!]',
+                    comment: 'Zupfnoter annoation'
+                },
+                {
+                    token: 'zupfnoter.annotationref.string.quoted',
+                    regex: '[\\"!]\\^\\#.*?[\\"!]',
+                    comment: 'Zupfnoter annotation reference'
+                },
+                {
+                    token: 'chordname.string.quoted',
+                    regex: '[\\"!]\\^.*?[\\"!]',
+                    comment: 'abc chord'
+                },
+                {
+                    token: 'string.quoted',
+                    regex: '[\\"!].*?[\\"!]',
+                    comment: 'abc annotation'
+                }
+
+            ]
+        };
+
+        this.normalizeRules();
     };
-    
-    this.normalizeRules();
-};
 
-oop.inherits(ElmHighlightRules, TextHighlightRules);
+    ABCHighlightRules.metaData = {
+        fileTypes: ['abc'],
+        name: 'ABC',
+        scopeName: 'text.abcnotation'
+    };
 
-exports.ElmHighlightRules = ElmHighlightRules;
+
+    oop.inherits(ABCHighlightRules, TextHighlightRules);
+
+    exports.ABCHighlightRules = ABCHighlightRules;
 });
 
 ace.define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
@@ -269,25 +238,23 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-ace.define("ace/mode/elm",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/elm_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
-"use strict";
+ace.define("ace/mode/abc",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/abc_highlight_rules","ace/mode/folding/cstyle"], function (require, exports, module) {
+    "use strict";
 
-var oop = require("../lib/oop");
-var TextMode = require("./text").Mode;
-var HighlightRules = require("./elm_highlight_rules").ElmHighlightRules;
-var FoldMode = require("./folding/cstyle").FoldMode;
+    var oop = require("../lib/oop");
+    var TextMode = require("./text").Mode;
+    var ABCHighlightRules = require("./abc_highlight_rules").ABCHighlightRules;
+    var FoldMode = require("./folding/cstyle").FoldMode;
 
-var Mode = function() {
-    this.HighlightRules = HighlightRules;
-    this.foldingRules = new FoldMode();
-};
-oop.inherits(Mode, TextMode);
+    var Mode = function () {
+        this.HighlightRules = ABCHighlightRules;
+        this.foldingRules = new FoldMode();
+    };
+    oop.inherits(Mode, TextMode);
 
-(function() {
-    this.lineCommentStart = "--";
-    this.blockComment = {start: "{-", end: "-}"};
-    this.$id = "ace/mode/elm";
-}).call(Mode.prototype);
+    (function () {
+        this.$id = "ace/mode/abc"
+    }).call(Mode.prototype);
 
-exports.Mode = Mode;
+    exports.Mode = Mode;
 });

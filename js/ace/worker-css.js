@@ -273,20 +273,24 @@ exports.copyArray = function(array){
     return copy;
 };
 
-exports.deepCopy = function (obj) {
+exports.deepCopy = function deepCopy(obj) {
     if (typeof obj !== "object" || !obj)
         return obj;
+    var copy;
+    if (Array.isArray(obj)) {
+        copy = [];
+        for (var key = 0; key < obj.length; key++) {
+            copy[key] = deepCopy(obj[key]);
+        }
+        return copy;
+    }
     var cons = obj.constructor;
     if (cons === RegExp)
         return obj;
     
-    var copy = cons();
+    copy = cons();
     for (var key in obj) {
-        if (typeof obj[key] === "object") {
-            copy[key] = exports.deepCopy(obj[key]);
-        } else {
-            copy[key] = obj[key];
-        }
+        copy[key] = deepCopy(obj[key]);
     }
     return copy;
 };
@@ -1056,9 +1060,9 @@ var Document = function(text) {
     this._insertLines = function(row, lines) {
         if (lines.length == 0)
             return {row: row, column: 0};
-        while (lines.length > 0xF000) {
-            var end = this._insertLines(row, lines.slice(0, 0xF000));
-            lines = lines.slice(0xF000);
+        while (lines.length > 20000) {
+            var end = this._insertLines(row, lines.slice(0, 20000));
+            lines = lines.slice(20000);
             row = end.row;
         }
 
@@ -7965,11 +7969,11 @@ oop.inherits(Worker, Mirror);
     this.onUpdate = function() {
         var value = this.doc.getValue();
         if (!value)
-            return this.sender.emit("csslint", []);
+            return this.sender.emit("annotate", []);
         var infoRules = this.infoRules;
 
         var result = CSSLint.verify(value, this.ruleset);
-        this.sender.emit("csslint", result.messages.map(function(msg) {
+        this.sender.emit("annotate", result.messages.map(function(msg) {
             return {
                 row: msg.line - 1,
                 column: msg.col - 1,

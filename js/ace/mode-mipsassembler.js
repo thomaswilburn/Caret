@@ -1,84 +1,36 @@
-ace.define("ace/mode/io_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/mipsassembler_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var IoHighlightRules = function() {
+var mipsassemblerHighlightRules = function() {
 
-    this.$rules = { start: 
-       [ { token: [ 'text', 'meta.empty-parenthesis.io' ],
-           regex: '(\\()(\\))',
-           comment: 'we match this to overload return inside () --Allan; scoping rules for what gets the scope have changed, so we now group the ) instead of the ( -- Rob' },
-         { token: [ 'text', 'meta.comma-parenthesis.io' ],
-           regex: '(\\,)(\\))',
-           comment: 'We want to do the same for ,) -- Seckar; same as above -- Rob' },
-         { token: 'keyword.control.io',
-           regex: '\\b(?:if|ifTrue|ifFalse|ifTrueIfFalse|for|loop|reverseForeach|foreach|map|continue|break|while|do|return)\\b' },
-         { token: 'punctuation.definition.comment.io',
-           regex: '/\\*',
-           push: 
-            [ { token: 'punctuation.definition.comment.io',
-                regex: '\\*/',
-                next: 'pop' },
-              { defaultToken: 'comment.block.io' } ] },
-         { token: 'punctuation.definition.comment.io',
-           regex: '//',
-           push: 
-            [ { token: 'comment.line.double-slash.io',
-                regex: '$',
-                next: 'pop' },
-              { defaultToken: 'comment.line.double-slash.io' } ] },
-         { token: 'punctuation.definition.comment.io',
-           regex: '#',
-           push: 
-            [ { token: 'comment.line.number-sign.io', regex: '$', next: 'pop' },
-              { defaultToken: 'comment.line.number-sign.io' } ] },
-         { token: 'variable.language.io',
-           regex: '\\b(?:self|sender|target|proto|protos|parent)\\b',
-           comment: 'I wonder if some of this isn\'t variable.other.language? --Allan; scoping this as variable.language to match Objective-C\'s handling of \'self\', which is inconsistent with C++\'s handling of \'this\' but perhaps intentionally so -- Rob' },
-         { token: 'keyword.operator.io',
-           regex: '<=|>=|=|:=|\\*|\\||\\|\\||\\+|-|/|&|&&|>|<|\\?|@|@@|\\b(?:and|or)\\b' },
-         { token: 'constant.other.io', regex: '\\bGL[\\w_]+\\b' },
-         { token: 'support.class.io', regex: '\\b[A-Z](?:\\w+)?\\b' },
-         { token: 'support.function.io',
-           regex: '\\b(?:clone|call|init|method|list|vector|block|\\w+(?=\\s*\\())\\b' },
-         { token: 'support.function.open-gl.io',
-           regex: '\\bgl(?:u|ut)?[A-Z]\\w+\\b' },
-         { token: 'punctuation.definition.string.begin.io',
-           regex: '"""',
-           push: 
-            [ { token: 'punctuation.definition.string.end.io',
-                regex: '"""',
-                next: 'pop' },
-              { token: 'constant.character.escape.io', regex: '\\\\.' },
-              { defaultToken: 'string.quoted.triple.io' } ] },
-         { token: 'punctuation.definition.string.begin.io',
-           regex: '"',
-           push: 
-            [ { token: 'punctuation.definition.string.end.io',
+    this.$rules = {
+            start: [{
+                token: "string.start",
                 regex: '"',
-                next: 'pop' },
-              { token: 'constant.character.escape.io', regex: '\\\\.' },
-              { defaultToken: 'string.quoted.double.io' } ] },
-         { token: 'constant.numeric.io',
-           regex: '\\b(?:0(?:x|X)[0-9a-fA-F]*|(?:[0-9]+\\.?[0-9]*|\\.[0-9]+)(?:(?:e|E)(?:\\+|-)?[0-9]+)?)(?:L|l|UL|ul|u|U|F|f)?\\b' },
-         { token: 'variable.other.global.io', regex: 'Lobby\\b' },
-         { token: 'constant.language.io',
-           regex: '\\b(?:TRUE|true|FALSE|false|NULL|null|Null|Nil|nil|YES|NO)\\b' } ] }
+                next: "qstring"
+            }],
+            qstring: [{
+                token: "escape",
+                regex: /\\./,
+            }, {
+                token: "string.end",
+                regex: '"',
+                next: "start"
+            }],
+        }
     
     this.normalizeRules();
 };
 
-IoHighlightRules.metaData = { fileTypes: [ 'io' ],
-      keyEquivalent: '^~I',
-      name: 'Io',
-      scopeName: 'source.io' }
+mipsassemblerHighlightRules.metaData = 
 
 
-oop.inherits(IoHighlightRules, TextHighlightRules);
+oop.inherits(mipsassemblerHighlightRules, TextHighlightRules);
 
-exports.IoHighlightRules = IoHighlightRules;
+exports.mipsassemblerHighlightRules = mipsassemblerHighlightRules;
 });
 
 ace.define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
@@ -106,7 +58,7 @@ oop.inherits(FoldMode, BaseFoldMode);
     this.foldingStopMarker = /^[^\[\{]*(\}|\])|^[\s\*]*(\*\/)/;
     this.singleLineBlockCommentRe= /^\s*(\/\*).*\*\/\s*$/;
     this.tripleStarBlockCommentRe = /^\s*(\/\*\*\*).*\*\/\s*$/;
-    this.startRegionRe = /^\s*(\/\*|\/\/)#?region\b/;
+    this.startRegionRe = /^\s*(\/\*|\/\/)#region\b/;
     this._getFoldWidgetBase = this.getFoldWidget;
     this.getFoldWidget = function(session, foldStyle, row) {
         var line = session.getLine(row);
@@ -194,12 +146,13 @@ oop.inherits(FoldMode, BaseFoldMode);
         
         return new Range(startRow, startColumn, endRow, session.getLine(endRow).length);
     };
+    
     this.getCommentRegionBlock = function(session, line, row) {
         var startColumn = line.search(/\s*$/);
         var maxRow = session.getLength();
         var startRow = row;
         
-        var re = /^\s*(?:\/\*|\/\/|--)#?(end)?region\b/;
+        var re = /^\s*(?:\/\*|\/\/)#(end)?region\b/;
         var depth = 1;
         while (++row < maxRow) {
             line = session.getLine(row);
@@ -221,25 +174,22 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-ace.define("ace/mode/io",["require","exports","module","ace/lib/oop","ace/mode/text","ace/tokenizer","ace/mode/io_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
+ace.define("ace/mode/mipsassembler",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/mipsassembler_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
-var IoHighlightRules = require("./io_highlight_rules").IoHighlightRules;
+var HighlightRules = require("./mipsassembler_highlight_rules").HighlightRules;
 var FoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    this.HighlightRules = IoHighlightRules;
+    this.HighlightRules = HighlightRules;
     this.foldingRules = new FoldMode();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
-    this.lineCommentStart = "//";
-    this.blockComment = {start: "/*", end: "*/"};
-    this.$id = "ace/mode/io"
+    this.$id = "ace/mode/mipsassembler"
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

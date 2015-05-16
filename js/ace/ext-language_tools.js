@@ -1069,8 +1069,11 @@ var AcePopup = function(parentNode) {
 
         if (data.meta) {
             var maxW = popup.renderer.$size.scrollerWidth / popup.renderer.layerConfig.characterWidth;
-            if (data.meta.length + data.caption.length < maxW - 2)
-                tokens.push({type: "rightAlignedText", value: data.meta});
+            var metaData = data.meta;
+            if (metaData.length + data.caption.length > maxW - 2) {
+                metaData = metaData.substr(0, maxW - data.caption.length - 3) + "\u2026"
+            }
+            tokens.push({type: "rightAlignedText", value: metaData});
         }
         return tokens;
     };
@@ -1266,9 +1269,10 @@ var dom = require("./lib/dom");
 var snippetManager = require("./snippets").snippetManager;
 
 var Autocomplete = function() {
-    this.autoInsert = true;
+    this.autoInsert = false;
     this.autoSelect = true;
     this.exactMatch = false;
+    this.gatherCompletionsId = 0;
     this.keyboardHandler = new HashHandler();
     this.keyboardHandler.bindKeys(this.commands);
 
@@ -1285,7 +1289,6 @@ var Autocomplete = function() {
 };
 
 (function() {
-    this.gatherCompletionsId = 0;
 
     this.$init = function() {
         this.popup = new AcePopup(document.body || document.documentElement);
@@ -1310,6 +1313,8 @@ var Autocomplete = function() {
 
         this.popup.setData(this.completions.filtered);
 
+        editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
+        
         var renderer = editor.renderer;
         this.popup.setRow(this.autoSelect ? 0 : -1);
         if (!keepPopupPosition) {
@@ -1341,10 +1346,9 @@ var Autocomplete = function() {
         this.changeTimer.cancel();
         this.hideDocTooltip();
 
-        if (this.popup && this.popup.isOpen) {
-            this.gatherCompletionsId += 1;
+        this.gatherCompletionsId += 1;
+        if (this.popup && this.popup.isOpen)
             this.popup.hide();
-        }
 
         if (this.base)
             this.base.detach();
@@ -1366,7 +1370,7 @@ var Autocomplete = function() {
     this.blurListener = function(e) {
         var el = document.activeElement;
         var text = this.editor.textInput.getElement()
-        if (el != text && el.parentNode != this.popup.container
+        if (el != text && ( !this.popup || el.parentNode != this.popup.container )
             && el != this.tooltipNode && e.relatedTarget != this.tooltipNode
             && e.relatedTarget != text
         ) {
@@ -1428,7 +1432,6 @@ var Autocomplete = function() {
         "Ctrl-Down|Ctrl-End": function(editor) { editor.completer.goTo("end"); },
 
         "Esc": function(editor) { editor.completer.detach(); },
-        "Space": function(editor) { editor.completer.detach(); editor.insert(" ");},
         "Return": function(editor) { return editor.completer.insertMatch(); },
         "Shift-Return": function(editor) { editor.completer.insertMatch(true); },
         "Tab": function(editor) {
@@ -1484,7 +1487,6 @@ var Autocomplete = function() {
             editor.completer = this;
         }
 
-        editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
         editor.on("changeSelection", this.changeListener);
         editor.on("blur", this.blurListener);
         editor.on("mousedown", this.mousedownListener);
@@ -1620,7 +1622,7 @@ Autocomplete.startCommand = {
     exec: function(editor) {
         if (!editor.completer)
             editor.completer = new Autocomplete();
-        editor.completer.autoInsert =
+        editor.completer.autoInsert = false;
         editor.completer.autoSelect = true;
         editor.completer.showPopup(editor);
         editor.completer.cancelContextMenu();
@@ -1854,7 +1856,7 @@ var loadSnippetFile = function(id) {
 function getCompletionPrefix(editor) {
     var pos = editor.getCursorPosition();
     var line = editor.session.getLine(pos.row);
-    var prefix = util.retrievePrecedingIdentifier(line, pos.column);
+    var prefix;
     editor.completers.forEach(function(completer) {
         if (completer.identifierRegexps) {
             completer.identifierRegexps.forEach(function(identifierRegex) {
@@ -1863,12 +1865,11 @@ function getCompletionPrefix(editor) {
             });
         }
     });
-    return prefix;
+    return prefix || util.retrievePrecedingIdentifier(line, pos.column);
 }
 
 var doLiveAutocomplete = function(e) {
     var editor = e.editor;
-    var text = e.args || "";
     var hasCompleter = editor.completer && editor.completer.activated;
     if (e.command.name === "backspace") {
         if (hasCompleter && !getCompletionPrefix(editor))
@@ -1880,7 +1881,6 @@ var doLiveAutocomplete = function(e) {
             if (!editor.completer) {
                 editor.completer = new Autocomplete();
             }
-            editor.completer.autoSelect = false;
             editor.completer.autoInsert = false;
             editor.completer.showPopup(editor);
         }
