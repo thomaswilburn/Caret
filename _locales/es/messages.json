@@ -1,18 +1,18 @@
 {
   "loading": {
-    "message": "cargandio"
+    "message": "cargando"
   },
   "aboutWrittenBy": {
-    "message": "Programado por <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
+    "message": "Programado por <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>. Traducido por Damián Kleiman."
   },
   "aboutHomePage": {
-    "message": "Pagina Principal"
+    "message": "Página Principal"
   },
   "aboutSupport": {
     "message": "Soporte"
   },
   "aboutLicense": {
-    "message": "Caret esta disponible bajo licencia GPL, lo que significa que <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> esta disponible libremente para que usted use y modifique a su antojo. Si ud. considera que Caret le es util, considere donar a la Free Software Foundation's <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fund to End Software Patents</a>."
+    "message": "Caret está disponible bajo licencia GPL, lo que significa que <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> está disponible libremente para que usted use y modifique a su antojo. Si ud. considera que Caret le es útil, considere donar a la Free Software Foundation's <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fund to End Software Patents</a>."
   },
   "menuFile": { "message": "Archivo" },
   "menuNewFile": { "message": "Nuevo" },
@@ -29,10 +29,10 @@
   "menuRedo": { "message": "Rehacer" },
   "menuInsertFromFile": { "message": "Insertar dede Archivo" },
   "menuSelectWord": { "message": "Elegir Palabra" },
-  "menuSelectLine": { "message": "Seleccionar Linea" },
+  "menuSelectLine": { "message": "Seleccionar Línea" },
   "menuSelectP": { "message": "Seleccionar Parrafo" },
   "menuSelectToMatch": { "message": "Seleccionar Pareja" },
-  "menuWrapToPrint": { "message": "Alinear al Margen de Impresion" },
+  "menuWrapToPrint": { "message": "Alinear al Margen de Impresión" },
   "menuFind": { "message": "Encontrar" },
   "menuFindReplace": { "message": "Encontrar/Reemplazar" },
   "menuFindNext": { "message": "Encontrar Siguiente" },
@@ -40,20 +40,20 @@
   "menuBlockComment": { "message": "Comentario en Bloque" },
   "menuTabsToSpaces": { "message": "Convertir Tabs a Espacios" },
   "menuSpacesToTabs": { "message": "Convertir Espacipo a Tabs" },
-  "menuSetNewline": { "message": "Modo Nueva Linea" },
+  "menuSetNewline": { "message": "Modo Nueva Línea" },
   "menuTrimWhitespace": { "message": "Eliminar Espacios en Blanco" },
-  "menuJoinLines": { "message": "Unir Lineas" },
-  "menuSortLines": { "message": "Ordenar Lineas" },
-  "menuSplitLine": { "message": "Dividir Linea" },
-  "menuToUppercase": { "message": "A Mayusculas" },
-  "menuToLowercase": { "message": "A Minusculas" },
-  "menuMoveLinesUp": { "message": "Mover Lineas Arriba" },
-  "menuMoveLinesDown": { "message": "Mover Lineas Abajo" },
+  "menuJoinLines": { "message": "Unir Líneas" },
+  "menuSortLines": { "message": "Ordenar Líneas" },
+  "menuSplitLine": { "message": "Dividir Línea" },
+  "menuToUppercase": { "message": "A Mayúsculas" },
+  "menuToLowercase": { "message": "A Minúsculas" },
+  "menuMoveLinesUp": { "message": "Mover Líneas Arriba" },
+  "menuMoveLinesDown": { "message": "Mover Líneas Abajo" },
   
   "menuTools": { "message": "Herramientas" },
   "menuGoToAnything": { "message": "Ir A..." },
-  "menuGoToLine": { "message": "Ir A Linea" },
-  "menuGoToSearch": { "message": "Ir A Busqueda" },
+  "menuGoToLine": { "message": "Ir A Línea" },
+  "menuGoToSearch": { "message": "Ir A Búsqueda" },
   "menuGoToRef": { "message": "Ir A Referencia" },
   "menuCommandPalette": { "message": "Paleta De Comandos" },
   "menuToggleMacro": { "message": "Activar Grabar Macro" },
@@ -112,12 +112,12 @@
   "setSyntax": { "message": "Pone Sintaxis: $1" },
   "setTheme": { "message": "Pone Tema: $1" },
   
-  "notificationUpdateAvailable": { "message": "Caret: Actualizacion disponible" },
-  "notificationUpdateDetail": { "message": "Actualizacion a la version $1 disponible. Quiere actualizar y reiniciar ahora?" },
+  "notificationUpdateAvailable": { "message": "Caret: Actualización disponible" },
+  "notificationUpdateDetail": { "message": "Actualización a la versión $1 disponible. Quiere actualizar y reiniciar ahora?" },
   "notificationNoUpdateTitle": { "message": "No hay actualizaciones disponibles" },
   "notificationNoUpdateDetail": { "message": "No hay actualizaciones de Caret en este momento." },
   "notificationUpdateOK": { "message": "Si, actualizar y reiniciar" },
   "notificationUpdateWait": { "message": "No gracias" },
   "notificationUpdated": { "message": "Caret fue actualizado" },
-  "notificationUpdatedDetail": { "message": "Ahora en la version $1. Haga clic para ver los cambios en la tienda Chrome." }
+  "notificationUpdatedDetail": { "message": "Ahora en la versión $1. Haga clic para ver los cambios en la tienda Chrome." }
 }
