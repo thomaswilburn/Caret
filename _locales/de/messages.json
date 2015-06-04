@@ -1,0 +1,123 @@
+{
+  "loading": {
+    "message": "lade&hellip;"
+  },
+  "aboutWrittenBy": {
+    "message": "Von <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
+  },
+  "aboutHomePage": {
+    "message": "Startseite"
+  },
+  "aboutSupport": {
+    "message": "Unterstützung"
+  },
+  "aboutLicense": {
+    "message": "Caret ist unter einer GPL Lizenz verfügbar, was bedeutet, dass der <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>Quellcode</a> zur freien Benutzung und Veränderung verfügbar ist. Wenn Sie Caret nutzvoll finden, erwägen Sie eine Spende an den <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fond zum Ende von Software Patenten</a> der Free Software Foundation."
+  },
+  "menuFile": { "message": "Datei" },
+  "menuNewFile": { "message": "Neue Datei" },
+  "menuOpenFile": { "message": "Datei öffnen" },
+  "menuSave": { "message": "Datei speichern" },
+  "menuSaveAs": { "message": "Datei speichern unter&hellip;" },
+  "menuRevert": { "message": "Zurücksetzen" },
+  "menuClose": { "message": "Datei schließen" },
+  "menuPrint": { "message": "Drucken" },
+  "menuExit": { "message": "Beenden" },
+  
+  "menuEdit": { "message": "Bearbeiten" },
+  "menuUndo": { "message": "Rückgängig" },
+  "menuRedo": { "message": "Wiederholen" },
+  "menuInsertFromFile": { "message": "Aus Datei einfügen" },
+  "menuSelectWord": { "message": "Wort markieren" },
+  "menuSelectLine": { "message": "Zeile markieren" },
+  "menuSelectP": { "message": "Absatz markieren" },
+  "menuSelectToMatch": { "message": "Zusammengehöriges markieren" },
+  "menuWrapToPrint": { "message": "Für Druckbegrenzung umbrechen" },
+  "menuFind": { "message": "Suchen" },
+  "menuFindReplace": { "message": "Suchen und Ersetzen" },
+  "menuFindNext": { "message": "Nächster Treffer" },
+  "menuToggleComment": { "message": "Kommentar Ein/Aus" },
+  "menuBlockComment": { "message": "Block-Kommentar Ein/Aus" },
+  "menuTabsToSpaces": { "message": "Konvertiere Tabs zu Leerzeichen" },
+  "menuSpacesToTabs": { "message": "Konvertiere Leerzeichen zu Tabs" },
+  "menuSetNewline": { "message": "Zeilenvorschub-Modus festlegen" },
+  "menuTrimWhitespace": { "message": "Anhängendes Leerzeichen entfernen" },
+  "menuJoinLines": { "message": "Zeilen zusammenfügen" },
+  "menuSortLines": { "message": "Zeilen sortieren" },
+  "menuSplitLine": { "message": "Zeilen trennen" },
+  "menuToUppercase": { "message": "In Großbuchstaben umwandeln" },
+  "menuToLowercase": { "message": "In Kleinbuchstaben umwandeln" },
+  "menuMoveLinesUp": { "message": "Zeilen nach oben verschieben" },
+  "menuMoveLinesDown": { "message": "Zeilen nach unten verschieben" },
+  
+  "menuTools": { "message": "Tools" },
+  "menuGoToAnything": { "message": "Gehe zu &hellip;" },
+  "menuGoToLine": { "message": "Gehe zu Zeile" },
+  "menuGoToSearch": { "message": "Gehe zur Suche" },
+  "menuGoToRef": { "message": "Gehe zu Verweis" },
+  "menuCommandPalette": { "message": "Öffne Befehlszeile" },
+  "menuToggleMacro": { "message": "Makro Aufzeichnung Ein/Aus" },
+  "menuReplayMacro": { "message": "Makro Wiederholen" },
+  "menuWordCount": { "message": "Wortzählung" },
+  
+  "menuProject": { "message": "Projekt" },
+  "menuAddDir": { "message": "Verzeichnis hinzufügen" },
+  "menuRemoveAllDirs": { "message": "Alle Verzeichnisse entfernen" },
+  "menuRefreshDir": { "message": "Verzeichnisse neu laden" },
+  "menuSaveProject": { "message": "Projektdatei speichern" },
+  "menuEditProject": { "message": "Aktuelles Projekt bearbeiten" },
+  "menuOpenProject": { "message": "Projektdatei öffnen" },
+  "menuClearProject": { "message": "Projekt löschen" },
+  
+  "menuSettings": { "message": "Einstellungen" },
+  "menuUserPrefs": { "message": "Benutzereinstellungen" },
+  "menuKeyboard": { "message": "Tastatur" },
+  "menuMenus": { "message": "Menüs" },
+  "menuAPI": { "message": "Externe Befehle" },
+  "menuTheme": { "message": "Benutzerdefiniertes Theme" },
+  "menuDefaults": { "message": "Standardeinstellungen" },
+  "menuUserPrefsDefault": { "message": "Benutzereinstellungen (Standard)" },
+  "menuKeyboardDefault": { "message": "Tastatur (Standard)" },
+  "menuMenusDefault": { "message": "Menüs (Standard)" },
+  "menuThemeDefault": { "message": "Benutzerdefiniertes Theme (Standard)" },
+  "menuReset": { "message": "Zurücksetzen" },
+  "menuResetUserPrefs": { "message": "Benutzereinstellungen zurücksetzen" },
+  "menuResetKeyboard": { "message": "Tastatur zurücksetzen" },
+  "menuResetMenus": { "message": "Menüs zurücksetzen" },
+  "menuResetTheme": { "message": "Benutzerdefiniertes Theme zurücksetzen" },
+  "menuEmergencyReset": { "message": "Notfall-Zurücksetzen" },
+  "menuHelp": { "message": "Hilfe" },
+  "menuCheckForUpdates": { "message": "Nach Aktualisierungen suchen" },
+  "menuAboutCaret": { "message": "Über Caret" },
+  
+  "dialogModifiedBackground": { "message": "Diese Datei wurde seit dem letzten Speicherzeitpunkt geändert. Möchten Sie sie neu laden?" },
+  "dialogModifiedUnsaved": { "message": "$1 wurde geändert.\nMöchten Sie die Änderungen speichern?" },
+  "dialogCancel": { "message": "Abbrechen" },
+  "dialogOK": { "message": "OK" },
+  "dialogReload": { "message": "Neu laden" },
+  "dialogSave": { "message": "Speichern" },
+  "dialogDiscard": { "message": "Verwerfen" },
+  "dialogUnsaved": { "message": "$1 beinhaltet ungespeicherte Änderungen." },
+  
+  "projectNoCurrentProject": { "message": "Kein Projekt geöffnet." },
+  
+  "paletteExecuting": { "message": "Führe $1 aus&hellip" },
+  
+  "fileLoaded": { "message": "$1 geladen, $2 bytes" },
+  "fileAutosaving": { "message": "Auto-Speichere alle Tabs&hellip" },
+  
+  "editorWordCount": { "message": "$1 Zeichen, $2 Wörter, $3 Zeilen" },
+  
+  "recordingMacro": { "message": "Zeichne Makro auf&hellip;" },
+  "setSyntax": { "message": "Setze Syntax: $1" },
+  "setTheme": { "message": "Setze Theme: $1" },
+  
+  "notificationUpdateAvailable": { "message": "Caret: Aktualisierung verfügbar" },
+  "notificationUpdateDetail": { "message": "Ein Update auf Version $1 ist Verfügbar. Möchten Sie die Aktualisierung jetzt ausführen und Caret neu starten?" },
+  "notificationNoUpdateTitle": { "message": "Keine Aktualisierungen verfügbar" },
+  "notificationNoUpdateDetail": { "message": "Momentan sind keine Aktualisierungen für Caret vorhanden." },
+  "notificationUpdateOK": { "message": "Ja, Aktualisieren und Neustarten" },
+  "notificationUpdateWait": { "message": "Nein, danke" },
+  "notificationUpdated": { "message": "Caret wurde aktualisiert" },
+  "notificationUpdatedDetail": { "message": "Aktuelle Version: $1. Klicken Sie, um die Änderungshistorie im Chrome Web Store anzusehen." }
+}
