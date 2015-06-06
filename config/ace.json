@@ -78,6 +78,7 @@
     { "name": "markdown", "label": "Markdown", "extensions": ["md", "markdown"] },
     { "name": "mask", "label": "Mask", "extensions": ["mask"] },
     { "name": "matlab", "label": "MATLAB", "extensions": ["m", "mat"] },
+    { "name": "maze", "label": "Maze", "extensions": ["mz"] },
     { "name": "mysql", "label": "MySQL", "extensions": ["sql"] },
     { "name": "objectivec", "label": "Objective C", "extensions": ["obc"] },
     { "name": "perl", "label": "Perl", "extensions": ["pl", "cgi", "pm"] },
