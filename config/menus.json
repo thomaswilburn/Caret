@@ -6,6 +6,7 @@
       { "label": "menuOpenFile", "command": "session:open-file" },
       { "label": "menuSave", "command": "session:save-file" },
       { "label": "menuSaveAs", "command": "session:save-file-as" },
+      { "label": "menuSaveAll", "command": "session:save-all" },
       { "label": "menuRevert", "command": "session:revert-file" },
       { "label": "menuClose", "command": "session:close-tab" },
       { "label": "menuPrint", "command": "editor:print" },

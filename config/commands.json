@@ -8,6 +8,7 @@
   { "command": "session:open-file", "label": "Open File" },
   { "command": "session:save-file", "label": "Save File" },
   { "command": "session:save-file-as", "label": "Save File As..." },
+  { "command": "session:save-all", "label": "Save all" },
   { "command": "session:revert-file", "label": "Revert File" },
   { "command": "session:close-tab", "label": "Close File" },
   { "command": "editor:print", "label": "Print File" },

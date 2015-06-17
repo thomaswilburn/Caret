@@ -19,6 +19,7 @@
   "menuOpenFile": { "message": "Datei öffnen" },
   "menuSave": { "message": "Datei speichern" },
   "menuSaveAs": { "message": "Datei speichern unter&hellip;" },
+  "menuSaveAll": { "message": "Alle Dateien speichern" },
   "menuRevert": { "message": "Zurücksetzen" },
   "menuClose": { "message": "Datei schließen" },
   "menuPrint": { "message": "Drucken" },

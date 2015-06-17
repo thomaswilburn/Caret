@@ -54,6 +54,19 @@ define([
       });
   });
   
+  command.on("session:save-all", function(c) {
+    var tabs = sessions.getAllTabs();
+    
+    tabs.forEach(function(tab, i) {
+      if (tab.modified && tab.file) {
+        tab.save(false);
+      }
+    });
+    
+    command.fire("session:syntax");
+    if (c) c();
+  });
+  
   command.on("session:save-file-as", function(c) {
     var tab = sessions.getCurrent();
     tab.save(true).then(function() {

@@ -6,6 +6,7 @@
   "Ctrl-W": "session:close-tab",
   "Ctrl-S": "session:save-file",
   "Ctrl-Shift-S": "session:save-file-as",
+  "Ctrl-Alt-S": "session:save-all",
   "Ctrl-N": "session:new-file",
   "Ctrl-Tab": "session:change-tab",
   "Ctrl-Shift-Tab": { "command": "session:change-tab", "argument": -1 },
