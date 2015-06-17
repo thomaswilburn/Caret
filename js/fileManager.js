@@ -55,16 +55,20 @@ define([
   });
   
   command.on("session:save-all", function(c) {
-    var tabs = sessions.getAllTabs();
-    
-    tabs.forEach(function(tab, i) {
-      if (tab.modified && tab.file) {
-        tab.save(false);
-      }
+    var tabs= sessions.getAllTabs();
+  
+    // Only keep tabs with modifications and that can be readily saved
+    var savePromises = tabs.filter(function(tab) {
+      return tab.modified && tab.file;
+    }).map(function(tab) {
+      return tab.save(false);
     });
     
-    command.fire("session:syntax");
-    if (c) c();
+    Promise.all(savePromises).then( function() {
+      command.fire("session:syntax");
+      if (c) c();
+    });
+    
   });
   
   command.on("session:save-file-as", function(c) {
