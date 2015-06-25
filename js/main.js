@@ -144,6 +144,17 @@ require([
     chrome.runtime.reload();
   });
   
+  //developer command for reloading CSS
+  command.on("app:reload-css", function() {
+    var previous = document.querySelector("link[rel=stylesheet]");
+    previous.remove();
+    var url = previous.href;
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = url + "?" + Date.now();
+    document.head.append(link);
+  });
+  
   //handle immersive fullscreen
   var onFullscreen = function() {
     Settings.pull("user").then(function(data) {

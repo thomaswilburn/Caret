@@ -1,5 +1,5 @@
 .tabs {
-  background: linear-gradient(to bottom, @faded, lighten(@faded, 10%));
+  background: @faded;
   padding: 2px 2px 0 0;
   display: flex;
   justify-content: flex-start;
@@ -8,24 +8,28 @@
   .tab {
     display: flex;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     max-width: 200px;
-    margin-right: 3px;
+    // margin-right: 3px;
     opacity: .5;
-    background: radial-gradient(ellipse 200px 25px at top center, lighten(@background, 15%), darken(@background, 10%));
-    border-radius: 2px 2px 0 0;
+    background: @background;
     border-bottom: 4px solid darken(@background, 10%);
     color: @foreground;
-    padding: 0;
+    padding: 0 12px;
     flex: 1 1 auto;
     position: relative;
-    box-shadow: 0px -4px 16px rgba(0, 0, 0, .3);
     
     a {
       text-decoration: none;
       color: @foreground;
-      padding: 4px 0;
+      padding: 6px 0;
       width: 100%;
+      flex: 1;
+      
+      &:focus {
+        outline: none;
+        border: none;
+      }
     }
     
     transition: max-width .5s linear, -webkit-transform .2s ease, border-width .2s ease, opacity .2s ease;
@@ -37,6 +41,7 @@
       color: @foreground;
       opacity: 1;
       z-index: 9;
+      font-weight: bold;
       
       .close {
         color: @accent;
@@ -54,7 +59,7 @@
     }
     
     &.hovering {
-      border-color: @faded;
+      border-left-color: @faded;
       border-left-width: 25px;
       border-left-style: solid;
     }
@@ -67,7 +72,6 @@
     
     .label {
       cursor: default;
-      padding: 7px 0 0 6px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -76,12 +80,9 @@
     .close {
       font-size: 19px;
       text-align: center;
-      vertical-align: middle;
       width: 18px;
-      position: relative;
-      margin-left: 4px;
-      padding: 0 4px 0 0;
       cursor: pointer;
+      flex: 0 0 18px;
       align-self: center;
       font-family: monospace;
       

@@ -5,10 +5,9 @@
   margin-top: 50px;
   background: white;
   color: black;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, .2);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, .2);
   z-index: 999;
   padding: 10px;
-  border: 2px solid #AAA;
   line-height: 170%;
   transition-property: -webkit-transform;
   transition-duration: .3s;
@@ -16,7 +15,7 @@
    -webkit-transform: translateY(0px) rotateX(0);
   
   .enter & {
-    -webkit-transform: translateY(-20px) rotateX(-45deg);
+    -webkit-transform: translateY(-10px) rotateX(-20deg);
   }
   
   .text {
@@ -32,16 +31,22 @@
     font-size: 16px;
 
     button {
-      padding: 8px;
-      border: 1px solid #888;
+      border: none;
       text-align: center;
       background: white;
       color: black;
       min-width: 75px;
-      box-shadow: 4px 4px 8px rgba(0, 0, 0, .1);
+      margin: 8px;
+      text-transform: uppercase;
+      color: @accent;
 
       &:hover {
-        border: 1px solid black;
+        background: #EEE;
+      }
+      
+      &:focus {
+        outline: none;
+        font-weight: bold;
       }
     }
   }
@@ -57,7 +62,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, .2);
+  background: rgba(0, 0, 0, .1);
   z-index: 99;
   transition-duration: .2s;
   transition-timing-function: linear;

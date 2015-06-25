@@ -1,3 +1,5 @@
+/* Like dialogs, menus always are black-on-white */
+
 .toolbar {
   padding: 0;
   margin: 0;
@@ -13,7 +15,7 @@
   }
 
   .shortcut {
-    color: fade(@foreground, 50%);
+    color: #444;
     margin-left: 1em;
   }
 
@@ -26,7 +28,8 @@
     position: relative;
 
     &:hover, &.active {
-      background: mix(@background, #888, 80%);
+      color: black;
+      background: #EEE;
     }
 
     &.parent:hover, &.active {
@@ -44,19 +47,22 @@
       margin-left: 90%;
       margin-top: -2em;
       z-index: 999;
-      background: @background;
-      padding: 8px 0;
+      color: black;
+      background: white;
+      padding: 4px 0;
+      line-height: 1.4;
       white-space: nowrap;
-      box-shadow: 4px 8px 16px rgba(0, 0, 0, .25);
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, .2);
+      // border-left: 2px solid @accent;
     }
 
     &.parent::after {
       content: "...";
-      font-family: serif;
+      font-weight: bold;
       position: absolute;
       right: 4px;
       top: 0;
-      color: fade(@foreground, 50%);
+      color: #444;
     }
 
   }

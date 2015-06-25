@@ -8,9 +8,9 @@
   color: darken(@foreground, 30%);
   z-index: 999;
   font-size: 16px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, .2);
   
   @paletteBackground: lighten(@background, 10%);
-  @paletteShadow: 0px 4px 16px rgba(0, 0, 0, .5);
   
   transition-property: opacity, -webkit-transform;
   transition-duration: .1s, .2s;
@@ -32,21 +32,20 @@
   .main {
     background: @paletteBackground;
     padding: 8px 12px;
-    border-radius: 8px 8px 0 0;
-    box-shadow: @paletteShadow;
   }
   
   h1 {
-    font-size: 12px;
+    font-size: 16px;
     padding: 0;
     margin-top: 0px;
+    font-weight: normal;
   }
   
   input {
     width: 100%;
     display: block;
-    border: 2px solid #555;
-    border-radius: 4px;
+    border: none;
+    border-bottom: 2px solid @background;
     padding: 8px;
     margin-top: 8px;
     background: transparent;
@@ -55,38 +54,41 @@
     font-size: 18px;
 
     &:focus {
-      outline: 1px solid @background;
+      outline: none;
+      border-bottom: 2px solid @accent;
     }
   }
   
   .results {
-    background: fade(@paletteBackground, 80%);
+    background: fade(@paletteBackground, 90%);
     padding: 0;
     margin: 0;
     list-style-type: none;
-    border-radius: 0 0 8px 8px;
-    box-shadow: @paletteShadow;
+    z-index: 999;
+    border-top: 1px solid @faded;
     
     li {
-      border-top: 1px solid @faded;
+      border-left: 2px solid @faded;
       display: block;
       padding: 8px;
 
       &.current {
-        background: @faded;
+        border-left: 2px solid @accent;
         font-weight: bold;
+        background: @paletteBackground;
       }
       
       .label {
-        font-size: 14px;
+        font-size: 18px;
       }
       
       .sublabel {
-        font-size: 11px;
-        font-weight: normal;
+        font-size: 14px;
+        // font-weight: normal;
         white-space: nowrap;
         overflow: hidden;
         max-height: 1.5em;
+        margin-top: 4px;
       }
     }
   }
