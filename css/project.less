@@ -4,13 +4,13 @@
 }
 
 .project {
-  @background: #444;
-  @foreground: white;
+  @background: #F8F8F8;
+  @foreground: #333;
   @width: 200px;
+  box-shadow: inset -8px 0 12px rgba(0, 0, 0, .2);
   
   overflow-x: auto;
   overflow-y: auto;
-  box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .4);
   background: @background;
   flex-shrink: 0;
   position: relative;
@@ -50,7 +50,7 @@
     border-radius: 2px;
 
     &:hover {
-      background: fade(@foreground, 10%);
+      text-decoration: underline;
     }
 
     &:active {
@@ -70,12 +70,11 @@
   
   li {
     color: @foreground;
-    text-shadow: -1px -1px 1px rgba(0, 0, 0, .2);
     white-space: no-wrap;
     
     & > ul {
       display: none;
-      padding-left: 6px;
+      padding-left: 12px;
     }
     
     &.expanded > ul {
@@ -86,13 +85,14 @@
   .directory {
     color: darken(@foreground, 30%);
     position: relative;
+    font-weight: bold;
     
     &:before {
-      content: ">";
+      transform-origin: 50% 50%;
+      content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAjUlEQVQ4T2NkoBAwUqifgXYGtLe3N3BwcEwoLCz8gM+VWF0A0szIyFgP1HiBnZ3dEZ8hWA3o7+8X+Pnz5wGgAfqEDMEZBsQagjcQiTGEGAP2A71hAMQXgeHhgB4ehLyAVzModvAFIkHNOA3o7OwM+P///3pczkZOFzi9ADKEjY3tAFkJiZT8Qbu8QKwrAJ+PTxHjWFvxAAAAAElFTkSuQmCC");
       position: absolute;
-      left: -5px;
+      left: -13px;
       opacity: .5;
-      display: inline-block;
       transition: all .3s;
     }
     
@@ -104,7 +104,7 @@
   .root {
   
     &:not(:first-child) {
-      border-top: 1px solid lighten(@background, 20%);
+      border-top: 1px solid #DDD;
       margin-top: 4px;
       padding-top: 4px;
     }

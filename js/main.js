@@ -146,13 +146,8 @@ require([
   
   //developer command for reloading CSS
   command.on("app:reload-css", function() {
-    var previous = document.querySelector("link[rel=stylesheet]");
-    previous.remove();
-    var url = previous.href;
-    var link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = url + "?" + Date.now();
-    document.head.append(link);
+    var link = document.querySelector("link#theme");
+    link.href = link.href;
   });
   
   //handle immersive fullscreen
