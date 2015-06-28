@@ -97,13 +97,13 @@ define([
       iframe.srcdoc = doc;
       iframe.width = iframe.height = 1;
       iframe.style.display = "none";
-      document.body.append(iframe);
-      setTimeout(function() {
+      iframe.onload = function() {
         iframe.contentWindow.print();
         setTimeout(function() {
           iframe.remove();
         });
-      });
+      };
+      document.body.append(iframe);
     });
   });
   
