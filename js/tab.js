@@ -52,12 +52,16 @@ define([
     this.file = file;
     this.fileName = file.entry.name;
     this.modifiedAt = new Date();
+    this.setPath();
+  };
+
+  Tab.prototype.setPath = function() {
     var self = this;
-    if (!this.file.virtual) file.getPath(function(err, path) {
+    if (this.file && !this.file.virtual) this.file.getPath(function(err, path) {
       self.path = path;
       command.fire("session:render");
     });
-  }
+  };
   
   Tab.prototype.save = function(as) {
     
@@ -77,6 +81,7 @@ define([
         }
         self.modifiedAt = new Date();
         self.modified = false;
+        self.setPath();
         command.fire("session:render");
         deferred.done();
       });
