@@ -12,7 +12,7 @@
     "message": "Suporte"
   },
   "aboutLicense": {
-    "message": "Caret está disponível sob o modelo de Licença GPL, isso significa que <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>o código-fonte</a> do software está disponível para você usar e modificar como desejar. Se você acha o Caret útil, considere fazer uma doação para o <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fundo Para Eliminar Patentesde Sofwtare</a>  da Fundação do Software Livre."
+    "message": "Caret está disponível sob o modelo de Licença GPL, isso significa que <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>o código-fonte</a> do software está disponível para você usar e modificar como desejar. Se você acha o Caret útil, considere fazer uma doação para o <a href=\"http://endsoftpatents.org/pages/donate/\" target=_blank>Fundo Para Eliminar Patentesde Sofwtare</a>  da Fundação do Software Livre."
   },
   "menuFile": { "message": "Arquivo" },
   "menuNewFile": { "message": "Novo Arquivo" },
