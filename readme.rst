@@ -32,7 +32,7 @@ installed first, then follow these steps:
    manifest.json.
 
 If you use Caret and would like to show your appreciation, please
-consider donating to the `EFF's Fund to End Software
-Patents <https://my.fsf.org/donate/directed-donations/esp>`__. You can
+consider donating to the `FSF's Fund to End Software
+Patents <http://endsoftwarepatents.org/donate>`__. You can
 also give a gift through
 `Gittip <https://www.gittip.com/thomaswilburn/>`__.
