@@ -12,7 +12,7 @@
     "message": "Unterstützung"
   },
   "aboutLicense": {
-    "message": "Caret ist unter einer GPL Lizenz verfügbar, was bedeutet, dass der <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>Quellcode</a> zur freien Benutzung und Veränderung verfügbar ist. Wenn Sie Caret nutzvoll finden, erwägen Sie eine Spende an den <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fond zum Ende von Software Patenten</a> der Free Software Foundation."
+    "message": "Caret ist unter einer GPL Lizenz verfügbar, was bedeutet, dass der <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>Quellcode</a> zur freien Benutzung und Veränderung verfügbar ist. Wenn Sie Caret nutzvoll finden, erwägen Sie eine Spende an den <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fond zum Ende von Software Patenten</a> der Free Software Foundation."
   },
   "menuFile": { "message": "Datei" },
   "menuNewFile": { "message": "Neue Datei" },
