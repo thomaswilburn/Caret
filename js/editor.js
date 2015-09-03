@@ -40,7 +40,8 @@ define([
     editor.setTheme("ace/theme/" + themes.value);
     editor.setOptions({
       scrollPastEnd: userConfig.scrollPastEnd,
-      showGutter: !userConfig.hideGutter
+      showGutter: !userConfig.hideGutter,
+      cursorStyle: userConfig.cursorStyle || "smooth"
     });
     editor.setBehavioursEnabled(!userConfig.disableBehaviors);
     editor.setShowPrintMargin(userConfig.showMargin || false);
