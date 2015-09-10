@@ -84,7 +84,7 @@
     { "name": "php", "label": "PHP", "extensions": ["php"] },
     { "name": "pgsql", "label": "PostgreSQL", "extensions": ["sql"] },
     { "name": "plain_text", "label": "Plain Text", "extensions": ["txt", "conf", "csv", "me", "tsv", "text"] },
-    { "name": "powershell", "label": "Powershell", "extensions": ["ps"] },
+    { "name": "powershell", "label": "Powershell", "extensions": ["ps", "ps1", "psd1", "psm1", "ps1xml", "clixml", "psc1", "pssc"] },
     { "name": "python", "label": "Python", "extensions": ["py"] },
     { "name": "r", "label": "R", "extensions": ["r"] },
     { "name": "ruby", "label": "Ruby", "extensions": ["rb", "erb", "rake"] },
