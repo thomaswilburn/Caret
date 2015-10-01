@@ -967,185 +967,133 @@ oop.inherits(HtmlHighlightRules, XmlHighlightRules);
 exports.HtmlHighlightRules = HtmlHighlightRules;
 });
 
-ace.define("ace/mode/ftl_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/html_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/swig",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/html_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
+var lang = require("../lib/lang");
 var HtmlHighlightRules = require("./html_highlight_rules").HtmlHighlightRules;
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var FtlLangHighlightRules = function () {
-
-    var stringBuiltIns = "\\?|substring|cap_first|uncap_first|capitalize|chop_linebreak|date|time|datetime|"
-        + "ends_with|html|groups|index_of|j_string|js_string|json_string|last_index_of|length|lower_case|"
-        + "left_pad|right_pad|contains|matches|number|replace|rtf|url|split|starts_with|string|trim|"
-        + "upper_case|word_list|xhtml|xml";
-    var numberBuiltIns = "c|round|floor|ceiling";
-    var dateBuiltIns = "iso_[a-z_]+";
-    var seqBuiltIns = "first|last|seq_contains|seq_index_of|seq_last_index_of|reverse|size|sort|sort_by|chunk";
-    var hashBuiltIns = "keys|values";
-    var xmlBuiltIns = "children|parent|root|ancestors|node_name|node_type|node_namespace";
-    var expertBuiltIns = "byte|double|float|int|long|short|number_to_date|number_to_time|number_to_datetime|"
-        + "eval|has_content|interpret|is_[a-z_]+|namespacenew";
-    var allBuiltIns = stringBuiltIns + numberBuiltIns + dateBuiltIns + seqBuiltIns + hashBuiltIns
-        + xmlBuiltIns + expertBuiltIns;
-
-    var deprecatedBuiltIns = "default|exists|if_exists|web_safe";
-
-    var variables = "data_model|error|globals|lang|locale|locals|main|namespace|node|current_node|"
-        + "now|output_encoding|template_name|url_escaping_charset|vars|version";
-
-    var operators = "gt|gte|lt|lte|as|in|using";
-
-    var reserved = "true|false";
-
-    var attributes = "encoding|parse|locale|number_format|date_format|time_format|datetime_format|time_zone|"
-        + "url_escaping_charset|classic_compatible|strip_whitespace|strip_text|strict_syntax|ns_prefixes|"
-        + "attributes";
-
-    this.$rules = {
-        "start" : [{
-            token : "constant.character.entity",
-            regex : /&[^;]+;/
-        }, {
-            token : "support.function",
-            regex : "\\?("+allBuiltIns+")"
-        },  {
-            token : "support.function.deprecated",
-            regex : "\\?("+deprecatedBuiltIns+")"
-        }, {
-            token : "language.variable",
-            regex : "\\.(?:"+variables+")"
-        }, {
-            token : "constant.language",
-            regex : "\\b("+reserved+")\\b"
-        }, {
-            token : "keyword.operator",
-            regex : "\\b(?:"+operators+")\\b"
-        }, {
-            token : "entity.other.attribute-name",
-            regex : attributes
-        }, {
-            token : "string", //
-            regex : /['"]/,
-            next : "qstring"
-        }, {
-            token : function(value) {
-                if (value.match("^[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?$")) {
-                    return "constant.numeric";
-                } else {
-                    return "variable";
-                }
-            },
-            regex : /[\w.+\-]+/
-        }, {
-            token : "keyword.operator",
-            regex : "!|\\.|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^="
-        }, {
-            token : "paren.lparen",
-            regex : "[[({]"
-        }, {
-            token : "paren.rparen",
-            regex : "[\\])}]"
-        }, {
-            token : "text",
-            regex : "\\s+"
-        }],
-
-        "qstring" : [{
-            token : "constant.character.escape",
-            regex : '\\\\[nrtvef\\\\"$]'
-        }, {
-            token : "string",
-            regex : /['"]/,
-            next : "start"
-        }, {
-            defaultToken : "string"
-        }]
-    };
-};
-
-oop.inherits(FtlLangHighlightRules, TextHighlightRules);
-
-var FtlHighlightRules = function() {
+var SwigHighlightRules = function() {
     HtmlHighlightRules.call(this);
 
-    var directives = "assign|attempt|break|case|compress|default|elseif|else|escape|fallback|function|flush|"
-        + "ftl|global|if|import|include|list|local|lt|macro|nested|noescape|noparse|nt|recover|recurse|return|rt|"
-        + "setting|stop|switch|t|visit";
+    var tags = "autoescape|block|else|elif|extends|filter|for|if|import|include|macro|parent|raw|set|spaceless";
+    tags = tags + "|end" + tags.replace(/\|/g, "|end");
+    var filters = "addslashes|capitalize|date|default|escape|first|groupBy|join|json|last|lower|raw|replace|reverse|safe|sort|striptags|title|uniq|upper|url_encode|url_decode";
+    var special = "first|last|index|index0|revindex|revindex0|key"
+    var constants = "null|none|true|false|loop";
+    var operators = "in|is|and|or|not|as|with|only";
 
-    var startRules = [
-        {
-            token : "comment",
-            regex : "<#--",
-            next : "ftl-dcomment"
+    var keywordMapper = this.createKeywordMapper({
+        "keyword.control.swig": tags,
+        "support.function.swig": filters+"|"+special,
+        "keyword.operator.swig":  operators,
+        "constant.language.swig": constants,
+    }, "identifier");
+    for (var rule in this.$rules) {
+        this.$rules[rule].unshift({
+            token : "variable.other.readwrite.local.swig",
+            regex : "\\{\\{-?",
+            push : "swig-start"
         }, {
-            token : "string.interpolated",
-            regex : "\\${",
-            push  : "ftl-start"
+            token : "meta.tag.swig",
+            regex : "\\{%-?",
+            push : "swig-start"
         }, {
-            token : "keyword.function",
-            regex :  "</?#("+directives+")",
-            push : "ftl-start"
+            token : "comment.block.swig",
+            regex : "\\{#-?",
+            push : "swig-comment"
+        });
+    }
+    this.$rules["swig-comment"] = [{
+        token : "comment.block.swig",
+        regex : ".*-?#}",
+        next : "pop"
+    }];
+
+    this.$rules["swig-start"] = [{
+        token : "variable.other.readwrite.local.swig",
+        regex : "-?\\}\\}",
+        next : "pop"
+    }, {
+        token : "meta.tag.swig",
+        regex : "-?%\\}",
+        next : "pop"
+    }, {
+        token : "string",
+        regex : "'",
+        next  : "swig-qstring"
+    }, {
+        token : "string",
+        regex : '"',
+        next  : "swig-qqstring"
+    }, {
+        token : "constant.numeric", // hex
+        regex : "0[xX][0-9a-fA-F]+\\b"
+    }, {
+        token : "constant.numeric", // float
+        regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+    }, {
+        token : "constant.language.boolean",
+        regex : "(?:true|false)\\b"
+    }, {
+        token : keywordMapper,
+        regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+    }, {
+        token : "keyword.operator.assignment",
+        regex : "=|~"
+    }, {
+        token : "keyword.operator.comparison",
+        regex : "==|!=|<|>|>=|<=|==="
+    }, {
+        token : "keyword.operator.arithmetic",
+        regex : "\\+|-|/|%|//|\\*|\\*\\*"
+    }, {
+        token : "keyword.operator.other",
+        regex : "\\.\\.|\\|"
+    }, {
+        token : "punctuation.operator",
+        regex : /\?|\:|\,|\;|\./
+    }, {
+        token : "paren.lparen",
+        regex : /[\[\({]/
+    }, {
+        token : "paren.rparen",
+        regex : /[\])}]/
+    }, {
+        token : "text",
+        regex : "\\s+"
+    } ];
+    
+    this.$rules["swig-qqstring"] = [{
+            token : "constant.language.escape",
+            regex : /\\[\\"$#ntr]|#{[^"}]*}/
         }, {
-            token : "keyword.other",
-            regex : "</?@[a-zA-Z\\.]+",
-            push : "ftl-start"
+            token : "string",
+            regex : '"',
+            next  : "swig-start"
+        }, {
+            defaultToken : "string"
         }
     ];
 
-    var endRules = [
-        {
-           token : "keyword",
-            regex : "/?>",
-            next  : "pop"
+    this.$rules["swig-qstring"] = [{
+            token : "constant.language.escape",
+            regex : /\\[\\'ntr]}/
         }, {
-            token : "string.interpolated",
-            regex : "}",
-            next  : "pop"
+            token : "string",
+            regex : "'",
+            next  : "swig-start"
+        }, {
+            defaultToken : "string"
         }
     ];
-
-    for (var key in this.$rules)
-        this.$rules[key].unshift.apply(this.$rules[key], startRules);
-
-    this.embedRules(FtlLangHighlightRules, "ftl-", endRules, ["start"]);
-
-    this.addRules({
-        "ftl-dcomment" : [{
-            token : "comment",
-            regex : ".*?-->",
-            next : "pop"
-        }, {
-            token : "comment",
-            regex : ".+"
-        }]
-    });
-
+    
     this.normalizeRules();
 };
 
-oop.inherits(FtlHighlightRules, HtmlHighlightRules);
+oop.inherits(SwigHighlightRules, TextHighlightRules);
 
-exports.FtlHighlightRules = FtlHighlightRules;
-});
-
-ace.define("ace/mode/ftl",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/ftl_highlight_rules"], function(require, exports, module) {
-"use strict";
-
-var oop = require("../lib/oop");
-var TextMode = require("./text").Mode;
-var FtlHighlightRules = require("./ftl_highlight_rules").FtlHighlightRules;
-
-var Mode = function() {
-    this.HighlightRules = FtlHighlightRules;
-};
-oop.inherits(Mode, TextMode);
-
-(function() {
-
-    this.$id = "ace/mode/ftl";
-}).call(Mode.prototype);
-
-exports.Mode = Mode;
+exports.SwigHighlightRules = SwigHighlightRules;
 });
