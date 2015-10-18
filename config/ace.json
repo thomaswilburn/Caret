@@ -64,7 +64,7 @@
     { "name": "haxe", "label": "Haxe", "extensions": ["haxe"] },
     { "name": "html", "label": "HTML", "extensions": ["html", "htm", "htmls", "shtml", "ctp"] },
     { "name": "jade", "label": "Jade", "extensions": ["jade"] },
-    { "name": "java", "label": "Java", "extensions": ["java", "groovy"] },
+    { "name": "java", "label": "Java", "extensions": ["java", "groovy", "pde"] },
     { "name": "javascript", "label": "JavaScript", "extensions": ["js"] },
     { "name": "json", "label": "JSON", "extensions": ["json", "caret-project"] },
     { "name": "jsx", "label": "JSX", "extensions": ["jsx"] },
