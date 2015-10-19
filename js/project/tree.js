@@ -11,11 +11,10 @@ define([
   var directories = [];
   var pathMap = {};
   var container = document.find(".project");
-  container.addClass("show");
   var tree = container.find(".tree");
   
   var setVisible = function() {
-    if (this.directories.length) {
+    if (directories.length) {
       container.addClass("show");
     } else {
       container.removeClass("show");
@@ -24,6 +23,7 @@ define([
   
   var addDirectory = function() {
     chrome.fileSystem.chooseEntry({ type: "openDirectory" }, function(entry) {
+      if (!entry) return;
       var root = new Node(entry);
       directories.push(root);
       var element = document.createElement("ul");

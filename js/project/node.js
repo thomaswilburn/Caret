@@ -5,8 +5,9 @@ define([
   "storage/file",
   "util/template!templates/projectDir.html,templates/projectFile.html",
   "ui/contextMenus",
+  "settings!user",
   "util/dom2"
-], function(M, elementData, sessions, File, inflate, context) {
+], function(M, elementData, sessions, File, inflate, context, Settings) {
   
   //TODO: implement a polling-based watch for directories
   //TODO: pull the blacklist and use it during readdir()
@@ -128,6 +129,18 @@ define([
         var matched = [];
         var added = [];
         var oldChildren = self.children;
+        //filter out the blacklist
+        try {
+          var filter = Settings.get("user").ignoreFiles;
+          filter = new RegExp(filter);
+          entries = entries.filter(function(entry) {
+            //reject .directories
+            if (entry.name[0] == "." && entry.isDirectory) return false;
+            return !filter.test(entry.name);
+          });
+        } catch (e) {
+          console.log("Error applying blacklist", e, filter);
+        }
         self.children = entries.map(function(entry) {
           if (existing[entry.name]) {
             return existing[entry.name];
