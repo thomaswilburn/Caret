@@ -1,0 +1,123 @@
+{
+  "loading": {
+    "message": "cargando"
+  },
+  "aboutWrittenBy": {
+    "message": "Programado por <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>. Traducido por Damián Kleiman."
+  },
+  "aboutHomePage": {
+    "message": "Página Principal"
+  },
+  "aboutSupport": {
+    "message": "Soporte"
+  },
+  "aboutLicense": {
+    "message": "Caret está disponible bajo licencia GPL, lo que significa que <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> está disponible libremente para que usted use y modifique a su antojo. Si ud. considera que Caret le es útil, considere donar a la Free Software Foundation's <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fund to End Software Patents</a>."
+  },
+  "menuFile": { "message": "Archivo" },
+  "menuNewFile": { "message": "Nuevo" },
+  "menuOpenFile": { "message": "Abrir" },
+  "menuSave": { "message": "Guardar" },
+  "menuSaveAs": { "message": "Guardar como..." },
+  "menuRevert": { "message": "Revertir" },
+  "menuClose": { "message": "Cerrar" },
+  "menuPrint": { "message": "Imprimir" },
+  "menuExit": { "message": "Salir" },
+  
+  "menuEdit": { "message": "Editar" },
+  "menuUndo": { "message": "Deshacer" },
+  "menuRedo": { "message": "Rehacer" },
+  "menuInsertFromFile": { "message": "Insertar dede Archivo" },
+  "menuSelectWord": { "message": "Elegir Palabra" },
+  "menuSelectLine": { "message": "Seleccionar Línea" },
+  "menuSelectP": { "message": "Seleccionar Parrafo" },
+  "menuSelectToMatch": { "message": "Seleccionar Pareja" },
+  "menuWrapToPrint": { "message": "Alinear al Margen de Impresión" },
+  "menuFind": { "message": "Encontrar" },
+  "menuFindReplace": { "message": "Encontrar/Reemplazar" },
+  "menuFindNext": { "message": "Encontrar Siguiente" },
+  "menuToggleComment": { "message": "Comentario" },
+  "menuBlockComment": { "message": "Comentario en Bloque" },
+  "menuTabsToSpaces": { "message": "Convertir Tabs a Espacios" },
+  "menuSpacesToTabs": { "message": "Convertir Espacipo a Tabs" },
+  "menuSetNewline": { "message": "Modo Nueva Línea" },
+  "menuTrimWhitespace": { "message": "Eliminar Espacios en Blanco" },
+  "menuJoinLines": { "message": "Unir Líneas" },
+  "menuSortLines": { "message": "Ordenar Líneas" },
+  "menuSplitLine": { "message": "Dividir Línea" },
+  "menuToUppercase": { "message": "A Mayúsculas" },
+  "menuToLowercase": { "message": "A Minúsculas" },
+  "menuMoveLinesUp": { "message": "Mover Líneas Arriba" },
+  "menuMoveLinesDown": { "message": "Mover Líneas Abajo" },
+  
+  "menuTools": { "message": "Herramientas" },
+  "menuGoToAnything": { "message": "Ir A..." },
+  "menuGoToLine": { "message": "Ir A Línea" },
+  "menuGoToSearch": { "message": "Ir A Búsqueda" },
+  "menuGoToRef": { "message": "Ir A Referencia" },
+  "menuCommandPalette": { "message": "Paleta De Comandos" },
+  "menuToggleMacro": { "message": "Activar Grabar Macro" },
+  "menuReplayMacro": { "message": "Repetir Macro" },
+  "menuWordCount": { "message": "Cuenta Palabras" },
+  
+  "menuProject": { "message": "Proyecto" },
+  "menuAddDir": { "message": "Agregar Directorio" },
+  "menuRemoveAllDirs": { "message": "Remover Todos Los Directorios" },
+  "menuRefreshDir": { "message": "Refrescar Directorios" },
+  "menuSaveProject": { "message": "Guardar Archivo Proyecto" },
+  "menuEditProject": { "message": "Editar Proyecto Actual" },
+  "menuOpenProject": { "message": "Abrir Archivo Proyecto" },
+  "menuClearProject": { "message": "Limpiar Proyecto" },
+  
+  "menuSettings": { "message": "Configuraciones" },
+  "menuUserPrefs": { "message": "Preferencias de Usuario" },
+  "menuKeyboard": { "message": "Teclado" },
+  "menuMenus": { "message": "Menus" },
+  "menuAPI": { "message": "Comandos Externos" },
+  "menuTheme": { "message": "Tema Custom" },
+  "menuDefaults": { "message": "Ver Defaults" },
+  "menuUserPrefsDefault": { "message": "Preferencias De Usuario (Defaults)" },
+  "menuKeyboardDefault": { "message": "Teclado (Defaults)" },
+  "menuMenusDefault": { "message": "Menus (Defaults)" },
+  "menuThemeDefault": { "message": "Tema Custom (Defaults)" },
+  "menuReset": { "message": "Resetear" },
+  "menuResetUserPrefs": { "message": "Resetear Preferencias Usuario" },
+  "menuResetKeyboard": { "message": "Resetear Teclado" },
+  "menuResetMenus": { "message": "Resetear Menus" },
+  "menuResetTheme": { "message": "Resetear Tema Custom" },
+  "menuEmergencyReset": { "message": "Reset de Emergencia" },
+  "menuHelp": { "message": "Ayuda" },
+  "menuCheckForUpdates": { "message": "Buscar Actualizaciones" },
+  "menuAboutCaret": { "message": "Acerca de Caret" },
+  
+  "dialogModifiedBackground": { "message": "El archivo fue modificado desde la ultima vez que se guardo. Quiere recargarlo?" },
+  "dialogModifiedUnsaved": { "message": "$1 fue modificado.\nQuiere guardar los cambios?" },
+  "dialogCancel": { "message": "Cancelar" },
+  "dialogOK": { "message": "OK" },
+  "dialogReload": { "message": "Recargar" },
+  "dialogSave": { "message": "Guardar" },
+  "dialogDiscard": { "message": "Descartar" },
+  "dialogUnsaved": { "message": "$1 tiene trabajo sin guardar." },
+  
+  "projectNoCurrentProject": { "message": "No hay proyecto abierto." },
+  
+  "paletteExecuting": { "message": "Ejecutando $1..." },
+  
+  "fileLoaded": { "message": "Cargados $1, $2 bytes" },
+  "fileAutosaving": { "message": "Ejecutando autosave para todos los tabs..." },
+  
+  "editorWordCount": { "message": "$1 caracteres, $2 palabras, $3 lineas" },
+  
+  "recordingMacro": { "message": "Grabando macro..." },
+  "setSyntax": { "message": "Pone Sintaxis: $1" },
+  "setTheme": { "message": "Pone Tema: $1" },
+  
+  "notificationUpdateAvailable": { "message": "Caret: Actualización disponible" },
+  "notificationUpdateDetail": { "message": "Actualización a la versión $1 disponible. Quiere actualizar y reiniciar ahora?" },
+  "notificationNoUpdateTitle": { "message": "No hay actualizaciones disponibles" },
+  "notificationNoUpdateDetail": { "message": "No hay actualizaciones de Caret en este momento." },
+  "notificationUpdateOK": { "message": "Si, actualizar y reiniciar" },
+  "notificationUpdateWait": { "message": "No gracias" },
+  "notificationUpdated": { "message": "Caret fue actualizado" },
+  "notificationUpdatedDetail": { "message": "Ahora en la versión $1. Haga clic para ver los cambios en la tienda Chrome." }
+}

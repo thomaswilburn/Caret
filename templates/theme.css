@@ -1,5 +1,5 @@
 {{#blocks}}
-.ace-caret {{selector}} {
+{{selector}} {
   {{#styles}}
   {{prop}}: {{value}};
   {{/styles}}

@@ -870,9 +870,9 @@ var Document = function(text) {
     this._insertLines = function(row, lines) {
         if (lines.length == 0)
             return {row: row, column: 0};
-        while (lines.length > 0xF000) {
-            var end = this._insertLines(row, lines.slice(0, 0xF000));
-            lines = lines.slice(0xF000);
+        while (lines.length > 20000) {
+            var end = this._insertLines(row, lines.slice(0, 20000));
+            lines = lines.slice(20000);
             row = end.row;
         }
 
@@ -1146,20 +1146,24 @@ exports.copyArray = function(array){
     return copy;
 };
 
-exports.deepCopy = function (obj) {
+exports.deepCopy = function deepCopy(obj) {
     if (typeof obj !== "object" || !obj)
         return obj;
+    var copy;
+    if (Array.isArray(obj)) {
+        copy = [];
+        for (var key = 0; key < obj.length; key++) {
+            copy[key] = deepCopy(obj[key]);
+        }
+        return copy;
+    }
     var cons = obj.constructor;
     if (cons === RegExp)
         return obj;
     
-    var copy = cons();
+    copy = cons();
     for (var key in obj) {
-        if (typeof obj[key] === "object") {
-            copy[key] = exports.deepCopy(obj[key]);
-        } else {
-            copy[key] = obj[key];
-        }
+        copy[key] = deepCopy(obj[key]);
     }
     return copy;
 };
@@ -6877,13 +6881,13 @@ oop.inherits(Worker, Mirror);
 
     this.onUpdate = function() {
         var value = this.doc.getValue();
-
+        var errors = [];
         try {
             coffee.parse(value).compile();
         } catch(e) {
             var loc = e.location;
             if (loc) {
-                this.sender.emit("error", {
+                errors.push({
                     row: loc.first_line,
                     column: loc.first_column,
                     endRow: loc.last_line,
@@ -6892,9 +6896,8 @@ oop.inherits(Worker, Mirror);
                     type: "error"
                 });
             }
-            return;
         }
-        this.sender.emit("ok");
+        this.sender.emit("annotate", errors);
     };
 
 }).call(Worker.prototype);

@@ -57,7 +57,7 @@
       "color": "rgb(6, 150, 14)"
     },
     //types and classes
-    ".ace_support.ace_type, .ace_support.ace_class .ace_support.ace_other": {
+    ".ace_support.ace_type, .ace_support.ace_class, .ace_support.ace_other": {
       "color": "rgb(109, 121, 222)"
     },
     //paremeters

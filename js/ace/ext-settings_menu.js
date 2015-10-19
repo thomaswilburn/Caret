@@ -91,10 +91,11 @@ Mode.prototype.supportsFile = function(filename) {
 };
 var supportedModes = {
     ABAP:        ["abap"],
+    ABC:         ["abc"],
     ActionScript:["as"],
     ADA:         ["ada|adb"],
     Apache_Conf: ["^htaccess|^htgroups|^htpasswd|^conf|htaccess|htgroups|htpasswd"],
-    AsciiDoc:    ["asciidoc"],
+    AsciiDoc:    ["asciidoc|adoc"],
     Assembly_x86:["asm"],
     AutoHotKey:  ["ahk"],
     BatchFile:   ["bat|cmd"],
@@ -146,6 +147,7 @@ var supportedModes = {
     JSX:         ["jsx"],
     Julia:       ["jl"],
     LaTeX:       ["tex|latex|ltx|bib"],
+    Lean:        ["lean|hlean"],
     LESS:        ["less"],
     Liquid:      ["liquid"],
     Lisp:        ["lisp"],
@@ -192,6 +194,7 @@ var supportedModes = {
     Soy_Template:["soy"],
     Space:       ["space"],
     SQL:         ["sql"],
+    SQLServer:   ["sqlserver"],
     Stylus:      ["styl|stylus"],
     SVG:         ["svg"],
     Tcl:         ["tcl"],
@@ -206,9 +209,10 @@ var supportedModes = {
     Velocity:    ["vm"],
     Verilog:     ["v|vh|sv|svh"],
     VHDL:        ["vhd|vhdl"],
-    XML:         ["xml|rdf|rss|wsdl|xslt|atom|mathml|mml|xul|xbl"],
+    XML:         ["xml|rdf|rss|wsdl|xslt|atom|mathml|mml|xul|xbl|xaml"],
     XQuery:      ["xq"],
-    YAML:        ["yaml|yml"]
+    YAML:        ["yaml|yml"],
+    Django:      ["html"]
 };
 
 var nameOverrides = {
@@ -250,12 +254,14 @@ var themeData = [
     ["Dreamweaver"    ],
     ["Eclipse"        ],
     ["GitHub"         ],
+    ["IPlastic"       ],
     ["Solarized Light"],
     ["TextMate"       ],
     ["Tomorrow"       ],
     ["XCode"          ],
     ["Kuroir"],
     ["KatzenMilch"],
+    ["SQL Server"           ,"sqlserver"               , "light"],
     ["Ambiance"             ,"ambiance"                ,  "dark"],
     ["Chaos"                ,"chaos"                   ,  "dark"],
     ["Clouds Midnight"      ,"clouds_midnight"         ,  "dark"],
@@ -411,7 +417,7 @@ module.exports.generateSettingsMenu = function generateSettingsMenu (editor) {
         });
         
         var el = topmenu.appendChild(document.createElement('div'));
-        var version = "1.1.8";
+        var version = "1.1.9";
         el.style.padding = "1em";
         el.textContent = "Ace version " + version;
         

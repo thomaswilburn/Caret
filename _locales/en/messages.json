@@ -12,7 +12,7 @@
     "message": "Support"
   },
   "aboutLicense": {
-    "message": "Caret is available under a GPL license, which means that the <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> is freely available for you to use and modify as you see fit. If you find Caret useful, consider donating to the Free Software Foundation's <a href=\"https://my.fsf.org/donate/directed-donations/esp\" target=_blank>Fund to End Software Patents</a>."
+    "message": "Caret is available under a GPL license, which means that the <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> is freely available for you to use and modify as you see fit. If you find Caret useful, consider donating to the Free Software Foundation's <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fund to End Software Patents</a>."
   },
   "menuFile": { "message": "File" },
   "menuNewFile": { "message": "New File" },
@@ -111,5 +111,14 @@
   
   "recordingMacro": { "message": "Recording macro..." },
   "setSyntax": { "message": "Set Syntax: $1" },
-  "setTheme": { "message": "Set Theme: $1" }
+  "setTheme": { "message": "Set Theme: $1" },
+  
+  "notificationUpdateAvailable": { "message": "Caret: Update available" },
+  "notificationUpdateDetail": { "message": "An update to version $1 is available. Would you like to update and restart now?" },
+  "notificationNoUpdateTitle": { "message": "No updates available" },
+  "notificationNoUpdateDetail": { "message": "There aren't any updates for Caret at this time." },
+  "notificationUpdateOK": { "message": "Yes, update and restart" },
+  "notificationUpdateWait": { "message": "No thanks" },
+  "notificationUpdated": { "message": "Caret has been updated" },
+  "notificationUpdatedDetail": { "message": "Now at version $1. Click to see the changelog in the Chrome store." }
 }

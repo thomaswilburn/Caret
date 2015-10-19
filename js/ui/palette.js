@@ -427,7 +427,7 @@ define([
       var current = this.results[this.selected];
       if (current && current.tab) {
         sessions.raiseBlurred(current.tab);
-        if (current.line) {
+        if (current.line >= 0) {
           editor.clearSelection();
           editor.gotoLine(current.line + 1, current.column || 0, true);
         }
