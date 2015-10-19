@@ -40,6 +40,7 @@
     { "name": "abap", "label": "ABAP", "extensions": ["sap"] },
     { "name": "actionscript", "label": "AS3", "extensions": ["as", "as3"] },
     { "name": "asciidoc", "label": "AsciiDoc", "extensions": ["asciidoc", "adoc", "asc"] },
+    { "name": "ada", "label": "Ada", "extensions": ["adb", "ada"] },
     { "name": "batchfile", "label": "Batch File", "extensions": ["bat", "cmd"] },
     { "name": "sh", "label": "Bash Shell", "extensions": ["sh", "ksh", "zsh"] },
     { "name": "c_cpp", "label": "C/C++", "extensions": ["c", "cpp", "h", "cc", "ino"] },
