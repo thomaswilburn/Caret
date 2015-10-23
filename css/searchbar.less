@@ -1,0 +1,69 @@
+.searchbar {
+  display: none;
+  color: darken(@foreground, 30%);
+  background-color: darken(@background, 10%);
+  z-index: 999;
+  padding: 8px;
+  box-sizing: content-box;
+
+  &.active {
+    display: block;
+  }
+
+  input[type=checkbox] {
+    display:none;
+  }
+  input[type=checkbox] + label {
+    display: inline-block;
+    color: darken(@foreground, 30%);
+    font-size: 16px;
+    width: 22px;
+    margin: 0 4px;
+    cursor: pointer;
+  }
+  input[type=checkbox]:checked + label {
+    font-weight: bold;
+    color: @accent;
+  }
+
+  .search-box {
+    width: ~"calc(100% - 120px)";
+    display: inline-block;
+    border: none;
+    padding: 4px;
+    background: transparent;
+    background-color: @background;
+    color: @foreground;
+    font-size: 12px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  button.find-all {
+    display: inline-block;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: darken(@foreground, 30%);
+    cursor: pointer;
+
+    &:hover {
+      color: @accent;
+    }
+  }
+
+  a.close {
+    color: darken(@foreground, 30%);
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: Consolas,Monaco,monospace;
+    margin-left: 8px;
+
+    &:hover {
+      color: @accent;
+    }
+  }
+}
