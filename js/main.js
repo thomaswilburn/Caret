@@ -13,6 +13,7 @@ require([
     "fileManager",
     "ui/menus",
     "ui/palette",
+    "ui/searchbar",
     "ui/cli",
     "ui/theme",
     "api",
@@ -72,7 +73,7 @@ require([
               iconUrl: "icon-128.png",
               title: i18n.get("notificationUpdateAvailable"),
               message: i18n.get("notificationUpdateDetail", details.version),
-              buttons: [ 
+              buttons: [
                 { title: i18n.get("notificationUpdateOK") },
                 { title: i18n.get("notificationUpdateWait") }
               ]

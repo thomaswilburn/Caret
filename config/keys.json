@@ -35,6 +35,7 @@
   "Ctrl-Shift-P": { "command": "palette:open", "argument": "command" },
   "Ctrl-R": { "command": "palette:open", "argument": "reference" },
   "Ctrl-G": { "command": "palette:open", "argument": "line" },
+  "Ctrl-Shift-F": { "command": "searchbar:show-project-search" },
   "Ctrl-M": { "ace": "jumptomatching" },
   "Ctrl-Shift-M": { "command": "sublime:expand-to-matching" },
   "Ctrl-Q": { "command": "ace:togglemacro" },

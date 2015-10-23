@@ -44,6 +44,8 @@
   { "label": "Toggle Macro Recording", "command": "ace:togglemacro" },
   { "label": "Replay Macro", "command": "ace:command", "argument": "replaymacro" },
   
+  { "label": "Search All Files", "command": "searchbar:show-project-search" },
+  
   { "label": "Add Directory", "command": "project:add-dir" },
   { "label": "Remove All Directories", "command": "project:remove-all" },
   { "label": "Refresh Directories", "command": "project:refresh-dir" },

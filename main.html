@@ -35,6 +35,13 @@
       
     </div>
     
+    <div class="searchbar">
+      <input type='checkbox' id="search-case-check"/><label for="search-case-check" title="Match Case">Aa</label>
+      <input class="search-box" type="text">
+      <button class="find-all">Find All</button>
+      <a class="close">x</a>
+    </div>
+    
     <div class="bottom-bar">
       <div class="status-text"></div>
       <div class="mode-theme">
@@ -42,7 +49,7 @@
         <select class="theme" command="editor:theme" tabindex=-1 title="Select editor theme"></select>
       </div>
     </div>
-    
+
     <div class="command-line">
       <input type="text" placeholder="caret:command arguments">
       <a command="app:hide-prompt" class="close" title="Hide prompt">&times;</a>
@@ -51,7 +58,7 @@
     <div class="palette enter">
       <div class="main">
         <h1 class="mode"></h1>
-        <input class="request"></input>
+        <input class="request">
       </div>
       <ul class="results"></ul>
     </div>

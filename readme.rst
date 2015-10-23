@@ -11,6 +11,7 @@ component, it offers powerful features like:
 -  command palette/smart go to
 -  hackable, synchronized configuration files
 -  project files and folder view
+-  fast project-wide string search
 
 More information, links to Caret in the Chrome Web Store, and an
 external package file are available at http://thomaswilburn.net/caret.

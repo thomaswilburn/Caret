@@ -52,6 +52,12 @@ Tracks any current project settings, files, and navigable directories.
 Exposes the manager object to dependent modules, primarily so that the
 palette can get the list of files for Go To File.
 
+searchbar.js
+------------
+
+Allows the user to search all files in the project. Exposes only the
+``searchbar:show-project-search`` command.
+
 statusbar.js
 ------------
 
