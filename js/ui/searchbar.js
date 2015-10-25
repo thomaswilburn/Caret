@@ -146,7 +146,7 @@ define([
       chrome.fileSystem.getDisplayPath(nodeEntry, function(path) {
         var file = new File(nodeEntry);
         if (!options.running) {
-          return cb();
+          return c();
         }
 
         var printResult = function(index, str) {
