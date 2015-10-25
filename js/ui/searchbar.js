@@ -3,11 +3,12 @@ define([
     "command",
     "editor",
     "storage/file",
+    "storage/nullfile",
     "settings!user",
     "ui/statusbar",
     "ui/projectManager",
     "util/i18n"
-  ], function(sessions, command, editor, File, Settings, status, project, i18n) {
+  ], function(sessions, command, editor, File, NullFile, Settings, status, project, i18n) {
 
   var Searchbar = function() {
     var self = this;
@@ -75,6 +76,7 @@ define([
       var displayQuery = this.input.value;
 
       var resultsTab = sessions.addFile(i18n.get("searchDisplayQuery", displayQuery));
+      resultsTab.file = new NullFile();
 
       this.currentSearch = {
         matches: 0,
