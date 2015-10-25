@@ -28,6 +28,7 @@
       { "label": "menuFind", "command": "ace:command", "argument": "find" },
       { "label": "menuFindReplace", "command": "ace:command", "argument": "replace" },
       { "label": "menuFindNext", "command": "ace:command", "argument": "findnext" },
+      { "label": "menuSearchProject", "command": "searchbar:show-project-search", "retainFocus": true },
       "divider",
       { "label": "menuToggleComment", "command": "ace:command", "argument": "togglecomment" },
       { "label": "menuBlockComment", "command": "ace:command", "argument": "toggleBlockComment" },

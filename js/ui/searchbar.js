@@ -6,13 +6,15 @@ define([
     "settings!user",
     "ui/statusbar",
     "ui/projectManager",
-  ], function(sessions, command, editor, File, Settings, status, project) {
+    "util/i18n"
+  ], function(sessions, command, editor, File, Settings, status, project, i18n) {
 
   var Searchbar = function() {
     var self = this;
     this.element = document.find(".searchbar");
     this.input = this.element.find(".search-box");
     this.maxMatches = Settings.get("user").maxSearchMatches || 50;
+
     command.on("init:restart", function() {
       self.maxMatches = Settings.get("user").maxSearchMatches || 50;
     });
@@ -69,24 +71,27 @@ define([
       }
       var self = this;
 
+      var isCaseSensitive = this.element.find("#search-case-check").checked;
+      var displayQuery = this.input.value;
+
+      var resultsTab = sessions.addFile(i18n.get("searchDisplayQuery", displayQuery));
+
       this.currentSearch = {
         matches: 0,
-        running: true
+        running: true,
+        isCaseSensitive: isCaseSensitive,
+        searchQuery: new RegExp(displayQuery, isCaseSensitive ? "g" : "ig"),
+        resultsTab: resultsTab
       };
 
-      var isCaseSensitive = this.currentSearch.isCaseSensitive = this.element.find("#search-case-check").checked;
-      var displayQuery = this.input.value;
-      this.currentSearch.searchQuery = isCaseSensitive ? displayQuery : displayQuery.toUpperCase();
-
-      var resultsTab = this.currentSearch.resultsTab = sessions.addFile("Searching for:\n" + displayQuery + "\n");
       resultsTab.fileName = "Results: " + displayQuery;
       resultsTab.addEventListener("close", function() {
         self.currentSearch.running = false;
-      })
+      });
 
       var fileEntryList = this.getFlatFileEntryList();
       if (fileEntryList.length < 1) { // exit early if there are no directories added
-        self.appendToResults("\nNo files scanned. You'll need to add a directory to your project first.");
+        self.appendToResults(i18n.get("searchNoDirectories"));
         this.currentSearch.running = false;
         return;
       }
@@ -134,69 +139,74 @@ define([
       return fileList;
     },
 
-    searchFile: function(nodeEntry, cb) {
+    searchFile: function(nodeEntry, c) {
       var self = this;
       var options = this.currentSearch;
 
       chrome.fileSystem.getDisplayPath(nodeEntry, function(path) {
         var file = new File(nodeEntry);
-          if (!options.running) {
-            return cb();
-          }
+        if (!options.running) {
+          return cb();
+        }
 
-          file.read(function(err, data) {
-            var lines = data.split("\n");
-            var line, msg;
-            var firstFindInFile = true;
-            var printedLines = {}; // only print each line once per file per search
+        var printResult = function(index, str) {
+          self.appendToResults(self.formatResultCode(index, str));
+        };
 
-            for (var i = 0; i < lines.length && options.running; i++) {
-              compareLine = options.isCaseSensitive ? lines[i] : lines[i].toUpperCase();
-              if (compareLine.indexOf(options.searchQuery) > -1) {
-                if (++options.matches >= self.maxMatches) {
-                  options.running = false;
-                }
-                msg = "";
-                if (firstFindInFile) { // only add a filename if it is the first result for the file
-                  msg += "\n" + nodeEntry.fullPath + "\n";
-                  firstFindInFile = false;
-                } else if (!printedLines[i] && !printedLines[i-1] && !printedLines[i-2]) { // add break if immediately previous lines not included
-                  msg += "...\n";
-                }
+        file.read(function(err, data) {
+          var lines = data.split("\n");
+          var firstFindInFile = true;
+          var printedLines = {}; // only print each line once per file per search
 
-                if (!printedLines[i-1] && i > 1) { // don't print line number 0
-                  msg += self.formatResultCode(i-1, lines[i-1]);
-                  printedLines[i-1] = true;
-                }
+          for (var i = 0; i < lines.length; i++) {
+            line = lines[i];
+            if (line.match(options.searchQuery)) {
+              options.matches++;
+              
+              if (options.matches >= self.maxMatches) {
+                options.running = false;
+                break;
+              }
 
-                if (!printedLines[i]) {
-                  msg += self.formatResultCode(i, lines[i]);
-                  printedLines[i] = true;
-                }
+              if (firstFindInFile) { // only add a filename if it is the first result for the file
+                self.appendToResults("\n" + nodeEntry.fullPath + "\n");
+                firstFindInFile = false;
+              } else if (!printedLines[i] && !printedLines[i-1] && !printedLines[i-2]) { // add break if immediately previous lines not included
+                self.appendToResults("...\n");
+              }
 
-                if (i < lines.length - 1) { // always print the line following the search result, if it exists
-                  msg += self.formatResultCode(i+1, lines[i+1]);
-                  printedLines[i+1] = true;
-                }
-                self.appendToResults(msg);
+              if (!printedLines[i-1] && i > 1) { // don't print line number 0
+                printResult(i-1, lines[i-1]);
+                printedLines[i-1] = true;
+              }
+
+              if (!printedLines[i]) {
+                printResult(i, lines[i]);
+                printedLines[i] = true;
+              }
+
+              if (i < lines.length - 1) { // always print the line following the search result, if it exists
+                printResult(i+1, lines[i+1]);
+                printedLines[i+1] = true;
               }
             }
+          }
 
-            cb();
-          });
+          c();
+        });
       });
     },
 
     printSearchSummary: function(searchedEverything, filesScanned) {
-      this.appendToResults("\n\n" + this.currentSearch.matches + " matches found. " + filesScanned + " files scanned.");
+      this.appendToResults(i18n.get("searchSummary", this.currentSearch.matches, filesScanned));
       if (!searchedEverything) {
-        this.appendToResults("\nSearch was cancelled. You can change the maximum number of search results allowed in User Preferences.")
+        this.appendToResults(i18n.get("searchCancelled"));
       }
       this.currentSearch.running = false;
     },
 
     formatResultCode: function(lineNumber, code) {
-      return "  " + (lineNumber+1) + ": " + code + "\n";
+      return "  " + (lineNumber + 1) + ": " + code + "\n";
     },
 
     appendToResults: function(text) {
@@ -207,6 +217,7 @@ define([
       var resultsTab = this.currentSearch.resultsTab;
       var insertRow = resultsTab.doc.getLength();
       resultsTab.doc.insert({row: insertRow, column: 0}, text);
+      resultsTab.modified = false;
     },
 
     activate: function(mode) {

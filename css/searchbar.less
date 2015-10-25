@@ -7,47 +7,44 @@
   box-sizing: content-box;
 
   &.active {
-    display: block;
+    display: flex;
   }
 
   input[type=checkbox] {
     display:none;
-  }
-  input[type=checkbox] + label {
-    display: inline-block;
-    color: darken(@foreground, 30%);
-    font-size: 16px;
-    width: 22px;
-    margin: 0 4px;
-    cursor: pointer;
-  }
-  input[type=checkbox]:checked + label {
-    font-weight: bold;
-    color: @accent;
+
+    & + label {
+      flex: 0 0 22px;
+      display: inline-block;
+      color: darken(@foreground, 30%);
+      font-size: 16px;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+  
+    &:checked + label {
+      font-weight: bold;
+      color: @accent;
+    }
   }
 
   .search-box {
-    width: ~"calc(100% - 120px)";
-    display: inline-block;
+    flex: 1;
     border: none;
     padding: 4px;
     background: transparent;
     background-color: @background;
     color: @foreground;
     font-size: 12px;
-
-    &:focus {
-      outline: none;
-    }
   }
 
   button.find-all {
-    display: inline-block;
     border: none;
     outline: none;
     background: transparent;
     color: darken(@foreground, 30%);
     cursor: pointer;
+    padding: 0 20px;
 
     &:hover {
       color: @accent;
@@ -56,7 +53,6 @@
 
   a.close {
     color: darken(@foreground, 30%);
-    display: inline-block;
     font-size: 16px;
     cursor: pointer;
     font-family: Consolas,Monaco,monospace;
