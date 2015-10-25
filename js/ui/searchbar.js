@@ -80,11 +80,17 @@ define([
 
       var resultsTab = this.currentSearch.resultsTab = sessions.addFile("Searching for:\n" + displayQuery + "\n");
       resultsTab.fileName = "Results: " + displayQuery;
-      resultsTab.addEventListener('close', function() {
+      resultsTab.addEventListener("close", function() {
         self.currentSearch.running = false;
       })
 
       var fileEntryList = this.getFlatFileEntryList();
+      if (fileEntryList.length < 1) { // exit early if there are no directories added
+        self.appendToResults("\nNo files scanned. You'll need to add a directory to your project first.");
+        this.currentSearch.running = false;
+        return;
+      }
+
       var filesScanned = 0;
       var consecutiveIOs = 0;
 
@@ -100,10 +106,10 @@ define([
       }
 
       // we queue multiple files to be read at once so the cpu doesn't wait each time
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 10 && i < fileEntryList.length; i++) {
         consecutiveIOs++;
         searchMoreOrExit();
-      };
+      }
     },
 
     // the array is returned in reverse order so we can use .pop() later
@@ -123,14 +129,13 @@ define([
 
       for (var i = project.directories.length - 1; i >= 0; i--) {
         searchDirectory(project.directories[i]);
-      };
+      }
 
       return fileList;
     },
 
     searchFile: function(nodeEntry, cb) {
       var self = this;
-      var prevLine = "";
       var options = this.currentSearch;
 
       chrome.fileSystem.getDisplayPath(nodeEntry, function(path) {
@@ -142,7 +147,7 @@ define([
           file.read(function(err, data) {
             var lines = data.split("\n");
             var line, msg;
-            var firstFind = true;
+            var firstFindInFile = true;
             var printedLines = {}; // only print each line once per file per search
 
             for (var i = 0; i < lines.length && options.running; i++) {
@@ -152,25 +157,29 @@ define([
                   options.running = false;
                 }
                 msg = "";
-                if (!printedLines[i] && !printedLines[i-1]) { // only add break if it and the line before it have not been printed
-                  if (firstFind) {
-                    msg += "\n" + nodeEntry.fullPath + "\n";
-                    firstFind = false;
-                  } else {
-                    msg += "...\n";
-                  }
-                  msg += self.formatResultCode(i-1, prevLine);
+                if (firstFindInFile) { // only add a filename if it is the first result for the file
+                  msg += "\n" + nodeEntry.fullPath + "\n";
+                  firstFindInFile = false;
+                } else if (!printedLines[i] && !printedLines[i-1] && !printedLines[i-2]) { // add break if immediately previous lines not included
+                  msg += "...\n";
+                }
+
+                if (!printedLines[i-1] && i > 1) { // don't print line number 0
+                  msg += self.formatResultCode(i-1, lines[i-1]);
+                  printedLines[i-1] = true;
+                }
+
+                if (!printedLines[i]) {
                   msg += self.formatResultCode(i, lines[i]);
                   printedLines[i] = true;
                 }
 
-                if (i < lines.length - 1) {
+                if (i < lines.length - 1) { // always print the line following the search result, if it exists
                   msg += self.formatResultCode(i+1, lines[i+1]);
                   printedLines[i+1] = true;
                 }
                 self.appendToResults(msg);
               }
-              prevLine = lines[i];
             }
 
             cb();
