@@ -79,12 +79,11 @@ define([
       this.currentSearch = {
         matches: 0,
         running: true,
-        isCaseSensitive: isCaseSensitive,
         searchQuery: new RegExp(displayQuery, isCaseSensitive ? "g" : "ig"),
         resultsTab: resultsTab
       };
 
-      resultsTab.fileName = "Results: " + displayQuery;
+      resultsTab.fileName = i18n.get("searchTabName", displayQuery);
       resultsTab.addEventListener("close", function() {
         self.currentSearch.running = false;
       });

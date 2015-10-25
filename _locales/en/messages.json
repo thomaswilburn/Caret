@@ -123,6 +123,7 @@
   "notificationUpdatedDetail": { "message": "Now at version $1. Click to see the changelog in the Chrome store." },
 
   "searchDisplayQuery": { "message": "Searching for: $1\n" },
+  "searchTabName": { "message": "Results: $1" },
   "searchNoDirectories": { "message": "\nNo files scanned. You'll need to add a directory to your project first." },
   "searchSummary": { "message": "\n\n$1 matches found. $2 files scanned." },
   "searchCancelled": { "message": "\nSearch was cancelled. You can change the maximum number of search results allowed in User Preferences." }
