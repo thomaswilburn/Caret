@@ -29,6 +29,7 @@ require([
     Settings.pull("user").then(function(data) {
       var themes = {
         "dark": "css/caret-dark.css",
+        "twilight": "css/caret-twilight.css",
         "light": "css/caret.css"
       };
       var theme = data.user.uiTheme || "light";
