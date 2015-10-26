@@ -344,7 +344,7 @@ define([
       });
     },
     
-    openFile: function(path) {
+    openFile: function(path, c) {
       var self = this;
       var found = false;
       var node = this.pathMap[path];
@@ -370,10 +370,18 @@ define([
           },
           //if no match found, create a tab
           function() {
-            if (found) return;
+            if (found) {
+              if (c) {
+                c();
+              }
+              return;
+            }
             var file = new File(node.entry);
             file.read(function(err, data) {
               sessions.addFile(data, file);
+              if (c) {
+                c();
+              }
             });
           }
         );

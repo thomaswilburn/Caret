@@ -42,7 +42,7 @@ define([
     });
     
     this.animationClass = "enter";
-    
+    this.isReadOnly = false;
   };
   
   //hopefully this never screws up unaugmented Ace sessions.
