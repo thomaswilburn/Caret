@@ -38,7 +38,7 @@
     vibrant_ink
     xcode
   */
-  "uiTheme": "light", //dark or light, your pick
+  "uiTheme": "light", //dark, twilight, or light
   "autoHideProject": false, //collapse the project view until you hover
   "immersiveFullscreen": false, //hides menus/tabs in Chrome OS fullscreen mode
   "highlightLine": false,
