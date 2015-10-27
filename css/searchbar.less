@@ -5,6 +5,7 @@
   z-index: 999;
   padding: 8px;
   box-sizing: content-box;
+  align-items: center;
 
   &.active {
     display: flex;
@@ -15,7 +16,9 @@
 
     & + label {
       flex: 0 0 22px;
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       color: darken(@foreground, 30%);
       font-size: 16px;
       margin: 0 4px;
@@ -48,6 +51,7 @@
 
     &:hover {
       color: @accent;
+      background: rgba(128, 128, 128, .2);
     }
   }
 
@@ -57,6 +61,9 @@
     cursor: pointer;
     font-family: Consolas,Monaco,monospace;
     margin-left: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     &:hover {
       color: @accent;
