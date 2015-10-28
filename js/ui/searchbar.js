@@ -75,8 +75,7 @@ define([
       var isCaseSensitive = this.element.find("#search-case-check").checked;
       var displayQuery = this.input.value;
 
-      var resultsTab = sessions.addFile(i18n.get("searchDisplayQuery", displayQuery));
-      resultsTab.file = new NullFile();
+      var resultsTab = this.createResultsTab(displayQuery);
 
       this.currentSearch = {
         matches: 0,
@@ -84,11 +83,6 @@ define([
         searchQuery: new RegExp(displayQuery, isCaseSensitive ? "g" : "ig"),
         resultsTab: resultsTab
       };
-
-      resultsTab.fileName = i18n.get("searchTabName", displayQuery);
-      resultsTab.addEventListener("close", function() {
-        self.currentSearch.running = false;
-      });
 
       var fileEntryList = this.getFlatFileEntryList();
       if (fileEntryList.length < 1) { // exit early if there are no directories added
@@ -145,19 +139,25 @@ define([
       var options = this.currentSearch;
 
       chrome.fileSystem.getDisplayPath(nodeEntry, function(path) {
-        var file = new File(nodeEntry);
         if (!options.running) {
           return c();
         }
 
-        var printResult = function(index, str) {
-          self.appendToResults(self.formatResultCode(index, str));
-        };
+        var file = new File(nodeEntry);
 
         file.read(function(err, data) {
+          if (!options.running) {
+            return c();
+          }
+
           var lines = data.split("\n");
           var firstFindInFile = true;
           var printedLines = {}; // only print each line once per file per search
+          var printResult = function(index, str) {
+            printedLines[index] = true;
+            var result = "  " + (index + 1) + ": " + str;
+            self.appendToResults(result);
+          };
 
           for (var i = 0; i < lines.length; i++) {
             line = lines[i];
@@ -170,25 +170,23 @@ define([
               }
 
               if (firstFindInFile) { // only add a filename if it is the first result for the file
-                self.appendToResults("\n" + nodeEntry.fullPath + "\n");
+                self.appendToResults(""); // add an extra blank line
+                self.appendToResults(nodeEntry.fullPath);
                 firstFindInFile = false;
               } else if (!printedLines[i] && !printedLines[i-1] && !printedLines[i-2]) { // add break if immediately previous lines not included
-                self.appendToResults("...\n");
+                self.appendToResults("...");
               }
 
               if (!printedLines[i-1] && i > 1) { // don't print line number 0
                 printResult(i-1, lines[i-1]);
-                printedLines[i-1] = true;
               }
 
               if (!printedLines[i]) {
                 printResult(i, lines[i]);
-                printedLines[i] = true;
               }
 
               if (i < lines.length - 1) { // always print the line following the search result, if it exists
                 printResult(i+1, lines[i+1]);
-                printedLines[i+1] = true;
               }
             }
           }
@@ -196,6 +194,21 @@ define([
           c();
         });
       });
+    },
+
+    createResultsTab: function(displayQuery) {
+      var self = this;
+
+      var resultsTab = sessions.addFile(i18n.get("searchDisplayQuery", displayQuery));
+      resultsTab.file = new NullFile();
+      resultsTab.fileName = i18n.get("searchTabName", displayQuery);
+      resultsTab.addEventListener("close", function() {
+        self.currentSearch.running = false;
+      });
+      resultsTab.readOnly = true;
+      editor.setReadOnly(true);
+
+      return resultsTab;
     },
 
     printSearchSummary: function(searchedEverything, filesScanned) {
@@ -206,18 +219,10 @@ define([
       this.currentSearch.running = false;
     },
 
-    formatResultCode: function(lineNumber, code) {
-      return "  " + (lineNumber + 1) + ": " + code + "\n";
-    },
-
     appendToResults: function(text) {
-      if (text === "") {
-        return;
-      }
-
       var resultsTab = this.currentSearch.resultsTab;
       var insertRow = resultsTab.doc.getLength();
-      resultsTab.doc.insert({row: insertRow, column: 0}, text);
+      resultsTab.doc.insert({row: insertRow, column: 0}, text + "\n");
       resultsTab.modified = false;
     },
 
