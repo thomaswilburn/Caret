@@ -12,6 +12,7 @@ define([
       
   var raiseTab = function(tab) {
     editor.setSession(tab);
+    editor.setReadOnly(tab.readOnly);
     command.fire("session:syntax");
     command.fire("session:render");
     editor.focus();
