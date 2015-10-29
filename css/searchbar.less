@@ -5,7 +5,13 @@
   z-index: 999;
   padding: 8px;
   box-sizing: content-box;
-  align-items: center;
+  align-items: stretch;
+
+  .vertical-center() {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
   &.active {
     display: flex;
@@ -16,9 +22,7 @@
 
     & + label {
       flex: 0 0 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      .vertical-center();
       color: darken(@foreground, 30%);
       font-size: 16px;
       margin: 0 4px;
@@ -41,32 +45,30 @@
     font-size: 12px;
   }
 
-  button.find-all {
+  button {
     border: none;
     outline: none;
     background: transparent;
     color: darken(@foreground, 30%);
     cursor: pointer;
-    padding: 0 20px;
+    padding: 0 10px;
+    .vertical-center();
 
     &:hover {
       color: @accent;
       background: rgba(128, 128, 128, .2);
     }
   }
+}
 
-  a.close {
-    color: darken(@foreground, 30%);
-    font-size: 16px;
-    cursor: pointer;
-    font-family: Consolas,Monaco,monospace;
-    margin-left: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+//search result markers
+.caret-search-marker {
+  pointer-events: auto;
+  position: absolute;
+  cursor: pointer;
 
-    &:hover {
-      color: @accent;
-    }
+  &:hover {
+    outline: 1px solid @accent;
+    background: rgba(128, 128, 128, .3);
   }
 }

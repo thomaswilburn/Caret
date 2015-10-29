@@ -10,6 +10,9 @@ define([
     "util/i18n"
   ], function(sessions, command, editor, File, NullFile, Settings, status, project, i18n) {
 
+  //goofy, but works
+  var Range = ace.require("./range").Range;
+
   var Searchbar = function() {
     var self = this;
     this.element = document.find(".searchbar");
@@ -37,7 +40,7 @@ define([
       input.on("keydown", function(e) {
         //escape
         if (e.keyCode == 27) {
-          self.deactivate();
+          self.deactivate(true);
           return;
         }
         //enter
@@ -45,6 +48,7 @@ define([
           e.stopImmediatePropagation();
           e.preventDefault();
           self.search();
+          self.deactivate();
           return;
         }
       });
@@ -53,13 +57,9 @@ define([
     bindButtons: function() {
       var self = this;
       var findAll = this.element.find("button.find-all");
-      var close = this.element.find("a.close");
 
       findAll.on("click", function() {
         self.search();
-      });
-      close.on("click", function() {
-        self.deactivate();
       });
     },
 
@@ -139,24 +139,23 @@ define([
       var options = this.currentSearch;
 
       chrome.fileSystem.getDisplayPath(nodeEntry, function(path) {
-        if (!options.running) {
-          return c();
-        }
+        if (!options.running) return c(); 
 
         var file = new File(nodeEntry);
+        var path = nodeEntry.fullPath;
 
         file.read(function(err, data) {
-          if (!options.running) {
-            return c();
-          }
+          if (!options.running) return c();
 
           var lines = data.split("\n");
           var firstFindInFile = true;
           var printedLines = {}; // only print each line once per file per search
           var printResult = function(index, str) {
             printedLines[index] = true;
-            var result = "  " + (index + 1) + ": " + str;
-            self.appendToResults(result);
+            var row = index + 1;
+            var result = "  " + row + ": " + str;
+            var link = [path, row].join(":");
+            self.appendToResults(result, link);
           };
 
           for (var i = 0; i < lines.length; i++) {
@@ -171,13 +170,13 @@ define([
 
               if (firstFindInFile) { // only add a filename if it is the first result for the file
                 self.appendToResults(""); // add an extra blank line
-                self.appendToResults(nodeEntry.fullPath);
+                self.appendToResults(path, path);
                 firstFindInFile = false;
               } else if (!printedLines[i] && !printedLines[i-1] && !printedLines[i-2]) { // add break if immediately previous lines not included
                 self.appendToResults("...");
               }
 
-              if (!printedLines[i-1] && i > 1) { // don't print line number 0
+              if (!printedLines[i-1] && i > 1 && lines[i-1].trim()) { // don't print line number 0 or blank lines
                 printResult(i-1, lines[i-1]);
               }
 
@@ -185,7 +184,7 @@ define([
                 printResult(i, lines[i]);
               }
 
-              if (i < lines.length - 1) { // always print the line following the search result, if it exists
+              if (i < lines.length - 1 && lines[i+1].trim()) { // always print the line following the search result, if it exists
                 printResult(i+1, lines[i+1]);
               }
             }
@@ -206,6 +205,7 @@ define([
         self.currentSearch.running = false;
       });
       resultsTab.readOnly = true;
+      resultsTab.links = {};
       editor.setReadOnly(true);
 
       return resultsTab;
@@ -219,11 +219,17 @@ define([
       this.currentSearch.running = false;
     },
 
-    appendToResults: function(text) {
+    appendToResults: function(text, link) {
       var resultsTab = this.currentSearch.resultsTab;
       var insertRow = resultsTab.doc.getLength();
       resultsTab.doc.insert({row: insertRow, column: 0}, text + "\n");
       resultsTab.modified = false;
+      //add the clickable marker if flagged
+      if (link) {
+        var range = new Range(insertRow - 1, 0, insertRow - 1, text.length);
+        resultsTab.addMarker(range, "caret-search-marker " + text, "text", true);
+        resultsTab.links[insertRow] = link;
+      }
     },
 
     activate: function(mode) {
@@ -236,8 +242,8 @@ define([
       this.input.focus();
     },
 
-    deactivate: function() {
-      this.currentSearch.running = false; // cancel search
+    deactivate: function(cancel) {
+      if (cancel) this.currentSearch.running = false; // cancel search
       this.element.removeClass("active");
     }
   };
@@ -246,6 +252,18 @@ define([
 
   command.on("searchbar:show-project-search", function() {
     searchbar.activate();
+  });
+
+  //listen for click events on markers
+  editor.on("click", function(e) {
+    if (!editor.session.links) return;
+    if (!e.domEvent.target.hasClass("caret-search-marker")) return;
+    var row = e.$pos.row + 1;
+    var link = editor.session.links[row];
+    var split = link.split(":");
+    project.openFile(split[0], function() {
+      if (split[1]) editor.gotoLine(split[1]);
+    });
   });
 
   return searchbar;
