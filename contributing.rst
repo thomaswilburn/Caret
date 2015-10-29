@@ -16,7 +16,8 @@ We use GitHub's issue system to track bugs and feature requests, so feel free to
 
 You don't have to be a coder to help with Caret — we're always looking for designers, writers, testers, and other non-code tasks. If you'd like suggestions on where to start, send an e-mail. Contact information is available from the main project marketing page at http://thomaswilburn.net/caret
 
-If you want to help with translations:
+If you want to help with translations
+-------------------------------------
 
 - Create a new folder under ``_locales``. Name the folder after one of the supported languages (see https://developer.chrome.com/webstore/i18n?csw=1#localeTable).
 - Copy the ``messages.json`` file from the english (en) folder into this new folder.
@@ -25,7 +26,7 @@ If you want to help with translations:
 Instructions on how to change Chrome language for testing can be found here:
 https://developer.chrome.com/extensions/i18n#locales-testing
 
-**Note:** If changing the whole Mac OS language settings just to test an app, as described in the instructions, sounds like overkill, you can follow this steps:
+**Note:** If changing the whole Mac OS language settings just to test an app, as described in the instructions, sounds like overkill, you can follow these steps:
 
 - Open a Terminal window.
 - Type ``defaults write com.google.Chrome AppleLanguages '(en-US)'`` and press "enter". (set the language you want in the parenthesis).
