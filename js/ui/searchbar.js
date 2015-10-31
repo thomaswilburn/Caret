@@ -139,7 +139,7 @@ define([
       var options = this.currentSearch;
 
       chrome.fileSystem.getDisplayPath(nodeEntry, function(path) {
-        if (!options.running) return c(); 
+        if (!options.running) return c();
 
         var file = new File(nodeEntry);
         var path = nodeEntry.fullPath;
@@ -233,13 +233,14 @@ define([
     },
 
     activate: function(mode) {
-      var highlighted = editor.getSelectedText();
-      if (highlighted) {
-        this.input.value = highlighted;
+      var selected = editor.getSelectedText();
+      if (selected) {
+        this.input.value = selected;
       }
 
       this.element.addClass("active");
       this.input.focus();
+      this.input.select();
     },
 
     deactivate: function(cancel) {

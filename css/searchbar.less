@@ -43,6 +43,10 @@
     background-color: @background;
     color: @foreground;
     font-size: 12px;
+
+    &::selection {
+      background: mix(@accent, #ccc, 15%);
+    }
   }
 
   button {
