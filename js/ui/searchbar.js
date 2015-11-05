@@ -17,8 +17,8 @@ define([
     var self = this;
     this.element = document.find(".searchbar");
     this.input = this.element.find(".search-box");
-    this.maxMatches = Settings.get("user").maxSearchMatches || 50;
 
+    this.maxMatches = Settings.get("user").maxSearchMatches || 50;
     command.on("init:restart", function() {
       self.maxMatches = Settings.get("user").maxSearchMatches || 50;
     });
@@ -28,6 +28,12 @@ define([
       running: false
     };
 
+    this.searchHistory = {
+      history: [],
+      currentIndex: 0,
+      temporaryQuery: ''
+    };
+
     this.bindInput();
     this.bindButtons();
   };
@@ -35,6 +41,7 @@ define([
   Searchbar.prototype = {
     bindInput: function() {
       var input = this.input;
+      var hist = this.searchHistory;
       var self = this;
 
       input.on("keydown", function(e) {
@@ -51,6 +58,33 @@ define([
           self.deactivate();
           return;
         }
+        //up/down
+        if (e.keyCode == 38 || e.keyCode == 40) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          if (e.keyCode == 38) { // up
+            // show previous search query
+            if (hist.currentIndex == hist.history.length) {
+              hist.temporaryQuery = input.value;
+              // skip previous search if we're already showing the same value
+              if (hist.temporaryQuery == hist.history[hist.currentIndex-1]) {
+                hist.currentIndex--;
+              }
+            }
+            if (hist.currentIndex - 1 >= 0) {
+              input.value = hist.history[--hist.currentIndex];
+            }
+          } else { // down
+            //show next search query
+            if (hist.currentIndex + 1 < hist.history.length) {
+              input.value = hist.history[++hist.currentIndex];
+            } else if (hist.currentIndex + 1 == hist.history.length) {
+              hist.currentIndex++;
+              input.value = hist.temporaryQuery;
+            }
+          }
+          return;
+        }
       });
     },
 
@@ -64,7 +98,6 @@ define([
     },
 
     // todo add regex support
-    // todo add search history
     // we don't have to worry about the files blacklist because they are already removed from the project structure
     search: function() {
       if (this.currentSearch.running) {
@@ -74,6 +107,14 @@ define([
 
       var isCaseSensitive = this.element.find("#search-case-check").checked;
       var displayQuery = this.input.value;
+
+      // add query to search history
+      var hist = this.searchHistory;
+      if (displayQuery != hist.history[hist.history.length - 1]) { // deduplicate
+        hist.history.push(displayQuery);
+      }
+      hist.currentIndex = hist.history.length;
+      hist.temporaryQuery = '';
 
       var resultsTab = this.createResultsTab(displayQuery);
 
@@ -139,7 +180,7 @@ define([
       var options = this.currentSearch;
 
       chrome.fileSystem.getDisplayPath(nodeEntry, function(path) {
-        if (!options.running) return c(); 
+        if (!options.running) return c();
 
         var file = new File(nodeEntry);
         var path = nodeEntry.fullPath;
@@ -233,13 +274,14 @@ define([
     },
 
     activate: function(mode) {
-      var highlighted = editor.getSelectedText();
-      if (highlighted) {
-        this.input.value = highlighted;
+      var selected = editor.getSelectedText();
+      if (selected) {
+        this.input.value = selected;
       }
 
       this.element.addClass("active");
       this.input.focus();
+      this.input.select();
     },
 
     deactivate: function(cancel) {
