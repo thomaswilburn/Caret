@@ -163,8 +163,9 @@ define([
     });
   };
   
-  var blacklistRegExp = function() {
-    var blacklist = Settings.get("user").ignoreFiles;
+  var blacklistRegExp = function(config) {
+    //avoid race condition when reloading
+    var blacklist = (config || Settings.get("user")).ignoreFiles;
     if (blacklist) {
       return new RegExp(blacklist);
     }
@@ -453,7 +454,7 @@ define([
       this.element.addClass("loading");
       //restore directory entries that can be restored
       this.directories = [];
-      blacklist = blacklistRegExp();
+      blacklist = blacklistRegExp(project.settings);
       M.map(
         project.folders,
         function(folder, index, c) {
