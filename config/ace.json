@@ -83,7 +83,7 @@
     { "name": "mysql", "label": "MySQL", "extensions": ["sql"] },
     { "name": "objectivec", "label": "Objective C", "extensions": ["obc"] },
     { "name": "perl", "label": "Perl", "extensions": ["pl", "cgi", "pm"] },
-    { "name": "php", "label": "PHP", "extensions": ["php"] },
+    { "name": "php", "label": "PHP", "extensions": ["php", "phtml"] },
     { "name": "pgsql", "label": "PostgreSQL", "extensions": ["sql"] },
     { "name": "plain_text", "label": "Plain Text", "extensions": ["txt", "conf", "csv", "me", "tsv", "text"] },
     { "name": "powershell", "label": "Powershell", "extensions": ["ps", "ps1", "psd1", "psm1", "ps1xml", "clixml", "psc1", "pssc"] },
