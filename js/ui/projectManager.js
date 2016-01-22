@@ -163,8 +163,9 @@ define([
     });
   };
   
-  var blacklistRegExp = function() {
-    var blacklist = Settings.get("user").ignoreFiles;
+  var blacklistRegExp = function(config) {
+    //avoid race condition when reloading
+    var blacklist = (config || Settings.get("user")).ignoreFiles;
     if (blacklist) {
       return new RegExp(blacklist);
     }
@@ -344,7 +345,7 @@ define([
       });
     },
     
-    openFile: function(path) {
+    openFile: function(path, c) {
       var self = this;
       var found = false;
       var node = this.pathMap[path];
@@ -370,10 +371,18 @@ define([
           },
           //if no match found, create a tab
           function() {
-            if (found) return;
+            if (found) {
+              if (c) {
+                c();
+              }
+              return;
+            }
             var file = new File(node.entry);
             file.read(function(err, data) {
               sessions.addFile(data, file);
+              if (c) {
+                c();
+              }
             });
           }
         );
@@ -445,7 +454,7 @@ define([
       this.element.addClass("loading");
       //restore directory entries that can be restored
       this.directories = [];
-      blacklist = blacklistRegExp();
+      blacklist = blacklistRegExp(project.settings);
       M.map(
         project.folders,
         function(folder, index, c) {

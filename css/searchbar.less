@@ -1,0 +1,78 @@
+.searchbar {
+  display: none;
+  color: darken(@foreground, 30%);
+  background-color: darken(@background, 10%);
+  z-index: 999;
+  padding: 8px;
+  box-sizing: content-box;
+  align-items: stretch;
+
+  .vertical-center() {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &.active {
+    display: flex;
+  }
+
+  input[type=checkbox] {
+    display:none;
+
+    & + label {
+      flex: 0 0 22px;
+      .vertical-center();
+      color: darken(@foreground, 30%);
+      font-size: 16px;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+  
+    &:checked + label {
+      font-weight: bold;
+      color: @accent;
+    }
+  }
+
+  .search-box {
+    flex: 1;
+    border: none;
+    padding: 4px;
+    background: transparent;
+    background-color: @background;
+    color: @foreground;
+    font-size: 12px;
+
+    &::selection {
+      background: mix(@accent, #ccc, 15%);
+    }
+  }
+
+  button {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: darken(@foreground, 30%);
+    cursor: pointer;
+    padding: 0 10px;
+    .vertical-center();
+
+    &:hover {
+      color: @accent;
+      background: rgba(128, 128, 128, .2);
+    }
+  }
+}
+
+//search result markers
+.caret-search-marker {
+  pointer-events: auto;
+  position: absolute;
+  cursor: pointer;
+
+  &:hover {
+    outline: 1px solid @accent;
+    background: rgba(128, 128, 128, .3);
+  }
+}

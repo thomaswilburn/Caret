@@ -11,6 +11,7 @@ component, it offers powerful features like:
 -  command palette/smart go to
 -  hackable, synchronized configuration files
 -  project files and folder view
+-  fast project-wide string search
 
 More information, links to Caret in the Chrome Web Store, and an
 external package file are available at http://thomaswilburn.net/caret.
@@ -32,7 +33,7 @@ installed first, then follow these steps:
    manifest.json.
 
 If you use Caret and would like to show your appreciation, please
-consider donating to the `EFF's Fund to End Software
-Patents <https://my.fsf.org/donate/directed-donations/esp>`__. You can
+consider donating to the `FSF's Fund to End Software
+Patents <http://endsoftwarepatents.org/donate>`__. You can
 also give a gift through
 `Gittip <https://www.gittip.com/thomaswilburn/>`__.

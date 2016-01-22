@@ -13,6 +13,7 @@ require([
     "fileManager",
     "ui/menus",
     "ui/palette",
+    "ui/searchbar",
     "ui/cli",
     "ui/theme",
     "api",
@@ -28,6 +29,7 @@ require([
     Settings.pull("user").then(function(data) {
       var themes = {
         "dark": "css/caret-dark.css",
+        "twilight": "css/caret-twilight.css",
         "light": "css/caret.css"
       };
       var theme = data.user.uiTheme || "light";
@@ -70,12 +72,22 @@ require([
             chrome.notifications.create(updateID, {
               type: "basic",
               iconUrl: "icon-128.png",
-              title: "Caret: Update Available",
-              message: "An update to Caret version " + details.version + " is available. Would you like to update and restart now?",
-              buttons: [ { title: "Yes, update and restart" }, { title: "No thanks" }]
+              title: i18n.get("notificationUpdateAvailable"),
+              message: i18n.get("notificationUpdateDetail", details.version),
+              buttons: [
+                { title: i18n.get("notificationUpdateOK") },
+                { title: i18n.get("notificationUpdateWait") }
+              ]
             }, function(id) { updateID = id });
           });
         });
+      } else {
+        if (isManual) chrome.notifications.create(updateID, {
+          type: "basic",
+          iconUrl: "icon-128.png",
+          title: i18n.get("notificationNoUpdateTitle"),
+          message: i18n.get("notificationNoUpdateDetail")
+        }, function(id) { updateID = id });
       }
     });
   };
@@ -132,6 +144,12 @@ require([
   
   command.on("app:restart", function() {
     chrome.runtime.reload();
+  });
+  
+  //developer command for reloading CSS
+  command.on("app:reload-css", function() {
+    var link = document.querySelector("link#theme");
+    link.href = link.href;
   });
   
   //handle immersive fullscreen

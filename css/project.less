@@ -4,14 +4,15 @@
 }
 
 .project {
-  @background: #444;
-  @foreground: white;
+  @project-background: mix(@background, #888, 80%);
+  @project-foreground: mix(@foreground, #888, 80%);
   @width: 200px;
+  box-shadow: inset -8px 0 12px rgba(0, 0, 0, .2);
   
   overflow-x: auto;
   overflow-y: auto;
-  box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .4);
-  background: @background;
+  background: @project-background;
+  color: @project-foreground;
   flex-shrink: 0;
   position: relative;
 
@@ -27,7 +28,7 @@
   &.autohide.show {
     padding: 4px 0;
     width: 0px;
-    border-right: 15px solid @background;
+    border-right: 15px solid @project-background;
     
     &:hover, &.loading {
       padding: 4px 8px;
@@ -50,11 +51,11 @@
     border-radius: 2px;
 
     &:hover {
-      background: fade(@foreground, 10%);
+      text-decoration: underline;
     }
 
     &:active {
-      background: fade(@foreground, 15%);
+      background: fade(@project-foreground, 15%);
     }
 
     &:focus {
@@ -69,13 +70,12 @@
   }
   
   li {
-    color: @foreground;
-    text-shadow: -1px -1px 1px rgba(0, 0, 0, .2);
+    color: @project-foreground;
     white-space: no-wrap;
     
     & > ul {
       display: none;
-      padding-left: 6px;
+      padding-left: 12px;
     }
     
     &.expanded > ul {
@@ -84,15 +84,15 @@
   }
   
   .directory {
-    color: darken(@foreground, 30%);
     position: relative;
+    font-weight: bold;
     
     &:before {
-      content: ">";
+      transform-origin: 50% 50%;
+      content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAjUlEQVQ4T2NkoBAwUqifgXYGtLe3N3BwcEwoLCz8gM+VWF0A0szIyFgP1HiBnZ3dEZ8hWA3o7+8X+Pnz5wGgAfqEDMEZBsQagjcQiTGEGAP2A71hAMQXgeHhgB4ehLyAVzModvAFIkHNOA3o7OwM+P///3pczkZOFzi9ADKEjY3tAFkJiZT8Qbu8QKwrAJ+PTxHjWFvxAAAAAElFTkSuQmCC");
       position: absolute;
-      left: -5px;
+      left: -13px;
       opacity: .5;
-      display: inline-block;
       transition: all .3s;
     }
     
@@ -104,7 +104,7 @@
   .root {
   
     &:not(:first-child) {
-      border-top: 1px solid lighten(@background, 20%);
+      border-top: 1px solid #888;
       margin-top: 4px;
       padding-top: 4px;
     }

@@ -3,8 +3,9 @@ define([
     "storage/file",
     "util/manos",
     "settings!ace,user",
-    "util/template!templates/tab.html"
-  ], function(command, File, M, Settings, inflate) {
+    "util/template!templates/tab.html",
+    "ui/dialog"
+  ], function(command, File, M, Settings, inflate, dialog) {
     
   /*
   
@@ -41,7 +42,7 @@ define([
     });
     
     this.animationClass = "enter";
-    
+    this.readOnly = false;
   };
   
   //hopefully this never screws up unaugmented Ace sessions.
@@ -51,12 +52,16 @@ define([
     this.file = file;
     this.fileName = file.entry.name;
     this.modifiedAt = new Date();
+    this.setPath();
+  };
+
+  Tab.prototype.setPath = function() {
     var self = this;
-    if (!this.file.virtual) file.getPath(function(err, path) {
+    if (this.file && !this.file.virtual) this.file.getPath(function(err, path) {
       self.path = path;
       command.fire("session:render");
     });
-  }
+  };
   
   Tab.prototype.save = function(as) {
     
@@ -76,6 +81,7 @@ define([
         }
         self.modifiedAt = new Date();
         self.modified = false;
+        self.setPath();
         command.fire("session:render");
         deferred.done();
       });
@@ -85,7 +91,7 @@ define([
       var file = new File();
       file.open("save", function(err) {
         if (err) {
-          dialog(err);
+          if (err.message != "User cancelled") dialog(err.message);
           return deferred.fail(err);
         }
         self.file = file;

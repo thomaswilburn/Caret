@@ -137,7 +137,7 @@ ace.define("ace/mode/coffee_highlight_rules",["require","exports","module","ace/
                     regex : "(\\.)(\\s*)(" + illegal + ")"
                 }, {
                     token : "punctuation.operator",
-                    regex : "\\."
+                    regex : "\\.{1,3}"
                 }, {
                     token : ["keyword", "text", "language.support.class",
                      "text", "keyword", "text", "language.support.class"],
@@ -393,11 +393,11 @@ oop.inherits(Mode, TextMode);
         var worker = new WorkerClient(["ace"], "ace/mode/coffee_worker", "Worker");
         worker.attachToDocument(session.getDocument());
         
-        worker.on("error", function(e) {
-            session.setAnnotations([e.data]);
+        worker.on("annotate", function(e) {
+            session.setAnnotations(e.data);
         });
         
-        worker.on("ok", function(e) {
+        worker.on("terminate", function() {
             session.clearAnnotations();
         });
         

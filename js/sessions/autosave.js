@@ -20,7 +20,7 @@ define([
   var autosave = function() {
     status.toast(i18n.get("fileAutosaving"));
     state.tabs.forEach(function(tab) {
-      if (tab.file && !tab.file.virtual) {
+      if (tab.file && !tab.file.virtual && tab.modified) {
         tab.save();
       }
     });

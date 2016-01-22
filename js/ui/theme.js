@@ -20,7 +20,7 @@ define([
     theme.styles[""] = theme.editor;
     for (var selector in theme.styles) {
       var block = {
-        selector: selector,
+        selector: selector.split(/,\s*/).map(function(s) { return ".ace-caret " + s }).join(", "),
         styles: []
       };
       var definition = theme.styles[selector];

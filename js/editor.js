@@ -40,7 +40,8 @@ define([
     editor.setTheme("ace/theme/" + themes.value);
     editor.setOptions({
       scrollPastEnd: userConfig.scrollPastEnd,
-      showGutter: !userConfig.hideGutter
+      showGutter: !userConfig.hideGutter,
+      cursorStyle: userConfig.cursorStyle || "smooth"
     });
     editor.setBehavioursEnabled(!userConfig.disableBehaviors);
     editor.setShowPrintMargin(userConfig.showMargin || false);
@@ -97,13 +98,13 @@ define([
       iframe.srcdoc = doc;
       iframe.width = iframe.height = 1;
       iframe.style.display = "none";
-      document.body.append(iframe);
-      setTimeout(function() {
+      iframe.onload = function() {
         iframe.contentWindow.print();
         setTimeout(function() {
           iframe.remove();
         });
-      });
+      };
+      document.body.append(iframe);
     });
   });
   

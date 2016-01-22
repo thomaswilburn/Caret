@@ -38,7 +38,7 @@
     vibrant_ink
     xcode
   */
-  "uiTheme": "light", //dark or light, your pick
+  "uiTheme": "light", //dark, twilight, or light
   "autoHideProject": false, //collapse the project view until you hover
   "immersiveFullscreen": false, //hides menus/tabs in Chrome OS fullscreen mode
   "highlightLine": false,
@@ -70,6 +70,9 @@
   //By default, the palette searches the current file's text only unless you widen the scope.
   //If you'd like it to search all open files by default, set this option to true.
   "searchAllFiles": false,
+  //set the max search results that project wide search will return.
+  "maxSearchMatches": 50,
+
   //set a regex to ignore in project view/search
   "ignoreFiles": "node_modules",
   //set this to enable autosave every X minutes
@@ -77,6 +80,8 @@
   "autosaveOnBlur": false,
   //If the editor jumps to the top on focus change, set this:
   "disableReload": false,
+  //Set this to stop the editor from restoring the last set of tabs it had open
+  "disableTabRestore": false,
 
   //Wildly eccentric? You might like Vim keybindings.
   "emulateVim": false,
