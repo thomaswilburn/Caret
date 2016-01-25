@@ -19,6 +19,7 @@
   "menuOpenFile": { "message": "Open File" },
   "menuSave": { "message": "Save File" },
   "menuSaveAs": { "message": "Save File As..." },
+  "menuSaveAll": { "message": "Save All Files" },
   "menuRevert": { "message": "Revert" },
   "menuClose": { "message": "Close File" },
   "menuPrint": { "message": "Print" },
