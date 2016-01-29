@@ -211,7 +211,7 @@ define([
 
               if (firstFindInFile) { // only add a filename if it is the first result for the file
                 self.appendToResults(""); // add an extra blank line
-                self.appendToResults(path, path);
+                self.appendToResults(path + ":", path);
                 firstFindInFile = false;
               } else if (!printedLines[i] && !printedLines[i-1] && !printedLines[i-2]) { // add break if immediately previous lines not included
                 self.appendToResults("...");
@@ -248,6 +248,7 @@ define([
       resultsTab.readOnly = true;
       resultsTab.links = {};
       editor.setReadOnly(true);
+      command.fire("session:syntax", "c9search");
 
       return resultsTab;
     },
