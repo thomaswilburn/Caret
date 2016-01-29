@@ -269,8 +269,15 @@ define([
       //add the clickable marker if flagged
       if (link) {
         var range = new Range(insertRow - 1, 0, insertRow - 1, text.length);
-        resultsTab.addMarker(range, "caret-search-marker " + text, "text", true);
+        resultsTab.addMarker(range, "caret-search-marker", "text", true);
         resultsTab.links[insertRow] = link;
+      }
+      var query = this.currentSearch.searchQuery;
+      if (text.match(query)) {
+        while (match = query.exec(text)) {
+          var range = new Range(insertRow - 1, match.index, insertRow - 1, query.lastIndex);
+          resultsTab.addMarker(range, "caret-search-term", "text", true);
+        }
       }
     },
 

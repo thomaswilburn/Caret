@@ -72,7 +72,12 @@
   cursor: pointer;
 
   &:hover {
+    &:extend(.caret-search-term);
+  }
+}
+
+.caret-search-term {
+    position: absolute;
     outline: 1px solid @accent;
     background: rgba(128, 128, 128, .3);
-  }
 }
