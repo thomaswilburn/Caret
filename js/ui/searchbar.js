@@ -211,7 +211,7 @@ define([
 
               if (firstFindInFile) { // only add a filename if it is the first result for the file
                 self.appendToResults(""); // add an extra blank line
-                self.appendToResults(path, path);
+                self.appendToResults(path + ":", path);
                 firstFindInFile = false;
               } else if (!printedLines[i] && !printedLines[i-1] && !printedLines[i-2]) { // add break if immediately previous lines not included
                 self.appendToResults("...");
@@ -248,6 +248,7 @@ define([
       resultsTab.readOnly = true;
       resultsTab.links = {};
       editor.setReadOnly(true);
+      command.fire("session:syntax", "c9search");
 
       return resultsTab;
     },
@@ -268,8 +269,15 @@ define([
       //add the clickable marker if flagged
       if (link) {
         var range = new Range(insertRow - 1, 0, insertRow - 1, text.length);
-        resultsTab.addMarker(range, "caret-search-marker " + text, "text", true);
+        resultsTab.addMarker(range, "caret-search-marker", "text", true);
         resultsTab.links[insertRow] = link;
+      }
+      var query = this.currentSearch.searchQuery;
+      if (text.match(query)) {
+        while (match = query.exec(text)) {
+          var range = new Range(insertRow - 1, match.index, insertRow - 1, query.lastIndex);
+          resultsTab.addMarker(range, "caret-search-term", "text", true);
+        }
       }
     },
 
