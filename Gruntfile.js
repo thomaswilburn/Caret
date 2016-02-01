@@ -112,22 +112,4 @@ module.exports = function(grunt) {
     exec("rm -rf ./build/*", c);
   });
 
-  grunt.registerTask("types", "Update supported file types from ace.json", function() {
-    var json = JSON.parse(fs.readFileSync("config/ace.json", { encoding: "utf8" }));
-    var types = {};
-    json.modes.forEach(function(mode) {
-      mode.extensions.forEach(function(ext) {
-        types[ext] = true;
-      });
-    });
-    var manifest = JSON.parse(fs.readFileSync("manifest.json"));
-    manifest.file_handlers.text.extensions.forEach(function(type) {
-      if (!types[type]) console.log("Warning: Extension", type, "does not exist in ace.json");
-      types[type] = true;
-    });
-    manifest.file_handlers.text.extensions = Object.keys(types).sort();
-    var output = JSON.stringify(manifest, null, 2);
-    fs.writeFileSync("manifest.json", output);
-  });
-
 };
