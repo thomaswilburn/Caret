@@ -123,7 +123,7 @@
     { "name": "python", "label": "Python", "extensions": ["py"] },
     { "name": "r", "label": "R", "extensions": ["r"] },
     { "name": "rdoc", "label": "RDoc", "extensions": ["rd"] },
-    { "name": "rst", "label": "ReStructured Text", "extensions": ["rst"] },
+    { "name": "rst", "label": "reStructuredText", "extensions": ["rst"] },
     { "name": "ruby", "label": "Ruby", "extensions": ["rb", "erb", "rake", "ru", "gemspec"] },
     { "name": "rust", "label": "Rust", "extensions": ["rs"] },
     { "name": "sass", "label": "Sass", "extensions": ["sass"] },
