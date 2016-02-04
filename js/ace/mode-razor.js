@@ -2779,88 +2779,357 @@ oop.inherits(Mode, TextMode);
 exports.Mode = Mode;
 });
 
-ace.define("ace/mode/coldfusion_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/javascript_highlight_rules","ace/mode/html_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/csharp_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
-var JavaScriptHighlightRules = require("./javascript_highlight_rules").JavaScriptHighlightRules;
-var HtmlHighlightRules = require("./html_highlight_rules").HtmlHighlightRules;
+var DocCommentHighlightRules = require("./doc_comment_highlight_rules").DocCommentHighlightRules;
+var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var ColdfusionHighlightRules = function() {
-    HtmlHighlightRules.call(this);
-    this.$rules.tag[2].token = function (start, tag) {
-        var group = tag.slice(0,2) == "cf" ? "keyword" : "meta.tag";
-        return ["meta.tag.punctuation." + (start == "<" ? "" : "end-") + "tag-open.xml",
-            group + ".tag-name.xml"];
-    }
+var CSharpHighlightRules = function() {
+    var keywordMapper = this.createKeywordMapper({
+        "variable.language": "this",
+        "keyword": "abstract|event|new|struct|as|explicit|null|switch|base|extern|object|this|bool|false|operator|throw|break|finally|out|true|byte|fixed|override|try|case|float|params|typeof|catch|for|private|uint|char|foreach|protected|ulong|checked|goto|public|unchecked|class|if|readonly|unsafe|const|implicit|ref|ushort|continue|in|return|using|decimal|int|sbyte|virtual|default|interface|sealed|volatile|delegate|internal|short|void|do|is|sizeof|while|double|lock|stackalloc|else|long|static|enum|namespace|string|var|dynamic",
+        "constant.language": "null|true|false"
+    }, "identifier");
 
-    var jsAndCss = Object.keys(this.$rules).filter(function(x) {
-        return /^(js|css)-/.test(x);
-    });
-    this.embedRules({
-        cfmlComment: [
-            { regex: "<!---", token: "comment.start", push: "cfmlComment"}, 
-            { regex: "--->", token: "comment.end", next: "pop"},
-            { defaultToken: "comment"}
+    this.$rules = {
+        "start" : [
+            {
+                token : "comment",
+                regex : "\\/\\/.*$"
+            },
+            DocCommentHighlightRules.getStartRule("doc-start"),
+            {
+                token : "comment", // multi line comment
+                regex : "\\/\\*",
+                next : "comment"
+            }, {
+                token : "string", // character
+                regex : /'(?:.|\\(:?u[\da-fA-F]+|x[\da-fA-F]+|[tbrf'"n]))'/
+            }, {
+                token : "string", start : '"', end : '"|$', next: [
+                    {token: "constant.language.escape", regex: /\\(:?u[\da-fA-F]+|x[\da-fA-F]+|[tbrf'"n])/},
+                    {token: "invalid", regex: /\\./}
+                ]
+            }, {
+                token : "string", start : '@"', end : '"', next:[
+                    {token: "constant.language.escape", regex: '""'}
+                ]
+            }, {
+                token : "string", start : /\$"/, end : '"|$', next: [
+                    {token: "constant.language.escape", regex: /\\(:?$)|{{/},
+                    {token: "constant.language.escape", regex: /\\(:?u[\da-fA-F]+|x[\da-fA-F]+|[tbrf'"n])/},
+                    {token: "invalid", regex: /\\./}
+                ]
+            }, {
+                token : "constant.numeric", // hex
+                regex : "0[xX][0-9a-fA-F]+\\b"
+            }, {
+                token : "constant.numeric", // float
+                regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+            }, {
+                token : "constant.language.boolean",
+                regex : "(?:true|false)\\b"
+            }, {
+                token : keywordMapper,
+                regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+            }, {
+                token : "keyword.operator",
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|\\b(?:in|instanceof|new|delete|typeof|void)"
+            }, {
+                token : "keyword",
+                regex : "^\\s*#(if|else|elif|endif|define|undef|warning|error|line|region|endregion|pragma)"
+            }, {
+                token : "punctuation.operator",
+                regex : "\\?|\\:|\\,|\\;|\\."
+            }, {
+                token : "paren.lparen",
+                regex : "[[({]"
+            }, {
+                token : "paren.rparen",
+                regex : "[\\])}]"
+            }, {
+                token : "text",
+                regex : "\\s+"
+            }
+        ],
+        "comment" : [
+            {
+                token : "comment", // closing comment
+                regex : ".*?\\*\\/",
+                next : "start"
+            }, {
+                token : "comment", // comment spanning whole line
+                regex : ".+"
+            }
         ]
-    }, "", [
-        { regex: "<!---", token: "comment.start", push: "cfmlComment"}
-    ], [
-        "comment", "start", "tag_whitespace", "cdata"
-    ].concat(jsAndCss));
-    
-    
-    this.$rules.cfTag = [
-        {include : "attributes"},
-        {token : "meta.tag.punctuation.tag-close.xml", regex : "/?>", next : "pop"}
-    ];
-    var cfTag = {
-        token : function(start, tag) {
-            return ["meta.tag.punctuation." + (start == "<" ? "" : "end-") + "tag-open.xml",
-                "keyword.tag-name.xml"];
-        },
-        regex : "(</?)(cf[-_a-zA-Z0-9:.]+)",
-        push: "cfTag"
     };
-    jsAndCss.forEach(function(s) {
-        this.$rules[s].unshift(cfTag);
-    }, this);
-    
-    this.embedTagRules(new JavaScriptHighlightRules({noJSX: true}).getRules(), "cfjs-", "cfscript");
 
+    this.embedRules(DocCommentHighlightRules, "doc-",
+        [ DocCommentHighlightRules.getEndRule("start") ]);
     this.normalizeRules();
 };
 
-oop.inherits(ColdfusionHighlightRules, HtmlHighlightRules);
+oop.inherits(CSharpHighlightRules, TextHighlightRules);
 
-exports.ColdfusionHighlightRules = ColdfusionHighlightRules;
+exports.CSharpHighlightRules = CSharpHighlightRules;
 });
 
-ace.define("ace/mode/coldfusion",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/html","ace/mode/coldfusion_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/razor_highlight_rules",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/doc_comment_highlight_rules","ace/mode/html_highlight_rules","ace/mode/csharp_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var lang = require("../lib/lang");
-var HtmlMode = require("./html").Mode;
-var ColdfusionHighlightRules = require("./coldfusion_highlight_rules").ColdfusionHighlightRules;
+var DocCommentHighlightRules = require("./doc_comment_highlight_rules").DocCommentHighlightRules;
+var HtmlHighlightRules = require("./html_highlight_rules").HtmlHighlightRules;
+var CSharpHighlightRules = require("./csharp_highlight_rules").CSharpHighlightRules;
 
-var voidElements = "cfabort|cfapplication|cfargument|cfassociate|cfbreak|cfcache|cfcollection|cfcookie|cfdbinfo|cfdirectory|cfdump|cfelse|cfelseif|cferror|cfexchangecalendar|cfexchangeconnection|cfexchangecontact|cfexchangefilter|cfexchangetask|cfexit|cffeed|cffile|cfflush|cfftp|cfheader|cfhtmlhead|cfhttpparam|cfimage|cfimport|cfinclude|cfindex|cfinsert|cfinvokeargument|cflocation|cflog|cfmailparam|cfNTauthenticate|cfobject|cfobjectcache|cfparam|cfpdfformparam|cfprint|cfprocparam|cfprocresult|cfproperty|cfqueryparam|cfregistry|cfreportparam|cfrethrow|cfreturn|cfschedule|cfsearch|cfset|cfsetting|cfthrow|cfzipparam)".split("|");
+var blockPrefix = 'razor-block-';
+var RazorLangHighlightRules = function() {
+    CSharpHighlightRules.call(this);
+
+    var processPotentialCallback = function(value, stackItem) {
+        if (typeof stackItem === "function")
+            return stackItem(value);
+
+        return stackItem;
+    };
+
+    var inBraces = 'in-braces';
+    this.$rules.start.unshift({
+        regex: '[\\[({]',
+        onMatch: function(value, state, stack) {
+            var prefix = /razor-[^\-]+-/.exec(state)[0];
+
+            stack.unshift(value);
+            stack.unshift(prefix + inBraces);
+            this.next = prefix + inBraces;
+            return 'paren.lparen';
+        }
+    });
+
+    var parentCloseMap = {
+        '{': '}',
+        '[': ']',
+        '(': ')'
+    };
+
+    this.$rules[inBraces] = lang.deepCopy(this.$rules.start);
+    this.$rules[inBraces].unshift({
+        regex: '[\\])}]',
+        onMatch: function(value, state, stack) {
+            var open = stack[1];
+            if (parentCloseMap[open] !== value)
+                return 'invalid.illegal';
+
+            stack.shift(); // exit in-braces block
+            stack.shift(); // exit brace marker
+            this.next = processPotentialCallback(value, stack[0]) || 'start';
+            return 'paren.rparen';
+        }
+    });
+};
+
+oop.inherits(RazorLangHighlightRules, CSharpHighlightRules);
+
+var RazorHighlightRules = function() {
+    HtmlHighlightRules.call(this);
+
+    var blockStartRule = {
+        regex: '@[({]',
+        onMatch: function(value, state, stack) {
+            stack.unshift(value);
+            stack.unshift('razor-block-start');
+            this.next = 'razor-block-start';
+            return 'punctuation.block.razor';
+        }
+    };
+
+    var blockEndMap = {
+        '@{': '}',
+        '@(': ')',
+    };
+
+    var blockEndRule = {
+        regex: '[})]',
+        onMatch: function(value, state, stack) {
+            var blockStart = stack[1];
+            if (blockEndMap[blockStart] !== value)
+                return 'invalid.illegal';
+
+            stack.shift(); // exit razor block
+            stack.shift(); // remove block type marker
+            this.next = stack.shift() || 'start';
+            return 'punctuation.block.razor';
+        }
+    };
+
+    var shortStartRule = {
+        regex: "@(?![{(])",
+        onMatch: function(value, state, stack) {
+            stack.unshift("razor-short-start");
+            this.next = "razor-short-start";
+            return 'punctuation.short.razor';
+        }
+    };
+
+    var shortEndRule = {
+        token: "",
+        regex: "(?=[^A-Za-z_\\.()\\[\\]])",
+        next: 'pop'
+    };
+
+    var ifStartRule = {
+        regex: "@(?=if)",
+        onMatch: function(value, state, stack) {
+            stack.unshift(function(value) {
+                if (value !== '}')
+                    return 'start';
+
+                return stack.shift() || 'start';
+            });
+            this.next = 'razor-block-start';
+            return 'punctuation.control.razor';
+        }
+    };
+
+    var razorStartRules = [
+        {
+            token: ["meta.directive.razor", "text", "identifier"],
+            regex: "^(\\s*@model)(\\s+)(.+)$"
+        },
+        blockStartRule,
+        shortStartRule
+    ];
+
+    for (var key in this.$rules)
+        this.$rules[key].unshift.apply(this.$rules[key], razorStartRules);
+
+    this.embedRules(RazorLangHighlightRules, "razor-block-", [blockEndRule], ["start"]);
+    this.embedRules(RazorLangHighlightRules, "razor-short-", [shortEndRule], ["start"]);
+
+    this.normalizeRules();
+};
+
+oop.inherits(RazorHighlightRules, HtmlHighlightRules);
+
+exports.RazorHighlightRules = RazorHighlightRules;
+exports.RazorLangHighlightRules = RazorLangHighlightRules;
+});
+
+ace.define("ace/mode/razor_completions",["require","exports","module","ace/token_iterator"], function(require, exports, module) {
+"use strict";
+
+var TokenIterator = require("../token_iterator").TokenIterator;
+
+var keywords = [
+    "abstract", "as", "base", "bool",
+    "break", "byte", "case", "catch",
+    "char", "checked", "class", "const",
+    "continue", "decimal", "default", "delegate",
+    "do", "double","else","enum",
+    "event", "explicit", "extern", "false",
+    "finally", "fixed", "float", "for",
+    "foreach", "goto", "if", "implicit",
+    "in", "int", "interface", "internal",
+    "is", "lock", "long", "namespace",
+    "new", "null", "object", "operator",
+    "out", "override", "params", "private",
+    "protected", "public", "readonly", "ref",
+    "return", "sbyte", "sealed", "short",
+    "sizeof", "stackalloc", "static", "string",
+    "struct", "switch", "this", "throw",
+    "true", "try", "typeof", "uint",
+    "ulong", "unchecked", "unsafe", "ushort",
+    "using", "var", "virtual", "void",
+    "volatile", "while"];
+
+var shortHands  = [
+    "Html", "Model", "Url", "Layout"
+];
+    
+var RazorCompletions = function() {
+
+};
+
+(function() {
+
+    this.getCompletions = function(state, session, pos, prefix) {
+        
+        if(state.lastIndexOf("razor-short-start") == -1 && state.lastIndexOf("razor-block-start") == -1)
+            return [];
+        
+        var token = session.getTokenAt(pos.row, pos.column);
+        if (!token)
+            return [];
+        
+        if(state.lastIndexOf("razor-short-start") != -1) {
+            return this.getShortStartCompletions(state, session, pos, prefix);
+        }
+        
+        if(state.lastIndexOf("razor-block-start") != -1) {
+            return this.getKeywordCompletions(state, session, pos, prefix);
+        }
+
+        
+    };
+    
+    this.getShortStartCompletions = function(state, session, pos, prefix) {
+        return shortHands.map(function(element){
+            return {
+                value: element,
+                meta: "keyword",
+                score: Number.MAX_VALUE
+            };
+        });
+    };
+
+    this.getKeywordCompletions = function(state, session, pos, prefix) {
+        return shortHands.concat(keywords).map(function(element){
+            return {
+                value: element,
+                meta: "keyword",
+                score: Number.MAX_VALUE
+            };
+        });
+    };
+
+}).call(RazorCompletions.prototype);
+
+exports.RazorCompletions = RazorCompletions;
+
+});
+
+ace.define("ace/mode/razor",["require","exports","module","ace/lib/oop","ace/mode/html","ace/mode/razor_highlight_rules","ace/mode/razor_completions","ace/mode/html_completions"], function(require, exports, module) {
+"use strict";
+
+var oop = require("../lib/oop");
+var HtmlMode = require("./html").Mode;
+var RazorHighlightRules = require("./razor_highlight_rules").RazorHighlightRules;
+var RazorCompletions = require("./razor_completions").RazorCompletions;
+var HtmlCompletions = require("./html_completions").HtmlCompletions;
 
 var Mode = function() {
     HtmlMode.call(this);
-    
-    this.HighlightRules = ColdfusionHighlightRules;
+    this.$highlightRules = new RazorHighlightRules();
+    this.$completer = new RazorCompletions();
+    this.$htmlCompleter = new HtmlCompletions();
 };
 oop.inherits(Mode, HtmlMode);
 
 (function() {
-    this.voidElements = oop.mixin(lang.arrayToMap(voidElements), this.voidElements);
-
-    this.getNextLineIndent = function(state, line, tab) {
-        return this.$getIndent(line);
+    this.getCompletions = function(state, session, pos, prefix) {
+        var razorToken = this.$completer.getCompletions(state, session, pos, prefix);
+        var htmlToken = this.$htmlCompleter.getCompletions(state, session, pos, prefix);
+        return razorToken.concat(htmlToken);
+    };
+    
+    this.createWorker = function(session) {
+        return null;
     };
 
-    this.$id = "ace/mode/coldfusion";
+    this.$id = "ace/mode/razor";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

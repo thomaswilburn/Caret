@@ -563,7 +563,7 @@ var Range = function(startRow, startColumn, endRow, endColumn) {
         if (!this.isMultiLine()) {
             if (row === this.start.row) {
                 return column < this.start.column ? -1 : (column > this.end.column ? 1 : 0);
-            };
+            }
         }
 
         if (row < this.start.row)
@@ -1246,7 +1246,7 @@ var Document = function(textOrLines) {
         }
     };
     this.replace = function(range, text) {
-        if (!range instanceof Range)
+        if (!(range instanceof Range))
             range = Range.fromPoints(range.start, range.end);
         if (text.length === 0 && range.isEmpty())
             return range.start;

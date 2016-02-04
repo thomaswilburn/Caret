@@ -1139,68 +1139,31 @@ oop.inherits(Mode, TextMode);
 exports.Mode = Mode;
 });
 
-ace.define("ace/mode/scala_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/wollok_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var DocCommentHighlightRules = require("./doc_comment_highlight_rules").DocCommentHighlightRules;
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var ScalaHighlightRules = function() {
-
+var WollokHighlightRules = function() {
     var keywords = (
-            "case|default|do|else|for|if|match|while|throw|return|try|trye|catch|finally|yield|" +
-            "abstract|class|def|extends|final|forSome|implicit|implicits|import|lazy|new|object|null|" +
-            "override|package|private|protected|sealed|super|this|trait|type|val|var|with|" +
-            "assert|assume|require|print|println|printf|readLine|readBoolean|readByte|readShort|" + // package scala
-            "readChar|readInt|readLong|readFloat|readDouble" // package scala
+    "test|package|inherits|false|import|else|or|class|and|not|native|override|program|this|try|val|var|catch|object|super|throw|if|null|return|true|new|method"
     );
 
-    var buildinConstants = ("true|false");
+    var buildinConstants = ("null|assert|console");
+
 
     var langClasses = (
-        "AbstractMethodError|AssertionError|ClassCircularityError|"+
-        "ClassFormatError|Deprecated|EnumConstantNotPresentException|"+
-        "ExceptionInInitializerError|IllegalAccessError|"+
-        "IllegalThreadStateException|InstantiationError|InternalError|"+
-
-        "NegativeArraySizeException|NoSuchFieldError|Override|Process|"+
-        "ProcessBuilder|SecurityManager|StringIndexOutOfBoundsException|"+
-        "SuppressWarnings|TypeNotPresentException|UnknownError|"+
-        "UnsatisfiedLinkError|UnsupportedClassVersionError|VerifyError|"+
-        "InstantiationException|IndexOutOfBoundsException|"+
-        "ArrayIndexOutOfBoundsException|CloneNotSupportedException|"+
-        "NoSuchFieldException|IllegalArgumentException|NumberFormatException|"+
-        "SecurityException|Void|InheritableThreadLocal|IllegalStateException|"+
-        "InterruptedException|NoSuchMethodException|IllegalAccessException|"+
-        "UnsupportedOperationException|Enum|StrictMath|Package|Compiler|"+
-        "Readable|Runtime|StringBuilder|Math|IncompatibleClassChangeError|"+
-        "NoSuchMethodError|ThreadLocal|RuntimePermission|ArithmeticException|"+
-        "NullPointerException|Long|Integer|Short|Byte|Double|Number|Float|"+
-        "Character|Boolean|StackTraceElement|Appendable|StringBuffer|"+
-        "Iterable|ThreadGroup|Runnable|Thread|IllegalMonitorStateException|"+
-        "StackOverflowError|OutOfMemoryError|VirtualMachineError|"+
-        "ArrayStoreException|ClassCastException|LinkageError|"+
-        "NoClassDefFoundError|ClassNotFoundException|RuntimeException|"+
-        "Exception|ThreadDeath|Error|Throwable|System|ClassLoader|"+
-        "Cloneable|Class|CharSequence|Comparable|String|Object|" +
-        "Unit|Any|AnyVal|AnyRef|Null|ScalaObject|Singleton|Seq|Iterable|List|" +
-        "Option|Array|Char|Byte|Int|Long|Nothing|" +
-
-        "App|Application|BufferedIterator|BigDecimal|BigInt|Console|Either|" +
-        "Enumeration|Equiv|Fractional|Function|IndexedSeq|Integral|Iterator|" +
-        "Map|Numeric|Nil|NotNull|Ordered|Ordering|PartialFunction|PartialOrdering|" +
-        "Product|Proxy|Range|Responder|Seq|Serializable|Set|Specializable|Stream|" +
-        "StringContext|Symbol|Traversable|TraversableOnce|Tuple|Vector|Pair|Triple"
-
-
+        "Object|Pair|String|Boolean|Number|Integer|Double|Collection|Set|List|Exception|Range" +
+        "|StackTraceElement"
     );
 
     var keywordMapper = this.createKeywordMapper({
         "variable.language": "this",
         "keyword": keywords,
-        "support.function": langClasses,
-        "constant.language": buildinConstants
+        "constant.language": buildinConstants,
+        "support.function": langClasses
     }, "identifier");
 
     this.$rules = {
@@ -1215,25 +1178,17 @@ var ScalaHighlightRules = function() {
                 regex : "\\/\\*",
                 next : "comment"
             }, {
-                token : "string.regexp",
-                regex : "[/](?:(?:\\[(?:\\\\]|[^\\]])+\\])|(?:\\\\/|[^\\]/]))*[/]\\w*\\s*(?=[).,;]|$)"
+                token : "string", // single line
+                regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
-                token : "string",
-                regex : '"""',
-                next : "tstring"
-            }, {
-                token : "string",
-                regex : '"(?=.)', // " strings can't span multiple lines
-                next : "string"
-            }, {
-                token : "symbol.constant", // single line
-                regex : "'[\\w\\d_]+"
+                token : "string", // single line
+                regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
             }, {
                 token : "constant.numeric", // hex
-                regex : "0[xX][0-9a-fA-F]+\\b"
+                regex : /0(?:[xX][0-9a-fA-F][0-9a-fA-F_]*|[bB][01][01_]*)[LlSsDdFfYy]?\b/
             }, {
                 token : "constant.numeric", // float
-                regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+                regex : /[+-]?\d[\d_]*(?:(?:\.[\d_]*)?(?:[eE][+-]?[\d_]+)?)?[LlSsDdFfYy]?\b/
             }, {
                 token : "constant.language.boolean",
                 regex : "(?:true|false)\\b"
@@ -1242,12 +1197,12 @@ var ScalaHighlightRules = function() {
                 regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
             }, {
                 token : "keyword.operator",
-                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|\\b(?:in|instanceof|new|delete|typeof|void)"
+                regex : "===|&&|\\*=|\\.\\.|\\*\\*|#|!|%|\\*|\\?:|\\+|\\/|,|\\+=|\\-|\\.\\.<|!==|:|\\/=|\\?\\.|\\+\\+|>|=|<|>=|=>|==|\\]|\\[|\\-=|\\->|\\||\\-\\-|<>|!=|%=|\\|"
             }, {
-                token : "paren.lparen",
+                token : "lparen",
                 regex : "[[({]"
             }, {
-                token : "paren.rparen",
+                token : "rparen",
                 regex : "[\\])}]"
             }, {
                 token : "text",
@@ -1263,33 +1218,6 @@ var ScalaHighlightRules = function() {
                 token : "comment", // comment spanning whole line
                 regex : ".+"
             }
-        ],
-        "string" : [
-            {
-                token : "escape",
-                regex : '\\\\"'
-            }, {
-                token : "string",
-                regex : '"',
-                next : "start"
-            }, {
-                token : "string.invalid",
-                regex : '[^"\\\\]*$',
-                next : "start"
-            }, {
-                token : "string",
-                regex : '[^"\\\\]+'
-            }
-        ],
-        "tstring" : [
-            {
-                token : "string", // closing comment
-                regex : '"{3,5}',
-                next : "start"
-            }, {
-                token : "string", // comment spanning whole line
-                regex : ".+?"
-            }
         ]
     };
 
@@ -1297,32 +1225,31 @@ var ScalaHighlightRules = function() {
         [ DocCommentHighlightRules.getEndRule("start") ]);
 };
 
-oop.inherits(ScalaHighlightRules, TextHighlightRules);
+oop.inherits(WollokHighlightRules, TextHighlightRules);
 
-exports.ScalaHighlightRules = ScalaHighlightRules;
+exports.WollokHighlightRules = WollokHighlightRules;
 });
 
-ace.define("ace/mode/scala",["require","exports","module","ace/lib/oop","ace/mode/javascript","ace/mode/scala_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/wollok",["require","exports","module","ace/lib/oop","ace/mode/javascript","ace/mode/wollok_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var JavaScriptMode = require("./javascript").Mode;
-var ScalaHighlightRules = require("./scala_highlight_rules").ScalaHighlightRules;
+var WollokHighlightRules = require("./wollok_highlight_rules").WollokHighlightRules;
 
 var Mode = function() {
     JavaScriptMode.call(this);
-    
-    this.HighlightRules = ScalaHighlightRules;
+    this.HighlightRules = WollokHighlightRules;
 };
 oop.inherits(Mode, JavaScriptMode);
 
 (function() {
-
+    
     this.createWorker = function(session) {
         return null;
     };
 
-    this.$id = "ace/mode/scala";
+    this.$id = "ace/mode/wollok";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
