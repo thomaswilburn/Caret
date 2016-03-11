@@ -140,6 +140,7 @@
     { "name": "sql", "label": "SQL", "extensions": ["sql", "pks", "pkb", "pls", "pkg"] },
     { "name": "sqlserver", "label": "SQLServer", "extensions": ["sqlserver"] },
     { "name": "stylus", "label": "Stylus", "extensions": ["styl", "stylus"] },
+    { "name": "swift", "label": "Swift", "extensions": ["swift"] },
     { "name": "svg", "label": "SVG", "extensions": ["svg"] },
     { "name": "tcl", "label": "Tcl", "extensions": ["tcl"] },
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
