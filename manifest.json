@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -41,12 +41,8 @@
         "application/json",
         "application/x-shellscript",
         "application/xml",
-        "application/*",
         "text/*"
       ]
-    },
-    "any": {
-      "types": ["*/*"]
     }
   }
 }
