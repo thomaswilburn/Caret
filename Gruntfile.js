@@ -3,6 +3,7 @@ module.exports = function(grunt) {
   var exec = require("child_process").exec;
   var path = require("path");
   var fs = require("fs");
+  var Zip = require("jszip");
 
   grunt.loadNpmTasks("grunt-contrib-less");
   grunt.loadNpmTasks("grunt-contrib-watch");
@@ -25,18 +26,6 @@ module.exports = function(grunt) {
       },
       options: {
         spawn: false
-      }
-    },
-    compress: {
-      store: {
-        options: {
-          archive: "build/caret.zip",
-          pretty: true,
-          level: 2
-        },
-        files: [
-          {cwd: "build/unpacked", expand: true, src: "**", dest: "/", isFile: true}
-        ]
       }
     },
     copy:  [
@@ -68,6 +57,21 @@ module.exports = function(grunt) {
     files.forEach(function(f) {
       grunt.file.copy(f.src[0], f.dest);
     });
+  });
+
+  grunt.registerTask("compress", "Generates the store .zip file", function() {
+    var zipfile = new Zip();
+    var files = grunt.file.expand({ filter: "isFile", cwd: "./build/unpacked" }, "**/*");
+    files.forEach(function(file) {
+      var buffer = fs.readFileSync(path.join("./build/unpacked", file));
+      zipfile.file(file, buffer);
+    });
+    var zipped = zipfile.generate({
+      type: "nodebuffer",
+      compression: "DEFLATE",
+      compressionOptions: { level: 8 }
+    });
+    fs.writeFileSync("./build/caret.zip", zipped);
   });
 
   grunt.registerTask("chrome", "Makes a new CRX package", function() {

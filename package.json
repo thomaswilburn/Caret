@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "dependencies": {
     "grunt": "*",
-    "grunt-contrib-watch": "*",
     "grunt-contrib-less": "*",
-    "grunt-contrib-compress": "*"
+    "grunt-contrib-watch": "*",
+    "jszip": "^2.6.0"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/thomaswilburn/Caret.git"
-  }
+  },
+  "license": "GPL"
 }
