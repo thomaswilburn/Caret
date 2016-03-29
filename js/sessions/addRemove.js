@@ -45,10 +45,7 @@ define([
     var continuation = function() {
       tab.drop();
       state.tabs = state.tabs.filter(function(tab, i) {
-        if (i == index) {
-          return false;
-        }
-        return true;
+        return !(i == index);
       });
       if (state.tabs.length == 0) {
         return addTab();
