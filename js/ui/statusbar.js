@@ -31,10 +31,12 @@ define([
           toastTimeout = null;
         }
         update();
+        return true;
       },
       clearMessage: function() {
         external = "";
         update();
+        return true;
       },
       toast: function(msg, seconds) {
         external = msg;
@@ -47,6 +49,7 @@ define([
           update();
           toastTimeout = null;
         }, seconds ? seconds * 1000 : 5000);
+        return true;
       }
     };
     

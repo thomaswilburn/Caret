@@ -1,0 +1,8 @@
+{
+  "sequence:test": [
+    { "ace": "gotolineend" },
+    { "command": "ace:command", "argument": "selecttolinestart" },
+    { "command": "status:set", "argument": "Selected a line via custom sequence!" },
+    "status:clear"
+  ]
+}

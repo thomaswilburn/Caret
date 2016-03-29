@@ -24,10 +24,11 @@ define([
   */
   
   var commands = {};
+  var broadcast = [];
   
   //commands can pass a callback, although most don't respond that way
   var fire = function(command, argument, callback) {
-    if (!commands[command]) return;
+    if (!commands[command]) return broadcast.forEach(f => f.apply(null, arguments));
     var args = [].slice.call(arguments, 1);
     //technically, a function as `argument` is a callback...
     if (typeof argument == "function") {
@@ -45,6 +46,9 @@ define([
   };
   
   var register = function(command, listener, sync) {
+    if (command == "*") {
+      return broadcast.push(listener);
+    }
     if (!commands[command]) {
       commands[command] = [];
     }

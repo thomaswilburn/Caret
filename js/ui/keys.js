@@ -112,20 +112,6 @@ define([
         //so we shouldn't act on them
         return;// editor.execCommand(action.ace);
       }
-      //handle sequences
-      if (action instanceof Array) {
-        return M.serial(action, function(item, next) {
-          if (typeof item == "string") {
-            item = {
-              command: item
-            };
-          }
-          if (item.ace) {
-            item.command = "ace:command";
-          }
-          command.fire(item.command, item.argument || item.ace, next);
-        });
-      }
       command.fire(action.command, action.argument);
     }
   });

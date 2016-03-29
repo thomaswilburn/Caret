@@ -288,10 +288,10 @@ define([
       }
 
       this.element.addClass("active");
-      //reflow
-      var _ = this.input.offsetWidth;
-      this.input.focus();
-      this.input.select();
+      setTimeout(() => {
+        this.input.focus();
+        this.input.select();
+      }, 100);
     },
 
     deactivate: function(cancel) {

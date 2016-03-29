@@ -17,7 +17,8 @@ require([
     "ui/cli",
     "ui/theme",
     "api",
-    "storage/syncfile"
+    "sequences",
+    "storage/syncfile",
   ], function(command, editor, Settings, dialog, sessions, M, i18n) {
   
   //translate inline strings

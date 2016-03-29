@@ -21,7 +21,7 @@ define([
   except that it gets loaded explicitly on startup.
   */
 
-  command.on("session:new-file", function(content) { return sessions.addFile(content) });
+  command.on("session:new-file", content => sessions.addFile(content));
   
   command.on("session:open-file", function(c) {
     //have to call chooseEntry manually to support multiple files

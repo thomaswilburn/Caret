@@ -49,5 +49,6 @@
   "Ctrl-Shift-Down": { "ace": "movelinesdown" },
   
   //dev mode
+  "Ctrl-Shift-M": "sequence:test",
   "Ctrl-.": { "command": "app:show-prompt" }
 }
