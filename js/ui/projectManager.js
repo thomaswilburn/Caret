@@ -50,6 +50,8 @@ define([
     setTimeout(process);
   };
   
+  var getPath = (entry, c) => chrome.fileSystem.getDisplayPath(entry, c);
+  
   //FSNodes are used to track filesystem state inside projects
   //We don't use the typical File object, because we're not really reading them
   //Nodes form a tree starting at the root directory
@@ -188,29 +190,32 @@ define([
       var root;
       this.element.addClass("loading");
       //ensure we aren't duplicating
-      this.directories.forEach(function(directoryNode){
-        if (directoryNode.entry.fullPath === entry.fullPath) {
-          root = directoryNode;
+      chrome.fileSystem.getDisplayPath(entry, path => {
+        this.directories.forEach(function(directoryNode){
+          if (directoryNode.path == path) {
+            root = directoryNode;
+          }
+        });
+        
+        //if this is the first, go ahead and start the slideout
+        if (!this.directories.length) {
+          this.element.addClass("show");
         }
-      });
-      
-      //if this is the first, go ahead and start the slideout
-      if (!this.directories.length) {
-        this.element.addClass("show");
-      }
-      
-      if (!root) {
-        root = new FSNode(entry);
-        this.directories.push(root);
-      }
-      
-      //if the directory was there, we still want
-      //to refresh it, in response to the users
-      //interaction
-      var self = this;
-      tick(function() {
-        root.walk(blacklistRegExp(), function() {
-          self.render()
+        
+        if (!root) {
+          root = new FSNode(entry);
+          root.path = path;
+          this.directories.push(root);
+        }
+        
+        //if the directory was there, we still want
+        //to refresh it, in response to the users
+        //interaction
+        var self = this;
+        tick(function() {
+          root.walk(blacklistRegExp(), function() {
+            self.render()
+          });
         });
       });
     },
@@ -461,13 +466,16 @@ define([
           chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
             //remember, you can only restore project directories you'd previously opened
             if (!entry) return c();
-            var node = new FSNode(entry);
-            //if this is the first, go ahead and start the slideout
-            if (!self.directories.length) {
-              self.element.addClass("show");
-            }
-            self.directories.push(node);
-            node.walk(blacklist, c);
+            chrome.fileSystem.getDisplayPath(entry, function(path) {
+              var node = new FSNode(entry);
+              node.path = path;
+              //if this is the first, go ahead and start the slideout
+              if (!self.directories.length) {
+                self.element.addClass("show");
+              }
+              self.directories.push(node);
+              node.walk(blacklist, c);
+            });
           });
         },
         function() {
