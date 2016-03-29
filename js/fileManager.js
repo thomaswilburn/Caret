@@ -26,12 +26,11 @@ define([
   command.on("session:open-file", function(c) {
     //have to call chooseEntry manually to support multiple files
     var args = {
-      type: "openWritableFile"
+      type: "openWritableFile",
+      acceptsMultiple: true
     };
-    if (chrome.version >= 30) {
-      args.acceptsMultiple = true;
-    }
     chrome.fileSystem.chooseEntry(args, function(files) {
+      if (!files) return;
       //annoying array function test, since it's not apparently a real array
       if (!files.slice) {
         files = [ files ];
