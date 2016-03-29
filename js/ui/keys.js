@@ -2,9 +2,10 @@ define([
     "settings!keys,user",
     "command",
     "editor",
+    "util/manos",
     "util/dom2",
     "util/aceLoad!js/ace/keybinding-vim.js"
-  ], function(Settings, command, editor) {
+  ], function(Settings, command, editor, M) {
   
   var keycodes = {
     9: "Tab",
@@ -110,6 +111,20 @@ define([
         //we're going to bind these directly on startup
         //so we shouldn't act on them
         return;// editor.execCommand(action.ace);
+      }
+      //handle sequences
+      if (action instanceof Array) {
+        return M.serial(action, function(item, next) {
+          if (typeof item == "string") {
+            item = {
+              command: item
+            };
+          }
+          if (item.ace) {
+            item.command = "ace:command";
+          }
+          command.fire(item.command, item.argument || item.ace, next);
+        });
       }
       command.fire(action.command, action.argument);
     }
