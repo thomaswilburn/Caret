@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.14
+------
+
+Fixed a bug where directories with the same name couldn't be added as projects directories. Switched to a changelog on GitHub (here!) not in the web store.
+
 1.6.13
 ------
 
