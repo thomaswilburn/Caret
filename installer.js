@@ -35,5 +35,5 @@ chrome.runtime.onInstalled.addListener(function(e) {
 
 chrome.notifications.onClicked.addListener(function(id) {
   if (id != notification) return;
-  window.open("https://chrome.google.com/webstore/detail/caret/fljalecfjciodhpcledpamjachpmelml", "target=_blank");
+  window.open("https://github.com/thomaswilburn/Caret/blob/master/changelog.rst", "target=_blank");
 });

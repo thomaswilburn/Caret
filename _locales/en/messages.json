@@ -124,7 +124,7 @@
   "notificationUpdateOK": { "message": "Yes, update and restart" },
   "notificationUpdateWait": { "message": "No thanks" },
   "notificationUpdated": { "message": "Caret has been updated" },
-  "notificationUpdatedDetail": { "message": "Now at version $1. Click to see the changelog in the Chrome store." },
+  "notificationUpdatedDetail": { "message": "Now at version $1. Click to see the changelog." },
 
   "searchDisplayQuery": { "message": "Searching for: $1\n" },
   "searchTabName": { "message": "Results: $1" },
