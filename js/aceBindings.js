@@ -7,9 +7,7 @@ define([
   ], function(command, editor, status, Settings, i18n) {
 
     var userConfig = Settings.get("user");
-    command.on("init:restart", function() {
-      userConfig = Settings.get("user");
-    });
+    command.on("init:restart", () => userConfig = Settings.get("user"));
 
     //load the syntax commands and set them up in the command listings
     var aceConfig = Settings.get("ace");

@@ -115,7 +115,7 @@ define([
     if (!id) return;
     chrome.storage.local.get("retained", function(data) {
       if (!data.retained) return;
-      var filtered = data.retained.filter(function(item) { return item != id });
+      var filtered = data.retained.filter(item => item != id);
       chrome.storage.local.set({ retained: filtered });
     });
   };
@@ -130,7 +130,7 @@ define([
     });
     this.animationClass = "";
     return element;
-  }
+  };
   
   Tab.prototype.detectSyntax = function(userConfig) {
     //settings are async

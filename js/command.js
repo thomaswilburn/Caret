@@ -86,17 +86,15 @@ define([
   //register for post-startup and fire any commands that are pending
   register("init:complete", function() {
     if (window.launchCommands) {
-      window.launchCommands.forEach(function(bundle) {
-        fire(bundle.message.command, bundle.message.argument, bundle.sendResponse);
-      });
+      window.launchCommands.forEach(bundle => fire(bundle.message.command, bundle.message.argument, bundle.sendResponse));
       delete window.launchCommands;
     }
   });
   
   var facade = {
-    fire: fire,
-    on: register,
-    list: list
+    fire,
+    list,
+    on: register
   };
   
   return facade;

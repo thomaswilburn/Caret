@@ -125,7 +125,7 @@ define([
       switching.raise(locationMemory.tab);
       editor.moveCursorToPosition(locationMemory.cursor);
     },
-    renderTabs: renderTabs
+    renderTabs
   }
 
 });

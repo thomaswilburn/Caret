@@ -40,13 +40,11 @@ define([
       index = state.tabs.indexOf(editor.getSession());
     }
     var tab = state.tabs[index];
-    state.stack = state.stack.filter(function(t) { return t !== tab });
+    state.stack = state.stack.filter(t => t !== tab);
 
     var continuation = function() {
       tab.drop();
-      state.tabs = state.tabs.filter(function(tab, i) {
-        return !(i == index);
-      });
+      state.tabs = state.tabs.filter((tab, i) => !(i == index));
       if (state.tabs.length == 0) {
         return addTab();
       }

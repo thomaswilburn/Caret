@@ -19,9 +19,7 @@ define([
     tabContainer.on("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
       e.target.style.opacity = 0;
-      setTimeout(function() {
-        e.target.addClass("dragging");
-      }, 50);
+      setTimeout(() => e.target.addClass("dragging"), 50);
       e.dataTransfer.setDragImage(e.target, 0, 0);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.clearData("text/plain");
@@ -131,12 +129,8 @@ define([
 
   command.on("session:close-to-right", closeTabsRight);
 
-  contextMenus.register("Close", "closeTab", "tabs/:id", function(args) {
-    command.fire("session:close-tab", args.id);
-  });
-  contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", function(args) {
-    closeTabsRight(args.id);
-  });
+  contextMenus.register("Close", "closeTab", "tabs/:id", args => command.fire("session:close-tab", args.id));
+  contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", args => closeTabsRight(args.id));
   
   return function() {
     enableTabDragDrop();

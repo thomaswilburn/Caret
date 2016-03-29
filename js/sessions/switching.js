@@ -28,7 +28,7 @@ define([
 
   var resetStack = function(tab) {
     var raised = tab || state.stack[stackOffset];
-    state.stack = state.stack.filter(function(t) { return t != raised });
+    state.stack = state.stack.filter(t => t != raised);
     state.stack.unshift(raised);
   }
 

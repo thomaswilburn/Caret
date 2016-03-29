@@ -5,9 +5,7 @@ define([
 
   //handles sending custom messages based on Caret commands (builds, plugins, etc)
   var targets = Settings.get("api");
-  command.on("init:restart", function() {
-    targets = Settings.get("api");
-  });
+  command.on("init:restart", () => targets = Settings.get("api"));
 
   command.on("api:execute", function(id, c) {
     if (!id in targets) return c();

@@ -48,9 +48,7 @@ define([
   command.on("session:save-file", function(c) {
     sessions.getCurrent()
       .save(c)
-      .then(function() {
-        command.fire("session:syntax");
-      });
+      .then(() => command.fire("session:syntax"));
   });
   
   command.on("session:save-all", function(c) {
@@ -105,9 +103,7 @@ define([
       keep[i] = tab.file.retain();
     });
     keep = keep.filter(function(m) { return m });
-    chrome.storage.local.set({ retained: keep }, function() {
-      setTimeout(retainLoop, retainInterval * 1000);
-    });
+    chrome.storage.local.set({ retained: keep }, () => setTimeout(retainLoop, retainInterval * 1000));
   };
 
   command.on("session:check-file", function() {

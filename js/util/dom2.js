@@ -22,14 +22,12 @@ var win = Window.prototype;
 
 
 //alias of querySelector and qSA
-el.find = doc.find = frag.find = function(selector) {
+el.find = doc.find = frag.find = function(selector) { 
   return this.querySelector(selector);
 };
 
 el.findAll = doc.findAll = frag.findAll = function(selector) {
-  var a = [];
-  a.push.apply(a, this.querySelectorAll(selector));
-  return a;
+  return Array.prototype.slice.call(this.querySelectorAll(selector));
 };
 
 //equivalent of $().closest()

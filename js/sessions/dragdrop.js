@@ -14,9 +14,7 @@ define([
       //files get opened in a tab
       if (entry.isFile) {
         var f = new File(entry);
-        return f.read(function(err, data) {
-          addRemove.add(data, f);
-        });
+        return f.read((err, data) => addRemove.add(data, f));
       //directories get added to project
       } else if (entry.isDirectory) {
         projectManager.insertDirectory(entry);
