@@ -21,6 +21,15 @@ define([
     return text.replace(/\</g, "&lt;").replace(/\>/g, "&gt;").trim();
   };
   
+  var makeFuzz = function(query) {
+    return new RegExp(query
+      .replace(antiregex, "\\$1")
+      .split("")
+      .map(function(char) { return char.replace(antiregex, "\\$1")})
+      .join(".*?"),
+    "i");
+  };
+  
   var findResultsLimit = 10;
   //limit sorting in very large projects
   var sortResultsLimit = 1000;
@@ -133,11 +142,7 @@ define([
     
     findCommands: function(query) {
       if (query.length == 0) return this.results = [];
-      var fuzzyCommand = new RegExp(query
-        .split("")
-        .map(function(char) { return char.replace(antiregex, "\\$1")})
-        .join(".*?"),
-      "i");
+      var fuzzyCommand = makeFuzz(query);
       var results = [];
       //load matches from the menu
       var menus = Settings.get("menus");
@@ -244,12 +249,7 @@ define([
       
       if (file) {
         //search through open files by name
-        var fuzzyFile = new RegExp(file
-          .replace(/ /g, "")
-          .split("")
-          .map(function(char) { return char.replace(antiregex, "\\$1") })
-          .join(".*?"),
-        "i");
+        var fuzzyFile = makeFuzz(file);
         tabs = sessions.getAllTabs().filter(function(tab) {
           return fuzzyFile.test(tab.fileName);
         });
@@ -354,7 +354,7 @@ define([
       } else if (reference !== false) {
         //search by symbol reference
         try {
-          var crawl = new RegExp(reference.replace(antiregex, "\\$1"), "i");
+          var crawl = makeFuzz(reference);
         } catch (e) {
           return;
         }
@@ -369,7 +369,14 @@ define([
             }
           }
         });
-        tabs = results;
+        tabs = results.sort(function(a, b) {
+          var aMatch = crawl.exec(a.value);
+          var bMatch = crawl.exec(b.value);
+          var aScore = aMatch.index + aMatch[0].length;
+          var bScore = bMatch.index + bMatch[0].length;
+          if (aScore == bScore) return ((a.value) < (b.value) ? -1 : 1);
+          return aScore - bScore;
+        });
       }
       
       this.results = tabs.concat(projectFiles).slice(0, findResultsLimit);
