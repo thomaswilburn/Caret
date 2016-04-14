@@ -74,7 +74,7 @@ define([
             return;
           }
           if (confirm) {
-            return tab.save(continuation);
+            return tab.save().then(continuation);
           }
           continuation();
         });
