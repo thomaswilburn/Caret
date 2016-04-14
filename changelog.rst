@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.15
+------
+
+Fix a bug where closing a settings file (like the user preferences) would always to try to save the file to the drive instead of to synchronized storage where it's supposed to go.
+
 1.6.14
 ------
 
