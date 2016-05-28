@@ -152,7 +152,7 @@ define([
         syntaxValue = "javascript";
         this.setMode("ace/mode/javascript");
       } else if (this.file.entry) {
-        var extension = this.file.entry.name.split(".").pop();
+        var extension = this.file.entry.name.split(".").pop().toLowerCase();
         //this won't ever change, safe to get each time
         var aceConfig = Settings.get("ace");
         for (var i = 0; i < aceConfig.modes.length; i++) {
