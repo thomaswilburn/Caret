@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.16
+------
+
+File extension for syntax detection is now case-insensitive. Added ``4th`` as a valid Forth extension.
+
 1.6.15
 ------
 
