@@ -95,11 +95,15 @@ chrome.app.runtime.onRestarted.addListener(function() {
 
 // setup for launcher context menus
 // currently this is just for emergency reset
-chrome.contextMenus.create({
-  title: "Emergency Reset",
-  contexts: [ "launcher" ],
-  id: chrome.runtime.id + ":factory-reset"
-});
+try {
+  chrome.contextMenus.create({
+    title: "Emergency Reset",
+    contexts: [ "launcher" ],
+    id: chrome.runtime.id + ":factory-reset"
+  });
+} catch (err) {
+  console.log("Emergency reset menu already exists");
+}
 
 var emergencyReset = function() {
   if (mainWindow) mainWindow.close();
