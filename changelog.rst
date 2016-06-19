@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.18
+------
+
+Added a toggle (``showHiddenDirectories``) to display dot-prefixed directories in the project manager (disabled by default).
+
 1.6.16
 ------
 
