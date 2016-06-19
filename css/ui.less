@@ -7,17 +7,10 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 4px 16px;
   background: linear-gradient(to left, @background, mix(@background, #888, 90%));
   
-  .toolbar, .window-controls {
+  .toolbar, .window-controls, .window-controls [class~="icon"] {
     -webkit-app-region: no-drag;
-  }
-  
-  .app-name {
-    margin-right: 10px;
-    padding-right: 10px;
-    border-right: 1px solid @foreground;
   }
   
   .window-controls {
@@ -26,9 +19,17 @@
     right: 0;
     bottom: 0;
     display: flex;
-    align-content: stretch;
-    align-items: baseline;
-    padding: 0 4px;
+    justify-content: stretch;
+    align-items: stretch;
+    padding: 0 0;
+    
+    .icon-restore {
+      display: none;
+    }
+    
+    .icon-maximize {
+      display: inline-block;
+    }
     
     a {
       width: 40px;
@@ -36,23 +37,27 @@
       margin-left: 1px;
       font-family: monospace;
       font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      background: mix(@background, #888, 65%);
       color: mix(@foreground, #888, 50%);
       transition: opacity .3s ease;
-      opacity: .8;
-      color: @foreground;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       
       &:hover {
-        opacity: 1;
+        background: mix(@background, #888, 65%);
         color: @foreground;
       }
       
       &.close {
         background: @accent;
+        opacity: .8;
         color: white;
       }
+      
+      &.close:hover {
+        opacity: 1;
+      }
+      
     }
   }
 }
@@ -71,6 +76,7 @@
   
   select {
     font-size: inherit;
+    font-family: inherit;
     margin: 0;
     border: none;
     width: 150px;
@@ -95,6 +101,8 @@
   input {
     width: 100%;
     padding: 4px;
+    background-color: @faded;
+    color: @foreground;
     font-family: monospace;
     border: none;
   }
@@ -109,7 +117,7 @@
 
 //app-wide scrollbar
 ::-webkit-scrollbar {
-    width: 15px;
+    width: 10px;
     height: 15px;
 }
 
@@ -125,7 +133,7 @@
 ::-webkit-scrollbar-thumb {
     background-color: mix(@foreground, @background, 30%);
     border: 3px solid transparent;
-    border-radius: 6px;
+    border-radius: 10px;
     background-clip: content-box;
 }
 
@@ -136,3 +144,18 @@
 ::-webkit-scrollbar-corner {
     background-color: mix(@foreground, @background, 15%);
 }
+
+
+body.maximized .window-controls, body.immersive .window-controls {
+  
+  .icon-maximize {
+    display: none;
+  }
+  
+  .icon-restore {
+    display: inline-block;
+    
+  }
+  
+}
+

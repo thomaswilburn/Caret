@@ -4,8 +4,11 @@
   padding: 0;
   margin: 0;
   color: @foreground;
-  line-height: 30px;
+  line-height: 32px;
+  height: 32px;
   list-style-type: none;
+  display: flex;
+  align-items: stretch;
   z-index: 99;
   
   hr {
@@ -15,21 +18,34 @@
   }
 
   .shortcut {
-    color: #444;
+    color: mix(@foreground, @background, 50%);
     margin-left: 1em;
   }
 
   //nested menus (default)
   li {
+    @menu-background: mix(@background, #888, 80%);
     transition: opacity .2s;
     display: flex;
     padding: 4px 8px;
     justify-content: space-between;
     position: relative;
+    
+    &.top:first-child > img {
+      padding: 0 8px;
+      display: block;
+    }
 
-    &:hover:not(.top), &.active {
-      color: black;
-      background: #EEE;
+    &:hover:not(.top), &.active:not(.top) {
+      color: white;
+      background: @accent;
+      .shortcut {
+        color: #eee;
+      }
+    }
+    
+    &:hover.top, &.active.top {
+      background: @menu-background;
     }
 
     &.parent:hover, &.active {
@@ -45,14 +61,14 @@
       min-width: 250px;
       position: absolute;
       margin-left: 90%;
-      margin-top: -2em;
+      margin-top: -1em;
       z-index: 999;
-      color: black;
-      background: white;
+      color: @foreground;
+      background: @menu-background;
       padding: 4px 0;
       line-height: 1.4;
       white-space: nowrap;
-      box-shadow: 0px 8px 16px rgba(0, 0, 0, .2);
+      box-shadow: 0px 8px 8px rgba(0, 0, 0, .2);
       // border-left: 2px solid @accent;
     }
 
@@ -71,7 +87,7 @@
   & > li {
     display: inline-block;
     padding: 4px 8px;
-    line-height: initial;
+    line-height: 24px;
 
     & > .menu {
       margin-left: -8px;

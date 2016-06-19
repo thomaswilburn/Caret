@@ -1,6 +1,6 @@
 .tabs {
   background: @faded;
-  padding: 2px 2px 0 0;
+  //padding: 2px 0 0 0;
   display: flex;
   justify-content: flex-start;
   //box-shadow: inset 4px 4px 16px rgba(0, 0, 0, .3);
@@ -13,16 +13,15 @@
     // margin-right: 3px;
     opacity: .5;
     background: @background;
-    border-bottom: 4px solid darken(@background, 10%);
+    border-bottom: 2px solid darken(@background, 10%);
     color: @foreground;
-    padding: 0 12px;
+    padding: 0 16px;
     flex: 1 1 0px;
     position: relative;
     
     a {
       text-decoration: none;
       color: @foreground;
-      padding: 6px 0;
       width: 100%;
       flex: 1;
       
@@ -37,7 +36,7 @@
     
     &.active {
       padding-bottom: 0px;
-      border-bottom: 4px solid @accent;
+      border-bottom: 2px solid @accent;
       color: @foreground;
       opacity: 1;
       z-index: 9;
@@ -45,6 +44,10 @@
       
       .close {
         color: @accent;
+        &:hover {
+          background: @accent;
+          color: @background;
+        }
       }
     }
     
@@ -78,16 +81,21 @@
     }
     
     .close {
-      font-size: 19px;
+      font-size: 12px;
       text-align: center;
-      width: 18px;
+      height: 12px;
       cursor: pointer;
-      flex: 0 0 18px;
+      flex: 0 0 12px;
+      border-radius: 100%;
       align-self: center;
       font-family: monospace;
       
       &:hover {
         color: @foreground;
+      }
+      
+      .material-icons {
+        font-size: 12px;
       }
     }
 
@@ -108,6 +116,6 @@
         font-weight: bold;
         text-align: center;
       }
-    }    
+    }
   }
 }

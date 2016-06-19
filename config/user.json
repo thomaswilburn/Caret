@@ -82,6 +82,9 @@
 
   //Wildly eccentric? You might like Vim keybindings.
   "emulateVim": false,
+  
+  // Love the old window controls? Switch back here.
+  "useOldWindowControls": false,
 
   //Whether to show the "New file" tab button on the tab bar;
   "showNewTabButton": false
