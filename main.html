@@ -9,12 +9,18 @@
   <body>
   
     <div class="titlebar">
-      <b class="app-name">Caret</b>
       <ul class="toolbar"></ul>
       <div class="window-controls">
-        <a command="app:minimize" title="Minimize">-</a>
-        <a command="app:maximize" title="Maximize">+</a>
-        <a class="close" command="app:exit" title="Close">~</a>
+        <a command="app:minimize" title="Minimize">
+          <span class="char-icon">&mdash;</span>
+        </a>
+        <a command="app:maximize" id="maxRestoreButton" title="Maximize">
+          <i class="caret-icons icon-maximize"></i>
+          <i class="caret-icons icon-restore"></i>
+        </a>
+        <a class="close" command="app:exit" title="Close">
+          <i class="caret-icons icon-close"></i>
+        </a>
       </div>
     </div>
     

@@ -75,7 +75,7 @@
   "menuOpenProject": { "message": "Открыть файл проекта" },
   "menuClearProject": { "message": "Очистить проект" },
   
-  "menuSettings": { "message": "Настройки" },
+  "menuApp": { "message": "<img src=\"/icons/icon-24.png\" alt=\"Caret\" class=\"char-icon\"/>" },
   "menuUserPrefs": { "message": "Общие" },
   "menuKeyboard": { "message": "Быстрые клавиши" },
   "menuMenus": { "message": "Меню" },

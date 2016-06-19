@@ -12,6 +12,7 @@ require([
     "project/file",
     "ui/keys",
     "fileManager",
+    "ui/icons",
     "ui/menus",
     "ui/palette",
     "ui/cli",
@@ -159,16 +160,41 @@ require([
         editor.resize();
       }
     });
-  }
+  };
   
   frame.onFullscreened.addListener(onFullscreen);
   if (frame.isFullscreen()) {
     onFullscreen();
   }
   
+  // handle minimize/maximize
+  var onMaximize = function() {
+    console.log("maximized!");
+    document.find("body").addClass("maximized");
+    document.querySelector("#maxRestoreButton")
+      .setAttribute("title", "Restore");
+  };
+  
+  var onRestore = function() {
+    console.log("minimized!");
+    document.find("body").removeClass("maximized");
+    document.querySelector("#maxRestoreButton")
+      .setAttribute("title", "Maximize");
+  };
+  
+  frame.onMaximized.addListener(onMaximize);
+  if (frame.isMaximized()) {
+    onMaximize();
+  }
+  
   frame.onRestored.addListener(function() {
     document.find("body").removeClass("immersive");
+    onRestore();
   });
+  
+  if (!frame.isMaximized() && !frame.isFullscreen()) {
+    onRestore();
+  }
   
   //It's nice to be able to launch the debugger from a command stroke
   command.on("app:debug", function() {

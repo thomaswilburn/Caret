@@ -69,7 +69,7 @@
   "menuOpenProject": { "message": "Abrir Arquivo de Projeto" },
   "menuClearProject": { "message": "Limpar Projeto" },
   
-  "menuSettings": { "message": "Configurações" },
+  "menuApp": { "message": "<img src=\"/icons/icon-24.png\" alt=\"Caret\" class=\"char-icon\"/>" },
   "menuUserPrefs": { "message": "Preferências do Usuário" },
   "menuKeyboard": { "message": "Teclado" },
   "menuMenus": { "message": "Menus" },

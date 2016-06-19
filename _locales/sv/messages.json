@@ -69,7 +69,7 @@
   "menuOpenProject": { "message": "Öppna projektfil" },
   "menuClearProject": { "message": "Rensa projekt" },
   
-  "menuSettings": { "message": "Inställningar" },
+  "menuApp": { "message": "<img src=\"/icons/icon-24.png\" alt=\"Caret\" class=\"char-icon\"/>" },
   "menuUserPrefs": { "message": "Användarval" },
   "menuKeyboard": { "message": "Tangentbord" },
   "menuMenus": { "message": "Menyer" },

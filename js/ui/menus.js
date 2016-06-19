@@ -137,7 +137,16 @@ define([
       };
       menubar.addEventListener("click", function(e) {
         document.body.on("click", clickElsewhere);
-        var el = e.target;
+        
+        let el;
+        if (e.target.className.indexOf("icon") > -1) {
+          el = e.target.parentElement;
+          console.log("el = menu item, target = icon")
+        } else {
+          el = e.target;
+          console.log("el = menu item, target = menu item");
+        }
+        
         if (el.hasClass("top")) {
           el.toggle("active");
           self.active = !self.active;

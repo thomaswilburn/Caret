@@ -59,13 +59,28 @@ define([
   document.body.on("click", function(e) {
     //cancel on inputs, selectboxes
     if (["input", "select"].indexOf(e.target.tagName.toLowerCase()) >= 0) return;
-    if (e.button != 0) return;
+    if (e.button !== 0) return;
     //delegate all items with a command attribute
+    
+    let command, arg;
     if (e.target.hasAttribute("command")) {
-      var command = e.target.getAttribute("command");
-      var arg = e.target.getAttribute("argument");
+      command = e.target.getAttribute("command");
+      arg = e.target.getAttribute("argument");
       fire(command, arg);
       e.preventDefault();
+    } else if (
+      (e.target.classList.contains("material-icons") ||
+      e.target.classList.contains("char-icon") ||
+      e.target.classList.contains("caret-icons"))
+      && e.target.parentElement.hasAttribute("command")
+    ) {
+      console.log("command fired from icon");
+      var cmdElement = e.target.parentElement;
+      command = cmdElement.getAttribute("command");
+      arg = cmdElement.getAttribute("argument");
+      fire(command, arg);
+      e.preventDefault();
+      
     }
   });
   

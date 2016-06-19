@@ -13,13 +13,13 @@ body {
   margin: 0;
   padding: 0;
   font-family:
-    "Segoe UI", //Windows
-    "Roboto", //ChromeOS
-    "Helvetica Neue", //OS X
-    "San Francisco",
-    "Droid Sans", //Ubuntu?
-    "Liberation Sans", //other linux?
-    sans-serif; //fallback
+    "Segoe UI", // Windows
+    "Roboto", // ChromeOS
+    -apple-system, // OS X/macOS > v10.11 (San Fransico)
+    "Helvetica Neue", // OS X
+    "Ubuntu", // Ubuntu
+    "Liberation Sans", // other linux?
+    sans-serif; // fallback
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -38,12 +38,12 @@ a[target] {
 //MACRO-LEVEL POSITIONING
 
 .titlebar {
-  flex: 0 0 30px;
+  flex: 0 0 32px;
   z-index: 999;
 }
 
 .tabs {
-  flex: 0 0 36px;
+  flex: 0 0 40px;
 }
 
 .central {
