@@ -97,7 +97,9 @@ define([
         self.children = [];
         entries.forEach(function(entry) {
           //skip dot dirs, but not files
-          if (entry.name[0] == "." && entry.isDirectory) return;
+          if (!Settings.get("user").showHiddenDirectories) {
+            if (entry.name[0] == "." && entry.isDirectory) return;
+          }
           //skip ignored files
           if (blacklist) {
             if (blacklist.test(entry.name)) return;

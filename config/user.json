@@ -75,6 +75,8 @@
 
   //set a regex to ignore in project view/search
   "ignoreFiles": "node_modules",
+  //by default, Caret doesn't show hidden folders (i.e., .git) in its project view
+  "showHiddenDirectories": false,
   //set this to enable autosave every X minutes
   "autosaveInterval": 0,
   "autosaveOnBlur": false,
