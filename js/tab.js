@@ -46,7 +46,7 @@ define([
   };
   
   //hopefully this never screws up unaugmented Ace sessions.
-  Tab.prototype = EditSession.prototype;
+  Tab.prototype = Object.create(EditSession.prototype);
   
   Tab.prototype.setFile = function(file) {
     this.file = file;
@@ -134,15 +134,15 @@ define([
   
   Tab.prototype.detectSyntax = function(userConfig) {
     //settings are async
-    var self = this;
-    Settings.pull("user").then(function(data) {
+    Settings.pull("user").then((data) => {
       var userConfig = data.user;
-      self.setUseSoftTabs(!userConfig.useTabs);
-      self.setTabSize(userConfig.indentation || 2);
-      self.setUseWrapMode(userConfig.wordWrap);
-      self.setWrapLimit(userConfig.wrapLimit || null);
-      self.setNewLineMode(userConfig.lineEnding || "auto");
-      self.setUseWorker(userConfig.useWorker);
+      this.setUseSoftTabs(!userConfig.useTabs);
+      this.setTabSize(userConfig.indentation || 2);
+      this.setUseWrapMode(userConfig.wordWrap);
+      this.setWrapLimit(userConfig.wrapLimit || null);
+      this.setNewLineMode(userConfig.lineEnding || "auto");
+      
+      this.setUseWorker(userConfig.useWorker);
     });
     //syntax, however, is sync
     var syntaxValue = this.syntaxMode || "plain_text";
@@ -170,6 +170,18 @@ define([
     command.fire("session:syntax");
     return syntaxValue;
   }
+  
+  Tab.prototype.$startWorker = function() {
+    var userConfig = Settings.get("user");
+
+    // call the superclass method to start worker
+    EditSession.prototype.$startWorker.call(this);
+    
+    // configure jsHint worker if applicable
+    if (this.syntaxMode === 'javascript' && userConfig.jsHint && this.$worker) {
+      this.$worker.send('changeOptions', [userConfig.jsHint]);
+    }
+  };
   
   return Tab;
 
