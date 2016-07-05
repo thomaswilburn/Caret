@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.19
+------
+
+Added support for custom JSHint options (Thanks, Matt!). Set the ``jsHint`` property in your user preferences to send configuration to JSHint. You may need to toggle ``useWorker`` off and on to trigger the changes.
+
 1.6.18
 ------
 
@@ -24,7 +29,7 @@ Fixed a bug where directories with the same name couldn't be added as projects d
 1.6.13
 ------
 
-Adds the ability to fire command sequences. 
+Adds the ability to fire command sequences.
 
 VERY IMPORTANT NOTE: This version also begins to deprecate custom themes. If you have custom themes, they are going away soon.
 
@@ -36,7 +41,7 @@ Fixes an issue with the search bar when there are many top-level entries in a pr
 1.6.8
 -----
 
-Fixed the spelling of reStructuredText. Remove wildcards from the manifest, which should stop Caret from opening .zip files. 
+Fixed the spelling of reStructuredText. Remove wildcards from the manifest, which should stop Caret from opening .zip files.
 
 1.6.7
 -----
