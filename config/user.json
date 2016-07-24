@@ -64,6 +64,8 @@
   "useWorker": true,
   //autocomplete triggers on Ctrl-Space
   "autocomplete": true,
+  //autocomplete triggers automatically
+  "autocompleteLive": false,
   //"Behaviors" are the auto-paired quotes and HTML tags in the editor
   "disableBehaviors": false,
 

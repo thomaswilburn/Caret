@@ -52,7 +52,8 @@ define([
     defaultFontSize();
     ace.config.loadModule("ace/ext/language_tools", function() {
       editor.setOptions({
-        enableBasicAutocompletion: userConfig.autocomplete
+        enableBasicAutocompletion: userConfig.autocomplete || false,
+        enableLiveAutocompletion: userConfig.autocompleteLive || false
       });
     });
   };
