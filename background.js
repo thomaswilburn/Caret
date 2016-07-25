@@ -33,6 +33,7 @@ var openWindow = function() {
     left: 50,
     top: 50
   };
+  
   chrome.app.window.create("main.html", {
       bounds: defaults,
       id: "caret:main",

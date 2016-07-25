@@ -8,7 +8,7 @@
   @project-foreground: mix(@foreground, #888, 80%);
   @width: 200px;
   box-shadow: inset -8px 0 12px rgba(0, 0, 0, .2);
-  
+
   overflow-x: auto;
   overflow-y: auto;
   background: @project-background;
@@ -21,27 +21,31 @@
     transition: width .3s ease-in-out .3s, border-width .3s ease-in-out .3s, padding .3s linear .3s;
   }
 
+  &.resizing {
+    transition: none;
+  }
+
   //display: none;
   width: 0px;
   padding: 4px 0;
-  
+
   &.autohide.show {
     padding: 4px 0;
     width: 0px;
     border-right: 15px solid @project-background;
-    
+
     &:hover, &.loading {
       padding: 4px 8px;
       width: @width;
       border-right-width: 0px;
     }
   }
-  
+
   &.show:not(.autohide) {
     width: @width;
     padding: 4px 8px;
   }
-  
+
   a {
     display: block;
     padding: 4px;
@@ -62,31 +66,31 @@
       outline: none;
     }
   }
-  
+
   ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
   }
-  
+
   li {
     color: @project-foreground;
     white-space: no-wrap;
-    
+
     & > ul {
       display: none;
       padding-left: 12px;
     }
-    
+
     &.expanded > ul {
       display: block;
     }
   }
-  
+
   .directory {
     position: relative;
     font-weight: bold;
-    
+
     &:before {
       transform-origin: 50% 50%;
       content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAjUlEQVQ4T2NkoBAwUqifgXYGtLe3N3BwcEwoLCz8gM+VWF0A0szIyFgP1HiBnZ3dEZ8hWA3o7+8X+Pnz5wGgAfqEDMEZBsQagjcQiTGEGAP2A71hAMQXgeHhgB4ehLyAVzModvAFIkHNOA3o7OwM+P///3pczkZOFzi9ADKEjY3tAFkJiZT8Qbu8QKwrAJ+PTxHjWFvxAAAAAElFTkSuQmCC");
@@ -95,29 +99,29 @@
       opacity: .5;
       transition: all .3s;
     }
-    
+
     &:hover:before {
       opacity: 1;
     }
   }
-  
+
   .root {
-  
+
     &:not(:first-child) {
       border-top: 1px solid #888;
       margin-top: 4px;
       padding-top: 4px;
     }
-    
+
     & > .directory {
       font-weight: bold;
-      
+
       &:before {
         content: none;
       }
     }
   }
-  
+
   .expanded > .directory:before {
     -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
@@ -148,6 +152,34 @@
   &.loading .load-ui {
     display: block;
   }
+}
 
-  
+.project-resizer-wrapper {
+  .autohide & {
+    display: none;
+  }
+
+  position: absolute;
+  height: 100%;
+  right: 0;
+  top: 0;
+
+  width: 16px;
+
+  .project-resizer {
+    &:extend(.project-resizer-wrapper);
+    width: 6px;
+    visibility: hidden;
+    pointer-events: none;
+    // a delay so the cursor does not flicker
+    transition-delay: 0.2s;
+  }
+
+  &:hover {
+    .project-resizer {
+      visibility: visible;
+      cursor: col-resize;
+      pointer-events: auto;
+    }
+  }
 }
