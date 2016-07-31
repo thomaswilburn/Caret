@@ -19,10 +19,11 @@ var el = Element.prototype;
 var doc = Document.prototype;
 var frag = DocumentFragment.prototype;
 var win = Window.prototype;
+var eventTarget = EventTarget.prototype;
 
 
 //alias of querySelector and qSA
-el.find = doc.find = frag.find = function(selector) { 
+el.find = doc.find = frag.find = function(selector) {
   return this.querySelector(selector);
 };
 
@@ -53,12 +54,12 @@ el.append = frag.append = function(element) {
   }
 };
 
-win.on = el.on = function(type, listener) {
+eventTarget.on = function(type, listener) {
   this.addEventListener(type, listener);
   return this;
 };
 
-win.off = el.off = function(type, listener) {
+eventTarget.off = function(type, listener) {
   this.removeEventListener(type, listener);
 };
 

@@ -7,7 +7,7 @@
     <style id="caret-theme"></style>
   </head>
   <body>
-  
+
     <div class="titlebar">
       <b class="app-name">Caret</b>
       <ul class="toolbar"></ul>
@@ -17,31 +17,34 @@
         <a class="close" command="app:exit" title="Close">~</a>
       </div>
     </div>
-    
+
     <div class="central">
-    
+
       <div class="project">
         <div class="tree"></div>
         <div class="load-ui">
           <span class="i18n">loading</span>
           <div class="progress"></div>
         </div>
+        <div class="project-resizer-wrapper">
+          <div class="project-resizer"></div>
+        </div>
       </div>
-      
+
       <div class="editing">
         <div class="tabs"></div>
         <div id="editor"></div>
       </div>
-      
+
     </div>
-    
+
     <div class="searchbar">
       <input type="checkbox" id="search-case-check">
       <label for="search-case-check" title="Match Case">Aa</label>
       <input class="search-box" type="text">
       <button class="find-all">Find All</button>
     </div>
-    
+
     <div class="bottom-bar">
       <div class="status-text"></div>
       <div class="mode-theme">
@@ -54,7 +57,7 @@
       <input type="text" placeholder="caret:command arguments">
       <a command="app:hide-prompt" class="close" title="Hide prompt">&times;</a>
     </div>
-    
+
     <div class="palette enter">
       <div class="main">
         <h1 class="mode"></h1>
@@ -62,9 +65,9 @@
       </div>
       <ul class="results"></ul>
     </div>
-    
+
     <script src="js/ace/ace.js"></script>
     <script data-main="./js/main.js" src="require.js"></script>
-    
+
   </body>
 </html>
