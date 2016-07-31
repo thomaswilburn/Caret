@@ -23,6 +23,11 @@
 
   &.resizing {
     transition: none;
+    cursor: col-resize;
+    
+    a {
+      cursor: col-resize;
+    }
   }
 
   //display: none;
@@ -154,7 +159,7 @@
   }
 }
 
-.project-resizer-wrapper {
+.project-resizer {
   .autohide & {
     display: none;
   }
@@ -163,23 +168,6 @@
   height: 100%;
   right: 0;
   top: 0;
-
   width: 16px;
-
-  .project-resizer {
-    &:extend(.project-resizer-wrapper);
-    width: 6px;
-    visibility: hidden;
-    pointer-events: none;
-    // a delay so the cursor does not flicker
-    transition-delay: 0.2s;
-  }
-
-  &:hover {
-    .project-resizer {
-      visibility: visible;
-      cursor: col-resize;
-      pointer-events: auto;
-    }
-  }
+  cursor: col-resize;
 }

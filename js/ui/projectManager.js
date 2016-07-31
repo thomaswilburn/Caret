@@ -118,6 +118,10 @@ define([
       reader.readEntries(collect);
     }
   };
+  
+  // min / max sidebar width
+  var MIN_WIDTH = 100;
+  var MAX_WIDTH = 500;
 
   // The Project Manager actually handles rendering and interfacing with the rest
   // of the code. Commands are bound to a singleton instance, but it's technically
@@ -129,10 +133,10 @@ define([
     this.expanded = {};
     this.project = null;
     this.projectFile = null;
+    this.resizing = false;
 
     if (element) {
       this.setElement(element);
-      setupSidebarResize(element, document);
     }
 
     this.loading = false;
@@ -354,6 +358,61 @@ define([
         }
         editor.focus();
       });
+      
+      // make sure width is not set in element `style`
+      this.element.style.width = null;
+  
+      var handle = this.element.find('.project-resizer');
+      
+      this.startResize = this.startResize.bind(this);
+      this.stopResize = this.stopResize.bind(this);
+      this.resize = this.resize.bind(this);
+      
+      handle.on('mousedown', this.startResize);
+      
+    },
+    
+
+    startResize: function (e) {
+      // do not resize when 'autohide' is on
+      if (this.element.hasClass('autohide')) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      this.element.addClass('resizing');
+      this.resizing = true;
+
+      document.on('mousemove', this.resize);
+      document.on('mouseup', this.stopResize);
+    },
+
+    resize: function (e) {
+      if (!this.resizing) return;
+
+      var mouseX = e.pageX;
+      if (mouseX > MIN_WIDTH && mouseX < MAX_WIDTH) {
+        this.element.style.width = e.pageX + 8 + 'px';
+      }
+    },
+
+    stopResize: function (e) {
+      if (!this.resizing) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      this.element.removeClass('resizing');
+      this.resizing = false;
+
+      document.off('mousemove', this.resize);
+      document.off('mouseup', this.stopResize);
+
+      //Ace doesn't know about non-window resize events
+      //moving the panel will screw up its dimensions
+      setTimeout(function() {
+        editor.resize();
+      }, 100);
     },
 
     openFile: function(path, c) {
@@ -512,66 +571,10 @@ define([
 
     getPaths: function() {
       return Object.keys(this.pathMap);
-    }
+    },
+    
+    
   };
-
-  // Resize sidebar
-  // min / max sidebar width
-  var MIN_WIDTH = 100;
-  var MAX_WIDTH = 500;
-
-  function setupSidebarResize(element, document) {
-    // Sidebar resizing
-    var isResizing = false;
-    // make sure width is not set in element `style`
-    element.style.width = null;
-
-    var $projectResizer = element.find('.project-resizer');
-
-    var startSidebarResize = function (evt) {
-      // do not resize when 'autohide' is on
-      if (element.hasClass('autohide')) return;
-
-      evt.preventDefault();
-      evt.stopPropagation();
-
-      element.addClass('resizing');
-      isResizing = true;
-
-      document.on('mousemove', doSidebarResize);
-      document.on('mouseup', stopSidebarResize);
-    };
-
-    var doSidebarResize = function (evt) {
-      if (!isResizing) return;
-
-      var mouseX = evt.pageX;
-      if (mouseX > MIN_WIDTH && mouseX < MAX_WIDTH) {
-        element.style.width = evt.pageX + 'px';
-      }
-    };
-
-    var stopSidebarResize = function (evt) {
-      if (!isResizing) return;
-
-      evt.preventDefault();
-      evt.stopPropagation();
-
-      element.removeClass('resizing');
-      isResizing = false;
-
-      document.off('mousemove', doSidebarResize);
-      document.off('mouseup', stopSidebarResize);
-
-      //Ace doesn't know about non-window resize events
-      //moving the panel will screw up its dimensions
-      setTimeout(function() {
-        editor.resize();
-      }, 100);
-    };
-
-    $projectResizer.on('mousedown', startSidebarResize);
-  }
 
   var pm = new ProjectManager(document.find(".project"));
   command.on("project:add-dir", pm.addDirectory.bind(pm));
