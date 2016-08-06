@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+1.6.22
+------
+
+You can now resize the project panel, thanks to some great work from Konstantin (thanks!). 
+This only works if autohide is not set.
+
 1.6.19
 ------
 
