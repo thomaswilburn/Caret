@@ -1,10 +1,4 @@
 {
-  "application_title": {
-    "message": "Caret"
-  },
-  "application_description": {
-    "message": "Профессиональный текстовой редактор для Chrome и Chrome OS."
-  },
   "loading": {
     "message": "загрузка"
   },
@@ -25,6 +19,7 @@
   "menuOpenFile": { "message": "Открыть" },
   "menuSave": { "message": "Сохранить" },
   "menuSaveAs": { "message": "Сохранить как..." },
+  "menuSaveAll": { "message": "Сохранить все файлы" },
   "menuRevert": { "message": "Восстановить" },
   "menuClose": { "message": "Закрыть" },
   "menuPrint": { "message": "Печать" },
@@ -42,6 +37,7 @@
   "menuFind": { "message": "Поиск" },
   "menuFindReplace": { "message": "Замена" },
   "menuFindNext": { "message": "Искать далее" },
+  "menuSearchProject": { "message": "Искать по всем файлам" },
   "menuToggleComment": { "message": "Закомментировать строку" },
   "menuBlockComment": { "message": "Блочный комментарий" },
   "menuTabsToSpaces": { "message": "Табы в пробелы" },
@@ -80,14 +76,20 @@
   "menuKeyboard": { "message": "Быстрые клавиши" },
   "menuMenus": { "message": "Меню" },
   "menuAPI": { "message": "Внешние команды" },
+  "menuTheme": { "message": "Пользовательская тема" },
+  "menuSequences": { "message": "Серия команд" },
   "menuDefaults": { "message": "Стандартные настройки" },
   "menuUserPrefsDefault": { "message": "Общие" },
   "menuKeyboardDefault": { "message": "Быстрые клавиши" },
   "menuMenusDefault": { "message": "Меню" },
+  "menuThemeDefault": { "message": "Пользовательская тема" },
+  "menuSequencesDefault": { "message": "Серия команд" },
   "menuReset": { "message": "Сбросить настройки" },
   "menuResetUserPrefs": { "message": "Общие" },
   "menuResetKeyboard": { "message": "Быстрые клавиши" },
   "menuResetMenus": { "message": "Меню" },
+  "menuResetTheme": { "message": "Пользовательская тема" },
+  "menuResetSequences": { "message": "Серия команд" },
   "menuEmergencyReset": { "message": "Сбросить всё" },
   "menuHelp": { "message": "Справка" },
   "menuCheckForUpdates": { "message": "Проверить обновления" },
@@ -114,4 +116,19 @@
   "recordingMacro": { "message": "Запись макроса..." },
   "setSyntax": { "message": "Установить синтаксис: $1" },
   "setTheme": { "message": "Установить тему: $1" }
+  
+  "notificationUpdateAvailable": { "message": "Caret: Доступно обновление" },
+  "notificationUpdateDetail": { "message": "Доступно обновление до версии $1. Хотите обновиться сейчас (потребуется перезагрузка)?" },
+  "notificationNoUpdateTitle": { "message": "Нет доступных обновлений" },
+  "notificationNoUpdateDetail": { "message": "Сейчас нет никаких обновлений для Caret." },
+  "notificationUpdateOK": { "message": "Да, обновить и перезапустить" },
+  "notificationUpdateWait": { "message": "Нет, спасибо" },
+  "notificationUpdated": { "message": "Caret был обновлён" },
+  "notificationUpdatedDetail": { "message": "Новая версия: $1. Нажмите, чтобы увидеть список изменений." },
+
+  "searchDisplayQuery": { "message": "Поиск: $1\n" },
+  "searchTabName": { "message": "Результаты: $1" },
+  "searchNoDirectories": { "message": "\nНет просканированных файлов. Сначала добавьте папку к вашему проекту." },
+  "searchSummary": { "message": "\n\nНайдено совпадений: $1. Файлов просканировано: $2." },
+  "searchCancelled": { "message": "\nПоиск был отменён. Вы можете изменить максимальное количество разрешённых результатов поиска в общих настройках." }
 }
