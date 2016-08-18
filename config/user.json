@@ -1,8 +1,8 @@
 {
   //If you want to disable update checks at startup, change this
-  "promptForUpdates": true,
+  "promptForUpdates": false,
 
-  "defaultTheme": "chrome", //This should be any of the supported Ace themes
+  "defaultTheme": "vibrant_ink", //This should be any of the supported Ace themes
   /*
   Ace theme names are usually underscored, lowercase versions of the "friendly" names:
     ambiance
@@ -38,14 +38,14 @@
     vibrant_ink
     xcode
   */
-  "uiTheme": "light", //dark, twilight, or light
+  "uiTheme": "dark", //dark, twilight, or light
   "autoHideProject": false, //collapse the project view until you hover
   "immersiveFullscreen": false, //hides menus/tabs in Chrome OS fullscreen mode
   "highlightLine": false,
   "hideGutter": false, //set to true to hide the line numbering
 
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
-  "indentation": 2, //indentation size
+  "indentation": 4, //indentation size
   "useTabs": false, //will turn off Ace's setUseSoftTabs() option and use tab characters instead
   "wordWrap": true,
   "wrapLimit": false, //Set to the number of characters you want or false for full window
@@ -57,7 +57,7 @@
 
   //only fixed-width fonts supported, for now
   "fontFamily": "",
-  "fontSize": 13,
+  "fontSize": 14,
 
   //Web workers are used for code hinting in PHP, JavaScript, and JSON.
   //We don't yet have a way to set the worker options, but you can disable it.
@@ -65,7 +65,7 @@
   //autocomplete triggers on Ctrl-Space
   "autocomplete": true,
   //autocomplete triggers automatically
-  "autocompleteLive": false,
+  "autocompleteLive": true,
   //"Behaviors" are the auto-paired quotes and HTML tags in the editor
   "disableBehaviors": false,
 
