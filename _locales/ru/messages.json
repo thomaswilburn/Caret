@@ -24,7 +24,7 @@
   "menuClose": { "message": "Закрыть" },
   "menuPrint": { "message": "Печать" },
   "menuExit": { "message": "Выход" },
-  
+
   "menuEdit": { "message": "Правка" },
   "menuUndo": { "message": "Отмена" },
   "menuRedo": { "message": "Повтор" },
@@ -51,7 +51,7 @@
   "menuToLowercase": { "message": "Преобразовать в строчные" },
   "menuMoveLinesUp": { "message": "Поднять текущую строку" },
   "menuMoveLinesDown": { "message": "Опустить текущую строку" },
-  
+
   "menuTools": { "message": "Инструменты" },
   "menuGoToAnything": { "message": "Перейти к..." },
   "menuGoToLine": { "message": "Перейти к строке" },
@@ -61,7 +61,7 @@
   "menuToggleMacro": { "message": "Старт/стоп записи макроса" },
   "menuReplayMacro": { "message": "Повторить макрос" },
   "menuWordCount": { "message": "Подсчёт слов" },
-  
+
   "menuProject": { "message": "Проект" },
   "menuAddDir": { "message": "Добавить папку" },
   "menuRemoveAllDirs": { "message": "Удалить все папки" },
@@ -70,7 +70,7 @@
   "menuEditProject": { "message": "Редактировать текущий проект" },
   "menuOpenProject": { "message": "Открыть файл проекта" },
   "menuClearProject": { "message": "Очистить проект" },
-  
+
   "menuSettings": { "message": "Настройки" },
   "menuUserPrefs": { "message": "Общие" },
   "menuKeyboard": { "message": "Быстрые клавиши" },
@@ -94,7 +94,7 @@
   "menuHelp": { "message": "Справка" },
   "menuCheckForUpdates": { "message": "Проверить обновления" },
   "menuAboutCaret": { "message": "О Caret" },
-  
+
   "dialogModifiedBackground": { "message": "Этот файл был изменён с момента последнего сохранения. Открыть его заново?" },
   "dialogModifiedUnsaved": { "message": "$1 был изменён.\nВы хотите сохранить изменения?" },
   "dialogCancel": { "message": "Отмена" },
@@ -103,20 +103,20 @@
   "dialogSave": { "message": "Сохранить" },
   "dialogDiscard": { "message": "Не сохранять" },
   "dialogUnsaved": { "message": "$1 имеет несохранённые изменения." },
-  
+
   "projectNoCurrentProject": { "message": "Нет открытых проектов." },
-  
+
   "paletteExecuting": { "message": "Выполнение $1..." },
-  
+
   "fileLoaded": { "message": "Загружено $1, $2 байт" },
   "fileAutosaving": { "message": "Выполнение автосохранения для всех вкладок..." },
-  
+
   "editorWordCount": { "message": "$1 символов, $2 слов, $3 строк" },
-  
+
   "recordingMacro": { "message": "Запись макроса..." },
   "setSyntax": { "message": "Установить синтаксис: $1" },
-  "setTheme": { "message": "Установить тему: $1" }
-  
+  "setTheme": { "message": "Установить тему: $1" },
+
   "notificationUpdateAvailable": { "message": "Caret: Доступно обновление" },
   "notificationUpdateDetail": { "message": "Доступно обновление до версии $1. Хотите обновиться сейчас (потребуется перезагрузка)?" },
   "notificationNoUpdateTitle": { "message": "Нет доступных обновлений" },
