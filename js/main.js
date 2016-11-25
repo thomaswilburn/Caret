@@ -15,17 +15,16 @@ require([
     "ui/palette",
     "ui/searchbar",
     "ui/cli",
-    "ui/theme",
     "api",
     "sequences",
     "storage/syncfile",
   ], function(command, editor, Settings, dialog, sessions, M, i18n) {
-  
+
   //translate inline strings
   i18n.page();
-  
+
   var frame = chrome.app.window.current();
-  
+
   var setTheme = function() {
     Settings.pull("user").then(function(data) {
       var themes = {
@@ -46,7 +45,7 @@ require([
     "fileManager": false,
     "sessions": false
   };
-  
+
   //the settings manager may also fire init:restart to re-init components after startup
   command.fire("init:startup", function(mod) {
     //ignore callback in non-essential modules
@@ -61,10 +60,10 @@ require([
     command.fire("init:complete");
   });
   command.on("init:restart", setTheme);
-  
+
   //code to enable update checking
   var updateID = "caret:update";
-  
+
   var checkUpdates = function(isManual) {
     chrome.runtime.requestUpdateCheck(function(status, details) {
       if (status == "update_available") {
@@ -92,19 +91,19 @@ require([
       }
     });
   };
-  
+
   Settings.pull("user").then(function(cfg) {
     if (cfg.user.promptForUpdates !== false) checkUpdates();
   });
   command.on("app:check-for-updates", checkUpdates);
-  
+
   chrome.notifications.onButtonClicked.addListener(function(id, index) {
     if (id != updateID) return;
     if (index == 0) {
       chrome.runtime.reload();
     }
   });
-  
+
   command.on("app:exit", function() {
     var cancelled = false;
     var tabs = sessions.getAllTabs();
@@ -132,27 +131,27 @@ require([
       if (!cancelled) frame.close();
     })
   });
-  
+
   command.on("app:minimize", function() {
     frame.minimize();
     editor.focus();
   });
-  
+
   command.on("app:maximize", function() {
     frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
     editor.focus();
   });
-  
+
   command.on("app:restart", function() {
     chrome.runtime.reload();
   });
-  
+
   //developer command for reloading CSS
   command.on("app:reload-css", function() {
     var link = document.querySelector("link#theme");
     link.href = link.href;
   });
-  
+
   //handle immersive fullscreen
   var onFullscreen = function() {
     Settings.pull("user").then(function(data) {
@@ -162,31 +161,31 @@ require([
       }
     });
   }
-  
+
   frame.onFullscreened.addListener(onFullscreen);
   if (frame.isFullscreen()) {
     onFullscreen();
   }
-  
+
   frame.onRestored.addListener(function() {
     document.find("body").removeClass("immersive");
   });
-  
+
   //It's nice to be able to launch the debugger from a command stroke
   command.on("app:debug", function() {
     debugger;
   });
-  
+
   command.on("app:browse", function(url) {
     window.open(url, "target=_blank");
   });
-  
+
   //kill middle clicks if not handled
-  
+
   document.body.on("click", function(e) {
     if (e.button == 1) {
       e.preventDefault();
     }
   });
-  
+
 });
