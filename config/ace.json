@@ -1,7 +1,6 @@
 {
   "themes": [
     { "name": "ambiance", "label": "Ambiance" },
-    { "name": "caret", "label": "Caret (custom)" },
     { "name": "chaos", "label": "Chaos" },
     { "name": "chrome", "label": "Chrome" },
     { "name": "clouds", "label": "Clouds" },
