@@ -24,6 +24,7 @@
     "storage",
     "notifications",
     "syncFileSystem",
+    "app.window.fullscreen.overrideEsc",
     {
       "fileSystem": [
         "write",
