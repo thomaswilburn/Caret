@@ -177,6 +177,8 @@ define([
     // call the superclass method to start worker
     EditSession.prototype.$startWorker.call(this);
     
+    this.detectSyntax(userConfig);
+    
     // configure jsHint worker if applicable
     if (this.syntaxMode === 'javascript' && userConfig.jsHint && this.$worker) {
       this.$worker.send('changeOptions', [userConfig.jsHint]);
