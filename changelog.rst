@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.25
+------
+
+Updated Ace. Fixed a bug with the JSHint worker (thanks, null-dynamic-exception!). Removed custom themes. You should now be able to reassign the Esc key so that it won't exit fullscreen mode.
+
 1.6.22
 ------
 
