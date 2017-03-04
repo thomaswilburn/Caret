@@ -291,7 +291,7 @@ exports.copyArray = function(array){
     var copy = [];
     for (var i=0, l=array.length; i<l; i++) {
         if (array[i] && typeof array[i] == "object")
-            copy[i] = this.copyObject( array[i] );
+            copy[i] = this.copyObject(array[i]);
         else 
             copy[i] = array[i];
     }
@@ -309,14 +309,12 @@ exports.deepCopy = function deepCopy(obj) {
         }
         return copy;
     }
-    var cons = obj.constructor;
-    if (cons === RegExp)
+    if (Object.prototype.toString.call(obj) !== "[object Object]")
         return obj;
     
-    copy = cons();
-    for (var key in obj) {
+    copy = {};
+    for (var key in obj)
         copy[key] = deepCopy(obj[key]);
-    }
     return copy;
 };
 
@@ -1103,7 +1101,7 @@ var Document = function(textOrLines) {
         return this.removeFullLines(firstRow, lastRow);
     };
     this.insertNewLine = function(position) {
-        console.warn("Use of document.insertNewLine is deprecated. Use insertMergedLines(position, [\'\', \'\']) instead.");
+        console.warn("Use of document.insertNewLine is deprecated. Use insertMergedLines(position, ['', '']) instead.");
         return this.insertMergedLines(position, ["", ""]);
     };
     this.insert = function(position, text) {
@@ -3158,9 +3156,9 @@ Parser.prototype = function(){
                         if (operator){
                             values.push(operator);
                         } /*else {
-							values.push(new PropertyValue(valueParts, valueParts[0].line, valueParts[0].col));
-							valueParts = [];
-						}*/
+                            values.push(new PropertyValue(valueParts, valueParts[0].line, valueParts[0].col));
+                            valueParts = [];
+                        }*/
 
                         value = this._term(inFunction);
 
@@ -3615,7 +3613,7 @@ var Properties = {
     "alignment-baseline"            : "baseline | use-script | before-edge | text-before-edge | after-edge | text-after-edge | central | middle | ideographic | alphabetic | hanging | mathematical",
     "animation"                     : 1,
     "animation-delay"               : { multi: "<time>", comma: true },
-    "animation-direction"           : { multi: "normal | alternate", comma: true },
+    "animation-direction"           : { multi: "normal | reverse | alternate | alternate-reverse", comma: true },
     "animation-duration"            : { multi: "<time>", comma: true },
     "animation-fill-mode"           : { multi: "none | forwards | backwards | both", comma: true },
     "animation-iteration-count"     : { multi: "<number> | infinite", comma: true },
@@ -3623,21 +3621,21 @@ var Properties = {
     "animation-play-state"          : { multi: "running | paused", comma: true },
     "animation-timing-function"     : 1,
     "-moz-animation-delay"               : { multi: "<time>", comma: true },
-    "-moz-animation-direction"           : { multi: "normal | alternate", comma: true },
+    "-moz-animation-direction"           : { multi: "normal | reverse | alternate | alternate-reverse", comma: true },
     "-moz-animation-duration"            : { multi: "<time>", comma: true },
     "-moz-animation-iteration-count"     : { multi: "<number> | infinite", comma: true },
     "-moz-animation-name"                : { multi: "none | <ident>", comma: true },
     "-moz-animation-play-state"          : { multi: "running | paused", comma: true },
 
     "-ms-animation-delay"               : { multi: "<time>", comma: true },
-    "-ms-animation-direction"           : { multi: "normal | alternate", comma: true },
+    "-ms-animation-direction"           : { multi: "normal | reverse | alternate | alternate-reverse", comma: true },
     "-ms-animation-duration"            : { multi: "<time>", comma: true },
     "-ms-animation-iteration-count"     : { multi: "<number> | infinite", comma: true },
     "-ms-animation-name"                : { multi: "none | <ident>", comma: true },
     "-ms-animation-play-state"          : { multi: "running | paused", comma: true },
 
     "-webkit-animation-delay"               : { multi: "<time>", comma: true },
-    "-webkit-animation-direction"           : { multi: "normal | alternate", comma: true },
+    "-webkit-animation-direction"           : { multi: "normal | reverse | alternate | alternate-reverse", comma: true },
     "-webkit-animation-duration"            : { multi: "<time>", comma: true },
     "-webkit-animation-fill-mode"           : { multi: "none | forwards | backwards | both", comma: true },
     "-webkit-animation-iteration-count"     : { multi: "<number> | infinite", comma: true },
@@ -3645,7 +3643,7 @@ var Properties = {
     "-webkit-animation-play-state"          : { multi: "running | paused", comma: true },
 
     "-o-animation-delay"               : { multi: "<time>", comma: true },
-    "-o-animation-direction"           : { multi: "normal | alternate", comma: true },
+    "-o-animation-direction"           : { multi: "normal | reverse | alternate | alternate-reverse", comma: true },
     "-o-animation-duration"            : { multi: "<time>", comma: true },
     "-o-animation-iteration-count"     : { multi: "<number> | infinite", comma: true },
     "-o-animation-name"                : { multi: "none | <ident>", comma: true },
@@ -4440,15 +4438,15 @@ function isIdentStart(c){
 }
 
 function mix(receiver, supplier){
-	for (var prop in supplier){
-		if (supplier.hasOwnProperty(prop)){
-			receiver[prop] = supplier[prop];
-		}
-	}
-	return receiver;
+    for (var prop in supplier){
+        if (supplier.hasOwnProperty(prop)){
+            receiver[prop] = supplier[prop];
+        }
+    }
+    return receiver;
 }
 function TokenStream(input){
-	TokenStreamBase.call(this, input, Tokens);
+    TokenStreamBase.call(this, input, Tokens);
 }
 
 TokenStream.prototype = mix(new TokenStreamBase(), {
