@@ -1,13 +1,11 @@
 define(["util/dom2"], function() {
-  
+
   var translationCache = {};
-  
+
   return {
     //process a chunk of template HTML for i18n strings
     process: function(html) {
-      return html.replace(/__MSG_(\w+)__/g, function(match, tag) {
-        return chrome.i18n.getMessage(tag);
-      });
+      return html.replace(/__MSG_(\w+)__/g, (match, tag) => chrome.i18n.getMessage(tag));
     },
     //process the page for inline strings, marked with .i18n
     page: function() {
@@ -31,5 +29,5 @@ define(["util/dom2"], function() {
       return translationCache[message];
     }
   }
-  
+
 });

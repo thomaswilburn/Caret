@@ -1,7 +1,6 @@
 {
   "themes": [
     { "name": "ambiance", "label": "Ambiance" },
-    { "name": "caret", "label": "Caret (custom)" },
     { "name": "chaos", "label": "Chaos" },
     { "name": "chrome", "label": "Chrome" },
     { "name": "clouds", "label": "Clouds" },
@@ -82,7 +81,6 @@
     { "name": "ini", "label": "Windows INI", "extensions": ["ini", "cfg", "prefs"] },
     { "name": "io", "label": "Io", "extensions": ["io"] },
     { "name": "jack", "label": "Jack", "extensions": ["jack"] },
-    { "name": "jade", "label": "Jade", "extensions": ["jade"] },
     { "name": "java", "label": "Java", "extensions": ["java", "pde"] },
     { "name": "javascript", "label": "JavaScript", "extensions": ["js", "jsm"] },
     { "name": "json", "label": "JSON", "extensions": ["json", "caret-project"] },
@@ -120,6 +118,7 @@
     { "name": "prolog", "label": "Prolog", "extensions": ["plg", "prolog"] },
     { "name": "properties", "label": "Properties", "extensions": ["properties"] },
     { "name": "protobuf", "label": "Protobuf", "extensions": ["proto"] },
+    { "name": "jade", "label": "Pug", "extensions": ["jade", "pug"] },
     { "name": "python", "label": "Python", "extensions": ["py"] },
     { "name": "r", "label": "R", "extensions": ["r"] },
     { "name": "rdoc", "label": "RDoc", "extensions": ["rd"] },

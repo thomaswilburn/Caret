@@ -115,5 +115,10 @@ define([
       command.fire(action.command, action.argument);
     }
   });
+  
+  // cancel esc, but only on keyup
+  window.on("keyup", function(e) {
+    if (e.keyCode == 27) e.preventDefault();
+  });
 
 });

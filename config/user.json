@@ -89,7 +89,9 @@
 
   //Wildly eccentric? You might like Vim keybindings.
   "emulateVim": false,
-
+  
+  //jsHint settings are applied on opening a JS file
+  "jsHint": {},
   //Whether to show the "New file" tab button on the tab bar;
   "showNewTabButton": false
 }

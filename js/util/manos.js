@@ -3,13 +3,11 @@ define(function() {
   var slice = Array.prototype.slice;
 
   return {
-    chain: function() {
-      var fools = slice.call(arguments);
+    chain: function(...fools) {
       var i = -1;
-      var next = function() {
+      var next = function(...args) {
         i++;
         var f = fools[i];
-        var args = slice.call(arguments);
         args.push(next);
         if (f) {
           f.apply(null, args);
@@ -63,7 +61,7 @@ define(function() {
         resolve = ok;
         reject = fail;
       });
-      
+
       return {
         done: resolve,
         fail: reject,
