@@ -47,6 +47,7 @@
   "menuJoinLines": { "message": "Объединить строки" },
   "menuSortLines": { "message": "Отсортировать строки по алфавиту" },
   "menuSplitLine": { "message": "Разбить строки" },
+  "menuKillLine": { "message": "Удалить строки" },
   "menuToUppercase": { "message": "Преобразовать в ПРОПИСНЫЕ" },
   "menuToLowercase": { "message": "Преобразовать в строчные" },
   "menuMoveLinesUp": { "message": "Поднять текущую строку" },

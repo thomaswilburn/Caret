@@ -46,6 +46,7 @@
       { "label": "menuSortLines", "command": "ace:command", "argument": "sortlines" },
       { "label": "menuJoinLines", "command": "ace:command", "argument": "joinlines" },
       { "label": "menuSplitLine", "command": "ace:command", "argument": "splitline" },
+      { "label": "menuKillLine", "command": "ace:command", "argument": "removeline" },
       { "label": "menuToUppercase", "command": "ace:command", "argument": "touppercase" },
       { "label": "menuToLowercase", "command": "ace:command", "argument": "tolowercase" },
       { "label": "menuMoveLinesUp", "command": "ace:command", "argument": "movelinesup" },

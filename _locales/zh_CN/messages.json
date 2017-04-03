@@ -45,6 +45,7 @@
   "menuJoinLines": { "message": "连接多行" },
   "menuSortLines": { "message": "排序多行" },
   "menuSplitLine": { "message": "分割行" },
+  "menuKillLine": { "message": "删除行" },
   "menuToUppercase": { "message": "所选内容转为大写" },
   "menuToLowercase": { "message": "所选内容转为小写" },
   "menuMoveLinesUp": { "message": "上升多行" },

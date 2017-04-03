@@ -45,6 +45,7 @@
   "menuJoinLines": { "message": "Juntar Linhas" },
   "menuSortLines": { "message": "Ordenar Linhas" },
   "menuSplitLine": { "message": "Separar Linha" },
+  "menuKillLine": { "message": "Deletar Linha" },
   "menuToUppercase": { "message": "Maiúsculas" },
   "menuToLowercase": { "message": "Minúsculas" },
   "menuMoveLinesUp": { "message": "Mover Linhas Para Cima" },

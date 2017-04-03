@@ -46,6 +46,7 @@
   "menuJoinLines": { "message": "Zeilen zusammenfügen" },
   "menuSortLines": { "message": "Zeilen sortieren" },
   "menuSplitLine": { "message": "Zeilen trennen" },
+  "menuKillLine": { "message": "Zeilen löschen" },
   "menuToUppercase": { "message": "In Großbuchstaben umwandeln" },
   "menuToLowercase": { "message": "In Kleinbuchstaben umwandeln" },
   "menuMoveLinesUp": { "message": "Zeilen nach oben verschieben" },

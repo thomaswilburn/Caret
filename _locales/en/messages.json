@@ -47,6 +47,7 @@
   "menuJoinLines": { "message": "Join Lines" },
   "menuSortLines": { "message": "Sort Lines" },
   "menuSplitLine": { "message": "Split Line" },
+  "menuKillLine": { "message": "Kill Line" },
   "menuToUppercase": { "message": "To Uppercase" },
   "menuToLowercase": { "message": "To Lowercase" },
   "menuMoveLinesUp": { "message": "Move Lines Up" },
