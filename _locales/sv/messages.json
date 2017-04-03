@@ -45,6 +45,7 @@
   "menuJoinLines": { "message": "Kombinera rader" },
   "menuSortLines": { "message": "Sortera rader" },
   "menuSplitLine": { "message": "Dela rad" },
+  "menuKillLine": { "message": "Radera rad" },
   "menuToUppercase": { "message": "Till stora tecken" },
   "menuToLowercase": { "message": "Till små tecken" },
   "menuMoveLinesUp": { "message": "Flytta upp rader" },

@@ -45,6 +45,7 @@
   "menuJoinLines": { "message": "Hợp dòng" },
   "menuSortLines": { "message": "Sắp xếp dòng" },
   "menuSplitLine": { "message": "Tách dòng" },
+  "menuKillLine": { "message": "Xóa dòng" },
   "menuToUppercase": { "message": "Chuyển thành Chữ hoa" },
   "menuToLowercase": { "message": "Chuyển thành Chữ thường" },
   "menuMoveLinesUp": { "message": "Chuyển dòng lên trên" },
