@@ -3,7 +3,7 @@ Caret
 
 Caret is a lightweight-but-powerful programmer's editor running as a Chrome
 Packaged App. Inspired by Sublime and built on top of the Ace editing
-component, it offers powerful features like:
+component, it offers:
 
 -  multiple cursors
 -  tabbed editing and retained files
