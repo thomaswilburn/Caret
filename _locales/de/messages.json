@@ -103,10 +103,10 @@
   
   "projectNoCurrentProject": { "message": "Kein Projekt geöffnet." },
   
-  "paletteExecuting": { "message": "Führe $1 aus&hellip" },
+  "paletteExecuting": { "message": "Führe $1 aus&hellip;" },
   
   "fileLoaded": { "message": "$1 geladen, $2 bytes" },
-  "fileAutosaving": { "message": "Auto-Speichere alle Tabs&hellip" },
+  "fileAutosaving": { "message": "Auto-Speichere alle Tabs&hellip;" },
   
   "editorWordCount": { "message": "$1 Zeichen, $2 Wörter, $3 Zeilen" },
   
