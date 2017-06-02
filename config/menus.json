@@ -56,6 +56,8 @@
   {
     "label": "menuTools",
     "sub": [
+      // would be a nice feature, need to pull from Caret-T
+      //{"label": "New Window", "command": "app:newwindow", "retainFocus": true},
       { "label": "menuGoToAnything", "command": "palette:open", "retainFocus": true },
       { "label": "menuGoToLine", "command": "palette:open", "argument": "line", "retainFocus": true },
       { "label": "menuGoToSearch", "command": "palette:open", "argument": "search", "retainFocus": true },
