@@ -82,7 +82,7 @@
     { "name": "io", "label": "Io", "extensions": ["io"] },
     { "name": "jack", "label": "Jack", "extensions": ["jack"] },
     { "name": "java", "label": "Java", "extensions": ["java", "pde"] },
-    { "name": "javascript", "label": "JavaScript", "extensions": ["js", "jsm"] },
+    { "name": "javascript", "label": "JavaScript", "extensions": ["js", "jsm", "gs", "mjs"] },
     { "name": "json", "label": "JSON", "extensions": ["json", "caret-project"] },
     { "name": "jsp", "label": "JSP", "extensions": ["jsp"] },
     { "name": "jsx", "label": "JSX", "extensions": ["jsx"] },
