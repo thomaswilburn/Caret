@@ -101,7 +101,7 @@ define([
   
   var enableTabMiddleClick = function() {
     var tabContainer = document.find(".tabs");
-    tabContainer.on("click", function(e) {
+    tabContainer.on("mousedown", function(e) {
       if (!e.target.matches(".label")) return;
       if (e.button != 1) return;
       e.preventDefault();
