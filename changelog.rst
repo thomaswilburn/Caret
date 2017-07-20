@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.26
+------
+
+Fixed a bug where the middle-click wouldn't close tabs. Updated translations. Added a "kill line" command if you just can't live without it. Added new JavaScript extensions (.mjs and .gs).
+
 1.6.25
 ------
 
