@@ -87,6 +87,7 @@
     { "name": "jsp", "label": "JSP", "extensions": ["jsp"] },
     { "name": "jsx", "label": "JSX", "extensions": ["jsx"] },
     { "name": "julia", "label": "Julia", "extensions": ["jl"] },
+    { "name": "kotlin", "label": "Kotlin", "extensions": ["kt"] },
     { "name": "latex", "label": "LaTeX", "extensions": ["tex", "latex", "ltx", "bib"] },
     { "name": "lean", "label": "Lean", "extensions": ["lean", "hlean"] },
     { "name": "less", "label": "LESS", "extensions": ["less"] },
