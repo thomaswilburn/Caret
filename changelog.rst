@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.27
+------
+
+Enabled Kotlin support.
+
 1.6.26
 ------
 
