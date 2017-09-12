@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.6.28
+------
+
+Fix some possible bugs with fonts, and with a hairline border in fullscreen mode.
+
 1.6.27
 ------
 
