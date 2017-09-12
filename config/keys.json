@@ -1,5 +1,6 @@
 {
-  //To disable a key completely, set its value to null
+  // To disable Caret's key-capture behavior, set a value to null or false
+  // for example: "Ctrl-Space": null will defer that combo to the ChromeOS language switcher
   
   //basic navigation/application keys
   "Ctrl-O": "session:open-file",
