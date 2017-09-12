@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.6.27",
+  "version": "1.6.28",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {

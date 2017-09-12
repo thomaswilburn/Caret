@@ -139,6 +139,7 @@ require([
 
   command.on("app:maximize", function() {
     frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
+    document.body.classList.toggle("fullscreened", !frame.isMaximized());
     editor.focus();
   });
 
@@ -154,9 +155,10 @@ require([
 
   //handle immersive fullscreen
   var onFullscreen = function() {
+    document.body.addClass("fullscreened");
     Settings.pull("user").then(function(data) {
       if (data.user.immersiveFullscreen) {
-        document.find("body").addClass("immersive");
+        document.body.addClass("immersive");
         editor.resize();
       }
     });
@@ -168,7 +170,8 @@ require([
   }
 
   frame.onRestored.addListener(function() {
-    document.find("body").removeClass("immersive");
+    document.body.removeClass("fullscreen");
+    document.body.removeClass("immersive");
   });
 
   //It's nice to be able to launch the debugger from a command stroke
