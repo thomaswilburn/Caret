@@ -142,6 +142,10 @@ require([
     document.body.classList.toggle("fullscreened", !frame.isMaximized());
     editor.focus();
   });
+  
+  if (frame.isMaximized() || frame.isFullscreen()) {
+    document.body.classList.add("fullscreened");
+  }
 
   command.on("app:restart", function() {
     chrome.runtime.reload();
