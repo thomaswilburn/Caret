@@ -27,7 +27,7 @@ define([
   var broadcast = [];
   
   //commands can pass a callback, although most don't respond that way
-  var fire = function(command, argument, callback) {
+  var fire = async function(command, argument, callback) {
     if (!commands[command]) return broadcast.forEach(f => f.apply(null, arguments));
     var args = [].slice.call(arguments, 1);
     //technically, a function as `argument` is a callback...
@@ -35,8 +35,8 @@ define([
       callback = argument;
     }
     var registry = commands[command].slice();
-    registry.forEach(function(entry) {
-      var result = entry.callback.apply(null, args);
+    registry.forEach(async function(entry) {
+      var result = await entry.callback.apply(null, args);
       //immediately call back if sync-style return value was provided
       if (typeof result !== "undefined" || entry.sync) {
         //console.info("Immediate return from " + name, result);

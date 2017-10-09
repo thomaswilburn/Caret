@@ -25,18 +25,17 @@ require([
 
   var frame = chrome.app.window.current();
 
-  var setTheme = function() {
-    Settings.pull("user").then(function(data) {
-      var themes = {
-        "dark": "css/caret-dark.css",
-        "twilight": "css/caret-twilight.css",
-        "light": "css/caret.css"
-      };
-      var theme = data.user.uiTheme || "light";
-      var url = themes[theme] || themes.dark;
-      document.find("#theme").setAttribute("href", url);
-    });
-  }
+  var setTheme = async function() {
+    var data = await Settings.pull("user");
+    var themes = {
+      "dark": "css/caret-dark.css",
+      "twilight": "css/caret-twilight.css",
+      "light": "css/caret.css"
+    };
+    var theme = data.user.uiTheme || "light";
+    var url = themes[theme] || themes.dark;
+    document.find("#theme").setAttribute("href", url);
+  };
   setTheme();
 
   //these are modules that must be loaded before init:complete

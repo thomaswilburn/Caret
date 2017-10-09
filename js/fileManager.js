@@ -29,68 +29,61 @@ define([
       type: "openWritableFile",
       acceptsMultiple: true
     };
-    chrome.fileSystem.chooseEntry(args, function(files) {
+    chrome.fileSystem.chooseEntry(args, async function(files) {
       if (!files) return;
       //annoying array function test, since it's not apparently a real array
       if (!files.slice) {
         files = [ files ];
       }
-      files.map(function(entry) {
+      files.map(async function(entry) {
         var f = new File(entry);
-        return f.read(function(err, data) {
-          sessions.addFile(data, f);
-        });
+        var data = await f.read();
+        sessions.addFile(data, f);
       });
-      Promise.all(files).then(c);
+
+      await Promise.all(files);
+      c()
     });
   });
   
-  command.on("session:save-file", function(c) {
-    sessions.getCurrent()
-      .save(c)
-      .then(() => command.fire("session:syntax"));
+  command.on("session:save-file", async function() {
+    await sessions.getCurrent().save()
+    command.fire("session:syntax");
   });
   
-  command.on("session:save-all", function(c) {
+  command.on("session:save-all", async function() {
     var tabs = sessions.getAllTabs();
     
-    // Only save tabs with modifications and that can be readily saved
-    M.serial(tabs, function(tab, next) {
-      if (tab.modified && tab.file) {
-        // Save this tab, then proceed to next.
-        tab.save(false).then(next);
-      } else {
-        // No save required or possible; proceed to next tab
+    return new Promise(function(ok, fail) {
+      // Only save tabs with modifications and that can be readily saved
+      M.serial(tabs, async function(tab, next) {
+        if (tab.modified && tab.file) await tab.save(false);
         next();
-      }
-    }, function() {
-      // Upon completion, update syntax and perform callback.
-      command.fire("session:syntax");
-      if (c) c();
+      }, async function() {
+        // Upon completion, update syntax and perform callback.
+        await command.fire("session:syntax");
+        ok();
+      });
     });
     
   });
   
-  command.on("session:save-file-as", function(c) {
+  command.on("session:save-file-as", async function() {
     var tab = sessions.getCurrent();
-    tab.save(true).then(function() {
-      var mode = tab.detectSyntax();
-      sessions.renderTabs();
-      command.fire("session:syntax", mode);
-      if (c) c();
-    });
+    await tab.save(true);
+    var mode = tab.detectSyntax();
+    sessions.renderTabs();
+    await command.fire("session:syntax", mode);
   });
   
-  command.on("session:revert-file", function(c) {
+  command.on("session:revert-file", async function() {
     var tab = sessions.getCurrent();
     if (!tab.file) return;
-    tab.file.read(function(err, data) {
-      tab.setValue(data);
-      tab.modified = false;
-      tab.modifiedAt = new Date();
-      sessions.renderTabs();
-      if (c) c();
-    });
+    var data = await tab.file.read();
+    tab.setValue(data);
+    tab.modified = false;
+    tab.modifiedAt = new Date();
+    sessions.renderTabs();
   });
 
   //we now autoretain starting after load, every n seconds
@@ -133,44 +126,37 @@ define([
     });
   });
   
-  command.on("session:open-settings-file", function(name, c) {
-    Settings.load(name, function() {
-      var data = Settings.getAsString(name);
-      var file = Settings.getAsFile(name);
-      sessions.addFile(data, file);
-      if (c) c();
-    });
+  command.on("session:open-settings-file", async function(name) {
+    await Settings.load(name);
+    var data = Settings.getAsString(name);
+    var file = Settings.getAsFile(name);
+    sessions.addFile(data, file);
   });
   
   //defaults don't get loaded as files, just as content
-  command.on("session:open-settings-defaults", function(name, c) {
-    Settings.load(name, function() {
-      var text = Settings.getAsString(name, true);
-      var tab = sessions.addFile(text);
-      tab.syntaxMode = "javascript";
-      tab.detectSyntax();
-      tab.fileName = name + ".json";
-      tab.file = new NullFile(text);
-      if (c) c();
-    });
+  command.on("session:open-settings-defaults", async function(name) {
+    await Settings.load(name);
+    var text = Settings.getAsString(name, true);
+    var tab = sessions.addFile(text);
+    tab.syntaxMode = "javascript";
+    tab.detectSyntax();
+    tab.fileName = name + ".json";
+    tab.file = new NullFile(text);
   });
   
-  command.on("session:insert-from-file", function(c) {
+  command.on("session:insert-from-file", async function() {
     var f = new File();
-    f.open(function() {
-      f.read(function(err, text) {
-        editor.execCommand("insertstring", text);
-      });
-    });
+    await f.open();
+    var text = f.read();
+    editor.execCommand("insertstring", text);
   });
   
   var openFromLaunchData = function() {
     if (window.launchData) {
-      window.launchData.forEach(function(file) {
+      window.launchData.forEach(async function(file) {
         var f = new File(file.entry);
-        f.read(function(err, contents) {
-          sessions.addFile(contents, f);
-        });
+        var contents = await f.read();
+        sessions.addFile(contents, f);
       });
     }
   };
@@ -201,26 +187,26 @@ define([
       //try to restore items in order
       M.map(
         retained,
-        function(item, i, c) {
+        async function(item, i, c) {
           var Type = restoreTypes[item.type] || File;
           var file = new Type();
-          file.restore(item.id, function(err) {
-            if (err) {
-              console.log("Fail restore", file);
-              failures.push(item)
-              return c(null);
-            }
-            file.read(function(err, data) {
-              if (err) {
-                console.log("Failed reading", file)
-                failures.push(item);
-                return c(null);
-              }
-              c({
-                value: data,
-                file: file
-              });
-            });
+          try {
+            await file.restore(item.id);
+          } catch(err) {
+            console.log("Fail restore", file);
+            failures.push(item)
+            return c(null);
+          }
+          try {
+            var data = await file.read();
+          } catch (err) {
+            console.log("Failed reading", file)
+            failures.push(item);
+            return c(null);
+          }
+          c({
+            value: data,
+            file: file
           });
         },
         function(restored) {
@@ -258,20 +244,21 @@ define([
   
   command.on("session:open-launch", openFromLaunchData);
   
-  var init = function(complete) {
-    Settings.pull("user").then(function(data) {
-      if (data.user.disableTabRestore) {
-        openFromLaunchData();
-        complete("fileManager");
-      } else {
+  var init = async function() {
+    var data = await Settings.pull("user");
+    if (data.user.disableTabRestore) {
+      openFromLaunchData();
+      return "fileManager";
+    } else {
+      return new Promise(function(ok, fail) {
         openFromRetained(function() {
           openFromLaunchData();
           //start the retention process
           retainLoop();
-          complete("fileManager");
+          ok("fileManager");
         });
-      }
-    });
+      });
+    }
   };
   
   command.on("init:startup", init);

@@ -21,34 +21,30 @@ define([
   
   */
     
-  var SyncFile = function(name, c) {
+  var SyncFile = function(name) {
     this.entry = {};
     if (name) {
-      this.open(name, c);
+      this.open(name);
     }
     this.virtual = true;
   };
   SyncFile.prototype = {
     name: "",
-    open: function(name, c) {
+    open: function(name) {
       this.name = name;
       this.entry.name = name;
-      if (c) c(null, this);
+      return this;
     },
-    read: function(c) {
+    read: async function() {
       var name = this.name;
-      sync.get(this.name).then(function(data) {
-        c(null, data);
-      });
+      return await sync.get(this.name)
     },
-    write: function(content, c) {
-      return sync.set(this.name, content).then(function() {
-        command.fire("settings:change-local");
-        c();
-      });
+    write: async function(content) {
+      await sync.set(this.name, content);
+      command.fire("settings:change-local");
     },
     retain: function() { return false; },
-    restore: function(c) { c("Cannot restore sync storage files") }
+    restore: function() { return Promise.reject("Cannot restore sync storage files") }
   };
   
   return SyncFile;

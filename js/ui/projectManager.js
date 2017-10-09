@@ -415,7 +415,7 @@ define([
       }, 100);
     },
 
-    openFile: function(path, c) {
+    openFile: function(path, done = function() {}) {
       var self = this;
       var found = false;
       var node = this.pathMap[path];
@@ -426,34 +426,27 @@ define([
         //look through the tabs for matching display paths
         M.map(
           tabs,
-          function(tab, i, c) {
+          async function(tab, i, c) {
             if (!tab.file || tab.file.virtual) {
               return c(false);
             }
-            tab.file.getPath(function(err, p) {
-              if (p == path) {
-                sessions.setCurrent(tab);
-                found = true;
-              }
-              //we don't actually use the result
-              c();
-            });
+            var p = await tab.file.getPath();
+            if (p == path) {
+              sessions.setCurrent(tab);
+              found = true;
+            }
+            //we don't actually use the result
+            c();
           },
           //if no match found, create a tab
-          function() {
+          async function() {
             if (found) {
-              if (c) {
-                c();
-              }
-              return;
+              return done();
             }
             var file = new File(node.entry);
-            file.read(function(err, data) {
-              sessions.addFile(data, file);
-              if (c) {
-                c();
-              }
-            });
+            var data = await file.read();
+            sessions.addFile(data, file);
+            done();
           }
         );
       });

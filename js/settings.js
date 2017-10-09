@@ -6,7 +6,7 @@ define([
   /* A plugin that handles loading Settings "synchronously" */
   
   return {
-    load: function(name, parentRequire, onLoad, config) {
+    load: async function(name, parentRequire, onLoad, config) {
       if (name.length == 0) {
         return onLoad(Settings);
       }
@@ -14,14 +14,9 @@ define([
       var files = name.split(",");
       var completed = 0;
       
-      files.forEach(function(file) {
-        Settings.load(file, function() {
-          completed++;
-          if (completed == files.length) {
-            onLoad(Settings);
-          }
-        });
-      });
+      var completed = files.map(f => Settings.load(f));
+      await Promise.all(completed);
+      onLoad(Settings);
     }
   };
 

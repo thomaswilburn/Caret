@@ -49,7 +49,8 @@ define([
   });
 
   //External apps can send messages by matching Caret's command/argument config objects
-  chrome.runtime.onMessageExternal.addListener(function(message, sender, c) {
-    command.fire(message.command, message.argument, c);
+  chrome.runtime.onMessageExternal.addListener(async function(message, sender, c) {
+    var result = await command.fire(message.command, message.argument);
+    c(null, result);
   });
 });

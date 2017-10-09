@@ -51,6 +51,7 @@ define(function() {
       return pending.then(only);
     },
     set: function(key, data) {
+      console.log("set");
       cache = null;
       return new Promise(function(ok, fail) {
         if (data.length < 3000) {
@@ -67,7 +68,7 @@ define(function() {
           chunks.map(function(chunk, i) {
             hash[key + i] = chunk;
           });
-          chrome.storage.sync.set(hash, ok)
+          chrome.storage.sync.set(hash, ok);
         }
       });
     },
