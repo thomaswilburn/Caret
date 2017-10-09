@@ -148,8 +148,8 @@ define([
         }
         menubar
           .findAll(".active")
-          .filter(function(n) { return n != el })
-          .forEach(function(n) { n.removeClass("active") });
+          .filter(n => n != el)
+          .forEach(n => n.classList.remove("active"));
       });
       menubar.addEventListener("mousemove", function(e) {
         var el = e.target;

@@ -108,7 +108,7 @@ define([
       return null;
     },
     getFilenames: function() {
-      return state.tabs.map(function(t) { return t.fileName });
+      return state.tabs.map(t => t.fileName);
     },
     setCurrent: switching.raise,
     raiseBlurred: switching.raiseBlurred,

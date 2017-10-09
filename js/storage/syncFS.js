@@ -52,9 +52,7 @@ define(["util/chromePromise"], function(chromeP) {
           chunks.push(data.substr(i, 3000));
         }
         hash[key] = chunks.length;
-        chunks.map(function(chunk, i) {
-          hash[key + i] = chunk;
-        });
+        chunks.forEach((chunk, i) => hash[key + i] = chunk);
       }
       await chromeP.storage.sync.set(hash);
     },

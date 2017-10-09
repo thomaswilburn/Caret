@@ -138,7 +138,7 @@ define([
 
   command.on("settings:change-local", async function() {
     //reload anything that's been used
-    var keys = Object.keys(defaults).map(function(n) { return n.replace(".json", "")});
+    var keys = Object.keys(defaults).map(n => n.replace(".json", ""));
     local = {};
     var completed = keys.map(k => Settings.load(k));
     await Promise.all(completed);

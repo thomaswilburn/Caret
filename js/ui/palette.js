@@ -25,7 +25,7 @@ define([
     return new RegExp(query
       .replace(antiregex, "\\$1")
       .split("")
-      .map(function(char) { return char.replace(antiregex, "\\$1")})
+      .map(char => char.replace(antiregex, "\\$1"))
       .join(".*?"),
     "i");
   };
@@ -250,9 +250,7 @@ define([
       if (file) {
         //search through open files by name
         var fuzzyFile = makeFuzz(file);
-        tabs = sessions.getAllTabs().filter(function(tab) {
-          return fuzzyFile.test(tab.fileName);
-        });
+        tabs = sessions.getAllTabs().filter(tab => fuzzyFile.test(tab.fileName));
         
         //first find matches that have base names starting with the query
         var exact = file.replace(/ /g, "").replace(antiregex, "\\$1");
@@ -309,7 +307,7 @@ define([
         var current = this.homeTab;
         tabs = [ current ];
         if (this.searchAll) {
-          tabs.push.apply(tabs, sessions.getAllTabs().filter(function(t) { return t !== current }));
+          tabs.push.apply(tabs, sessions.getAllTabs().filter(t => t !== current ));
         }
       }
       

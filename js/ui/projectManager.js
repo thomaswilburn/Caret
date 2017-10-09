@@ -224,9 +224,7 @@ define([
     },
 
     removeDirectory: function(args) {
-      this.directories = this.directories.filter(function(node) {
-        return node.id != args.id;
-      });
+      this.directories = this.directories.filter(node => node.id != args.id);
       this.render();
     },
 
@@ -428,10 +426,10 @@ define([
         if (p == path) {
           return sessions.setCurrent(tab);
         }
-        var file = new File(node.entry);
-        var data = await file.read();
-        sessions.addFile(data, file);
       }
+      var file = new File(node.entry);
+      var data = await file.read();
+      sessions.addFile(data, file);
     },
 
     generateProject: async function() {
