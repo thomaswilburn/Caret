@@ -8,10 +8,11 @@ define([
     "util/manos",
     "storage/nullfile",
     "util/i18n",
+    "util/chromePromise",
     //these next modules are self-contained
     "sessions/dragdrop",
     "sessions/autosave"
-  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile, i18n) {
+  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile, i18n, chromeP) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.
@@ -23,27 +24,25 @@ define([
 
   command.on("session:new-file", content => sessions.addFile(content));
   
-  command.on("session:open-file", function(c) {
+  command.on("session:open-file", async function() {
     //have to call chooseEntry manually to support multiple files
     var args = {
       type: "openWritableFile",
       acceptsMultiple: true
     };
-    chrome.fileSystem.chooseEntry(args, async function(files) {
-      if (!files) return;
-      //annoying array function test, since it's not apparently a real array
-      if (!files.slice) {
-        files = [ files ];
-      }
-      files.map(async function(entry) {
-        var f = new File(entry);
-        var data = await f.read();
-        sessions.addFile(data, f);
-      });
-
-      await Promise.all(files);
-      c()
+    var files = await chromeP.fileSystem.chooseEntry(args);
+    if (!files) return;
+    //annoying array function test, since it's not apparently a real array
+    if (!files.slice) {
+      files = [ files ];
+    }
+    files.map(async function(entry) {
+      var f = new File(entry);
+      var data = await f.read();
+      sessions.addFile(data, f);
     });
+
+    await Promise.all(files);
   });
   
   command.on("session:save-file", async function() {
@@ -53,19 +52,13 @@ define([
   
   command.on("session:save-all", async function() {
     var tabs = sessions.getAllTabs();
-    
-    return new Promise(function(ok, fail) {
-      // Only save tabs with modifications and that can be readily saved
-      M.serial(tabs, async function(tab, next) {
-        if (tab.modified && tab.file) await tab.save(false);
-        next();
-      }, async function() {
-        // Upon completion, update syntax and perform callback.
-        await command.fire("session:syntax");
-        ok();
-      });
-    });
-    
+
+    for (var i = 0; i < tabs.length; i++) {
+      var tab = tabs[i];
+      if (tab.modified && tab.file) await tab.save(false);
+      command.fire("session:syntax");
+    }
+
   });
   
   command.on("session:save-file-as", async function() {
@@ -88,15 +81,16 @@ define([
 
   //we now autoretain starting after load, every n seconds
   var retainInterval = 5
-  var retainLoop = function(c) {
+  var retainLoop = async function(c) {
     var tabs = sessions.getAllTabs();
     var keep = [];
     tabs.forEach(function(tab, i) {
       if (!tab.file || tab.file.virtual) return;
       keep[i] = tab.file.retain();
     });
-    keep = keep.filter(function(m) { return m });
-    chrome.storage.local.set({ retained: keep }, () => setTimeout(retainLoop, retainInterval * 1000));
+    keep = keep.filter(m => m);
+    await chromeP.storage.local.set({ retained: keep });
+    setTimeout(retainLoop, retainInterval * 1000);
   };
 
   command.on("session:check-file", function() {
@@ -161,84 +155,67 @@ define([
     }
   };
   
-  var openFromRetained = function(done) {
-    chrome.storage.local.get("retained", function(data) {
-      var failures = [];
-      if (!data.retained || !data.retained.length) return done();
-      
-      //convert raw retained IDs into typed retention objects
-      var retained = data.retained.map(function(item) {
-        if (typeof item == "string") {
-          return {
+  var openFromRetained = async function(done) {
+    var data = await chromeP.storage.local.get("retained");
+    var failures = [];
+    var restored = [];
+    if (!data.retained || !data.retained.length) return done();
+    
+    //convert raw retained IDs into typed retention objects
+    var retained = data.retained.map(function(item) {
+      if (typeof item == "string") {
+        return {
+          type: "file",
+          id: item
+        };
+      }
+      return item;
+    });
+    
+    //constructors for restorable types
+    var restoreTypes = {
+      file: File,
+      settings: null, //not yet, will be regular SyncFile
+      buffer: null //not yet, will be HTML5 filesystem for scratch files
+    }
+    
+    //try to restore items in order
+    for (var i = 0; i < retained.length; i++) {
+      var item = retained[i];
+      var Type = restoreTypes[item.type] || File;
+      var file = new Type();
+      try {
+        await file.restore(item.id);
+        var data = await file.read();
+        restored[i] = { value: data, file }
+      } catch(err) {
+        console.log("Fail restore or read", file);
+        failures.push(item);
+      }
+    }
+    restored = restored.filter(d => d);
+    for (var i = 0; i < restored.length; i++) {
+      var tab = restored[i];
+      sessions.addFile(tab.value, tab.file);
+    }
+    if (!failures.length) {
+      return;
+    }
+
+    var local = await chromeP.storage.local.get("retained");
+    if (!local.retained) return;
+    await chromeP.storage.local.set({
+      retained: local.retained.filter(function(d) {
+        // convert old retained IDs to new-style objects
+        if (typeof d == "string") {
+          d = {
             type: "file",
-            id: item
+            id: d
           };
         }
-        return item;
-      });
-      
-      //constructors for restorable types
-      var restoreTypes = {
-        file: File,
-        settings: null, //not yet, will be regular SyncFile
-        buffer: null //not yet, will be HTML5 filesystem for scratch files
-      }
-      
-      //try to restore items in order
-      M.map(
-        retained,
-        async function(item, i, c) {
-          var Type = restoreTypes[item.type] || File;
-          var file = new Type();
-          try {
-            await file.restore(item.id);
-          } catch(err) {
-            console.log("Fail restore", file);
-            failures.push(item)
-            return c(null);
-          }
-          try {
-            var data = await file.read();
-          } catch (err) {
-            console.log("Failed reading", file)
-            failures.push(item);
-            return c(null);
-          }
-          c({
-            value: data,
-            file: file
-          });
-        },
-        function(restored) {
-          restored = restored.filter(function(d) { return d });
-          for (var i = 0; i < restored.length; i++) {
-            var tab = restored[i];
-            sessions.addFile(tab.value, tab.file);
-          }
-          if (!failures.length) {
-            if (done) done();
-            return;
-          }
-          console.log("Removing failed restore IDs", failures);
-          chrome.storage.local.get("retained", function(data) {
-            if (!data.retained) return;
-            chrome.storage.local.set({
-              retained: data.retained.filter(function(d) {
-                if (typeof d == "string") {
-                  d = {
-                    type: "file",
-                    id: d
-                  };
-                }
-                return !failures.some(function(fail) {
-                  return fail.type == d.type && fail.id == d.id;
-                });
-              })
-            });
-          });
-          if (done) done();
-        }
-      );
+        // remove failures from the set
+        return !failures.some(fail => fail.type == d.type && fail.id == d.id);
+      })
     });
   }
   
@@ -250,14 +227,11 @@ define([
       openFromLaunchData();
       return "fileManager";
     } else {
-      return new Promise(function(ok, fail) {
-        openFromRetained(function() {
-          openFromLaunchData();
-          //start the retention process
-          retainLoop();
-          ok("fileManager");
-        });
-      });
+      await openFromRetained();
+      openFromLaunchData();
+      //start the retention process
+      retainLoop();
+      return "fileManager";
     }
   };
   
