@@ -5,8 +5,9 @@ define([
     "command",
     "util/template!templates/menuItem.html",
     "util/i18n",
+    "util/chromePromise",
     "util/dom2"
-  ], function(Settings, editor, dialog, command, inflate, i18n) {
+  ], function(Settings, editor, dialog, command, inflate, i18n, chromeP) {
     
   //default "Windows", will be adjusted during menu creation because async
   var platform = "win";
@@ -116,15 +117,13 @@ define([
     this.bindEvents();
   };
   Menu.prototype = {
-    create: function() {
+    create: async function() {
       var cfg = Settings.get("menus");
-      var self = this;
-      chrome.runtime.getPlatformInfo(function(info) {
-        if (info.os == "mac") platform = "mac";
-        var elements = walker(cfg, 0);
-        self.element.innerHTML = "";
-        self.element.append(elements);
-      });
+      var info = await chromeP.runtime.getPlatformInfo();
+      if (info.os == "mac") platform = "mac";
+      var elements = walker(cfg, 0);
+      this.element.innerHTML = "";
+      this.element.append(elements);
     },
     bindEvents: function() {
       var self = this;

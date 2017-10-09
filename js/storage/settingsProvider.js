@@ -2,8 +2,9 @@ define([
     "storage/syncFS",
     "storage/syncfile",
     "command",
-    "util/manos"
-  ], function(sync, SyncFile, command, M) {
+    "util/manos",
+    "util/chromePromise"
+  ], function(sync, SyncFile, command, M, chromeP) {
 
   var defaults = {};
   var local = {};
@@ -144,28 +145,27 @@ define([
     command.fire("init:restart");
   });
   
-  command.on("settings:emergency-reset", function() {
+  command.on("settings:emergency-reset", async function() {
     //unlike the menu item, let's confirm it here in case someone fat-fingers the menu/palette
-    chrome.notifications.clear("settings:emergency-reset-confirm", function() {
-      chrome.notifications.create("settings:emergency-reset-confirm", {
-        type: "basic",
-        iconUrl: "icon-128.png",
-        title: "Confirm Emergency Reset",
-        message: "This will wipe out all your settings and return Caret to its initial condition. Are you sure you want to do this?",
-        buttons: [
-          { title: "Yes, reset all data" },
-          { title: "Cancel emergency reset" }
-        ]
-      }, function() {});
+    await chromeP.notifications.clear("settings:emergency-reset-confirm");
+    await chrome.notifications.create("settings:emergency-reset-confirm", {
+      type: "basic",
+      iconUrl: "icon-128.png",
+      title: "Confirm Emergency Reset",
+      message: "This will wipe out all your settings and return Caret to its initial condition. Are you sure you want to do this?",
+      buttons: [
+        { title: "Yes, reset all data" },
+        { title: "Cancel emergency reset" }
+      ]
     });
   });
   
-  chrome.notifications.onButtonClicked.addListener(function(id, index) {
+  chrome.notifications.onButtonClicked.addListener(async function(id, index) {
     if (id != "settings:emergency-reset-confirm") return;
     if (index !== 0) return;
-    chrome.runtime.getBackgroundPage(function(page) {
-      page.emergencyReset();
-    });
+    await chromeP.notifications.clear("settings:emergency-reset-confirm");
+    var page = await chromeP.runtime.getBackgroundPage();
+    page.emergencyReset();
   });
 
   return Settings;
