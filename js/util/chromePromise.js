@@ -12,7 +12,7 @@ define(function() {
         });
       },
       getDisplayPath: function(entry) {
-        return new Promise(ok => chrome.fileSystem.getDisplayPath(path, ok));
+        return new Promise(ok => chrome.fileSystem.getDisplayPath(entry, ok));
       },
       getWritableEntry: function(entry) {
         return new Promise(ok => chrome.fileSystem.getWritableEntry(entry, ok));
@@ -22,6 +22,9 @@ define(function() {
       },
       isWritableEntry: function(entry) {
         return new Promise(ok => chrome.fileSystem.isWritableEntry(entry, ok));
+      },
+      restoreEntry: function(id) {
+        return new Promise(ok => chrome.fileSystem.restoreEntry(id, ok));
       }
     },
 

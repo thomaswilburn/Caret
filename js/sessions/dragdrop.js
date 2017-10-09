@@ -6,7 +6,7 @@ define([
 ], function(command, addRemove, projectManager, File) {
   
     command.on("session:open-dragdrop", function(items) {
-    [].forEach.call(items, function(entry){
+    [].forEach.call(items, async function(entry){
       //only process files
       if (entry.kind !== "file") return;
       entry = entry.webkitGetAsEntry();
@@ -14,7 +14,8 @@ define([
       //files get opened in a tab
       if (entry.isFile) {
         var f = new File(entry);
-        return f.read((err, data) => addRemove.add(data, f));
+        var data = await f.read();
+        addRemove.add(data, f);
       //directories get added to project
       } else if (entry.isDirectory) {
         projectManager.insertDirectory(entry);

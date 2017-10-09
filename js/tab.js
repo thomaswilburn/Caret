@@ -4,8 +4,9 @@ define([
     "util/manos",
     "settings!ace,user",
     "util/template!templates/tab.html",
-    "ui/dialog"
-  ], function(command, File, M, Settings, inflate, dialog) {
+    "ui/dialog",
+    "util/chromePromise"
+  ], function(command, File, M, Settings, inflate, dialog, chromeP) {
     
   /*
   
@@ -94,17 +95,16 @@ define([
     command.fire("session:render");
   };
   
-  Tab.prototype.drop = function() {
+  Tab.prototype.drop = async function() {
     //let listeners know, like the project manager
     this._emit("close");
     if (!this.file || !chrome.fileSystem.retainEntry) return;
     var id = this.file.retain();
     if (!id) return;
-    chrome.storage.local.get("retained", function(data) {
-      if (!data.retained) return;
-      var filtered = data.retained.filter(item => item != id);
-      chrome.storage.local.set({ retained: filtered });
-    });
+    var data = await chromeP.storage.local.get("retained");
+    if (!data.retained) return;
+    var filtered = data.retained.filter(item => item != id);
+    chrome.storage.local.set({ retained: filtered });  
   };
   
   Tab.prototype.render = function(index) {

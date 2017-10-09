@@ -8,6 +8,7 @@ require([
     "sessions",
     "util/manos",
     "util/i18n",
+    "util/chromePromise",
     "ui/projectManager",
     "ui/keys",
     "fileManager",
@@ -18,7 +19,7 @@ require([
     "api",
     "sequences",
     "storage/syncfile",
-  ], function(command, editor, Settings, dialog, sessions, M, i18n) {
+  ], function(command, editor, Settings, dialog, sessions, M, i18n, chromeP) {
 
   //translate inline strings
   i18n.page();
@@ -63,32 +64,32 @@ require([
   //code to enable update checking
   var updateID = "caret:update";
 
-  var checkUpdates = function(isManual) {
-    chrome.runtime.requestUpdateCheck(function(status, details) {
-      if (status == "update_available") {
-        chrome.runtime.onUpdateAvailable.addListener(function() {
-          chrome.notifications.clear(updateID, function() {
-            chrome.notifications.create(updateID, {
-              type: "basic",
-              iconUrl: "icon-128.png",
-              title: i18n.get("notificationUpdateAvailable"),
-              message: i18n.get("notificationUpdateDetail", details.version),
-              buttons: [
-                { title: i18n.get("notificationUpdateOK") },
-                { title: i18n.get("notificationUpdateWait") }
-              ]
-            }, function(id) { updateID = id });
-          });
-        });
-      } else {
-        if (isManual) chrome.notifications.create(updateID, {
+  var checkUpdates = async function(isManual) {
+    var [status, details] = await chromeP.runtime.requestUpdateCheck();
+    if (status == "update_available") {
+      chrome.runtime.onUpdateAvailable.addListener(async function() {
+      await chromeP.notifications.clear(updateID);
+      updateID = await chromeP.notifications.create(updateID, {
           type: "basic",
           iconUrl: "icon-128.png",
-          title: i18n.get("notificationNoUpdateTitle"),
-          message: i18n.get("notificationNoUpdateDetail")
-        }, function(id) { updateID = id });
+          title: i18n.get("notificationUpdateAvailable"),
+          message: i18n.get("notificationUpdateDetail", details.version),
+          buttons: [
+            { title: i18n.get("notificationUpdateOK") },
+            { title: i18n.get("notificationUpdateWait") }
+          ]
+        });
+      });
+    } else {
+      if (isManual) {
+        updateID = await chromeP.notifications.create(updateID, {
+        type: "basic",
+        iconUrl: "icon-128.png",
+        title: i18n.get("notificationNoUpdateTitle"),
+        message: i18n.get("notificationNoUpdateDetail")
+        });
       }
-    });
+    }
   };
 
   Settings.pull("user").then(function(cfg) {

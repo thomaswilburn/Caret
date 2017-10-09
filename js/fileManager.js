@@ -155,11 +155,11 @@ define([
     }
   };
   
-  var openFromRetained = async function(done) {
+  var openFromRetained = async function() {
     var data = await chromeP.storage.local.get("retained");
     var failures = [];
     var restored = [];
-    if (!data.retained || !data.retained.length) return done();
+    if (!data.retained || !data.retained.length) return;
     
     //convert raw retained IDs into typed retention objects
     var retained = data.retained.map(function(item) {
@@ -189,7 +189,7 @@ define([
         var data = await file.read();
         restored[i] = { value: data, file }
       } catch(err) {
-        console.log("Fail restore or read", file);
+        console.log("Fail restore or read", err, file);
         failures.push(item);
       }
     }

@@ -1,6 +1,7 @@
 define([
-    "util/manos"
-  ], function(M) {
+    "util/manos",
+    "util/chromePromise"
+  ], function(M, chromeP) {
   
   /*
   
@@ -16,7 +17,7 @@ define([
   };
   
   File.prototype = {
-    open: function(mode) {
+    open: async function(mode) {
       var self = this;
       //mode is "open" or "save"
       var modes = {
@@ -24,16 +25,10 @@ define([
         "save": "saveFile"
       };
       
-      return new Promise(function(ok, fail) {
-        chrome.fileSystem.chooseEntry({
-          type: modes[mode]
-        }, function(entry) {
-          //cancelling acts like an error, but isn't.
-          if (!entry) return fail(chrome.runtime.lastError);
-          self.entry = entry;
-          ok(self);
-        });
-      });
+      var entry = await chromeP.fileSystem.chooseEntry({ type: modes[mode] });
+      //cancelling acts like an error, but isn't.
+      if (!entry) throw chrome.runtime.lastError;
+      this.entry = entry;
     },
     
     read: function() {
@@ -58,60 +53,43 @@ define([
       });
     },
     
-    write: function(data) {
+    write: async function(data) {
       var self = this;
       
-      return new Promise(async function(ok, fail) {
-        if (!self.entry) {
-          //guard against cases where we accidentally write before opening
-          await self.open("save");
-          try {
-            await self.write(data);
-            ok();
-          } catch(err) {
+      if (!self.entry) {
+        //guard against cases where we accidentally write before opening
+        await self.open("save");
+        try {
+          await self.write(data);
+          ok();
+        } catch(err) {
+          fail(err);
+        }
+      };
+
+      var isWritable = chromeP.fileSystem.isWritableEntry(this.entry);
+      if (!isWritable) {
+        var w = await chromeP.fileSystem.getWritableEntry(this.entry);
+        this.entry = w;
+      }
+
+      return new Promise((ok, fail) => {
+        this.entry.createWriter(function(writer) {
+          writer.onerror = function(err) {
+            console.error(err);
             fail(err);
           }
-        }
-      
-        M.chain(
-          //check permissions
-          function(next) {
-            chrome.fileSystem.isWritableEntry(self.entry, next);
-          },
-          //if read-only, try to open as writable
-          function(ok, next) {
-            if (!ok) {
-              return chrome.fileSystem.getWritableEntry(self.entry, function(entry) {
-                if (entry) {
-                  self.entry = entry;
-                  next();
-                } else {
-                  fail("Couldn't open file as writable");
-                }
-              });
+          writer.onwriteend = function() {
+            //after truncation, actually write the file
+            writer.onwriteend = function() {
+              ok();
+              self.onWrite();
             }
-            next();
-          },
-          //write file
-          function() {
-            self.entry.createWriter(function(writer) {
-              writer.onerror = function(err) {
-                console.error(err);
-                fail(err);
-              }
-              writer.onwriteend = function() {
-                //after truncation, actually write the file
-                writer.onwriteend = function() {
-                  ok();
-                  self.onWrite();
-                }
-                var blob = new Blob([data]);
-                writer.write(blob);
-              };
-              writer.truncate(0);
-            });
-          }
-        );
+            var blob = new Blob([data]);
+            writer.write(blob);
+          };
+          writer.truncate(0);
+        });
       });
     },
     
@@ -135,33 +113,22 @@ define([
       };
     },
     
-    restore: function(id) {
-      var self = this;
-
-      return new Promise(function(ok, fail) {
-        
-        chrome.fileSystem.isRestorable(id, function(is) {
-          if (is) {
-            chrome.fileSystem.restoreEntry(id, function(entry) {
-              if (!entry) return fail("restoreEntry() failed for " + id);
-              self.entry = entry;
-              ok();
-            });
-          } else {
-            fail("isRestorable() returned false for " + id);
-          }
-        });
-      });
+    restore: async function(id) {
+      var isRestorable = await chromeP.fileSystem.isRestorable(id);
+      if (isRestorable) {
+        var entry = await chromeP.fileSystem.restoreEntry(id);
+        if (!entry) throw "restoreEntry() failed for " + id;
+        this.entry = entry;
+        return entry;
+      } else {
+        throw "isRestorable() returned false for " + id;
+      }
     },
     
-    getPath: function() {
-      var self = this;
-      return new Promise(function(ok, fail) {
-        if (!self.entry) return fail("No backing entry, cannot get path");
-        chrome.fileSystem.getDisplayPath(self.entry, function(path) {
-          ok(path);
-        });
-      });
+    getPath: async function() {
+      if (!this.entry) throw "No backing entry, cannot get path";
+      var path = await chromeP.fileSystem.getDisplayPath(this.entry);
+      return path;
     }
   };
   
