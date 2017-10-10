@@ -73,7 +73,7 @@
   //If you'd like it to search all open files by default, set this option to true.
   "searchAllFiles": false,
   //set the max search results that project wide search will return.
-  "maxSearchMatches": 50,
+  "maxSearchMatches": 500,
 
   //set a regex to ignore in project view/search
   "ignoreFiles": "node_modules",

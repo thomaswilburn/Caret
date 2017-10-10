@@ -148,7 +148,7 @@ define([
         wrap: true,
         needle: re
       });
-      var ranges = search.querySelector(session);
+      var ranges = search.findAll(session);
       ranges.forEach(function(range) {
         var original = session.getTextRange(range);
         var replaced = original.replace(re, trimEmpty ? "" : "$1");

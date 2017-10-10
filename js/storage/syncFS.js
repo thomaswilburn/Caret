@@ -41,7 +41,6 @@ define(["util/chromePromise"], function(chromeP) {
       return pending.then(_ => decode(key));
     },
     set: async function(key, data) {
-      console.log("cleared cache");
       cache = null;
       var hash = {};
       if (data.length < 3000) {
@@ -63,7 +62,7 @@ define(["util/chromePromise"], function(chromeP) {
         return Promise.all(all);
       }
       cache = null;
-      await chromeP.storage.sync.remove(key, ok);
+      await chromeP.storage.sync.remove(key);
     }
   }
   
