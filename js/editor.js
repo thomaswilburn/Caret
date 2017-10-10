@@ -7,6 +7,9 @@ define([
   /*
   Module for loading the editor, adding window resizing and other events. Returns the editor straight from Ace.
   */
+
+  var noop = function() {};
+
   var userConfig = Settings.get("user");
   var aceConfig = Settings.get("ace");
 
@@ -57,13 +60,13 @@ define([
     });
   };
   
-  var defaultFontSize = function(c) {
+  var defaultFontSize = function(c = noop) {
     var size = Settings.get("user").fontSize;
     editor.container.style.fontSize = size ? size + "px" : null;
-    if (c) c();
+    c();
   };
   
-  var adjustFontSize = function(delta, c) {
+  var adjustFontSize = function(delta, c = noop) {
     var current = editor.container.style.fontSize;
     if (current) {
       current = current.replace("px", "") * 1;
@@ -72,7 +75,7 @@ define([
     }
     var adjusted = current + delta;
     editor.container.style.fontSize = adjusted + "px";
-    if (c) c();
+    c();
   };
   
   command.on("editor:default-zoom", defaultFontSize);
@@ -85,10 +88,10 @@ define([
     editor.setTheme("ace/theme/" + theme);
     themes.value = theme;
     editor.focus();
-    if (c) c();
+    c();
   });
   
-  command.on("editor:print", function(c) {
+  command.on("editor:print", function(c = noop) {
     ace.require("ace/config").loadModule("ace/ext/static_highlight", function(highlighter) {
       var session = editor.getSession();
       var printable = highlighter.renderSync(session.getValue(), session.getMode(), editor.renderer.theme);
@@ -103,18 +106,20 @@ define([
         setTimeout(function() {
           iframe.parentElement.removeChild(iframe);
         });
+        c();
       };
       document.body.appendChild(iframe);
     });
   });
   
-  command.on("editor:word-count", function(c) {
+  command.on("editor:word-count", function(c = noop) {
     var text = editor.getSession().getValue();
     var lines = text.split("\n").length;
     var characters = text.length;
     var words = text.match(/\b\S+\b/g);
     words = words ? words.length : 0;
     command.fire("status:toast", i18n.get("editorWordCount", characters, words, lines));
+    c();
   });
   
   return editor;

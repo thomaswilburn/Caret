@@ -43,7 +43,7 @@ define([
   var ctrl = false;
 
   // most-recent order
-  var switchTab = function(arg, c) {
+  var switchTab = function(arg, c = function() {}) {
     arg = arg || 1;
     if (!ctrl) {
       ctrl = true;
@@ -53,11 +53,11 @@ define([
     stackOffset = (stackOffset + arg) % state.stack.length;
     if (stackOffset < 0) stackOffset = state.stack.length + stackOffset;
     raiseTab(state.stack[stackOffset]);
-    if (c) c();
+    c();
   };
 
   //left-to-right order
-  var switchTabLinear = function(shift, c) {
+  var switchTabLinear = function(shift, c = function() {}) {
     shift = shift || 1;
     var current = editor.getSession();
     var currentIndex = state.tabs.indexOf(current);
@@ -68,7 +68,7 @@ define([
     var tab = state.tabs[shifted];
     raiseTab(tab);
     resetStack(tab);
-    if (c) c();
+    c();
   };
 
   command.on("session:raise-tab", function(index) {

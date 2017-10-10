@@ -6,6 +6,8 @@ define([
     "util/i18n"
   ], function(command, editor, status, Settings, i18n) {
 
+    var noop = function() {};
+
     var userConfig = Settings.get("user");
     command.on("init:restart", () => userConfig = Settings.get("user"));
 
@@ -31,12 +33,12 @@ define([
     //this is a place to put bindings that don't have direct equivalents in Ace, but are required for Sublime compatibility
     
     //this is now in Ace, but aliased for back-compat
-    command.on("sublime:expand-to-line", function(c) {
+    command.on("sublime:expand-to-line", function(c = noop) {
       editor.execCommand("expandtoline");
-      if (c) c();
+      c();
     });
 
-    command.on("sublime:expand-to-paragraph", function(c) {
+    command.on("sublime:expand-to-paragraph", function(c = noop) {
       var session = editor.getSession();
       var selection = editor.getSelection();
       var currentLine = editor.getCursorPosition().row;
@@ -62,10 +64,10 @@ define([
       editor.clearSelection();
       editor.moveCursorTo(startLine);
       selection.selectTo(endLine);
-      if (c) c();
+      c();
     });
 
-    command.on("sublime:expand-to-matching", function(c) {
+    command.on("sublime:expand-to-matching", function(c = noop) {
       var Range = ace.require("ace/range").Range;
       var position = editor.getCursorPosition();
       var line = editor.getSession().getLine(position.row);
@@ -103,25 +105,25 @@ define([
       //this is a little wonky, but it's better than nothing.
       editor.execCommand("jumptomatching");
       editor.execCommand("selecttomatching");
-      if (c) c();
+      c();
     });
 
-    command.on("sublime:tabs-to-spaces", function(c) {
+    command.on("sublime:tabs-to-spaces", function(c = noop) {
       var session = editor.getSession();
       var text = session.getValue();
       var spaces = new Array(userConfig.indentation + 1).join(" ");
       text = text.replace(/\t/g, spaces);
       session.setValue(text);
-      if (c) c();
+      c();
     });
 
-    command.on("sublime:spaces-to-tabs", function(c) {
+    command.on("sublime:spaces-to-tabs", function(c = noop) {
       var session = editor.getSession();
       var text = session.getValue();
       var replace = new RegExp(new Array(userConfig.indentation + 1).join(" "), "g");
       text = text.replace(replace, "\t");
       session.setValue(text);
-      if (c) c();
+      c();
     });
     
     command.on("sublime:select-or-more-after", function() {
@@ -132,12 +134,12 @@ define([
       }
     });
     
-    command.on("ace:set-newline-mode", function(type, c) {
+    command.on("ace:set-newline-mode", function(type, c = noop) {
       editor.session.doc.setNewLineMode(type);
-      if (c) c();
+      c();
     });
     
-    command.on("ace:trim-whitespace", function(c) {
+    command.on("ace:trim-whitespace", function(c = noop) {
       var session = editor.getSession();
       var folds = session.getAllFolds();
       var doc = session.doc;
@@ -156,10 +158,10 @@ define([
       });
       session.unfold();
       session.addFolds(folds);
-      if (c) c();
+      c();
     });
 
-    command.on("sublime:wrap", function(c) {
+    command.on("sublime:wrap", function(c = noop) {
       var Range = ace.require("ace/range").Range;
       var lang = ace.require("ace/lib/lang");
       var session = editor.getSession();
@@ -229,7 +231,7 @@ define([
         textToAdd += session.doc.getNewLineCharacter();
       }
       editor.session.doc.replace(new Range(startLine, 0, endLine, 0), textToAdd);
-      if (c) c();
+      c();
     });
 
     //we also add a command redirect for firing Ace commands via regular command attributes
@@ -250,13 +252,13 @@ define([
       } else {
         status.clearMessage();
       }
-      if (c) c();
+      c();
     });
 
     //API bindings
-    command.on("editor:insert", function(text, c) {
+    command.on("editor:insert", function(text, c = noop) {
       editor.insert(text);
-      if (c) c();
+      c();
     });
 
 });

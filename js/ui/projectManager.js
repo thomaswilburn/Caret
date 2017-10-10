@@ -64,7 +64,7 @@ define([
     tab: null,
     id: null,
     label: null,
-    setEntry: function(entry, c) {
+    setEntry: function(entry) {
       this.entry = entry;
       this.label = entry.name;
       this.isDirectory = entry.isDirectory;
