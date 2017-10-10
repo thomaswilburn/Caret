@@ -1,7 +1,6 @@
 define([
-    "util/manos",
     "util/chromePromise"
-  ], function(M, chromeP) {
+  ], function(chromeP) {
   
   /*
   

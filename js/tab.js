@@ -1,12 +1,11 @@
 define([
     "command",
     "storage/file",
-    "util/manos",
     "settings!ace,user",
     "util/template!templates/tab.html",
     "ui/dialog",
     "util/chromePromise"
-  ], function(command, File, M, Settings, inflate, dialog, chromeP) {
+  ], function(command, File, Settings, inflate, dialog, chromeP) {
     
   /*
   

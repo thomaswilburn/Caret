@@ -6,8 +6,7 @@ define([
     "ui/statusbar",
     "ui/projectManager",
     "util/template!templates/paletteItem.html",
-    "util/i18n",
-    "util/dom2"
+    "util/i18n"
   ], function(sessions, command, editor, Settings, status, project, inflate, i18n) {
   
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;

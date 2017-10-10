@@ -5,8 +5,7 @@ define([
     "command",
     "util/template!templates/menuItem.html",
     "util/i18n",
-    "util/chromePromise",
-    "util/dom2"
+    "util/chromePromise"
   ], function(Settings, editor, dialog, command, inflate, i18n, chromeP) {
     
   //default "Windows", will be adjusted during menu creation because async
@@ -53,9 +52,8 @@ define([
       };
       var element = inflate.get("templates/menuItem.html", data);
       if (entry.sub) {
-        var children = Array.from(walker(entry.sub, depth + 1).children);
         var ul = element.querySelector("ul");
-        children.forEach(c => ul.appendChild(c));
+        ul.appendChild(walker(entry.sub, depth + 1));
       }
       fragment.appendChild(element);
     }
@@ -122,9 +120,9 @@ define([
       var cfg = Settings.get("menus");
       var info = await chromeP.runtime.getPlatformInfo();
       if (info.os == "mac") platform = "mac";
-      var elements = Array.from(walker(cfg, 0).children);
+      var elements = walker(cfg, 0);
       this.element.innerHTML = "";
-      elements.forEach(c => this.element.appendChild(c));
+      this.element.appendChild(elements);
     },
     bindEvents: function() {
       var self = this;

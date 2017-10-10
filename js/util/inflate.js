@@ -1,6 +1,5 @@
 define([
-    "util/i18n",
-    "util/dom2"
+    "util/i18n"
   ], function(i18n) {
     
   /*
@@ -14,7 +13,7 @@ define([
   var cache = {};
   var fragment = document.createDocumentFragment();
   var fragBody = document.createElement("body");
-  fragment.append(fragBody);
+  fragment.appendChild(fragBody);
   
   var parse = function(html) {
     fragBody.innerHTML = html;

@@ -3,8 +3,7 @@ define([
     "sessions/state",
     "sessions/addRemove",
     "ui/contextMenus",
-    "util/manos",
-    "util/dom2"
+    "util/manos"
   ], function(command, state, addRemove, contextMenus, M) {
     
   /*

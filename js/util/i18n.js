@@ -1,4 +1,4 @@
-define(["util/dom2"], function() {
+define(function() {
 
   var translationCache = {};
 

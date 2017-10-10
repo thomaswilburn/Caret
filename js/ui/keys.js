@@ -2,11 +2,9 @@ define([
     "settings!keys,user",
     "command",
     "editor",
-    "util/manos",
     "util/chromePromise",
-    "util/dom2",
     "util/aceLoad!js/ace/keybinding-vim.js"
-  ], function(Settings, command, editor, M, chromeP) {
+  ], function(Settings, command, editor, chromeP) {
   
   var keycodes = {
     9: "Tab",

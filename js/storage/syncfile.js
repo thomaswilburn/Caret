@@ -1,8 +1,7 @@
 define([
     "storage/syncFS",
-    "command",
-    "util/manos"
-  ], function(sync, command, M) {
+    "command"
+  ], function(sync, command) {
 
   /*
 

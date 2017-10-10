@@ -3,15 +3,13 @@ define([
     "command",
     "sessions",
     "storage/file",
-    "util/manos",
     "ui/dialog",
     "ui/contextMenus",
     "editor",
     "util/template!templates/projectDir.html,templates/projectFile.html",
     "util/i18n",
-    "util/chromePromise",
-    "util/dom2"
-  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate, i18n, chromeP) {
+    "util/chromePromise"
+  ], function(Settings, command, sessions, File, dialog, context, editor, inflate, i18n, chromeP) {
 
   /*
   It's tempting to store projects in local storage, similar to the way that we
@@ -284,7 +282,7 @@ define([
             contextMenu: context.makeURL(isRoot ? "root/directory" : "directory", node.id)
           };
           var a = inflate.get("templates/projectDir.html", nodeData);
-          li.append(a);
+          li.appendChild(a);
           if (self.expanded[node.entry.fullPath]) {
             li.classList.add("expanded");
           }
@@ -299,7 +297,7 @@ define([
             return 0;
           });
           for (var i = 0; i < node.children.length; i++) {
-            ul.append(walker(node.children[i]));
+            ul.appendChild(walker(node.children[i]));
           }
           li.append(ul);
         } else {
@@ -309,7 +307,7 @@ define([
             label: node.label
           };
           var a = inflate.get("templates/projectFile.html", nodeData)
-          li.append(a);
+          li.appendChild(a);
           self.pathMap[node.entry.fullPath] = node;
         }
         return li;
@@ -450,7 +448,6 @@ define([
         var file = new File();
         var watch = this.watchProjectFile.bind(this);
         await file.open("save");
-        console.log(file);
         await file.write(json);
         var id = file.retain();
         chrome.storage.local.set({retainedProject: id});
@@ -492,27 +489,23 @@ define([
       //restore directory entries that can be restored
       this.directories = [];
       blacklist = blacklistRegExp(project.settings);
-      M.map(
-        project.folders,
-        async function(folder, index, c) {
-          var entry = await chromeP.fileSystem.restoreEntry(folder.retained);
-          //remember, you can only restore project directories you'd previously opened
-          if (!entry) return c();
-          var path = await chromeP.fileSystem.getDisplayPath(entry);
-          var node = new FSNode(entry);
-          node.path = path;
-          //if this is the first, go ahead and start the slideout
-          if (!self.directories.length) {
-            self.element.classList.add("show");
-          }
-          self.directories.push(node);
-          node.walk(blacklist, c);
-        },
-        function() {
-          self.loading = false;
-          self.render();
+      var completed = project.folders.map(async function(folder) {
+        var entry = await chromeP.fileSystem.restoreEntry(folder.retained);
+        //remember, you can only restore project directories you'd previously opened
+        if (!entry) return c();
+        var path = await chromeP.fileSystem.getDisplayPath(entry);
+        var node = new FSNode(entry);
+        node.path = path;
+        //if this is the first, go ahead and start the slideout
+        if (!self.directories.length) {
+          self.element.classList.add("show");
         }
-      );
+        self.directories.push(node);
+        return new Promise(ok => node.walk(blacklist, ok));
+      });
+      await Promise.all(completed);
+      self.loading = false;
+      self.render();
     },
 
     editProjectFile: async function() {

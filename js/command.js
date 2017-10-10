@@ -1,6 +1,5 @@
 define([
-    "util/text!config/commands.json",
-    "util/dom2"
+    "util/text!config/commands.json"
   ], function(list) {
     
     try {

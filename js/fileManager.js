@@ -5,14 +5,13 @@ define([
     "ui/dialog",
     "command",
     "storage/settingsProvider",
-    "util/manos",
     "storage/nullfile",
     "util/i18n",
     "util/chromePromise",
     //these next modules are self-contained
     "sessions/dragdrop",
     "sessions/autosave"
-  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile, i18n, chromeP) {
+  ], function(sessions, editor, File, dialog, command, Settings, NullFile, i18n, chromeP) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.

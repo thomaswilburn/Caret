@@ -1,7 +1,6 @@
 define([
   "command",
-  "editor",
-  "util/dom2"
+  "editor"
   ], function(command, editor) {
   
   var cli = document.querySelector(".command-line");

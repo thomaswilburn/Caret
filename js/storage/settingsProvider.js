@@ -2,9 +2,8 @@ define([
     "storage/syncFS",
     "storage/syncfile",
     "command",
-    "util/manos",
     "util/chromePromise"
-  ], function(sync, SyncFile, command, M, chromeP) {
+  ], function(sync, SyncFile, command, chromeP) {
 
   var defaults = {};
   var local = {};

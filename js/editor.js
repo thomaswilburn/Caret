@@ -2,8 +2,7 @@ define([
     "storage/file",
     "command",
     "settings!ace,user",
-    "util/i18n",
-    "util/dom2"
+    "util/i18n"
   ], function(File, command, Settings, i18n) {
   /*
   Module for loading the editor, adding window resizing and other events. Returns the editor straight from Ace.

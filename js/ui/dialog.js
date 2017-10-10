@@ -1,7 +1,6 @@
 define([
     "editor",
-    "util/template!templates/dialog.html",
-    "util/dom2"
+    "util/template!templates/dialog.html"
   ], function(editor, inflate) {
     
   /*
