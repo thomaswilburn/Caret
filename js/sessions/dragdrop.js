@@ -23,11 +23,11 @@ define([
     });
   });
 
-  document.body.on("dragover", function(e) {
+  document.body.addEventListener("dragover", function(e) {
     e.preventDefault();
   });
 
-  document.body.on("drop", function(e) {
+  document.body.addEventListener("drop", function(e) {
     e.preventDefault();
     if (e.dataTransfer.types.indexOf("Files") === -1) return;
     command.fire("session:open-dragdrop", e.dataTransfer.items);

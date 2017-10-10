@@ -35,7 +35,7 @@ define([
   var watchCtrl = function(e) {
     if (e.keyCode == 17) {
       resetStack();
-      document.body.off("keyup", watchCtrl);
+      document.body.removeEventListener("keyup", watchCtrl);
       ctrl = false;
     }
   };
@@ -48,7 +48,7 @@ define([
     if (!ctrl) {
       ctrl = true;
       stackOffset = 0;
-      document.body.on("keyup", watchCtrl);
+      document.body.addEventListener("keyup", watchCtrl);
     }
     stackOffset = (stackOffset + arg) % state.stack.length;
     if (stackOffset < 0) stackOffset = state.stack.length + stackOffset;

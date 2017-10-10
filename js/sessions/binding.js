@@ -13,13 +13,13 @@ define([
   */
 
   var enableTabDragDrop = function() {
-    var tabContainer = document.find(".tabs");
+    var tabContainer = document.querySelector(".tabs");
     var draggedTab = null;
     
-    tabContainer.on("dragstart", function(e) {
+    tabContainer.addEventListener("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
       e.target.style.opacity = 0;
-      setTimeout(() => e.target.addClass("dragging"), 50);
+      setTimeout(() => e.target.classList.add("dragging"), 50);
       e.dataTransfer.setDragImage(e.target, 0, 0);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.clearData("text/plain");
@@ -29,24 +29,24 @@ define([
       draggedTab.ondragend = function() {
         draggedTab = null;
         e.target.style.opacity = null;
-        e.target.removeClass("dragging");
+        e.target.classList.remove("dragging");
       };
     });
     
-    tabContainer.on("dragover", function(e) {
+    tabContainer.addEventListener("dragover", function(e) {
       e.preventDefault();
       e.stopPropagation();
       e.dropEffect = "move";
-      var tab = e.target.findUp(".tab:not(.hovering)");
+      var tab = e.target.closest(".tab:not(.hovering)");
       if (tab || e.target == tabContainer) {
-        var old = tabContainer.find(".hovering");
-        if (old) old.removeClass("hovering");
-        if (tab) tab.addClass("hovering");
+        var old = tabContainer.querySelector(".hovering");
+        if (old) old.classList.remove("hovering");
+        if (tab) tab.classList.add("hovering");
       }
     });
     
     //cancel hover appearance when leaving the tab bar
-    tabContainer.on("drag", function(e) {
+    tabContainer.addEventListener("drag", function(e) {
       var tabCoords = tabContainer.getBoundingClientRect();
       if (
         e.clientX > tabCoords.left &&
@@ -54,18 +54,18 @@ define([
         e.clientY > tabCoords.top &&
         e.clientY < tabCoords.top + tabCoords.top
       ) return;
-      var hovered = tabContainer.find(".hovering");
-      if (hovered) hovered.removeClass("hovering");
+      var hovered = tabContainer.querySelector(".hovering");
+      if (hovered) hovered.classList.remove("hovering");
     });
     
-    tabContainer.on("drop", function(e) {
+    tabContainer.addEventListener("drop", function(e) {
       if (!draggedTab) return;
       e.stopPropagation();
       var location = "before"; //how to position the new tab
       var target; //closest tab to drop event
       if (e.target == tabContainer) {
         //if dropped on the bar, find the nearest tab to go after
-        var elements = tabContainer.findAll(".tab");
+        var elements = tabContainer.querySelectorAll(".tab");
         location = "after";
         elements.forEach(function(el) {
           if (el.offsetLeft < e.offsetX) {
@@ -74,7 +74,7 @@ define([
         });
       } else {
         //otherwise, find the actual tab element
-        target = e.target.findUp(".tab");
+        target = e.target.closest(".tab");
       }
       var fromIndex = e.dataTransfer.getData("application/x-tab-id") * 1;
       var toIndex = target.getAttribute("tab-id") * 1;
@@ -100,8 +100,8 @@ define([
   };
   
   var enableTabMiddleClick = function() {
-    var tabContainer = document.find(".tabs");
-    tabContainer.on("mousedown", function(e) {
+    var tabContainer = document.querySelector(".tabs");
+    tabContainer.addEventListener("mousedown", function(e) {
       if (!e.target.matches(".label")) return;
       if (e.button != 1) return;
       e.preventDefault();
@@ -119,8 +119,8 @@ define([
   };
 
   var enableDblClickNewTab = function() {
-    var tabContainer = document.find(".tabs");
-    tabContainer.on("dblclick", function(e) {
+    var tabContainer = document.querySelector(".tabs");
+    tabContainer.addEventListener("dblclick", function(e) {
       e.preventDefault();
       if (e.button == 0)
         command.fire("session:new-file");

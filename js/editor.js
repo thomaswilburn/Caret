@@ -18,7 +18,7 @@ define([
   var themes = document.querySelector(".theme");
   
   //disable focusing on the editor except by program
-  document.find("textarea").setAttribute("tabindex", -1);
+  document.querySelector("textarea").setAttribute("tabindex", -1);
   
   //one-time startup
   var init = function() {
@@ -26,7 +26,7 @@ define([
       var option = document.createElement("option");
       option.innerHTML = theme.label;
       option.setAttribute("value", theme.name);
-      themes.append(option);
+      themes.appendChild(option);
     });
     reset();
     //let main.js know this module is ready
@@ -102,10 +102,10 @@ define([
       iframe.onload = function() {
         iframe.contentWindow.print();
         setTimeout(function() {
-          iframe.remove();
+          iframe.parentElement.removeChild(iframe);
         });
       };
-      document.body.append(iframe);
+      document.body.appendChild(iframe);
     });
   });
   

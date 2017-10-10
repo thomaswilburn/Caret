@@ -237,6 +237,6 @@ define([
   
   command.on("init:startup", init);
   
-  window.on("focus", command.fire.bind(null, "session:check-file"));
+  window.addEventListener("focus", command.fire.bind(null, "session:check-file"));
 
 });

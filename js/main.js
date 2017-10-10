@@ -35,7 +35,7 @@ require([
     };
     var theme = data.user.uiTheme || "light";
     var url = themes[theme] || themes.dark;
-    document.find("#theme").setAttribute("href", url);
+    document.querySelector("#theme").setAttribute("href", url);
   };
   setTheme();
 
@@ -159,10 +159,10 @@ require([
 
   //handle immersive fullscreen
   var onFullscreen = function() {
-    document.body.addClass("fullscreened");
+    document.body.classList.add("fullscreened");
     Settings.pull("user").then(function(data) {
       if (data.user.immersiveFullscreen) {
-        document.body.addClass("immersive");
+        document.body.classList.add("immersive");
         editor.resize();
       }
     });
@@ -174,8 +174,8 @@ require([
   }
 
   frame.onRestored.addListener(function() {
-    document.body.removeClass("fullscreen");
-    document.body.removeClass("immersive");
+    document.body.classList.remove("fullscreen");
+    document.body.classList.remove("immersive");
   });
 
   //It's nice to be able to launch the debugger from a command stroke
@@ -189,7 +189,7 @@ require([
 
   //kill middle clicks if not handled
 
-  document.body.on("click", function(e) {
+  document.body.addEventListener("click", function(e) {
     if (e.button == 1) {
       e.preventDefault();
     }

@@ -15,8 +15,8 @@ define([
 
   var Searchbar = function() {
     var self = this;
-    this.element = document.find(".searchbar");
-    this.input = this.element.find(".search-box");
+    this.element = document.querySelector(".searchbar");
+    this.input = this.element.querySelector(".search-box");
 
     this.maxMatches = Settings.get("user").maxSearchMatches || 50;
     command.on("init:restart", function() {
@@ -44,7 +44,7 @@ define([
       var hist = this.searchHistory;
       var self = this;
 
-      input.on("keydown", function(e) {
+      input.addEventListener("keydown", function(e) {
         //escape
         if (e.keyCode == 27) {
           self.deactivate(true);
@@ -90,9 +90,9 @@ define([
 
     bindButtons: function() {
       var self = this;
-      var findAll = this.element.find("button.find-all");
+      var findAll = this.element.querySelector("button.find-all");
 
-      findAll.on("click", function() {
+      findAll.addEventListener("click", function() {
         self.search();
       });
     },
@@ -105,7 +105,7 @@ define([
       }
       var self = this;
 
-      var isCaseSensitive = this.element.find("#search-case-check").checked;
+      var isCaseSensitive = this.element.querySelector("#search-case-check").checked;
       var displayQuery = this.input.value;
 
       // add query to search history
@@ -287,7 +287,7 @@ define([
         this.input.value = selected;
       }
 
-      this.element.addClass("active");
+      this.element.classList.add("active");
       setTimeout(() => {
         this.input.focus();
         this.input.select();
@@ -296,7 +296,7 @@ define([
 
     deactivate: function(cancel) {
       if (cancel) this.currentSearch.running = false; // cancel search
-      this.element.removeClass("active");
+      this.element.classList.remove("active");
     }
   };
 
@@ -309,7 +309,7 @@ define([
   //listen for click events on markers
   editor.on("click", function(e) {
     if (!editor.session.links) return;
-    if (!e.domEvent.target.hasClass("caret-search-marker")) return;
+    if (!e.domEvent.target.classList.contains("caret-search-marker")) return;
     var row = e.$pos.row + 1;
     var link = editor.session.links[row];
     var split = link.split(":");

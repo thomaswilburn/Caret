@@ -18,7 +18,7 @@ define([
   
   */
 
-  var syntax = document.find(".syntax");
+  var syntax = document.querySelector(".syntax");
 
   command.on("session:syntax", function(mode) {
     var session = editor.getSession();
@@ -32,23 +32,23 @@ define([
   });
 
   var renderTabs = function() {
-    var tabContainer = document.find(".tabs");
+    var tabContainer = document.querySelector(".tabs");
     var contents = "";
     var current = editor.getSession();
     tabContainer.innerHTML = "";
     state.tabs.forEach(function(tab, i) {
       var element = tab.render(i);
       if (tab === current) {
-        element.addClass("active");
+        element.classList.add("active");
       }
-      tabContainer.append(element);
+      tabContainer.appendChild(element);
     });
     if (Settings.get("user").showNewTabButton === true) {
-      tabContainer.append(inflate.get("templates/newTabButton.html"));
+      tabContainer.appendChild(inflate.get("templates/newTabButton.html"));
     }
     setTimeout(function() {
       //wait for render before triggering the enter animation
-      tabContainer.findAll(".enter").forEach(function(element) { element.removeClass("enter") });
+      tabContainer.querySelectorAll(".enter").forEach(element => element.classList.remove("enter"));
     });
   };
 
@@ -68,7 +68,7 @@ define([
       var option = document.createElement("option");
       option.innerHTML = mode.label;
       option.value = mode.name;
-      syntax.append(option);
+      syntax.appendChild(option);
     });
     if (!state.tabs.length) addRemove.add("");
     renderTabs();

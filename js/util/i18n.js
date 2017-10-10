@@ -9,7 +9,7 @@ define(["util/dom2"], function() {
     },
     //process the page for inline strings, marked with .i18n
     page: function() {
-      document.findAll(".i18n").forEach(function(element) {
+      document.querySelectorAll(".i18n").forEach(function(element) {
         var original = element.innerHTML;
         var translated = chrome.i18n.getMessage(original);
         if (translated) element.innerHTML = translated;

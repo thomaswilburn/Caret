@@ -62,9 +62,9 @@ define([
     this.files = [];
     this.pending = null;
     this.selected = 0;
-    this.element = document.find(".palette");
-    this.input = this.element.find("input");
-    this.resultList = this.element.find(".results");
+    this.element = document.querySelector(".palette");
+    this.input = this.element.querySelector("input");
+    this.resultList = this.element.querySelector(".results");
     this.commandMode = false;
     this.searchAll = false;
     this.needParseScheduled = false;
@@ -75,11 +75,11 @@ define([
       var input = this.input;
       var self = this;
       
-      input.on("blur", function() {
+      input.addEventListener("blur", function() {
         self.deactivate();
       });
       
-      input.on("keydown", function(e) {
+      input.addEventListener("keydown", function(e) {
         //escape
         if (e.keyCode == 27) {
           sessions.restoreLocation();
@@ -110,7 +110,7 @@ define([
         self.selected = 0;
       });
       
-      input.on("keyup", function(e) {
+      input.addEventListener("keyup", function(e) {
         if (!self.needParseScheduled) {
           return;
         }
@@ -409,18 +409,18 @@ define([
       this.commandMode = mode == "command";
       this.input.value = modes[mode] || "";
       this.render();
-      this.element.addClass("active");
+      this.element.classList.add("active");
       this.input.focus();
       //trigger animation
       var self = this;
-      this.element.addClass("enter");
+      this.element.classList.add("enter");
       setTimeout(function() {
-        self.element.removeClass("enter");
+        self.element.classList.remove("enter");
       });
     },
     
     deactivate: function() {
-      this.element.removeClass("active");
+      this.element.classList.remove("active");
       if (this.pending) clearTimeout(this.pending);
     },
     
@@ -442,7 +442,7 @@ define([
     
     render: function() {
       var self = this;
-      this.element.find(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
+      this.element.querySelector(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
       this.resultList.innerHTML = "";
       this.results.slice(0, findResultsLimit).forEach(function(r, i) {
         var label = r.palette || r.label || (r.tab ? r.tab.fileName : "")
@@ -451,7 +451,7 @@ define([
           sublabel: r.sublabel,
           isCurrent: i == self.selected
         });
-        self.resultList.append(element);
+        self.resultList.appendChild(element);
       });
     }
   };

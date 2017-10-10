@@ -95,7 +95,7 @@ define([
   };
   
   //load existing templates from DOM
-  document.findAll("template").forEach(function(template) {
+  document.querySelectorAll("template").forEach(function(template) {
     var id = template.getAttribute("id");
     cache[id] = template.innerHTML;
   });

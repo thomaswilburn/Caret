@@ -192,7 +192,7 @@ define([
 
     insertDirectory: async function(entry) {
       var root;
-      this.element.addClass("loading");
+      this.element.classList.add("loading");
       //ensure we aren't duplicating
       var path = await chromeP.fileSystem.getDisplayPath(entry);
       this.directories.forEach(function(directoryNode){
@@ -203,7 +203,7 @@ define([
 
       //if this is the first, go ahead and start the slideout
       if (!this.directories.length) {
-        this.element.addClass("show");
+        this.element.classList.add("show");
       }
 
       if (!root) {
@@ -236,12 +236,12 @@ define([
     refresh: function() {
       var counter = 0;
       var self = this;
-      this.element.addClass("loading");
+      this.element.classList.add("loading");
       var check = function() {
         counter++;
         if (counter == self.directories.length) {
           //render() should get rid of the class, but let's be sure
-          self.element.removeClass("loading");
+          self.element.classList.remove("loading");
           self.render();
         }
       };
@@ -260,18 +260,18 @@ define([
         editor.resize();
       }, 500);
 
-      var tree = this.element.find(".tree");
+      var tree = this.element.querySelector(".tree");
       this.pathMap = {};
       if (this.directories.length == 0 && !this.loading) {
-        this.element.removeClass("show");
+        this.element.classList.remove("show");
         this.element.style.width = null;
         tree.innerHTML = "";
         return;
       }
       var self = this;
-      this.element.addClass("show");
+      this.element.classList.add("show");
       if (this.loading) {
-        this.element.addClass("loading");
+        this.element.classList.add("loading");
       }
 
       var walker = function(node) {
@@ -286,7 +286,7 @@ define([
           var a = inflate.get("templates/projectDir.html", nodeData);
           li.append(a);
           if (self.expanded[node.entry.fullPath]) {
-            li.addClass("expanded");
+            li.classList.add("expanded");
           }
           var ul = document.createElement("ul");
           node.children.sort(function(a, b) {
@@ -328,7 +328,7 @@ define([
         tree.innerHTML = "";
         tree.appendChild(list);
         if (!self.loading) {
-          self.element.removeClass("loading");
+          self.element.classList.remove("loading");
         }
       });
     },
@@ -340,11 +340,11 @@ define([
 
     bindEvents: function() {
       var self = this;
-      this.element.on("click", function(e) {
+      this.element.addEventListener("click", function(e) {
         e.preventDefault();
         var target = e.target;
-        if (target.hasClass("directory")) {
-          target.parentElement.toggle("expanded");
+        if (target.classList.contains("directory")) {
+          target.parentElement.classList.toggle("expanded");
           var path = target.getAttribute("data-full-path");
           self.expanded[path] = !!!self.expanded[path];
         }
@@ -354,29 +354,29 @@ define([
       // make sure width is not set in element `style`
       this.element.style.width = null;
   
-      var handle = this.element.find('.project-resizer');
+      var handle = this.element.querySelector('.project-resizer');
       
       this.startResize = this.startResize.bind(this);
       this.stopResize = this.stopResize.bind(this);
       this.resize = this.resize.bind(this);
       
-      handle.on('mousedown', this.startResize);
+      handle.addEventListener('mousedown', this.startResize);
       
     },
     
 
     startResize: function (e) {
       // do not resize when 'autohide' is on
-      if (this.element.hasClass('autohide')) return;
+      if (this.element.classList.contains('autohide')) return;
 
       e.preventDefault();
       e.stopPropagation();
 
-      this.element.addClass('resizing');
+      this.element.classList.add('resizing');
       this.resizing = true;
 
-      document.on('mousemove', this.resize);
-      document.on('mouseup', this.stopResize);
+      document.addEventListener('mousemove', this.resize);
+      document.addEventListener('mouseup', this.stopResize);
     },
 
     resize: function (e) {
@@ -394,11 +394,11 @@ define([
       e.preventDefault();
       e.stopPropagation();
 
-      this.element.removeClass('resizing');
+      this.element.classList.remove('resizing');
       this.resizing = false;
 
-      document.off('mousemove', this.resize);
-      document.off('mouseup', this.stopResize);
+      document.removeEventListener('mousemove', this.resize);
+      document.removeEventListener('mouseup', this.stopResize);
 
       //Ace doesn't know about non-window resize events
       //moving the panel will screw up its dimensions
@@ -488,7 +488,7 @@ define([
         Settings.setProject(project.settings);
       }
       this.loading = true;
-      this.element.addClass("loading");
+      this.element.classList.add("loading");
       //restore directory entries that can be restored
       this.directories = [];
       blacklist = blacklistRegExp(project.settings);
@@ -503,7 +503,7 @@ define([
           node.path = path;
           //if this is the first, go ahead and start the slideout
           if (!self.directories.length) {
-            self.element.addClass("show");
+            self.element.classList.add("show");
           }
           self.directories.push(node);
           node.walk(blacklist, c);
@@ -539,7 +539,7 @@ define([
     
   };
 
-  var pm = new ProjectManager(document.find(".project"));
+  var pm = new ProjectManager(document.querySelector(".project"));
   command.on("project:add-dir", pm.addDirectory.bind(pm));
   command.on("project:remove-all", pm.removeAllDirectories.bind(pm));
   command.on("project:generate", pm.generateProject.bind(pm));

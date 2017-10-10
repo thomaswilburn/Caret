@@ -84,7 +84,7 @@ define([
   command.on("init:restart", bindAce);
   
   //we have to listen on keydown, because keypress will get caught by the window manager
-  window.on("keydown", function(e) {
+  window.addEventListener("keydown", function(e) {
     var char = String.fromCharCode(e.keyCode);
     if (e.keyCode in keycodes) {
       char = keycodes[e.keyCode];
@@ -117,7 +117,7 @@ define([
   });
   
   // cancel esc, but only on keyup
-  window.on("keyup", function(e) {
+  window.addEventListener("keyup", function(e) {
     if (e.keyCode == 27) e.preventDefault();
   });
 
