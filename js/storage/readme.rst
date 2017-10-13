@@ -4,10 +4,10 @@ Module descriptions - storage/\*
 file.js
 -------
 
-Wraps the chrome.fileSystem APIs in a friendly File constructor. File
-objects have the following methods or properties, most of which should
-be self explanatory. Most methods return promises, but also accept
-node-style callbacks.
+Wraps the chrome.fileSystem APIs in a friendly File constructor. File objects
+have the following methods or properties, most of which should be self
+explanatory. All methods return promises, and can be used with the ``await``
+keyword.
 
 -  ``open``
 -  ``read``

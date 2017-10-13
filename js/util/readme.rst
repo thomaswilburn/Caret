@@ -7,16 +7,12 @@ aceLoad.js
 Shims Ace's loadScript() async loader so that AMD modules can simply
 declare Ace dependencies the same way they declare AMD dependencies.
 
-dom2.js
--------
+chromePromise.js
+----------------
 
-Instead of using an MVC framework like Backbone or a view binding
-library like Angular, Caret modifies the DOM prototypes to have a more
-jQuery-like UI with this module. Since Chrome apps cannot share a page
-with external scripts, and since we know that the Chrome DOM prototypes
-are stable, this is a safe and easy way to get sensible DOM
-manipulation. Exposes no methods or data, but does modify the Document,
-DocumentFragment, Element, and Window prototypes.
+Wraps the ``chrome.*`` APIs up using Promises for easy interop with ``async``
+and ``await``. Doesn't shim everything, only the async functions currently
+used by Caret.
 
 inflate.js
 ----------

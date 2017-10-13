@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+1.7.2
+-----
+
+This is a minor version bump, but the underlying code changes are significant: with this version, Caret has shifted most of its code from a callback-based API to the new ``async/await`` keywords that shipped in Chrome 55 last year. This cleans up a lot of code patterns that previously required deep function nesting and the helper functions from our "Manos" concurrency module. To complete the transition, a shim for the Chrome APIs is used wherever possible, located in ``util/chromePromise.js``.
+
+This release also removes the "dom2" module that has been used by Caret to patch in jQuery-like functionality since its inception. At this point, the DOM and its accompanying data structures (like the NodeLists returned by ``querySelectorAll``) are rich enough that it's not needed, and it imposed a barrier to new contributors. This change is long overdue.
+
+However, between these two changes, almost anything involving storage and the file system has been rewritten, and bugs may have been introduced despite my best efforts to test. I know many of you use Caret for work or education, and I take that responsibility seriously. Please reach out or file issues on GitHub whenever you notice something broken, and I'll fix them as fast as I can.
+
 1.6.28
 ------
 
