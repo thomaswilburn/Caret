@@ -8,7 +8,7 @@ define([
     */
 
     var external = "";
-    var element = document.find(".status-text");
+    var element = document.querySelector(".status-text");
     var update = function() {
       var selection = editor.getSelection();
       var displayText = "";

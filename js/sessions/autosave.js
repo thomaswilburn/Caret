@@ -30,7 +30,7 @@ define([
   scheduleAutosave();
   command.on("init:restart", scheduleAutosave);
   
-  window.on("blur", function() {
+  window.addEventListener("blur", function() {
     Settings.pull("user").then(function(settings) {
       if (settings.user.autosaveOnBlur) {
         autosave();

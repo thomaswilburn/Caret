@@ -5,13 +5,13 @@ define([
     "ui/dialog",
     "command",
     "storage/settingsProvider",
-    "util/manos",
     "storage/nullfile",
     "util/i18n",
+    "util/chromePromise",
     //these next modules are self-contained
     "sessions/dragdrop",
     "sessions/autosave"
-  ], function(sessions, editor, File, dialog, command, Settings, M, NullFile, i18n) {
+  ], function(sessions, editor, File, dialog, command, Settings, NullFile, i18n, chromeP) {
     
   /*
   FileManager splits out the session code that specifically deals with I/O.
@@ -23,87 +23,73 @@ define([
 
   command.on("session:new-file", content => sessions.addFile(content));
   
-  command.on("session:open-file", function(c) {
+  command.on("session:open-file", async function() {
     //have to call chooseEntry manually to support multiple files
     var args = {
       type: "openWritableFile",
       acceptsMultiple: true
     };
-    chrome.fileSystem.chooseEntry(args, function(files) {
-      if (!files) return;
-      //annoying array function test, since it's not apparently a real array
-      if (!files.slice) {
-        files = [ files ];
-      }
-      files.map(function(entry) {
-        var f = new File(entry);
-        return f.read(function(err, data) {
-          sessions.addFile(data, f);
-        });
-      });
-      Promise.all(files).then(c);
+    var files = await chromeP.fileSystem.chooseEntry(args);
+    if (!files) return;
+    //annoying array function test, since it's not apparently a real array
+    if (!files.slice) {
+      files = [ files ];
+    }
+    files.map(async function(entry) {
+      var f = new File(entry);
+      var data = await f.read();
+      sessions.addFile(data, f);
     });
+
+    await Promise.all(files);
   });
   
-  command.on("session:save-file", function(c) {
-    sessions.getCurrent()
-      .save(c)
-      .then(() => command.fire("session:syntax"));
+  command.on("session:save-file", async function() {
+    await sessions.getCurrent().save()
+    command.fire("session:syntax");
   });
   
-  command.on("session:save-all", function(c) {
+  command.on("session:save-all", async function() {
     var tabs = sessions.getAllTabs();
-    
-    // Only save tabs with modifications and that can be readily saved
-    M.serial(tabs, function(tab, next) {
-      if (tab.modified && tab.file) {
-        // Save this tab, then proceed to next.
-        tab.save(false).then(next);
-      } else {
-        // No save required or possible; proceed to next tab
-        next();
-      }
-    }, function() {
-      // Upon completion, update syntax and perform callback.
+
+    for (var i = 0; i < tabs.length; i++) {
+      var tab = tabs[i];
+      if (tab.modified && tab.file) await tab.save(false);
       command.fire("session:syntax");
-      if (c) c();
-    });
-    
+    }
+
   });
   
-  command.on("session:save-file-as", function(c) {
+  command.on("session:save-file-as", async function() {
     var tab = sessions.getCurrent();
-    tab.save(true).then(function() {
-      var mode = tab.detectSyntax();
-      sessions.renderTabs();
-      command.fire("session:syntax", mode);
-      if (c) c();
-    });
+    await tab.save(true);
+    var mode = tab.detectSyntax();
+    sessions.renderTabs();
+    await command.fire("session:syntax", mode);
   });
   
-  command.on("session:revert-file", function(c) {
+  command.on("session:revert-file", async function() {
     var tab = sessions.getCurrent();
     if (!tab.file) return;
-    tab.file.read(function(err, data) {
-      tab.setValue(data);
-      tab.modified = false;
-      tab.modifiedAt = new Date();
-      sessions.renderTabs();
-      if (c) c();
-    });
+    var data = await tab.file.read();
+    tab.setValue(data);
+    tab.modified = false;
+    tab.modifiedAt = new Date();
+    sessions.renderTabs();
   });
 
   //we now autoretain starting after load, every n seconds
   var retainInterval = 5
-  var retainLoop = function(c) {
+  var retainLoop = async function(c) {
     var tabs = sessions.getAllTabs();
     var keep = [];
     tabs.forEach(function(tab, i) {
       if (!tab.file || tab.file.virtual) return;
       keep[i] = tab.file.retain();
     });
-    keep = keep.filter(function(m) { return m });
-    chrome.storage.local.set({ retained: keep }, () => setTimeout(retainLoop, retainInterval * 1000));
+    keep = keep.filter(m => m);
+    await chromeP.storage.local.set({ retained: keep });
+    setTimeout(retainLoop, retainInterval * 1000);
   };
 
   command.on("session:check-file", function() {
@@ -133,149 +119,123 @@ define([
     });
   });
   
-  command.on("session:open-settings-file", function(name, c) {
-    Settings.load(name, function() {
-      var data = Settings.getAsString(name);
-      var file = Settings.getAsFile(name);
-      sessions.addFile(data, file);
-      if (c) c();
-    });
+  command.on("session:open-settings-file", async function(name) {
+    await Settings.load(name);
+    var data = Settings.getAsString(name);
+    var file = Settings.getAsFile(name);
+    sessions.addFile(data, file);
   });
   
   //defaults don't get loaded as files, just as content
-  command.on("session:open-settings-defaults", function(name, c) {
-    Settings.load(name, function() {
-      var text = Settings.getAsString(name, true);
-      var tab = sessions.addFile(text);
-      tab.syntaxMode = "javascript";
-      tab.detectSyntax();
-      tab.fileName = name + ".json";
-      tab.file = new NullFile(text);
-      if (c) c();
-    });
+  command.on("session:open-settings-defaults", async function(name) {
+    await Settings.load(name);
+    var text = Settings.getAsString(name, true);
+    var tab = sessions.addFile(text);
+    tab.syntaxMode = "javascript";
+    tab.detectSyntax();
+    tab.fileName = name + ".json";
+    tab.file = new NullFile(text);
   });
   
-  command.on("session:insert-from-file", function(c) {
+  command.on("session:insert-from-file", async function() {
     var f = new File();
-    f.open(function() {
-      f.read(function(err, text) {
-        editor.execCommand("insertstring", text);
-      });
-    });
+    await f.open();
+    var text = f.read();
+    editor.execCommand("insertstring", text);
   });
   
   var openFromLaunchData = function() {
     if (window.launchData) {
-      window.launchData.forEach(function(file) {
+      window.launchData.forEach(async function(file) {
         var f = new File(file.entry);
-        f.read(function(err, contents) {
-          sessions.addFile(contents, f);
-        });
+        var contents = await f.read();
+        sessions.addFile(contents, f);
       });
     }
   };
   
-  var openFromRetained = function(done) {
-    chrome.storage.local.get("retained", function(data) {
-      var failures = [];
-      if (!data.retained || !data.retained.length) return done();
-      
-      //convert raw retained IDs into typed retention objects
-      var retained = data.retained.map(function(item) {
-        if (typeof item == "string") {
-          return {
+  var openFromRetained = async function() {
+    var data = await chromeP.storage.local.get("retained");
+    var failures = [];
+    var restored = [];
+    if (!data.retained || !data.retained.length) return;
+    
+    //convert raw retained IDs into typed retention objects
+    var retained = data.retained.map(function(item) {
+      if (typeof item == "string") {
+        return {
+          type: "file",
+          id: item
+        };
+      }
+      return item;
+    });
+    
+    //constructors for restorable types
+    var restoreTypes = {
+      file: File,
+      settings: null, //not yet, will be regular SyncFile
+      buffer: null //not yet, will be HTML5 filesystem for scratch files
+    }
+    
+    //try to restore items in order
+    for (var i = 0; i < retained.length; i++) {
+      var item = retained[i];
+      var Type = restoreTypes[item.type] || File;
+      var file = new Type();
+      try {
+        await file.restore(item.id);
+        var data = await file.read();
+        restored[i] = { value: data, file }
+      } catch(err) {
+        console.log("Fail restore or read", err, file);
+        failures.push(item);
+      }
+    }
+    restored = restored.filter(d => d);
+    for (var i = 0; i < restored.length; i++) {
+      var tab = restored[i];
+      sessions.addFile(tab.value, tab.file);
+    }
+    if (!failures.length) {
+      return;
+    }
+
+    var local = await chromeP.storage.local.get("retained");
+    if (!local.retained) return;
+    await chromeP.storage.local.set({
+      retained: local.retained.filter(function(d) {
+        // convert old retained IDs to new-style objects
+        if (typeof d == "string") {
+          d = {
             type: "file",
-            id: item
+            id: d
           };
         }
-        return item;
-      });
-      
-      //constructors for restorable types
-      var restoreTypes = {
-        file: File,
-        settings: null, //not yet, will be regular SyncFile
-        buffer: null //not yet, will be HTML5 filesystem for scratch files
-      }
-      
-      //try to restore items in order
-      M.map(
-        retained,
-        function(item, i, c) {
-          var Type = restoreTypes[item.type] || File;
-          var file = new Type();
-          file.restore(item.id, function(err) {
-            if (err) {
-              console.log("Fail restore", file);
-              failures.push(item)
-              return c(null);
-            }
-            file.read(function(err, data) {
-              if (err) {
-                console.log("Failed reading", file)
-                failures.push(item);
-                return c(null);
-              }
-              c({
-                value: data,
-                file: file
-              });
-            });
-          });
-        },
-        function(restored) {
-          restored = restored.filter(function(d) { return d });
-          for (var i = 0; i < restored.length; i++) {
-            var tab = restored[i];
-            sessions.addFile(tab.value, tab.file);
-          }
-          if (!failures.length) {
-            if (done) done();
-            return;
-          }
-          console.log("Removing failed restore IDs", failures);
-          chrome.storage.local.get("retained", function(data) {
-            if (!data.retained) return;
-            chrome.storage.local.set({
-              retained: data.retained.filter(function(d) {
-                if (typeof d == "string") {
-                  d = {
-                    type: "file",
-                    id: d
-                  };
-                }
-                return !failures.some(function(fail) {
-                  return fail.type == d.type && fail.id == d.id;
-                });
-              })
-            });
-          });
-          if (done) done();
-        }
-      );
+        // remove failures from the set
+        return !failures.some(fail => fail.type == d.type && fail.id == d.id);
+      })
     });
   }
   
   command.on("session:open-launch", openFromLaunchData);
   
-  var init = function(complete) {
-    Settings.pull("user").then(function(data) {
-      if (data.user.disableTabRestore) {
-        openFromLaunchData();
-        complete("fileManager");
-      } else {
-        openFromRetained(function() {
-          openFromLaunchData();
-          //start the retention process
-          retainLoop();
-          complete("fileManager");
-        });
-      }
-    });
+  var init = async function() {
+    var data = await Settings.pull("user");
+    if (data.user.disableTabRestore) {
+      openFromLaunchData();
+      return "fileManager";
+    } else {
+      await openFromRetained();
+      openFromLaunchData();
+      //start the retention process
+      retainLoop();
+      return "fileManager";
+    }
   };
   
   command.on("init:startup", init);
   
-  window.on("focus", command.fire.bind(null, "session:check-file"));
+  window.addEventListener("focus", command.fire.bind(null, "session:check-file"));
 
 });

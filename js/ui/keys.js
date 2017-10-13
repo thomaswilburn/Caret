@@ -2,10 +2,9 @@ define([
     "settings!keys,user",
     "command",
     "editor",
-    "util/manos",
-    "util/dom2",
+    "util/chromePromise",
     "util/aceLoad!js/ace/keybinding-vim.js"
-  ], function(Settings, command, editor, M) {
+  ], function(Settings, command, editor, chromeP) {
   
   var keycodes = {
     9: "Tab",
@@ -52,39 +51,38 @@ define([
   };
   
   //need to auto-bind Ace keys, remove Ace conflicts
-  var bindAce = function() {
-    chrome.runtime.getPlatformInfo(function(platform) {
-      var os = platform.os == "mac" ? "mac" : "win";
-      var handler = new AceCommandManager(os, defaultAceCommands);
-      var bindings = normalizeKeys(Settings.get("keys"));
-      var ckb = handler.commandKeyBinding;
-      for (var k in bindings) {
-        //unbind keys that we take over from Ace
-        if (ckb[k]) {
-          delete ckb[k];
-        }
-        var action = bindings[k];
-        if (!action) continue;
-        //if a key is defined with an Ace command, bind it via their handler
-        if (action.ace || action.command == "ace:command") {
-          handler.bindKey(k, action.ace || action.argument);
-        }
+  var bindAce = async function() {
+    var platform = await chromeP.runtime.getPlatformInfo();
+    var os = platform.os == "mac" ? "mac" : "win";
+    var handler = new AceCommandManager(os, defaultAceCommands);
+    var bindings = normalizeKeys(Settings.get("keys"));
+    var ckb = handler.commandKeyBinding;
+    for (var k in bindings) {
+      //unbind keys that we take over from Ace
+      if (ckb[k]) {
+        delete ckb[k];
       }
-      handler.commandKeyBinding = ckb;
-      //remove all existing bindings
-      while(editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
-      //add our new bindings
-      editor.keyBinding.setDefaultHandler(handler);
-      if (Settings.get("user").emulateVim) {
-        editor.setKeyboardHandler(vimHandler);
+      var action = bindings[k];
+      if (!action) continue;
+      //if a key is defined with an Ace command, bind it via their handler
+      if (action.ace || action.command == "ace:command") {
+        handler.bindKey(k, action.ace || action.argument);
       }
-    });
+    }
+    handler.commandKeyBinding = ckb;
+    //remove all existing bindings
+    while(editor.keyBinding.removeKeyboardHandler(editor.getKeyboardHandler()));
+    //add our new bindings
+    editor.keyBinding.setDefaultHandler(handler);
+    if (Settings.get("user").emulateVim) {
+      editor.setKeyboardHandler(vimHandler);
+    }
   };
   command.on("init:startup", bindAce);
   command.on("init:restart", bindAce);
   
   //we have to listen on keydown, because keypress will get caught by the window manager
-  window.on("keydown", function(e) {
+  window.addEventListener("keydown", function(e) {
     var char = String.fromCharCode(e.keyCode);
     if (e.keyCode in keycodes) {
       char = keycodes[e.keyCode];
@@ -117,7 +115,7 @@ define([
   });
   
   // cancel esc, but only on keyup
-  window.on("keyup", function(e) {
+  window.addEventListener("keyup", function(e) {
     if (e.keyCode == 27) e.preventDefault();
   });
 

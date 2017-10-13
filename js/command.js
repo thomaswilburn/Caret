@@ -1,6 +1,5 @@
 define([
-    "util/text!config/commands.json",
-    "util/dom2"
+    "util/text!config/commands.json"
   ], function(list) {
     
     try {
@@ -27,20 +26,15 @@ define([
   var broadcast = [];
   
   //commands can pass a callback, although most don't respond that way
-  var fire = function(command, argument, callback) {
+  var fire = async function(command, argument, callback = function() {}) {
     if (!commands[command]) return broadcast.forEach(f => f.apply(null, arguments));
-    var args = [].slice.call(arguments, 1);
-    //technically, a function as `argument` is a callback...
-    if (typeof argument == "function") {
-      callback = argument;
-    }
     var registry = commands[command].slice();
-    registry.forEach(function(entry) {
-      var result = entry.callback.apply(null, args);
+    registry.forEach(async function(entry) {
+      var result = await entry.callback(argument);
       //immediately call back if sync-style return value was provided
       if (typeof result !== "undefined" || entry.sync) {
         //console.info("Immediate return from " + name, result);
-        if (callback) callback.call(null, result);
+        callback.call(null, result);
       }
     });
   };
@@ -60,7 +54,7 @@ define([
   };
 
   //delegate for all elements that have a command attribute
-  document.body.on("click", function(e) {
+  document.body.addEventListener("click", function(e) {
     //cancel on inputs, selectboxes
     if (["input", "select"].indexOf(e.target.tagName.toLowerCase()) >= 0) return;
     if (e.button != 0) return;
@@ -73,7 +67,7 @@ define([
     }
   });
   
-  document.body.on("change", function(e) {
+  document.body.addEventListener("change", function(e) {
     if (e.target.hasAttribute("command")) {
       var command = e.target.getAttribute("command");
       var arg = e.target.value;
@@ -82,7 +76,7 @@ define([
   });
   
   //handle command events directly dispatched via DOM
-  document.body.on("caret-command", function(e) {
+  document.body.addEventListener("caret-command", function(e) {
     if (!e.detail || !e.detail.command) return;
     fire(e.detail.command, e.detail.argument);
   });

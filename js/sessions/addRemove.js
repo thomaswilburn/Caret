@@ -35,7 +35,7 @@ define([
   };
 
   //removeTab looks long, but it handles the async save/don't/cancel flow
-  var removeTab = function(index, c) {
+  var removeTab = function(index, c = function() {}) {
     if (!index) {
       index = state.tabs.indexOf(editor.getSession());
     }
@@ -58,7 +58,7 @@ define([
       } else {
         switching.raise(state.tabs[next]);
       }
-      if (c) c();
+      c();
     };
 
     if (tab.modified) {

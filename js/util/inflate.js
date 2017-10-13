@@ -1,6 +1,5 @@
 define([
-    "util/i18n",
-    "util/dom2"
+    "util/i18n"
   ], function(i18n) {
     
   /*
@@ -14,7 +13,7 @@ define([
   var cache = {};
   var fragment = document.createDocumentFragment();
   var fragBody = document.createElement("body");
-  fragment.append(fragBody);
+  fragment.appendChild(fragBody);
   
   var parse = function(html) {
     fragBody.innerHTML = html;
@@ -95,7 +94,7 @@ define([
   };
   
   //load existing templates from DOM
-  document.findAll("template").forEach(function(template) {
+  document.querySelectorAll("template").forEach(function(template) {
     var id = template.getAttribute("id");
     cache[id] = template.innerHTML;
   });

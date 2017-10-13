@@ -8,6 +8,7 @@ require([
     "sessions",
     "util/manos",
     "util/i18n",
+    "util/chromePromise",
     "ui/projectManager",
     "ui/keys",
     "fileManager",
@@ -18,25 +19,24 @@ require([
     "api",
     "sequences",
     "storage/syncfile",
-  ], function(command, editor, Settings, dialog, sessions, M, i18n) {
+  ], function(command, editor, Settings, dialog, sessions, M, i18n, chromeP) {
 
   //translate inline strings
   i18n.page();
 
   var frame = chrome.app.window.current();
 
-  var setTheme = function() {
-    Settings.pull("user").then(function(data) {
-      var themes = {
-        "dark": "css/caret-dark.css",
-        "twilight": "css/caret-twilight.css",
-        "light": "css/caret.css"
-      };
-      var theme = data.user.uiTheme || "light";
-      var url = themes[theme] || themes.dark;
-      document.find("#theme").setAttribute("href", url);
-    });
-  }
+  var setTheme = async function() {
+    var data = await Settings.pull("user");
+    var themes = {
+      "dark": "css/caret-dark.css",
+      "twilight": "css/caret-twilight.css",
+      "light": "css/caret.css"
+    };
+    var theme = data.user.uiTheme || "light";
+    var url = themes[theme] || themes.dark;
+    document.querySelector("#theme").setAttribute("href", url);
+  };
   setTheme();
 
   //these are modules that must be loaded before init:complete
@@ -64,32 +64,32 @@ require([
   //code to enable update checking
   var updateID = "caret:update";
 
-  var checkUpdates = function(isManual) {
-    chrome.runtime.requestUpdateCheck(function(status, details) {
-      if (status == "update_available") {
-        chrome.runtime.onUpdateAvailable.addListener(function() {
-          chrome.notifications.clear(updateID, function() {
-            chrome.notifications.create(updateID, {
-              type: "basic",
-              iconUrl: "icon-128.png",
-              title: i18n.get("notificationUpdateAvailable"),
-              message: i18n.get("notificationUpdateDetail", details.version),
-              buttons: [
-                { title: i18n.get("notificationUpdateOK") },
-                { title: i18n.get("notificationUpdateWait") }
-              ]
-            }, function(id) { updateID = id });
-          });
-        });
-      } else {
-        if (isManual) chrome.notifications.create(updateID, {
+  var checkUpdates = async function(isManual) {
+    var [status, details] = await chromeP.runtime.requestUpdateCheck();
+    if (status == "update_available") {
+      chrome.runtime.onUpdateAvailable.addListener(async function() {
+      await chromeP.notifications.clear(updateID);
+      updateID = await chromeP.notifications.create(updateID, {
           type: "basic",
           iconUrl: "icon-128.png",
-          title: i18n.get("notificationNoUpdateTitle"),
-          message: i18n.get("notificationNoUpdateDetail")
-        }, function(id) { updateID = id });
+          title: i18n.get("notificationUpdateAvailable"),
+          message: i18n.get("notificationUpdateDetail", details.version),
+          buttons: [
+            { title: i18n.get("notificationUpdateOK") },
+            { title: i18n.get("notificationUpdateWait") }
+          ]
+        });
+      });
+    } else {
+      if (isManual) {
+        updateID = await chromeP.notifications.create(updateID, {
+        type: "basic",
+        iconUrl: "icon-128.png",
+        title: i18n.get("notificationNoUpdateTitle"),
+        message: i18n.get("notificationNoUpdateDetail")
+        });
       }
-    });
+    }
   };
 
   Settings.pull("user").then(function(cfg) {
@@ -159,10 +159,10 @@ require([
 
   //handle immersive fullscreen
   var onFullscreen = function() {
-    document.body.addClass("fullscreened");
+    document.body.classList.add("fullscreened");
     Settings.pull("user").then(function(data) {
       if (data.user.immersiveFullscreen) {
-        document.body.addClass("immersive");
+        document.body.classList.add("immersive");
         editor.resize();
       }
     });
@@ -174,8 +174,8 @@ require([
   }
 
   frame.onRestored.addListener(function() {
-    document.body.removeClass("fullscreen");
-    document.body.removeClass("immersive");
+    document.body.classList.remove("fullscreen");
+    document.body.classList.remove("immersive");
   });
 
   //It's nice to be able to launch the debugger from a command stroke
@@ -189,7 +189,7 @@ require([
 
   //kill middle clicks if not handled
 
-  document.body.on("click", function(e) {
+  document.body.addEventListener("click", function(e) {
     if (e.button == 1) {
       e.preventDefault();
     }

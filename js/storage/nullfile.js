@@ -8,29 +8,26 @@ define(function() {
   };
   NullFile.prototype = {
     virtual: true,
-    open: function(mode, c) {
-      if (typeof mode == "function") {
-        c = mode;
-      }
-      c(null, this);
+    open: function(mode) {
+      return Promise.resolve(this);
     },
     read: function(c) {
-      c(null, this.content || "");
+      return Promise.resolve(this.content || "");
     },
-    write: function(data, c) {
-      if (c) c();
+    write: async function(data) {
+      return Promise.resolve();
     },
-    stat: function(c) {
-      c("Can't stat a null file");
+    stat: function() {
+      return Promise.reject("Can't stat a null file");
     },
     retain: function() {
-      return null;
+      return Promise.resolve();
     },
-    restore: function(id, c) {
-      c("Can't restore a null file");
+    restore: function(id) {
+      return Promise.reject("Can't restore a null file");
     },
     getPath: function(c) {
-      c(null, "/dev/null");
+      return Promise.resolve("/dev/null");
     }
   };
   

@@ -1,13 +1,12 @@
 define([
   "command",
-  "editor",
-  "util/dom2"
+  "editor"
   ], function(command, editor) {
   
-  var cli = document.find(".command-line");
-  var input = document.find(".command-line input");
+  var cli = document.querySelector(".command-line");
+  var input = document.querySelector(".command-line input");
   
-  input.on("keyup", function(e) {
+  input.addEventListener("keyup", function(e) {
     switch (e.keyCode) {
       case 13:
         //on enter, execute command
@@ -28,19 +27,19 @@ define([
         
       case 27:
         //on escape, also hide the prompt
-        cli.removeClass("show");
+        cli.classList.remove("show");
         editor.focus();
     }
   });
   
   command.on("app:show-prompt", function() {
     input.value = "";
-    cli.addClass("show");
+    cli.classList.add("show");
     input.focus();
   });
   
   command.on("app:hide-prompt", function() {
-    cli.removeClass("show");
+    cli.classList.remove("show");
     editor.focus();
   })
     

@@ -3,14 +3,13 @@ define([
     "command",
     "sessions",
     "storage/file",
-    "util/manos",
     "ui/dialog",
     "ui/contextMenus",
     "editor",
     "util/template!templates/projectDir.html,templates/projectFile.html",
     "util/i18n",
-    "util/dom2"
-  ], function(Settings, command, sessions, File, M, dialog, context, editor, inflate, i18n) {
+    "util/chromePromise"
+  ], function(Settings, command, sessions, File, dialog, context, editor, inflate, i18n, chromeP) {
 
   /*
   It's tempting to store projects in local storage, similar to the way that we
@@ -50,8 +49,6 @@ define([
     setTimeout(process);
   };
 
-  var getPath = (entry, c) => chrome.fileSystem.getDisplayPath(entry, c);
-
   //FSNodes are used to track filesystem state inside projects
   //We don't use the typical File object, because we're not really reading them
   //Nodes form a tree starting at the root directory
@@ -67,7 +64,7 @@ define([
     tab: null,
     id: null,
     label: null,
-    setEntry: function(entry, c) {
+    setEntry: function(entry) {
       this.entry = entry;
       this.label = entry.name;
       this.isDirectory = entry.isDirectory;
@@ -140,38 +137,7 @@ define([
     }
 
     this.loading = false;
-    var self = this;
-    chrome.storage.local.get("retainedProject", function(data) {
-      if (data.retainedProject) {
-        var retained = data.retainedProject;
-        if (typeof retained == "string") {
-          retained = {
-            id: retained
-          };
-        }
-        self.loading = true;
-        self.render();
-        var file = new File();
-        var onFail = function() {
-          self.loading = false;
-          self.render();
-          chrome.storage.local.remove("retainedProject");
-        }
-        file.onWrite = self.watchProjectFile.bind(self);
-        file.restore(retained.id, function(err, f) {
-          if (err) {
-            return onFail();
-          }
-          file.read(function(err, data) {
-            if (err) {
-              return onFail();
-            }
-            self.projectFile = file;
-            self.loadProject(JSON.parse(data));
-          });
-        });
-      }
-    });
+    this.initRetained();
   };
 
   var blacklistRegExp = function(config) {
@@ -187,52 +153,76 @@ define([
   ProjectManager.prototype = {
     element: null,
 
-    addDirectory: function(c) {
-      var self = this;
-      chrome.fileSystem.chooseEntry({ type: "openDirectory" }, function(d) {
-        if (!d) return;
-        self.insertDirectory(d);
-      });
+    initRetained: async function() {
+      var data = await chromeP.storage.local.get("retainedProject");
+      if (data.retainedProject) {
+        var retained = data.retainedProject;
+        if (typeof retained == "string") {
+          retained = {
+            id: retained
+          };
+        }
+        this.loading = true;
+        this.render();
+        var file = new File();
+        var onFail = function() {
+          this.loading = false;
+          this.render();
+          chrome.storage.local.remove("retainedProject");
+        }
+        file.onWrite = this.watchProjectFile.bind(this);
+        try {
+          var f = await file.restore(retained.id);
+          var data = await file.read();  
+          this.projectFile = file;
+          this.loadProject(JSON.parse(data));
+        } catch(err) {
+          onFail(err);
+        }
+      }
     },
 
-    insertDirectory: function(entry) {
+    addDirectory: async function() {
+      var d = await chromeP.fileSystem.chooseEntry({ type: "openDirectory" });
+      if (!d) return;
+      this.insertDirectory(d);
+    },
+
+    insertDirectory: async function(entry) {
       var root;
-      this.element.addClass("loading");
+      this.element.classList.add("loading");
       //ensure we aren't duplicating
-      chrome.fileSystem.getDisplayPath(entry, path => {
-        this.directories.forEach(function(directoryNode){
-          if (directoryNode.path == path) {
-            root = directoryNode;
-          }
-        });
-
-        //if this is the first, go ahead and start the slideout
-        if (!this.directories.length) {
-          this.element.addClass("show");
+      var path = await chromeP.fileSystem.getDisplayPath(entry);
+      this.directories.forEach(function(directoryNode){
+        if (directoryNode.path == path) {
+          root = directoryNode;
         }
+      });
 
-        if (!root) {
-          root = new FSNode(entry);
-          root.path = path;
-          this.directories.push(root);
-        }
+      //if this is the first, go ahead and start the slideout
+      if (!this.directories.length) {
+        this.element.classList.add("show");
+      }
 
-        //if the directory was there, we still want
-        //to refresh it, in response to the users
-        //interaction
-        var self = this;
-        tick(function() {
-          root.walk(blacklistRegExp(), function() {
-            self.render()
-          });
+      if (!root) {
+        root = new FSNode(entry);
+        root.path = path;
+        this.directories.push(root);
+      }
+
+      //if the directory was there, we still want
+      //to refresh it, in response to the users
+      //interaction
+      var self = this;
+      tick(function() {
+        root.walk(blacklistRegExp(), function() {
+          self.render()
         });
       });
     },
 
     removeDirectory: function(args) {
-      this.directories = this.directories.filter(function(node) {
-        return node.id != args.id;
-      });
+      this.directories = this.directories.filter(node => node.id != args.id);
       this.render();
     },
 
@@ -244,12 +234,12 @@ define([
     refresh: function() {
       var counter = 0;
       var self = this;
-      this.element.addClass("loading");
+      this.element.classList.add("loading");
       var check = function() {
         counter++;
         if (counter == self.directories.length) {
           //render() should get rid of the class, but let's be sure
-          self.element.removeClass("loading");
+          self.element.classList.remove("loading");
           self.render();
         }
       };
@@ -268,18 +258,18 @@ define([
         editor.resize();
       }, 500);
 
-      var tree = this.element.find(".tree");
+      var tree = this.element.querySelector(".tree");
       this.pathMap = {};
       if (this.directories.length == 0 && !this.loading) {
-        this.element.removeClass("show");
+        this.element.classList.remove("show");
         this.element.style.width = null;
         tree.innerHTML = "";
         return;
       }
       var self = this;
-      this.element.addClass("show");
+      this.element.classList.add("show");
       if (this.loading) {
-        this.element.addClass("loading");
+        this.element.classList.add("loading");
       }
 
       var walker = function(node) {
@@ -292,9 +282,9 @@ define([
             contextMenu: context.makeURL(isRoot ? "root/directory" : "directory", node.id)
           };
           var a = inflate.get("templates/projectDir.html", nodeData);
-          li.append(a);
+          li.appendChild(a);
           if (self.expanded[node.entry.fullPath]) {
-            li.addClass("expanded");
+            li.classList.add("expanded");
           }
           var ul = document.createElement("ul");
           node.children.sort(function(a, b) {
@@ -307,7 +297,7 @@ define([
             return 0;
           });
           for (var i = 0; i < node.children.length; i++) {
-            ul.append(walker(node.children[i]));
+            ul.appendChild(walker(node.children[i]));
           }
           li.append(ul);
         } else {
@@ -317,7 +307,7 @@ define([
             label: node.label
           };
           var a = inflate.get("templates/projectFile.html", nodeData)
-          li.append(a);
+          li.appendChild(a);
           self.pathMap[node.entry.fullPath] = node;
         }
         return li;
@@ -336,7 +326,7 @@ define([
         tree.innerHTML = "";
         tree.appendChild(list);
         if (!self.loading) {
-          self.element.removeClass("loading");
+          self.element.classList.remove("loading");
         }
       });
     },
@@ -348,11 +338,11 @@ define([
 
     bindEvents: function() {
       var self = this;
-      this.element.on("click", function(e) {
+      this.element.addEventListener("click", function(e) {
         e.preventDefault();
         var target = e.target;
-        if (target.hasClass("directory")) {
-          target.parentElement.toggle("expanded");
+        if (target.classList.contains("directory")) {
+          target.parentElement.classList.toggle("expanded");
           var path = target.getAttribute("data-full-path");
           self.expanded[path] = !!!self.expanded[path];
         }
@@ -362,29 +352,29 @@ define([
       // make sure width is not set in element `style`
       this.element.style.width = null;
   
-      var handle = this.element.find('.project-resizer');
+      var handle = this.element.querySelector('.project-resizer');
       
       this.startResize = this.startResize.bind(this);
       this.stopResize = this.stopResize.bind(this);
       this.resize = this.resize.bind(this);
       
-      handle.on('mousedown', this.startResize);
+      handle.addEventListener('mousedown', this.startResize);
       
     },
     
 
     startResize: function (e) {
       // do not resize when 'autohide' is on
-      if (this.element.hasClass('autohide')) return;
+      if (this.element.classList.contains('autohide')) return;
 
       e.preventDefault();
       e.stopPropagation();
 
-      this.element.addClass('resizing');
+      this.element.classList.add('resizing');
       this.resizing = true;
 
-      document.on('mousemove', this.resize);
-      document.on('mouseup', this.stopResize);
+      document.addEventListener('mousemove', this.resize);
+      document.addEventListener('mouseup', this.stopResize);
     },
 
     resize: function (e) {
@@ -402,11 +392,11 @@ define([
       e.preventDefault();
       e.stopPropagation();
 
-      this.element.removeClass('resizing');
+      this.element.classList.remove('resizing');
       this.resizing = false;
 
-      document.off('mousemove', this.resize);
-      document.off('mouseup', this.stopResize);
+      document.removeEventListener('mousemove', this.resize);
+      document.removeEventListener('mouseup', this.stopResize);
 
       //Ace doesn't know about non-window resize events
       //moving the panel will screw up its dimensions
@@ -415,51 +405,32 @@ define([
       }, 100);
     },
 
-    openFile: function(path, c) {
+    openFile: async function(path) {
       var self = this;
       var found = false;
       var node = this.pathMap[path];
       if (!node) return;
       //walk through existing tabs to see if it's already open
       var tabs = sessions.getAllTabs();
-      chrome.fileSystem.getDisplayPath(node.entry, function(path) {
-        //look through the tabs for matching display paths
-        M.map(
-          tabs,
-          function(tab, i, c) {
-            if (!tab.file || tab.file.virtual) {
-              return c(false);
-            }
-            tab.file.getPath(function(err, p) {
-              if (p == path) {
-                sessions.setCurrent(tab);
-                found = true;
-              }
-              //we don't actually use the result
-              c();
-            });
-          },
-          //if no match found, create a tab
-          function() {
-            if (found) {
-              if (c) {
-                c();
-              }
-              return;
-            }
-            var file = new File(node.entry);
-            file.read(function(err, data) {
-              sessions.addFile(data, file);
-              if (c) {
-                c();
-              }
-            });
-          }
-        );
-      });
+      var path = await chromeP.fileSystem.getDisplayPath(node.entry);
+      //look through the tabs for matching display paths
+
+      for (var i = 0; i < tabs.length; i++) {
+        var tab = tabs[i];
+        if (!tab.file || tab.file.virtual) {
+          continue;
+        }
+        var p = await tab.file.getPath();
+        if (p == path) {
+          return sessions.setCurrent(tab);
+        }
+      }
+      var file = new File(node.entry);
+      var data = await file.read();
+      sessions.addFile(data, file);
     },
 
-    generateProject: function() {
+    generateProject: async function() {
       var project = this.project || {};
       //everything but "folders" is left as-is
       //run through all directories, retain them, and add to the structure
@@ -476,40 +447,33 @@ define([
       } else {
         var file = new File();
         var watch = this.watchProjectFile.bind(this);
-        var self = this;
-        file.open("save", function() {
-          file.write(json);
-          var id = file.retain();
-          chrome.storage.local.set({retainedProject: id});
-          file.onWrite = watch;
-          self.projectFile = file;
-        });
+        await file.open("save");
+        await file.write(json);
+        var id = file.retain();
+        chrome.storage.local.set({retainedProject: id});
+        file.onWrite = watch;
+        this.projectFile = file;
       }
       return json;
     },
 
-    openProjectFile: function() {
+    openProjectFile: async function() {
       var file = new File();
-      var self = this;
-      file.open(function() {
-        file.read(function(err, data) {
-          self.loadProject(data);
-          var retained = file.retain();
-          chrome.storage.local.set({retainedProject: retained});
-          self.projectFile = file;
-          file.onWrite = self.watchProjectFile.bind(self);
-        });
-      });
+      await file.open();
+      var data = await file.read();
+      this.loadProject(data);
+      var retained = file.retain();
+      chrome.storage.local.set({retainedProject: retained});
+      this.projectFile = file;
+      file.onWrite = this.watchProjectFile.bind(this);
     },
 
-    watchProjectFile: function() {
-      var self = this;
-      this.projectFile.read(function(err, data) {
-        self.loadProject(data);
-      });
+    watchProjectFile: async function() {
+      var data = await this.projectFile.read();
+      this.loadProject(data);
     },
 
-    loadProject: function(project) {
+    loadProject: async function(project) {
       var self = this;
       //project is the JSON from a project file
       if (typeof project == "string") {
@@ -521,43 +485,35 @@ define([
         Settings.setProject(project.settings);
       }
       this.loading = true;
-      this.element.addClass("loading");
+      this.element.classList.add("loading");
       //restore directory entries that can be restored
       this.directories = [];
       blacklist = blacklistRegExp(project.settings);
-      M.map(
-        project.folders,
-        function(folder, index, c) {
-          chrome.fileSystem.restoreEntry(folder.retained, function(entry) {
-            //remember, you can only restore project directories you'd previously opened
-            if (!entry) return c();
-            chrome.fileSystem.getDisplayPath(entry, function(path) {
-              var node = new FSNode(entry);
-              node.path = path;
-              //if this is the first, go ahead and start the slideout
-              if (!self.directories.length) {
-                self.element.addClass("show");
-              }
-              self.directories.push(node);
-              node.walk(blacklist, c);
-            });
-          });
-        },
-        function() {
-          self.loading = false;
-          self.render();
+      var completed = project.folders.map(async function(folder) {
+        var entry = await chromeP.fileSystem.restoreEntry(folder.retained);
+        //remember, you can only restore project directories you'd previously opened
+        if (!entry) return c();
+        var path = await chromeP.fileSystem.getDisplayPath(entry);
+        var node = new FSNode(entry);
+        node.path = path;
+        //if this is the first, go ahead and start the slideout
+        if (!self.directories.length) {
+          self.element.classList.add("show");
         }
-      );
+        self.directories.push(node);
+        return new Promise(ok => node.walk(blacklist, ok));
+      });
+      await Promise.all(completed);
+      self.loading = false;
+      self.render();
     },
 
-    editProjectFile: function() {
+    editProjectFile: async function() {
       if (!this.projectFile) {
         return dialog(i18n.get("projectNoCurrentProject"));
       }
-      var self = this;
-      this.projectFile.read(function(err, data) {
-        sessions.addFile(data, self.projectFile);
-      });
+      var data = await this.projectFile.read();
+      sessions.addFile(data, this.projectFile);
     },
 
     clearProject: function(keepRetained) {
@@ -576,7 +532,7 @@ define([
     
   };
 
-  var pm = new ProjectManager(document.find(".project"));
+  var pm = new ProjectManager(document.querySelector(".project"));
   command.on("project:add-dir", pm.addDirectory.bind(pm));
   command.on("project:remove-all", pm.removeAllDirectories.bind(pm));
   command.on("project:generate", pm.generateProject.bind(pm));

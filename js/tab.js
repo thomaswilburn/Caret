@@ -1,11 +1,11 @@
 define([
     "command",
     "storage/file",
-    "util/manos",
     "settings!ace,user",
     "util/template!templates/tab.html",
-    "ui/dialog"
-  ], function(command, File, M, Settings, inflate, dialog) {
+    "ui/dialog",
+    "util/chromePromise"
+  ], function(command, File, Settings, inflate, dialog, chromeP) {
     
   /*
   
@@ -63,7 +63,7 @@ define([
     });
   };
   
-  Tab.prototype.save = function(as) {
+  Tab.prototype.save = async function(as) {
     
     //strip final whitespace, if enabled
     if (Settings.get("user").trimTrailingWhitespace) {
@@ -71,53 +71,39 @@ define([
     }
     
     var content = this.getValue();
-    var self = this;
-    var deferred = M.deferred();
 
-    var whenOpen = function() {
-      self.file.write(content, function(err) {
-        if (err) {
-          return deferred.fail(err);
-        }
-        self.modifiedAt = new Date();
-        self.modified = false;
-        self.setPath();
-        command.fire("session:render");
-        deferred.done();
-      });
-    };
-
-    if (!self.file || as) {
+    if (!this.file || as) {
       var file = new File();
-      file.open("save", function(err) {
-        if (err) {
-          if (err.message != "User cancelled") dialog(err.message);
-          return deferred.fail(err);
+      try {
+        await file.open("save");
+      } catch(err) {
+        if (err.message != "User cancelled") {
+          dialog(err.message);
+          throw err;
         }
-        self.file = file;
-        self.fileName = file.entry.name;
-        delete self.syntaxMode;
-        self.detectSyntax();
-        whenOpen();
-      });
-    } else {
-      whenOpen();
+      }
+      this.file = file;
+      this.fileName = file.entry.name;
+      delete this.syntaxMode;
+      this.detectSyntax();
     }
-    
-    return deferred.promise();
+    await this.file.write(content);
+    this.modifiedAt = new Date();
+    this.modified = false;
+    this.setPath();
+    command.fire("session:render");
   };
   
-  Tab.prototype.drop = function() {
+  Tab.prototype.drop = async function() {
     //let listeners know, like the project manager
     this._emit("close");
     if (!this.file || !chrome.fileSystem.retainEntry) return;
     var id = this.file.retain();
     if (!id) return;
-    chrome.storage.local.get("retained", function(data) {
-      if (!data.retained) return;
-      var filtered = data.retained.filter(item => item != id);
-      chrome.storage.local.set({ retained: filtered });
-    });
+    var data = await chromeP.storage.local.get("retained");
+    if (!data.retained) return;
+    var filtered = data.retained.filter(item => item != id);
+    chrome.storage.local.set({ retained: filtered });  
   };
   
   Tab.prototype.render = function(index) {
@@ -132,19 +118,17 @@ define([
     return element;
   };
   
-  Tab.prototype.detectSyntax = function(userConfig) {
-    //settings are async
-    Settings.pull("user").then((data) => {
-      var userConfig = data.user;
-      this.setUseSoftTabs(!userConfig.useTabs);
-      this.setTabSize(userConfig.indentation || 2);
-      this.setUseWrapMode(userConfig.wordWrap);
-      this.setWrapLimit(userConfig.wrapLimit || null);
-      this.setNewLineMode(userConfig.lineEnding || "auto");
-      
-      this.setUseWorker(userConfig.useWorker);
-    });
-    //syntax, however, is sync
+  Tab.prototype.detectSyntax = async function(userConfig) {
+    var data = await Settings.pull("user");
+    var userConfig = data.user;
+    this.setUseSoftTabs(!userConfig.useTabs);
+    this.setTabSize(userConfig.indentation || 2);
+    this.setUseWrapMode(userConfig.wordWrap);
+    this.setWrapLimit(userConfig.wrapLimit || null);
+    this.setNewLineMode(userConfig.lineEnding || "auto");
+    
+    this.setUseWorker(userConfig.useWorker);
+
     var syntaxValue = this.syntaxMode || "plain_text";
     if (this.file) {
       if (this.file.virtual) {

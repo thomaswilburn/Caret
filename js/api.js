@@ -3,11 +3,13 @@ define([
     "settings!api"
   ], function(command, Settings) {
 
+  var noop = function() {};
+
   //handles sending custom messages based on Caret commands (builds, plugins, etc)
   var targets = Settings.get("api");
   command.on("init:restart", () => targets = Settings.get("api"));
 
-  command.on("api:execute", function(id, c) {
+  command.on("api:execute", function(id, c = noop) {
     if (!id in targets) return c();
     var config = targets[id];
     var message = {};
@@ -49,7 +51,8 @@ define([
   });
 
   //External apps can send messages by matching Caret's command/argument config objects
-  chrome.runtime.onMessageExternal.addListener(function(message, sender, c) {
-    command.fire(message.command, message.argument, c);
+  chrome.runtime.onMessageExternal.addListener(async function(message, sender, c = noop) {
+    var result = await command.fire(message.command, message.argument);
+    c(null, result);
   });
 });

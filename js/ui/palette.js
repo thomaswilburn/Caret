@@ -6,8 +6,7 @@ define([
     "ui/statusbar",
     "ui/projectManager",
     "util/template!templates/paletteItem.html",
-    "util/i18n",
-    "util/dom2"
+    "util/i18n"
   ], function(sessions, command, editor, Settings, status, project, inflate, i18n) {
   
   var TokenIterator = ace.require("ace/token_iterator").TokenIterator;
@@ -25,7 +24,7 @@ define([
     return new RegExp(query
       .replace(antiregex, "\\$1")
       .split("")
-      .map(function(char) { return char.replace(antiregex, "\\$1")})
+      .map(char => char.replace(antiregex, "\\$1"))
       .join(".*?"),
     "i");
   };
@@ -62,9 +61,9 @@ define([
     this.files = [];
     this.pending = null;
     this.selected = 0;
-    this.element = document.find(".palette");
-    this.input = this.element.find("input");
-    this.resultList = this.element.find(".results");
+    this.element = document.querySelector(".palette");
+    this.input = this.element.querySelector("input");
+    this.resultList = this.element.querySelector(".results");
     this.commandMode = false;
     this.searchAll = false;
     this.needParseScheduled = false;
@@ -75,11 +74,11 @@ define([
       var input = this.input;
       var self = this;
       
-      input.on("blur", function() {
+      input.addEventListener("blur", function() {
         self.deactivate();
       });
       
-      input.on("keydown", function(e) {
+      input.addEventListener("keydown", function(e) {
         //escape
         if (e.keyCode == 27) {
           sessions.restoreLocation();
@@ -110,7 +109,7 @@ define([
         self.selected = 0;
       });
       
-      input.on("keyup", function(e) {
+      input.addEventListener("keyup", function(e) {
         if (!self.needParseScheduled) {
           return;
         }
@@ -250,9 +249,7 @@ define([
       if (file) {
         //search through open files by name
         var fuzzyFile = makeFuzz(file);
-        tabs = sessions.getAllTabs().filter(function(tab) {
-          return fuzzyFile.test(tab.fileName);
-        });
+        tabs = sessions.getAllTabs().filter(tab => fuzzyFile.test(tab.fileName));
         
         //first find matches that have base names starting with the query
         var exact = file.replace(/ /g, "").replace(antiregex, "\\$1");
@@ -309,7 +306,7 @@ define([
         var current = this.homeTab;
         tabs = [ current ];
         if (this.searchAll) {
-          tabs.push.apply(tabs, sessions.getAllTabs().filter(function(t) { return t !== current }));
+          tabs.push.apply(tabs, sessions.getAllTabs().filter(t => t !== current ));
         }
       }
       
@@ -411,18 +408,18 @@ define([
       this.commandMode = mode == "command";
       this.input.value = modes[mode] || "";
       this.render();
-      this.element.addClass("active");
+      this.element.classList.add("active");
       this.input.focus();
       //trigger animation
       var self = this;
-      this.element.addClass("enter");
+      this.element.classList.add("enter");
       setTimeout(function() {
-        self.element.removeClass("enter");
+        self.element.classList.remove("enter");
       });
     },
     
     deactivate: function() {
-      this.element.removeClass("active");
+      this.element.classList.remove("active");
       if (this.pending) clearTimeout(this.pending);
     },
     
@@ -444,7 +441,7 @@ define([
     
     render: function() {
       var self = this;
-      this.element.find(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
+      this.element.querySelector(".mode").innerHTML = this.commandMode ? "Command:" : "Go To:";
       this.resultList.innerHTML = "";
       this.results.slice(0, findResultsLimit).forEach(function(r, i) {
         var label = r.palette || r.label || (r.tab ? r.tab.fileName : "")
@@ -453,7 +450,7 @@ define([
           sublabel: r.sublabel,
           isCurrent: i == self.selected
         });
-        self.resultList.append(element);
+        self.resultList.appendChild(element);
       });
     }
   };

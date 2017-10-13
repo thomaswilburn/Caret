@@ -1,7 +1,6 @@
 define([
     "editor",
-    "util/template!templates/dialog.html",
-    "util/dom2"
+    "util/template!templates/dialog.html"
   ], function(editor, inflate) {
     
   /*
@@ -31,14 +30,14 @@ define([
       buttons: buttons
     });
     
-    document.body.append(modal);
+    document.body.appendChild(modal);
     setTimeout(function() {
       //trigger enter animations
-      modal.removeClass("enter");
+      modal.classList.remove("enter");
     });
     
-    var defaultButton = modal.find("button.default");
-    if (!defaultButton) defaultButton = modal.find("button");
+    var defaultButton = modal.querySelector("button.default");
+    if (!defaultButton) defaultButton = modal.querySelector("button");
     defaultButton.focus();
     
     modal.on("click", function(e) {

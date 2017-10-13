@@ -5,8 +5,8 @@ define([
     "command",
     "util/template!templates/menuItem.html",
     "util/i18n",
-    "util/dom2"
-  ], function(Settings, editor, dialog, command, inflate, i18n) {
+    "util/chromePromise"
+  ], function(Settings, editor, dialog, command, inflate, i18n, chromeP) {
     
   //default "Windows", will be adjusted during menu creation because async
   var platform = "win";
@@ -24,7 +24,7 @@ define([
             break;
           //other special string keys go here - spacer? dynamic menus?
         }
-        fragment.append(preset);
+        fragment.appendChild(preset);
         continue;
       }
       //version testing to hide entries that this version of Chrome can't run
@@ -52,10 +52,10 @@ define([
       };
       var element = inflate.get("templates/menuItem.html", data);
       if (entry.sub) {
-        var children = walker(entry.sub, depth + 1);
-        element.find("ul").append(children);
+        var ul = element.querySelector("ul");
+        ul.appendChild(walker(entry.sub, depth + 1));
       }
-      fragment.append(element);
+      fragment.appendChild(element);
     }
     return fragment;
   };
@@ -111,20 +111,18 @@ define([
   };
   
   var Menu = function() {
-    this.element = document.find(".toolbar");
+    this.element = document.querySelector(".toolbar");
     this.active = false;
     this.bindEvents();
   };
   Menu.prototype = {
-    create: function() {
+    create: async function() {
       var cfg = Settings.get("menus");
-      var self = this;
-      chrome.runtime.getPlatformInfo(function(info) {
-        if (info.os == "mac") platform = "mac";
-        var elements = walker(cfg, 0);
-        self.element.innerHTML = "";
-        self.element.append(elements);
-      });
+      var info = await chromeP.runtime.getPlatformInfo();
+      if (info.os == "mac") platform = "mac";
+      var elements = walker(cfg, 0);
+      this.element.innerHTML = "";
+      this.element.appendChild(elements);
     },
     bindEvents: function() {
       var self = this;
@@ -133,35 +131,34 @@ define([
         if (e.target.matches(".toolbar *")) return;
         self.deactivate();
         self.active = false;
-        document.body.off("click", clickElsewhere);
+        document.body.removeEventListener("click", clickElsewhere);
       };
       menubar.addEventListener("click", function(e) {
-        document.body.on("click", clickElsewhere);
+        document.body.addEventListener("click", clickElsewhere);
         var el = e.target;
-        if (el.hasClass("top")) {
-          el.toggle("active");
+        if (el.classList.contains("top")) {
+          el.classList.toggle("active");
           self.active = !self.active;
         } else {
           self.active = false;
         }
-        if (!self.active && !el.hasClass("no-refocus")) {
+        if (!self.active && !el.classList.contains("no-refocus")) {
           editor.focus();
         }
-        menubar
-          .findAll(".active")
-          .filter(function(n) { return n != el })
-          .forEach(function(n) { n.removeClass("active") });
+        Array.from(menubar.querySelectorAll(".active"))
+          .filter(n => n != el)
+          .forEach(n => n.classList.remove("active"));
       });
       menubar.addEventListener("mousemove", function(e) {
         var el = e.target;
-        if (el.hasClass("top") && self.active) {
+        if (el.classList.contains("top") && self.active) {
           self.deactivate();
-          el.addClass("active");
+          el.classList.add("active");
         }
       });
     },
     deactivate: function() {
-      this.element.findAll(".active").forEach(function(node) { node.removeClass("active") });
+      this.element.querySelectorAll(".active").forEach(node => node.classList.remove("active"));
     }
   };
   

@@ -2,8 +2,8 @@ define([
     "storage/syncFS",
     "storage/syncfile",
     "command",
-    "util/manos"
-  ], function(sync, SyncFile, command, M) {
+    "util/chromePromise"
+  ], function(sync, SyncFile, command, chromeP) {
 
   var defaults = {};
   var local = {};
@@ -77,42 +77,36 @@ define([
     getAsFile: function(name) {
       return new SyncFile(name + ".json");
     },
-    load: function(name, c) {
+    loadDefault: function(name) {
+      if (defaults[name]) return defaults[name];
+      return new Promise(function(ok) {
+        require(["util/text!config/" + name], function(raw) {
+          defaults[name] = raw;
+          ok();
+        });
+      });
+    },
+    load: function(name) {
       name = name + ".json";
       if (local[name]) {
-        return c();
+        return local[name];
       }
-      
-      //if a request is out, tag along with it
-      if (pending[name]) {
-        pending[name].push(c);
-        return;
-      }
-      
-      var merge = function() {
-        sync.get(name).then(function(data) {
-          if (data) {
-            local[name] = data;
-          } else {
-            local[name] = defaults[name];
-          }
-          for (var i = 0; i < pending[name].length; i++) {
-            pending[name][i]();
-          }
-          delete pending[name]
-        });
-      };
-      
-      pending[name] = [c]
-      
-      if (defaults[name]) {
-        return merge();
-      }
-      
-      require(["util/text!config/" + name], function(raw) {
-        defaults[name] = raw;
-        merge();
+
+      var self = this;
+      if (!pending[name]) pending[name] = new Promise(async function(ok) {
+        await self.loadDefault(name);
+        var data = await sync.get(name);
+        if (data) {
+          local[name] = data;
+        } else {
+          local[name] = defaults[name];
+        }
+        ok();
+        delete pending[name];
       });
+        
+      return pending[name];
+      
     },
     setProject: function(settings) {
       project = settings;
@@ -123,22 +117,14 @@ define([
       command.fire("settings:change-local");
     },
     //load/get all requested settings via a promise
-    pull: function() {
-      var deferred = M.deferred();
-      var names = [].slice.call(arguments);
-      var pending = names.map(function(name) {
-        return new Promise(function(ok) {
-          Settings.load(name, ok);
-        });
+    pull: async function(...names) {
+      var pending = names.map(n => Settings.load(n));
+      await Promise.all(pending);
+      var collected = {};
+      names.forEach(function(name) {
+        collected[name] = Settings.get(name);
       });
-      Promise.all(pending).then(function() {
-        var collected = {};
-        names.forEach(function(name) {
-          collected[name] = Settings.get(name);
-        });
-        deferred.done(collected);
-      });
-      return deferred.promise();
+      return collected;
     }
   };
 
@@ -149,43 +135,36 @@ define([
     command.fire("init:restart");
   });
 
-  command.on("settings:change-local", function() {
+  command.on("settings:change-local", async function() {
     //reload anything that's been used
-    var keys = Object.keys(defaults).map(function(n) { return n.replace(".json", "")});
+    var keys = Object.keys(defaults).map(n => n.replace(".json", ""));
     local = {};
-    var completed = 0;
-    keys.forEach(function(key) {
-      Settings.load(key, function() {
-        completed++;
-        if (completed == keys.length) {
-          command.fire("init:restart");
-        }
-      });
-    });
+    var completed = keys.map(k => Settings.load(k));
+    await Promise.all(completed);
+    command.fire("init:restart");
   });
   
-  command.on("settings:emergency-reset", function() {
+  command.on("settings:emergency-reset", async function() {
     //unlike the menu item, let's confirm it here in case someone fat-fingers the menu/palette
-    chrome.notifications.clear("settings:emergency-reset-confirm", function() {
-      chrome.notifications.create("settings:emergency-reset-confirm", {
-        type: "basic",
-        iconUrl: "icon-128.png",
-        title: "Confirm Emergency Reset",
-        message: "This will wipe out all your settings and return Caret to its initial condition. Are you sure you want to do this?",
-        buttons: [
-          { title: "Yes, reset all data" },
-          { title: "Cancel emergency reset" }
-        ]
-      }, function() {});
+    await chromeP.notifications.clear("settings:emergency-reset-confirm");
+    await chrome.notifications.create("settings:emergency-reset-confirm", {
+      type: "basic",
+      iconUrl: "icon-128.png",
+      title: "Confirm Emergency Reset",
+      message: "This will wipe out all your settings and return Caret to its initial condition. Are you sure you want to do this?",
+      buttons: [
+        { title: "Yes, reset all data" },
+        { title: "Cancel emergency reset" }
+      ]
     });
   });
   
-  chrome.notifications.onButtonClicked.addListener(function(id, index) {
+  chrome.notifications.onButtonClicked.addListener(async function(id, index) {
     if (id != "settings:emergency-reset-confirm") return;
     if (index !== 0) return;
-    chrome.runtime.getBackgroundPage(function(page) {
-      page.emergencyReset();
-    });
+    await chromeP.notifications.clear("settings:emergency-reset-confirm");
+    var page = await chromeP.runtime.getBackgroundPage();
+    page.emergencyReset();
   });
 
   return Settings;
