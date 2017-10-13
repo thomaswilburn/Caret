@@ -40,7 +40,7 @@ define([
     if (!defaultButton) defaultButton = modal.querySelector("button");
     defaultButton.focus();
     
-    modal.on("click", function(e) {
+    modal.addEventListener("click", function(e) {
       if (e.target != modal) return;
       e.preventDefault();
       e.stopImmediatePropagation();
