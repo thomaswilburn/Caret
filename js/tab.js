@@ -55,12 +55,10 @@ define([
     this.setPath();
   };
 
-  Tab.prototype.setPath = function() {
-    var self = this;
-    if (this.file && !this.file.virtual) this.file.getPath(function(err, path) {
-      self.path = path;
-      command.fire("session:render");
-    });
+  Tab.prototype.setPath = async function() {
+    var path = await this.file.getPath();
+    this.path = path;
+    command.fire("session:render");
   };
   
   Tab.prototype.save = async function(as) {
