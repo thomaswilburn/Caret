@@ -56,6 +56,7 @@ define([
   };
 
   Tab.prototype.setPath = async function() {
+    if (!this.file) return;
     var path = await this.file.getPath();
     this.path = path;
     command.fire("session:render");
