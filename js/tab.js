@@ -116,10 +116,8 @@ define([
     this.animationClass = "";
     return element;
   };
-  
-  Tab.prototype.detectSyntax = async function(userConfig) {
-    var syntaxValue = this.syntaxMode || "plain_text";
 
+  Tab.prototype.applySettings = async function(syntaxValue) {
     var data = await Settings.pull("user");
     var userConfig = data.user;
     var syntaxConfig = (data.user.syntaxSpecific || {})[syntaxValue] || {};
@@ -131,6 +129,12 @@ define([
     this.setNewLineMode(syntaxConfig.lineEnding || userConfig.lineEnding || "auto");
     
     this.setUseWorker(syntaxConfig.useWorker || userConfig.useWorker);
+  };
+  
+  Tab.prototype.detectSyntax = async function() {
+    var syntaxValue = this.syntaxMode || "plain_text";
+
+    await this.applySettings(syntaxValue);
 
     if (this.file) {
       if (this.file.virtual) {
@@ -162,8 +166,6 @@ define([
 
     // call the superclass method to start worker
     EditSession.prototype.$startWorker.call(this);
-    
-    this.detectSyntax(userConfig);
     
     // configure jsHint worker if applicable
     if (this.syntaxMode === 'javascript' && userConfig.jsHint && this.$worker) {
