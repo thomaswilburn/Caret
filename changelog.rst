@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.0
+-----
+
+You can override settings on a per-syntax basis now, by adding values to the ``syntaxSpecific`` object in your user config. Not everything can be set this way, but the important stuff (tabs or spaces, indentation size, and word wrap limit) is supported right now. The default user settings have an example for Python, feel free to add your own.
+
 1.7.2
 -----
 

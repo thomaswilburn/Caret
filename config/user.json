@@ -44,16 +44,19 @@
   "highlightLine": false,
   "hideGutter": false, //set to true to hide the line numbering
 
+  // editor options
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
+  "showMargin": false,
+  "scrollPastEnd": true, //allow the editor to scroll past the end of the document
+  "trimTrailingWhitespace": true, //run "Trim Trailing Whitespace" on save
+  "trimEmptyLines": false, //should the trim whitespace command also truncate empty lines?
+
+  // syntax options
   "indentation": 2, //indentation size
   "useTabs": false, //will turn off Ace's setUseSoftTabs() option and use tab characters instead
   "wordWrap": true,
   "wrapLimit": false, //Set to the number of characters you want or false for full window
-  "showMargin": false,
   "lineEndings": "auto", //newline format - "windows", "unix", or "auto"
-  "scrollPastEnd": true, //allow the editor to scroll past the end of the document
-  "trimTrailingWhitespace": true, //run "Trim Trailing Whitespace" on save
-  "trimEmptyLines": false, //should the trim whitespace command also truncate empty lines?
 
   //only fixed-width fonts supported, for now
   "fontFamily": "",
