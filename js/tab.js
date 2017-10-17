@@ -56,7 +56,7 @@ define([
   };
 
   Tab.prototype.setPath = async function() {
-    if (!this.file) return;
+    if (!this.file || this.file.virtual) return;
     var path = await this.file.getPath();
     this.path = path;
     command.fire("session:render");
@@ -118,17 +118,20 @@ define([
   };
   
   Tab.prototype.detectSyntax = async function(userConfig) {
+    var syntaxValue = this.syntaxMode || "plain_text";
+
     var data = await Settings.pull("user");
     var userConfig = data.user;
-    this.setUseSoftTabs(!userConfig.useTabs);
-    this.setTabSize(userConfig.indentation || 2);
-    this.setUseWrapMode(userConfig.wordWrap);
-    this.setWrapLimit(userConfig.wrapLimit || null);
-    this.setNewLineMode(userConfig.lineEnding || "auto");
-    
-    this.setUseWorker(userConfig.useWorker);
+    var syntaxConfig = (data.user.syntaxSpecific || {})[syntaxValue] || {};
 
-    var syntaxValue = this.syntaxMode || "plain_text";
+    this.setUseSoftTabs(!userConfig.useTabs && !syntaxConfig.useTabs);
+    this.setTabSize(syntaxConfig.indentation || userConfig.indentation || 2);
+    this.setUseWrapMode(syntaxConfig.wordWrap || userConfig.wordWrap);
+    this.setWrapLimit(syntaxConfig.wrapLimit || userConfig.wrapLimit || null);
+    this.setNewLineMode(syntaxConfig.lineEnding || userConfig.lineEnding || "auto");
+    
+    this.setUseWorker(syntaxConfig.useWorker || userConfig.useWorker);
+
     if (this.file) {
       if (this.file.virtual) {
         //settings files are special
