@@ -66,7 +66,7 @@ define([
         }
       };
 
-      var isWritable = chromeP.fileSystem.isWritableEntry(this.entry);
+      var isWritable = await chromeP.fileSystem.isWritableEntry(this.entry);
       if (!isWritable) {
         var w = await chromeP.fileSystem.getWritableEntry(this.entry);
         this.entry = w;
