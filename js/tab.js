@@ -121,14 +121,19 @@ define([
     var data = await Settings.pull("user");
     var userConfig = data.user;
     var syntaxConfig = (data.user.syntaxSpecific || {})[syntaxValue] || {};
-
-    this.setUseSoftTabs(!userConfig.useTabs && !syntaxConfig.useTabs);
-    this.setTabSize(syntaxConfig.indentation || userConfig.indentation || 2);
-    this.setUseWrapMode(syntaxConfig.wordWrap || userConfig.wordWrap);
-    this.setWrapLimit(syntaxConfig.wrapLimit || userConfig.wrapLimit || null);
-    this.setNewLineMode(syntaxConfig.lineEnding || userConfig.lineEnding || "auto");
     
-    this.setUseWorker(syntaxConfig.useWorker || userConfig.useWorker);
+    //merge settings
+    for (var k in syntaxConfig) {
+      userConfig[k] = syntaxConfig[k];
+    }
+
+    this.setUseSoftTabs(!userConfig.useTabs);
+    this.setTabSize(userConfig.indentation || 2);
+    this.setUseWrapMode(userConfig.wordWrap);
+    this.setWrapLimit(userConfig.wrapLimit || null);
+    this.setNewLineMode(userConfig.lineEnding || "auto");
+    
+    this.setUseWorker(userConfig.useWorker);
   };
   
   Tab.prototype.detectSyntax = async function() {
