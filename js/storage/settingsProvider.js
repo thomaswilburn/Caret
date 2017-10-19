@@ -173,7 +173,8 @@ define([
     if (index !== 0) return;
     await chromeP.notifications.clear("settings:emergency-reset-confirm");
     var page = await chromeP.runtime.getBackgroundPage();
-    page.emergencyReset(exportLocalSettings);
+    await page.emergencyReset();
+    await exportLocalSettings();
   });
 
   return Settings;
