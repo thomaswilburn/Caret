@@ -2,6 +2,9 @@
   //If you want to disable update checks at startup, change this
   "promptForUpdates": true,
 
+  // One of "realtime", "active" (notify when Caret is open), or "silent".
+  "notifyOnUpdates": "realtime",
+
   "defaultTheme": "chrome", //This should be any of the supported Ace themes
   /*
   Ace theme names are usually underscored, lowercase versions of the "friendly" names:

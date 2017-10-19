@@ -104,7 +104,7 @@ chrome.contextMenus.create({
   if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
 });
 
-var emergencyReset = function() {
+var emergencyReset = function(callback) {
   if (mainWindow) mainWindow.close();
   var cleared = {
     local: false,
@@ -118,7 +118,9 @@ var emergencyReset = function() {
         iconUrl: "icon-128.png",
         title: "Emergency Reset Complete",
         message: "Caret has been reset to the default settings."
-      }, function() {});
+      }, function() {
+        if (callback) callback();
+      });
     }
   };
   chrome.storage.local.clear(check.bind(null, "local"));
