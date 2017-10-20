@@ -33,6 +33,11 @@ var constantNumericFloat = exports.constantNumericFloat = {
     regex : "[+-]?\\d(?:\\d|_(?=\\d))*(?:(?:\\.\\d(?:\\d|_(?=\\d))*)?(?:[eE][+-]?\\d+)?)?\\b"
 };
 
+var instanceVariable = exports.instanceVariable = {
+    token : "variable.instance", // instance variable
+    regex : "@{1,2}[a-zA-Z_\\d]+"
+};
+
 var RubyHighlightRules = function() {
 
     var builtinFunctions = (
@@ -452,7 +457,7 @@ oop.inherits(Mode, TextMode);
             var match = line.match(/^.*[\{\(\[]\s*$/);
             var startingClassOrMethod = line.match(/^\s*(class|def|module)\s.*$/);
             var startingDoBlock = line.match(/.*do(\s*|\s+\|.*\|\s*)$/);
-            var startingConditional = line.match(/^\s*(if|else|when)\s*/)
+            var startingConditional = line.match(/^\s*(if|else|when)\s*/);
             if (match || startingClassOrMethod || startingDoBlock || startingConditional) {
                 indent += tab;
             }
