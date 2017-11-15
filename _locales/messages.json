@@ -1,0 +1,132 @@
+{
+  "loading": {
+    "message": "caricamento"
+  },
+  "aboutWrittenBy": {
+    "message": "Scritto da <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
+  },
+  "aboutHomePage": {
+    "message": "Pagina Iniziale"
+  },
+  "aboutSupport": {
+    "message": "Supporto"
+  },
+  "aboutLicense": {
+    "message": "Caret è disponibile sotto una licenza GPL, questo significa che il <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>codice sorgente</a> è disponibile gratuitamente per usarlo e modificarlo come preferisci. Se trovi Caret utile, considera di fare una donazione alla Free Software Foundation's <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>fondo per i brevetti software</a>."
+  },
+  "menuFile": { "message": "File" },
+  "menuNewFile": { "message": "Nuovo File" },
+  "menuOpenFile": { "message": "Apri File" },
+  "menuSave": { "message": "Salva File" },
+  "menuSaveAs": { "message": "Salva File come..." },
+  "menuSaveAll": { "message": "Salva tutti i Files" },
+  "menuRevert": { "message": "Torna indietro" },
+  "menuClose": { "message": "Chiudi File" },
+  "menuPrint": { "message": "Stampa" },
+  "menuExit": { "message": "Esci" },
+
+  "menuEdit": { "message": "Modifica" },
+  "menuUndo": { "message": "Annulla" },
+  "menuRedo": { "message": "Ripeti" },
+  "menuInsertFromFile": { "message": "Inserisci da File" },
+  "menuSelectWord": { "message": "Seleziona Parola" },
+  "menuSelectLine": { "message": "Seleziona Riga" },
+  "menuSelectP": { "message": "Seleziona Paragrafo" },
+  "menuSelectToMatch": { "message": "Seleziona per Confronto" },
+  "menuWrapToPrint": { "message": "Adatta al margine di stampa" },
+  "menuFind": { "message": "Trova" },
+  "menuFindReplace": { "message": "Trova/Sostituisci" },
+  "menuFindNext": { "message": "Trova Successivo" },
+  "menuSearchProject": { "message": "Cerca tutti i Files" },
+  "menuToggleComment": { "message": "Attiva Commento" },
+  "menuBlockComment": { "message": "Attiva Blocco Commento" },
+  "menuTabsToSpaces": { "message": "Converti Tabs in Spazi" },
+  "menuSpacesToTabs": { "message": "Converti Spazi in Tabs" },
+  "menuSetNewline": { "message": "Imposta Modalità Nuova Riga" },
+  "menuTrimWhitespace": { "message": "Trim Trailing Whitespace" },
+  "menuJoinLines": { "message": "Unisci Righe" },
+  "menuSortLines": { "message": "Ordina Righe" },
+  "menuSplitLine": { "message": "Dividi Righe" },
+  "menuKillLine": { "message": "Termina Righe" },
+  "menuToUppercase": { "message": "in Maiuscolo" },
+  "menuToLowercase": { "message": "in Minuscolo" },
+  "menuMoveLinesUp": { "message": "Sposta Riga Su" },
+  "menuMoveLinesDown": { "message": "Sposta Riga Giù" },
+
+  "menuTools": { "message": "Strumenti" },
+  "menuGoToAnything": { "message": "Vai a..." },
+  "menuGoToLine": { "message": "Vai alla Riga" },
+  "menuGoToSearch": { "message": "Vai alla Ricerca" },
+  "menuGoToRef": { "message": "Vai al Riferimento" },
+  "menuCommandPalette": { "message": "Apri tavolozza comandi" },
+  "menuToggleMacro": { "message": "Attiva Registrazione Macro" },
+  "menuReplayMacro": { "message": "Ripeti Macro" },
+  "menuWordCount": { "message": "Conta Parola" },
+
+  "menuProject": { "message": "Progetto" },
+  "menuAddDir": { "message": "Aggiungi Cartella" },
+  "menuRemoveAllDirs": { "message": "Rimuovi Tutte le Cartelle" },
+  "menuRefreshDir": { "message": "Ricarica Tutte le Cartelle" },
+  "menuSaveProject": { "message": "Salva File Progetto" },
+  "menuEditProject": { "message": "Modifica Progetto Corrente" },
+  "menuOpenProject": { "message": "Apri File Progetto" },
+  "menuClearProject": { "message": "Pulisci Progetto" },
+
+  "menuSettings": { "message": "Impostazioni" },
+  "menuUserPrefs": { "message": "Preferenze Utente" },
+  "menuKeyboard": { "message": "Tastiera" },
+  "menuMenus": { "message": "Menu" },
+  "menuAPI": { "message": "Comandi Esterni" },
+  "menuSequences": { "message": "Sequenza Comandi" },
+  "menuDefaults": { "message": "Viste Predefinite" },
+  "menuUserPrefsDefault": { "message": "Preferenze Utente (Predefinite)" },
+  "menuKeyboardDefault": { "message": "Tastiera (Predefinita)" },
+  "menuMenusDefault": { "message": "Menu (Predefiniti)" },
+  "menuSequencesDefault": { "message": "Sequenza Comandi (Predefiniti)" },
+  "menuReset": { "message": "Azzera" },
+  "menuResetUserPrefs": { "message": "Azzera Preferenze Utente" },
+  "menuResetKeyboard": { "message": "Azzera Tastiera" },
+  "menuResetMenus": { "message": "Azzera Menu" },
+  "menuResetSequences": { "message": "Azzera Sequenza Comandi" },
+  "menuEmergencyReset": { "message": "Azzeramento di Emergenza" },
+  "menuHelp": { "message": "Aiuto" },
+  "menuCheckForUpdates": { "message": "Controlla Aggiornamenti" },
+  "menuAboutCaret": { "message": "Informazioni su Caret" },
+
+  "dialogModifiedBackground": { "message": "Questo file è stato modificato dall'ultima volta che è stato salvato. Vuoi ricaricarlo?" },
+  "dialogModifiedUnsaved": { "message": "$1 è stato modificato.\nVuoi salvare le modifiche?" },
+  "dialogCancel": { "message": "Annulla" },
+  "dialogOK": { "message": "OK" },
+  "dialogReload": { "message": "Ricarica" },
+  "dialogSave": { "message": "Salva" },
+  "dialogDiscard": { "message": "Scarta" },
+  "dialogUnsaved": { "message": "$1 non è stato salvato." },
+
+  "projectNoCurrentProject": { "message": "Nessun progetto aperto." },
+
+  "paletteExecuting": { "message": "Esecuzione di $1..." },
+
+  "fileLoaded": { "message": "Caricati $1, $2 bytes" },
+  "fileAutosaving": { "message": "Eseguo l'autosalvataggio di tutte le schede..." },
+
+  "editorWordCount": { "message": "$1 caratteri, $2 parole, $3 righe" },
+
+  "recordingMacro": { "message": "Registro la macro..." },
+  "setSyntax": { "message": "Imposto sintassi: $1" },
+  "setTheme": { "message": "Imposto tema: $1" },
+
+  "notificationUpdateAvailable": { "message": "Caret: Aggiornamenti Disponibili" },
+  "notificationUpdateDetail": { "message": "Un aggiornamento alla versione $1 è disponibile. Vuoi aggiornare e riavviare ora?" },
+  "notificationNoUpdateTitle": { "message": "Nessun aggiornamento disponibile" },
+  "notificationNoUpdateDetail": { "message": "Non ci sono aggiornamenti per Carte al momento." },
+  "notificationUpdateOK": { "message": "Si, aggiorna e riavvia" },
+  "notificationUpdateWait": { "message": "No Grazie" },
+  "notificationUpdated": { "message": "Caret è stato aggiornato" },
+  "notificationUpdatedDetail": { "message": "Ora alla versione $1. Clicca per vedere il changelog." },
+
+  "searchDisplayQuery": { "message": "Cercando: $1\n" },
+  "searchTabName": { "message": "Risultati: $1" },
+  "searchNoDirectories": { "message": "\nNessun files scansionato. Devi prima aggiungere una cartella al tuo progetto." },
+  "searchSummary": { "message": "\n\n$1 occorrenze trovate. $2 file scansionati." },
+  "searchCancelled": { "message": "\nLa ricerca è stata annullata. Puoi cambiare il numero massimo di risultati di ricerca nelle Preferenze Utente." }
+}
