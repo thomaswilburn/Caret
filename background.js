@@ -104,25 +104,28 @@ chrome.contextMenus.create({
   if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
 });
 
-var emergencyReset = function() {
+var emergencyReset = async function() {
   if (mainWindow) mainWindow.close();
   var cleared = {
     local: false,
     sync: false
   };
-  var check = function(storage) {
-    cleared[storage] = true;
-    if (cleared.local && cleared.sync) {
-      chrome.notifications.create("app:factory-reset-complete", {
-        type: "basic",
-        iconUrl: "icon-128.png",
-        title: "Emergency Reset Complete",
-        message: "Caret has been reset to the default settings."
-      }, function() {});
-    }
-  };
-  chrome.storage.local.clear(check.bind(null, "local"));
-  chrome.storage.sync.clear(check.bind(null, "sync"));
+  var clear = function(storage) {
+    return new Promise(function(resolve, reject) {
+      storage.clear(resolve);
+    });
+  }
+  var showNotification = new Promise(function(resolve, reject) {
+    chrome.notifications.create("app:factory-reset-complete", {
+      type: "basic",
+      iconUrl: "icon-128.png",
+      title: "Emergency Reset Complete",
+      message: "Caret has been reset to the default settings."
+    }, resolve);
+  });
+  await clear(chrome.storage.local)
+    .then(clear(chrome.storage.sync))
+    .then(showNotification);
 };
 
 chrome.contextMenus.onClicked.addListener(function(data) {

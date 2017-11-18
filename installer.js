@@ -1,5 +1,19 @@
 var notification = "upgraded";
 
+var showUpgradeNotification = function() {
+  var manifest = chrome.runtime.getManifest();
+  chrome.notifications.create(notification, {
+    type: "basic",
+    iconUrl: "icon-128.png",
+    title: chrome.i18n.getMessage("notificationUpdated"),
+    message: chrome.i18n.getMessage("notificationUpdatedDetail", [manifest.version]),
+    isClickable: true
+  }, function(id) {
+    notification = id;
+    chrome.storage.local.remove("pendingUpgradeNotification");
+  });
+}
+
 chrome.runtime.onInstalled.addListener(function(e) {
   //this is where we'll track upgrades
   if (!e.previousVersion) return;
@@ -12,14 +26,23 @@ chrome.runtime.onInstalled.addListener(function(e) {
   var build = semver[2];
   
   if (e.previousVersion != manifest.version) {
-    //let the user know
-    chrome.notifications.create(notification, {
-      type: "basic",
-      iconUrl: "icon-128.png",
-      title: chrome.i18n.getMessage("notificationUpdated"),
-      message: chrome.i18n.getMessage("notificationUpdatedDetail", [manifest.version]),
-      isClickable: true
-    }, function(id) { notification = id });
+    chrome.storage.local.get("notifyOnUpdates", function(items) {
+      switch (items.notifyOnUpdates) {
+        case "silent":
+          break;
+        case "active":
+          if (mainWindow) {
+            showUpgradeNotification();
+          } else {
+            chrome.storage.local.set({pendingUpgradeNotification: true});
+          }
+          break;
+        case "realtime":
+        default:
+          showUpgradeNotification();
+          break;
+      }
+    });
   }
   
   // console.log("Upgrading Caret from version " + e.previousVersion);
@@ -32,6 +55,13 @@ chrome.runtime.onInstalled.addListener(function(e) {
 
 });
 
+chrome.app.runtime.onLaunched.addListener(function(e) {
+  chrome.storage.local.get(["pendingUpgradeNotification", "notifyOnUpdates"], function(items) {
+    if (items.pendingUpgradeNotification && items.notifyOnUpdates !== "silent") {
+      showUpgradeNotification();
+    }
+  });
+});
 
 chrome.notifications.onClicked.addListener(function(id) {
   if (id != notification) return;

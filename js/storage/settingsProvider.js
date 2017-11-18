@@ -39,6 +39,14 @@ define([
     return cloneObject(item);
   };
   
+  //export certain settings to Chrome local storage that need to be accessed by background page
+  var exportLocalSettings = async function() {
+    var userSettings = Settings.get("user");
+    await chromeP.storage.local.set({
+      "notifyOnUpdates": userSettings.notifyOnUpdates,
+    });
+  }
+  
   //track transfers to prevent multiple requests
   var pending = {};
 
@@ -141,6 +149,7 @@ define([
     local = {};
     var completed = keys.map(k => Settings.load(k));
     await Promise.all(completed);
+    await exportLocalSettings();
     command.fire("init:restart");
   });
   
@@ -164,7 +173,8 @@ define([
     if (index !== 0) return;
     await chromeP.notifications.clear("settings:emergency-reset-confirm");
     var page = await chromeP.runtime.getBackgroundPage();
-    page.emergencyReset();
+    await page.emergencyReset();
+    await exportLocalSettings();
   });
 
   return Settings;
