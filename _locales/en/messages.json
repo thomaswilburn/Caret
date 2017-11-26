@@ -11,6 +11,9 @@
   "aboutSupport": {
     "message": "Support"
   },
+  "aboutChangelog": {
+    "message": "Changelog"
+  },
   "aboutLicense": {
     "message": "Caret is available under a GPL license, which means that the <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> is freely available for you to use and modify as you see fit. If you find Caret useful, consider donating to the Free Software Foundation's <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fund to End Software Patents</a>."
   },
@@ -121,8 +124,6 @@
   "notificationNoUpdateDetail": { "message": "There aren't any updates for Caret at this time." },
   "notificationUpdateOK": { "message": "Yes, update and restart" },
   "notificationUpdateWait": { "message": "No thanks" },
-  "notificationUpdated": { "message": "Caret has been updated" },
-  "notificationUpdatedDetail": { "message": "Now at version $1. Click to see the changelog." },
 
   "searchDisplayQuery": { "message": "Searching for: $1\n" },
   "searchTabName": { "message": "Results: $1" },
