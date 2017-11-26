@@ -1,5 +1,3 @@
-var notification = "upgraded";
-
 chrome.runtime.onInstalled.addListener(function(e) {
   //this is where we'll track upgrades
   if (!e.previousVersion) return;
@@ -11,15 +9,8 @@ chrome.runtime.onInstalled.addListener(function(e) {
   var minor = semver[1];
   var build = semver[2];
   
-  if (e.previousVersion != manifest.version) {
-    //let the user know
-    chrome.notifications.create(notification, {
-      type: "basic",
-      iconUrl: "icon-128.png",
-      title: chrome.i18n.getMessage("notificationUpdated"),
-      message: chrome.i18n.getMessage("notificationUpdatedDetail", [manifest.version]),
-      isClickable: true
-    }, function(id) { notification = id });
+  if (e.previousVersion == manifest.version) {
+    return;
   }
   
   // console.log("Upgrading Caret from version " + e.previousVersion);
@@ -30,10 +21,4 @@ chrome.runtime.onInstalled.addListener(function(e) {
   
   */
 
-});
-
-
-chrome.notifications.onClicked.addListener(function(id) {
-  if (id != notification) return;
-  window.open("https://github.com/thomaswilburn/Caret/blob/master/changelog.rst", "target=_blank");
 });
