@@ -26,7 +26,7 @@ chrome.runtime.onInstalled.addListener(function(e) {
       if (data.updateNotifications && data.updateNotifications != "background") return;
     
       //let the user know
-      showUpdateNotification();
+      showUpdateNotification(manifest);
 
     });
   }
