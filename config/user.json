@@ -1,7 +1,4 @@
 {
-  //If you want to disable update checks at startup, change this
-  "promptForUpdates": true,
-
   "defaultTheme": "chrome", //This should be any of the supported Ace themes
   // look for theme-*.js here: https://github.com/ajaxorg/ace-builds/tree/master/src-noconflict
   
@@ -56,6 +53,12 @@
   "disableReload": false,
   //Set this to stop the editor from restoring the last set of tabs it had open
   "disableTabRestore": false,
+
+  //If you want to disable update checks at startup, change this
+  "promptForUpdates": true,
+  // options are "background", "launch", and "silent"
+  "updateNotifications": "background",
+
 
   //Wildly eccentric? You might like Vim keybindings.
   "emulateVim": false,

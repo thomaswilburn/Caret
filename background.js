@@ -104,7 +104,7 @@ chrome.contextMenus.create({
   if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
 });
 
-var emergencyReset = function() {
+window.emergencyReset = function() {
   if (mainWindow) mainWindow.close();
   var cleared = {
     local: false,

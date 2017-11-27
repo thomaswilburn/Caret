@@ -92,10 +92,23 @@ require([
     }
   };
 
-  Settings.pull("user").then(function(cfg) {
+  // manage updates on start
+  Settings.pull("user").then(async function(cfg) {
     if (cfg.user.promptForUpdates !== false) checkUpdates();
+    if (cfg.user.updateNotifications == "launch") {
+      var background = await chromeP.runtime.getBackgroundPage();
+      background.showUpdateNotification();
+    }
   });
   command.on("app:check-for-updates", checkUpdates);
+
+  //export update notification preference, possibly others
+  command.on("init:restart", async function() {
+    var cfg = await Settings.pull("user");
+    chromeP.storage.sync.set({
+      updateNotifications: cfg.user.updateNotifications
+    });
+  });
 
   chrome.notifications.onButtonClicked.addListener(function(id, index) {
     if (id != updateID) return;

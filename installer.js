@@ -1,25 +1,34 @@
 var notification = "upgraded";
 
+window.showUpdateNotification = function(manifest = chrome.runtime.getManifest()) {
+  chrome.notifications.create(notification, {
+    type: "basic",
+    iconUrl: "icon-128.png",
+    title: chrome.i18n.getMessage("notificationUpdated"),
+    message: chrome.i18n.getMessage("notificationUpdatedDetail", [manifest.version]),
+    isClickable: true
+  }, function(id) { notification = id });
+};
+
 chrome.runtime.onInstalled.addListener(function(e) {
   //this is where we'll track upgrades
   if (!e.previousVersion) return;
   
   var manifest = chrome.runtime.getManifest();
   
-  var semver = e.previousVersion.split(".");
-  var major = semver[0];
-  var minor = semver[1];
-  var build = semver[2];
-  
+  // at some point, we should use these.
+  var [major, minor, build] = e.previousVersion.split(".");
+
   if (e.previousVersion != manifest.version) {
-    //let the user know
-    chrome.notifications.create(notification, {
-      type: "basic",
-      iconUrl: "icon-128.png",
-      title: chrome.i18n.getMessage("notificationUpdated"),
-      message: chrome.i18n.getMessage("notificationUpdatedDetail", [manifest.version]),
-      isClickable: true
-    }, function(id) { notification = id });
+
+    chrome.storage.sync.get("updateNotifications", function(data) {
+
+      if (data.updateNotifications && data.updateNotifications != "background") return;
+    
+      //let the user know
+      showUpdateNotification();
+
+    });
   }
   
   // console.log("Upgrading Caret from version " + e.previousVersion);
