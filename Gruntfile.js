@@ -115,4 +115,15 @@ module.exports = function(grunt) {
     exec("rm -rf ./build/*", c);
   });
 
+  grunt.registerTask("checkLocale", "Finds unregistered strings for a given locale; checkLocale:XX for a language code XX", function(language) {
+    var english = require("./_locales/en/messages.json");
+    var other = require(`./_locales/${language}/messages.json`);
+    console.log(`Checking ${language} against English string file`);
+    for (var k in english) {
+      if (!(k in other)) {
+        console.log(`- Missing string: ${k}`);
+      }
+    }
+  })
+
 };
