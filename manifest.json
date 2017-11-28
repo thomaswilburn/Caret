@@ -1,7 +1,7 @@
 {
   "name": "Caret",
   "description": "Professional text editing for Chrome and Chrome OS",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -12,8 +12,7 @@
   "app": {
     "background": {
       "scripts": [
-        "background.js",
-        "installer.js"
+        "background.js"
       ]
     }
   },

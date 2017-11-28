@@ -97,7 +97,12 @@ require([
     if (cfg.user.promptForUpdates !== false) checkUpdates();
     if (cfg.user.updateNotifications == "launch") {
       var background = await chromeP.runtime.getBackgroundPage();
-      background.showUpdateNotification();
+      var manifest = chrome.runtime.getManifest();
+      console.log(background.updateVersion, manifest.version);
+      if (background.updateVersion && background.updateVersion != manifest.version) {
+        background.showUpdateNotification();
+        background.updateVersion = null;
+      }
     }
   });
   command.on("app:check-for-updates", checkUpdates);

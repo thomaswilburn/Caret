@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.5
+-----
+
+Fix a bug with update notifications on launch, where we just fired them every single time. 
+
 1.8.4
 -----
 

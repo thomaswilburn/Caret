@@ -6,7 +6,6 @@ messages.
 
 var mainWindow = null;
 var pending = null;
-var upgrading = false;
 var files = [];
 var commands = [];
 
@@ -59,8 +58,6 @@ var launch = function(launchData) {
   if (launchData && launchData.items) files.push.apply(files, launchData.items);
   //we delay opening the actual window to give multiple file events time to fire
   if (pending !== null) return;
-  //do not open windows when an upgrade is running
-  if (upgrading) return;
   pending = setTimeout(openWindow, 250);
 };
 chrome.app.runtime.onLaunched.addListener(launch);
@@ -82,7 +79,6 @@ var onMessage = function(message, sender, sendResponse) {
   });
   //as with files, delay to accumulate multiple messages
   if (pending !== null) return;
-  if (upgrading) return;
   pending = setTimeout(openWindow, 250);
 };
 chrome.runtime.onMessageExternal.addListener(onMessage);
@@ -128,4 +124,45 @@ window.emergencyReset = function() {
 chrome.contextMenus.onClicked.addListener(function(data) {
   if (data.menuItemId != chrome.runtime.id + ":factory-reset") return;
   emergencyReset();
+});
+
+var installNotification = "upgraded";
+
+window.showUpdateNotification = function(manifest = chrome.runtime.getManifest()) {
+  chrome.notifications.create(installNotification, {
+    type: "basic",
+    iconUrl: "icon-128.png",
+    title: chrome.i18n.getMessage("notificationUpdated"),
+    message: chrome.i18n.getMessage("notificationUpdatedDetail", [manifest.version]),
+    isClickable: true
+  }, function(id) { installNotification = id });
+};
+
+chrome.runtime.onInstalled.addListener(function(e) {
+  if (!e.previousVersion) return;
+  // set a flag for launch updates
+  window.updateVersion = e.previousVersion;
+  
+  var manifest = chrome.runtime.getManifest();
+  
+  // at some point, we should use these.
+  var [major, minor, build] = e.previousVersion.split(".");
+
+  if (e.previousVersion != manifest.version) {
+
+    chrome.storage.sync.get("updateNotifications", function(data) {
+
+      if (data.updateNotifications && data.updateNotifications != "background") return;
+    
+      //let the user know
+      showUpdateNotification(manifest);
+
+    });
+  }
+
+});
+
+chrome.notifications.onClicked.addListener(function(id) {
+  if (id != installNotification) return;
+  window.open("https://github.com/thomaswilburn/Caret/blob/master/changelog.rst", "target=_blank");
 });
