@@ -9,35 +9,16 @@ require([
     "util/manos",
     "util/i18n",
     "util/chromePromise",
-    "ui/projectManager",
-    "ui/keys",
     "fileManager",
-    "ui/menus",
-    "ui/palette",
-    "ui/searchbar",
-    "ui/cli",
     "api",
     "sequences",
-    "storage/syncfile",
+    "ui"
   ], function(command, editor, Settings, dialog, sessions, M, i18n, chromeP) {
 
   //translate inline strings
   i18n.page();
 
   var frame = chrome.app.window.current();
-
-  var setTheme = async function() {
-    var data = await Settings.pull("user");
-    var themes = {
-      "dark": "css/caret-dark.css",
-      "twilight": "css/caret-twilight.css",
-      "light": "css/caret.css"
-    };
-    var theme = data.user.uiTheme || "light";
-    var url = themes[theme] || themes.dark;
-    document.querySelector("#theme").setAttribute("href", url);
-  };
-  setTheme();
 
   //these are modules that must be loaded before init:complete
   var loadedModules = {
@@ -59,7 +40,6 @@ require([
     //all specified modules are loaded, app is ready for init:complete
     command.fire("init:complete");
   });
-  command.on("init:restart", setTheme);
 
   //code to enable update checking
   var updateID = "caret:update";
@@ -150,52 +130,6 @@ require([
     })
   });
 
-  command.on("app:minimize", function() {
-    frame.minimize();
-    editor.focus();
-  });
-
-  command.on("app:maximize", function() {
-    frame.isMaximized() || frame.isFullscreen() ? frame.restore() : frame.maximize();
-    document.body.classList.toggle("fullscreened", !frame.isMaximized());
-    editor.focus();
-  });
-  
-  if (frame.isMaximized() || frame.isFullscreen()) {
-    document.body.classList.add("fullscreened");
-  }
-
-  command.on("app:restart", function() {
-    chrome.runtime.reload();
-  });
-
-  //developer command for reloading CSS
-  command.on("app:reload-css", function() {
-    var link = document.querySelector("link#theme");
-    link.href = link.href;
-  });
-
-  //handle immersive fullscreen
-  var onFullscreen = function() {
-    document.body.classList.add("fullscreened");
-    Settings.pull("user").then(function(data) {
-      if (data.user.immersiveFullscreen) {
-        document.body.classList.add("immersive");
-        editor.resize();
-      }
-    });
-  }
-
-  frame.onFullscreened.addListener(onFullscreen);
-  if (frame.isFullscreen()) {
-    onFullscreen();
-  }
-
-  frame.onRestored.addListener(function() {
-    document.body.classList.remove("fullscreen");
-    document.body.classList.remove("immersive");
-  });
-
   //It's nice to be able to launch the debugger from a command stroke
   command.on("app:debug", function() {
     debugger;
@@ -203,14 +137,6 @@ require([
 
   command.on("app:browse", function(url) {
     window.open(url, "target=_blank");
-  });
-
-  //kill middle clicks if not handled
-
-  document.body.addEventListener("click", function(e) {
-    if (e.button == 1) {
-      e.preventDefault();
-    }
   });
 
 });

@@ -64,3 +64,8 @@ statusbar.js
 Sets the status text, and returns an interface with ``setMessage()``,
 ``clearMessage()``, and ``toast()`` methods. It's recommended to use the
 ``status:*`` commands instead of requiring this module directly.
+
+window.js
+---------
+
+Handles various app lifecycle events, such as restarting and closing tabs.
