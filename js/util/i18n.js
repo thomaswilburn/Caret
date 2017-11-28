@@ -13,6 +13,9 @@ define(function() {
         var original = element.innerHTML;
         var translated = chrome.i18n.getMessage(original);
         if (translated) element.innerHTML = translated;
+        var title = element.getAttribute("title") || "";
+        var translatedTitle = chrome.i18n.getMessage(title);
+        if (translatedTitle) element.setAttribute("title", translatedTitle);
       });
     },
     //get a message, or return the untranslated text

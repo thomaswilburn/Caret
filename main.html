@@ -12,9 +12,9 @@
       <b class="app-name">Caret</b>
       <ul class="toolbar"></ul>
       <div class="window-controls">
-        <a command="app:minimize" title="Minimize">-</a>
-        <a command="app:maximize" title="Maximize">+</a>
-        <a class="close" command="app:exit" title="Close">~</a>
+        <a class="i18n" command="app:minimize" title="minimize">-</a>
+        <a class="i18n" command="app:maximize" title="maximize">+</a>
+        <a class="close i18n" command="app:exit" title="close">~</a>
       </div>
     </div>
 
@@ -38,16 +38,16 @@
 
     <div class="searchbar">
       <input type="checkbox" id="search-case-check">
-      <label for="search-case-check" title="Match Case">Aa</label>
+      <label for="search-case-check" class="i18n" title="searchMatchCase">Aa</label>
       <input class="search-box" type="text">
-      <button class="find-all">Find All</button>
+      <button class="find-all i18n">searchFindAll</button>
     </div>
 
     <div class="bottom-bar">
       <div class="status-text"></div>
       <div class="mode-theme">
-        <select class="syntax" command="session:syntax" tabindex=-1 title="Select syntax"></select>
-        <select class="theme" command="editor:theme" tabindex=-1 title="Select editor theme"></select>
+        <select class="syntax i18n" command="session:syntax" tabindex=-1 title="selectSyntax"></select>
+        <select class="theme i18n" command="editor:theme" tabindex=-1 title="selectTheme"></select>
       </div>
     </div>
 

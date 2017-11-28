@@ -1,19 +1,18 @@
 {
-  "loading": {
-    "message": "loading"
-  },
+  "minimize": { "message": "Minimize" },
+  "maximize": { "message": "Maximize" },
+  "close": { "message": "Close" },
+  "loading": { "message": "loading" },
+
   "aboutWrittenBy": {
     "message": "Written by <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
   },
-  "aboutHomePage": {
-    "message": "Home Page"
-  },
-  "aboutSupport": {
-    "message": "Support"
-  },
+  "aboutHomePage": { "message": "Home Page" },
+  "aboutSupport": { "message": "Support" },
   "aboutLicense": {
     "message": "Caret is available under a GPL license, which means that the <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> is freely available for you to use and modify as you see fit. If you find Caret useful, consider donating to the Free Software Foundation's <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fund to End Software Patents</a>."
   },
+  
   "menuFile": { "message": "File" },
   "menuNewFile": { "message": "New File" },
   "menuOpenFile": { "message": "Open File" },
@@ -114,6 +113,8 @@
   "recordingMacro": { "message": "Recording macro..." },
   "setSyntax": { "message": "Set Syntax: $1" },
   "setTheme": { "message": "Set Theme: $1" },
+  "selectSyntax": { "message": "Select syntax" },
+  "selectTheme": { "message": "Select theme" },
 
   "notificationUpdateAvailable": { "message": "Caret: Update available" },
   "notificationUpdateDetail": { "message": "An update to version $1 is available. Would you like to update and restart now?" },
@@ -128,5 +129,7 @@
   "searchTabName": { "message": "Results: $1" },
   "searchNoDirectories": { "message": "\nNo files scanned. You'll need to add a directory to your project first." },
   "searchSummary": { "message": "\n\n$1 matches found. $2 files scanned." },
-  "searchCancelled": { "message": "\nSearch was cancelled. You can change the maximum number of search results allowed in User Preferences." }
+  "searchCancelled": { "message": "\nSearch was cancelled. You can change the maximum number of search results allowed in User Preferences." },
+  "searchMatchCase": { "message": "Match Case" },
+  "searchFindAll": { "message": "Find All" }
 }
