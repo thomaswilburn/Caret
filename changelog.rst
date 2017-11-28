@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+1.8.4
+-----
+
+Introduced additional options for update notifications. You can set the `updateNotification` preference in your user.json to be "background" (the default), "launch" (shows only when Caret is opened), or "silent" (never show notifications). This preference is synchronized across machines.
+
+1.8.3
+-----
+
+Added Italian translation.
+
 1.8.0
 -----
 
