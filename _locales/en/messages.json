@@ -12,7 +12,7 @@
   "aboutLicense": {
     "message": "Caret is available under a GPL license, which means that the <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>source code</a> is freely available for you to use and modify as you see fit. If you find Caret useful, consider donating to the Free Software Foundation's <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fund to End Software Patents</a>."
   },
-  
+
   "menuFile": { "message": "File" },
   "menuNewFile": { "message": "New File" },
   "menuOpenFile": { "message": "Open File" },
@@ -131,5 +131,7 @@
   "searchSummary": { "message": "\n\n$1 matches found. $2 files scanned." },
   "searchCancelled": { "message": "\nSearch was cancelled. You can change the maximum number of search results allowed in User Preferences." },
   "searchMatchCase": { "message": "Match Case" },
-  "searchFindAll": { "message": "Find All" }
+  "searchFindAll": { "message": "Find All" },
+
+  "errorProportionalFont": { "message": "The custom font you've selected may cause problems with Caret's editing component, which only supports monospaced fonts (where the letters are all the same width). If you experience cursor issues, please reset the fontFamily setting in your user preferences." }
 }

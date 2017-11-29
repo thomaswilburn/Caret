@@ -50,7 +50,29 @@ define([
     editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
     editor.setShowInvisibles(userConfig.showWhitespace || false);
     editor.setHighlightActiveLine(userConfig.highlightLine || false);
-    editor.container.style.fontFamily = userConfig.fontFamily || null;
+    
+    // did the font change?
+    if (editor.container.style.fontFamily != userConfig.fontFamily) {
+      editor.container.style.fontFamily = userConfig.fontFamily || null;
+
+      // check font metrics
+      if (editor.container.style.fontFamily) {
+        var tester = document.createElement("span");
+        tester.style.position = "absolute";
+        tester.style.fontFamily = userConfig.fontFamily;
+        document.body.appendChild(tester);
+        tester.innerHTML = "W";
+        var { width: a } = tester.getBoundingClientRect();
+        tester.innerHTML = "i";
+        var { width: b } = tester.getBoundingClientRect();
+        if (Math.abs(a - b) > 1) {
+          // circular dependency, so require this dynamically
+          require(["ui/dialog"], dialog => dialog(i18n.get("errorProportionalFont")));
+        }
+        document.body.removeChild(tester);
+      }
+    }
+    
     defaultFontSize();
     ace.config.loadModule("ace/ext/language_tools", function() {
       editor.setOptions({
