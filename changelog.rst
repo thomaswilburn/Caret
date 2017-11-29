@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.6
+-----
+
+We now test custom font family settings when user preferences are changed, and display a warning when a non-monospace font is detected (as this makes Ace freak out). You're still allowed to use that font, because maybe you know something we don't. But hopefully this will slow the constant stream of "my cursor doesn't work" support messages I get.
+
 1.8.5
 -----
 
