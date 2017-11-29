@@ -78,7 +78,7 @@ require([
     if (cfg.user.updateNotifications == "launch") {
       var background = await chromeP.runtime.getBackgroundPage();
       var manifest = chrome.runtime.getManifest();
-      console.log(background.updateVersion, manifest.version);
+      // console.log(background.updateVersion, manifest.version);
       if (background.updateVersion && background.updateVersion != manifest.version) {
         background.showUpdateNotification();
         background.updateVersion = null;

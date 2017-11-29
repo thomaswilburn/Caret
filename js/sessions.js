@@ -6,10 +6,9 @@ define([
     "editor",
     "command",
     "settings!ace",
-    "util/template!templates/newTabButton.html",
     "aceBindings"
   ],
-  function(state, addRemove, switching, bindEvents, editor, command, Settings, inflate) {
+  function(state, addRemove, switching, bindEvents, editor, command, Settings) {
     
   /*
   
@@ -44,9 +43,6 @@ define([
       }
       tabContainer.appendChild(element);
     });
-    if (Settings.get("user").showNewTabButton === true) {
-      tabContainer.appendChild(inflate.get("templates/newTabButton.html"));
-    }
     setTimeout(function() {
       //wait for render before triggering the enter animation
       tabContainer.querySelectorAll(".enter").forEach(element => element.classList.remove("enter"));
