@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.7
+-----
+
+Append "monospace" to the end of the font stack so that typos don't completely break rendering. Yes, we should have done this four years ago.
+
 1.8.6
 -----
 
