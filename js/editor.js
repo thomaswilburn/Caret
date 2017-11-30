@@ -53,7 +53,13 @@ define([
     
     // did the font change?
     if (editor.container.style.fontFamily != userConfig.fontFamily) {
-      editor.container.style.fontFamily = userConfig.fontFamily || null;
+      var family = userConfig.fontFamily || null;
+      if (family) {
+        family = family.split(",");
+        family.push("monospace");
+        family = family.join(",");
+      }
+      editor.container.style.fontFamily = family;
 
       // check font metrics
       if (editor.container.style.fontFamily) {
