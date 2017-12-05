@@ -84,11 +84,14 @@ var onMessage = function(message, sender, sendResponse) {
 chrome.runtime.onMessageExternal.addListener(onMessage);
 
 //relaunch on reboot, if the window was open at shutdown
-chrome.app.runtime.onRestarted.addListener(function() {
+var checkRestart = function() {
   chrome.storage.local.get("isOpen", function(data) {
     if (data.isOpen) launch();
   });
-});
+};
+chrome.app.runtime.onRestarted.addListener(checkRestart);
+checkRestart();
+
 
 // setup for launcher context menus
 // currently this is just for emergency reset
