@@ -1,4 +1,4 @@
-ace.define("ace/ext/modelist",["require","exports","module"], function(require, exports, module) {
+ace.define("ace/ext/modelist",[], function(require, exports, module) {
 "use strict";
 
 var modes = [];
@@ -41,6 +41,7 @@ var supportedModes = {
     ADA:         ["ada|adb"],
     Apache_Conf: ["^htaccess|^htgroups|^htpasswd|^conf|htaccess|htgroups|htpasswd"],
     AsciiDoc:    ["asciidoc|adoc"],
+    ASL:         ["dsl|asl"],
     Assembly_x86:["asm|a"],
     AutoHotKey:  ["ahk"],
     BatchFile:   ["bat|cmd"],
@@ -64,8 +65,7 @@ var supportedModes = {
     Dockerfile:  ["^Dockerfile"],
     Dot:         ["dot"],
     Drools:      ["drl"],
-    Dummy:       ["dummy"],
-    DummySyntax: ["dummy"],
+    Edifact:     ["edi"],
     Eiffel:      ["e|ge"],
     EJS:         ["ejs"],
     Elixir:      ["ex|exs"],
@@ -120,6 +120,7 @@ var supportedModes = {
     MATLAB:      ["matlab"],
     Maze:        ["mz"],
     MEL:         ["mel"],
+    MIXAL:       ["mixal"],
     MUSHCode:    ["mc|mush"],
     MySQL:       ["mysql"],
     Nix:         ["nix"],
@@ -212,6 +213,10 @@ module.exports = {
 
 });
                 (function() {
-                    ace.require(["ace/ext/modelist"], function() {});
+                    ace.require(["ace/ext/modelist"], function(m) {
+                        if (typeof module == "object" && typeof exports == "object" && module) {
+                            module.exports = m;
+                        }
+                    });
                 })();
             

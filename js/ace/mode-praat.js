@@ -1,4 +1,4 @@
-ace.define("ace/mode/praat_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/praat_highlight_rules",[], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -93,15 +93,14 @@ var PraatHighlightRules = function() {
         "TableOfReal|TextGrid|TextInterval|TextPoint|TextTier|Tier|"         +
         "Transition|VocalTract|Weight|WordList"
     );
-
     this.$rules = {
         "start" : [
             {
                 token : "string.interpolated",
-                regex : /'((?:[a-z][a-zA-Z0-9_]*)(?:\$|#|:[0-9]+)?)'/
+                regex : /'((?:\.?[a-z][a-zA-Z0-9_.]*)(?:\$|#|:[0-9]+)?)'/
             }, {
                 token : ["text", "text", "keyword.operator", "text", "keyword"],
-                regex : /(^\s*)(?:([a-z][a-zA-Z0-9_]*\$?\s+)(=)(\s+))?(stopwatch)/
+                regex : /(^\s*)(?:(\.?[a-z][a-zA-Z0-9_.]*\$?\s+)(=)(\s+))?(stopwatch)/
             }, {
                 token : ["text", "keyword", "text", "string"],
                 regex : /(^\s*)(print(?:line|tab)?|echo|exit|pause|send(?:praat|socket)|include|execute|system(?:_nocheck)?)(\s+)(.*)/
@@ -113,7 +112,10 @@ var PraatHighlightRules = function() {
                 regex : /(\s+)((?:\+|-|\/|\*|<|>)=?|==?|!=|%|\^|\||and|or|not)(\s+)/
             }, {
                 token : ["text", "text", "keyword.operator", "text", "keyword", "text", "keyword"],
-                regex : /(^\s*)(?:([a-z][a-zA-Z0-9_]*\$?\s+)(=)(\s+))?(?:((?:no)?warn|(?:unix_)?nocheck|noprogress)(\s+))?((?:[A-Z][^.:"]+)(?:$|(?:\.{3}|:)))/
+                regex : /(^\s*)(?:(\.?[a-z][a-zA-Z0-9_.]*\$?\s+)(=)(\s+))?(?:((?:no)?warn|(?:unix_)?nocheck|noprogress)(\s+))?((?:[A-Z][^.:"]+)(?:$|(?:\.{3}|:)))/
+            }, {
+                token : ["text", "keyword", "text", "keyword"],
+                regex : /(^\s*)((?:no(?:warn|check))?)(\s*)(\b(?:editor(?::?)|endeditor)\b)/
             }, {
                 token : ["text", "keyword", "text", "keyword"],
                 regex : /(^\s*)(?:(demo)?(\s+))((?:[A-Z][^.:"]+)(?:$|(?:\.{3}|:)))/
@@ -155,7 +157,7 @@ var PraatHighlightRules = function() {
                 regex : /\b[+-]?\d+(?:(?:\.\d*)?(?:[eE][+-]?\d+)?)?\b/
             }, {
                 token : ["keyword", "text", "entity.name.function"],
-                regex : /(procedure)(\s+)(\S+)/
+                regex : /(procedure)(\s+)([^:\s]+)/
             }, {
                 token : ["entity.name.function", "text"],
                 regex : /(@\S+)(:|\s*\()/
@@ -232,7 +234,7 @@ oop.inherits(PraatHighlightRules, TextHighlightRules);
 exports.PraatHighlightRules = PraatHighlightRules;
 });
 
-ace.define("ace/mode/matching_brace_outdent",["require","exports","module","ace/range"], function(require, exports, module) {
+ace.define("ace/mode/matching_brace_outdent",[], function(require, exports, module) {
 "use strict";
 
 var Range = require("../range").Range;
@@ -272,7 +274,7 @@ var MatchingBraceOutdent = function() {};
 exports.MatchingBraceOutdent = MatchingBraceOutdent;
 });
 
-ace.define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
+ace.define("ace/mode/folding/cstyle",[], function(require, exports, module) {
 "use strict";
 
 var oop = require("../../lib/oop");
@@ -412,7 +414,7 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-ace.define("ace/mode/praat",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/praat_highlight_rules","ace/mode/matching_brace_outdent","ace/mode/folding/cstyle"], function(require, exports, module) {
+ace.define("ace/mode/praat",[], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -466,3 +468,11 @@ oop.inherits(Mode, TextMode);
 
 exports.Mode = Mode;
 });
+                (function() {
+                    ace.require(["ace/mode/praat"], function(m) {
+                        if (typeof module == "object" && typeof exports == "object" && module) {
+                            module.exports = m;
+                        }
+                    });
+                })();
+            

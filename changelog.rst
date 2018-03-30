@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.8
+-----
+
+Updated Ace to the newest build release.
+
 1.8.7
 -----
 

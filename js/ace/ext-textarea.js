@@ -1,4 +1,4 @@
-ace.define("ace/theme/textmate",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
+ace.define("ace/theme/textmate",[], function(require, exports, module) {
 "use strict";
 
 exports.isDark = false;
@@ -123,12 +123,13 @@ border: 1px solid rgb(200, 200, 250);\
 background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==\") right repeat-y;\
 }\
 ";
+exports.$id = "ace/theme/textmate";
 
 var dom = require("../lib/dom");
 dom.importCssString(exports.cssText, exports.cssClass);
 });
 
-ace.define("ace/ext/textarea",["require","exports","module","ace/lib/event","ace/lib/useragent","ace/lib/net","ace/ace","ace/theme/textmate"], function(require, exports, module) {
+ace.define("ace/ext/textarea",[], function(require, exports, module) {
 "use strict";
 
 var event = require("../lib/event");
@@ -169,6 +170,7 @@ function setupContainer(element, getValue) {
 
     var parentNode = element.parentNode;
     var container = document.createElement('div');
+    //
     var resizeEvent = function() {
         var style = 'position:relative;';
         [
@@ -203,12 +205,15 @@ function setupContainer(element, getValue) {
 }
 
 exports.transformTextarea = function(element, options) {
+    var isFocused = element.autofocus || document.activeElement == element;
     var session;
     var container = setupContainer(element, function() {
         return session.getValue();
     });
     element.style.display = 'none';
     container.style.background = 'white';
+
+    //
     var editorDiv = document.createElement("div");
     applyStyles(editorDiv, {
         top: "0px",
@@ -225,12 +230,9 @@ exports.transformTextarea = function(element, options) {
         position: "absolute",
         right: "0px",
         bottom: "0px",
-        background: "red",
         cursor: "nw-resize",
-        borderStyle: "solid",
-        borderWidth: "9px 8px 10px 9px",
-        width: "2px",
-        borderColor: "lightblue gray gray lightblue",
+        border: "solid 9px",
+        borderColor: "lightblue gray gray #ceade6",
         zIndex: 101
     });
 
@@ -263,9 +265,10 @@ exports.transformTextarea = function(element, options) {
     session = editor.getSession();
 
     session.setValue(element.value || element.innerHTML);
-    editor.focus();
+    if (isFocused)
+        editor.focus();
     container.appendChild(settingOpener);
-    setupApi(editor, editorDiv, settingDiv, ace, options, load);
+    setupApi(editor, editorDiv, settingDiv, ace, options);
     setupSettingPanel(settingDiv, settingOpener, editor);
 
     var state = "";
@@ -282,6 +285,7 @@ exports.transformTextarea = function(element, options) {
     });
 
     event.addListener(settingOpener, "mousedown", function(e) {
+        e.preventDefault();
         if (state == "toggle") {
             editor.setDisplaySettings();
             return;
@@ -306,10 +310,9 @@ function load(url, module, callback) {
     });
 }
 
-function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
+function setupApi(editor, editorDiv, settingDiv, ace, options) {
     var session = editor.getSession();
     var renderer = editor.renderer;
-    loader = loader || load;
 
     function toBool(value) {
         return value === "true" || value == true;
@@ -353,7 +356,7 @@ function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
                 }
             break;
 
-            case "softWrap":
+            case "wrap":
             case "fontSize":
                 editor.$setOption(key, value);
             break;
@@ -555,6 +558,10 @@ exports.defaultOptions = {
 
 });
                 (function() {
-                    ace.require(["ace/ext/textarea"], function() {});
+                    ace.require(["ace/ext/textarea"], function(m) {
+                        if (typeof module == "object" && typeof exports == "object" && module) {
+                            module.exports = m;
+                        }
+                    });
                 })();
             

@@ -1,4 +1,4 @@
-ace.define("ace/mode/c9search_highlight_rules",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/c9search_highlight_rules",[], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -64,7 +64,7 @@ var C9SearchHighlightRules = function() {
                     if (parts.length < 3)
                         return "text";
 
-                    var options, search, replace;
+                    var options, search;
                     
                     var i = 0;
                     var tokens = [{
@@ -78,7 +78,6 @@ var C9SearchHighlightRules = function() {
                         type: "text"
                     }];
                     if (parts[2] !== " in") {
-                        replace = parts[i];
                         tokens.push({
                             value: "'" + parts[i++] + "'",
                             type: "text"
@@ -156,7 +155,7 @@ exports.C9SearchHighlightRules = C9SearchHighlightRules;
 
 });
 
-ace.define("ace/mode/matching_brace_outdent",["require","exports","module","ace/range"], function(require, exports, module) {
+ace.define("ace/mode/matching_brace_outdent",[], function(require, exports, module) {
 "use strict";
 
 var Range = require("../range").Range;
@@ -196,7 +195,7 @@ var MatchingBraceOutdent = function() {};
 exports.MatchingBraceOutdent = MatchingBraceOutdent;
 });
 
-ace.define("ace/mode/folding/c9search",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
+ace.define("ace/mode/folding/c9search",[], function(require, exports, module) {
 "use strict";
 
 var oop = require("../../lib/oop");
@@ -248,7 +247,7 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-ace.define("ace/mode/c9search",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/c9search_highlight_rules","ace/mode/matching_brace_outdent","ace/mode/folding/c9search"], function(require, exports, module) {
+ace.define("ace/mode/c9search",[], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -285,3 +284,11 @@ oop.inherits(Mode, TextMode);
 exports.Mode = Mode;
 
 });
+                (function() {
+                    ace.require(["ace/mode/c9search"], function(m) {
+                        if (typeof module == "object" && typeof exports == "object" && module) {
+                            module.exports = m;
+                        }
+                    });
+                })();
+            
