@@ -128,13 +128,13 @@ define([
       var doc = css + printable.html;
       iframe.srcdoc = doc;
       iframe.width = iframe.height = 1;
-      iframe.style.display = "none";
       iframe.onload = function() {
         iframe.contentWindow.print();
         setTimeout(function() {
+          
           iframe.parentElement.removeChild(iframe);
         });
-        c();
+        if (c) c();
       };
       document.body.appendChild(iframe);
     });
