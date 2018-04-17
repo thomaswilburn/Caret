@@ -48,6 +48,12 @@ fileManager.js
 Handles opening files from launch data, retained handles, and user
 commands. Exposes no external methods or data.
 
+main.js
+-------
+
+All execution starts here. This module is in charge of program initialization,
+lifecycle, and random ``app:*`` commands.
+
 sessions.js
 -----------
 

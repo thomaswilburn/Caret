@@ -14,6 +14,12 @@ Wraps the ``chrome.*`` APIs up using Promises for easy interop with ``async``
 and ``await``. Doesn't shim everything, only the async functions currently
 used by Caret.
 
+i18n.js
+-------
+
+Gets translated strings from Chrome's localization system. Language files are
+located in _locales.
+
 inflate.js
 ----------
 
@@ -40,7 +46,7 @@ manos.js
 A lightweight library for handling async code, this serves as the "hands
 of fate" for your callbacks. Provides ``serial()`` and ``map()`` for
 async array manipulation, and ``pton()`` and ``deferred`` for working
-with native ES6 Promises.
+with native ES6 Promises. Mostly unused now that we're on async/await.
 
 template.js
 -----------

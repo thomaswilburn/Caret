@@ -24,6 +24,12 @@ easier to open many types of data through the same tab/editor UI. It
 also makes persistence much more consistent and less verbose throughout
 Caret.
 
+nullfile.js
+-----------
+
+It's a file stub that does nothing when you try to interact with it--useful
+for read-only tabs, like search results or config defaults.
+
 settingsProvider.js
 -------------------
 

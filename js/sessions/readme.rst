@@ -10,10 +10,22 @@ addRemove.js
 Provides methods for adding, removing, and re-ordering sessions and
 their tabs.
 
+autosave.js
+-----------
+
+Automatically triggers saving files either on a timer or when the window loses
+focus, depending on your config.
+
 binding.js
 ----------
 
 Event bindings, such as drag/drop and middle click
+
+dragdrop.js
+-----------
+
+Specifically handles the events when a file or folder is dropped on the main
+editor window.
 
 state.js
 --------
