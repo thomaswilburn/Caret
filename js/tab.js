@@ -78,8 +78,8 @@ define([
       } catch(err) {
         if (err.message != "User cancelled") {
           dialog(err.message);
-          throw err;
         }
+        throw err;
       }
       this.file = file;
       this.fileName = file.entry.name;
