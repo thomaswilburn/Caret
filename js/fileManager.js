@@ -35,7 +35,7 @@ define([
     if (!files.slice) {
       files = [ files ];
     }
-    files.map(async function(entry) {
+    files = files.map(async function(entry) {
       var f = new File(entry);
       var data = await f.read();
       sessions.addFile(data, f);
