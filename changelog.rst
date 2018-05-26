@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+1.8.11
+------
+
+Add Fortran support. Always run a font metrics test on editor startup, for the people who have decided to set their monospace browser font preference to a non-monospace font.
+
+1.8.10
+------
+
+Fix a bug with autosave when the save operation is cancelled.
+
+1.8.9
+-----
+
+Printing fixes.
+
 1.8.8
 -----
 

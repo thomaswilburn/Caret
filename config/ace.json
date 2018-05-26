@@ -68,6 +68,7 @@
     { "name": "elixir", "label": "Elixir", "extensions": ["ex", "exs"] },
     { "name": "elm", "label": "Elm", "extensions": ["elm"] },
     { "name": "erlang", "label": "Erlang", "extensions": ["el", "erl", "hrl"] },
+    { "name": "fortran", "label": "Fortran", "extensions": ["f", "f90"] },
     { "name": "forth", "label": "Forth", "extensions": ["frt", "fs", "ldr", "fth", "4th"] },
     { "name": "ftl", "label": "FreeMarker", "extensions": ["ftl"] },
     { "name": "gcode", "label": "Gcode", "extensions": ["gcode"] },
