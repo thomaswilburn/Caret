@@ -108,13 +108,11 @@ define([
     });
   };
   
-  var closeTabsRight = function(tabID) {
+  var closeTabsRight = async function(tabID) {
     tabID = tabID || state.tabs.indexOf(editor.getSession());
-    var toClose = [];
     for (var i = state.tabs.length - 1; i > tabID; i--) {
-      toClose.push(i);
+      await addRemove.remove(i);
     }
-    M.serial(toClose, addRemove.remove);
   };
 
   var enableDblClickNewTab = function() {

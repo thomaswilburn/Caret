@@ -6,14 +6,13 @@ require([
     "storage/settingsProvider",
     "ui/dialog",
     "sessions",
-    "util/manos",
     "util/i18n",
     "util/chromePromise",
     "fileManager",
     "api",
     "sequences",
     "ui"
-  ], function(command, editor, Settings, dialog, sessions, M, i18n, chromeP) {
+  ], function(command, editor, Settings, dialog, sessions, i18n, chromeP) {
 
   //translate inline strings
   i18n.page();
@@ -102,32 +101,28 @@ require([
     }
   });
 
-  command.on("app:exit", function() {
+  command.on("app:exit", async function() {
     var cancelled = false;
     var tabs = sessions.getAllTabs();
-    M.serial(tabs, function(tab, c) {
+    for (var tab of tabs) {
       if (tab.modified && (!tab.file || !tab.file.virtual)) {
-        return dialog(
+        var value = await dialog(
           i18n.get("dialogUnsaved", tab.fileName),
           [
             { label: i18n.get("dialogSave"), value: "save", shortcut: "s" },
             { label: i18n.get("dialogDiscard"), value: "discard", shortcut: "n" },
             { label: i18n.get("dialogCancel"), value: "cancel", shortcut: "c" }
-          ],
-          function(value) {
-            if (!value || value == "cancel") {
-              cancelled = true;
-            }
-            if (value == "save") {
-              return tab.save().then(c);
-            }
-            c(!cancelled);
-          });
+          ]);
+        if (!value || value == "cancel") {
+          cancelled = true;
+          break;
+        }
+        if (value == "save") {
+          await tab.save();
+        }
       }
-      c();
-    }, function() {
-      if (!cancelled) frame.close();
-    })
+    }
+    if (!cancelled) frame.close();
   });
 
   //It's nice to be able to launch the debugger from a command stroke

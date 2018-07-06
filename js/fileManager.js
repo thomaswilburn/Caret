@@ -92,26 +92,25 @@ define([
     setTimeout(retainLoop, retainInterval * 1000);
   };
 
-  command.on("session:check-file", function() {
+  command.on("session:check-file", async function() {
     if (Settings.get("user").disableReload) return;
     var tab = sessions.getCurrent();
     if (!tab.file || tab.file.virtual) return;
-    tab.file.entry.file(function(entry) {
+    tab.file.entry.file(async function(entry) {
       if (tab.modifiedAt && entry.lastModifiedDate > tab.modifiedAt) {
         if (tab.modified) {
-          dialog(
+          var confirmed = await dialog(
             i18n.get("dialogModifiedBackground"),
             [
               {label: i18n.get("dialogReload"), value: true},
-              {label: i18n.get("dialogCancel"), value: false, focus: true}],
-            function(confirmed) {
-              if (confirmed) {
-                command.fire("session:revert-file");
-              } else {
-                tab.modifiedAt = new Date();
-              }
-            }
+              {label: i18n.get("dialogCancel"), value: false, focus: true}
+            ]
           );
+          if (confirmed) {
+            command.fire("session:revert-file");
+          } else {
+            tab.modifiedAt = new Date();
+          }
         } else {
           command.fire("session:revert-file");
         }

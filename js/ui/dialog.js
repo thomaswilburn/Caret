@@ -10,93 +10,97 @@ define([
   */
 
   return function(text, buttons, callback) {
-    if (typeof buttons == "function" || typeof buttons == "undefined") {
-      callback = buttons;
-      buttons = ["ok"];
-    }
-    
-    buttons = buttons.map(function(options) {
-      if (typeof options == "string") {
-        return {
-          label: options,
-          value: options
-        };
+    return new Promise(function(ok, fail) {
+      if (typeof buttons == "function" || typeof buttons == "undefined") {
+        callback = buttons;
+        buttons = ["ok"];
       }
-      return options;
-    });
-    
-    var modal = inflate.get("templates/dialog.html", {
-      text: text,
-      buttons: buttons
-    });
-    
-    document.body.appendChild(modal);
-    setTimeout(function() {
-      //trigger enter animations
-      modal.classList.remove("enter");
-    });
-    
-    var defaultButton = modal.querySelector("button.default");
-    if (!defaultButton) defaultButton = modal.querySelector("button");
-    defaultButton.focus();
-    
-    modal.addEventListener("click", function(e) {
-      if (e.target != modal) return;
-      e.preventDefault();
-      e.stopImmediatePropagation();
+      
+      buttons = buttons.map(function(options) {
+        if (typeof options == "string") {
+          return {
+            label: options,
+            value: options
+          };
+        }
+        return options;
+      });
+      
+      var modal = inflate.get("templates/dialog.html", {
+        text: text,
+        buttons: buttons
+      });
+      
+      document.body.appendChild(modal);
+      setTimeout(function() {
+        //trigger enter animations
+        modal.classList.remove("enter");
+      });
+      
+      var defaultButton = modal.querySelector("button.default");
+      if (!defaultButton) defaultButton = modal.querySelector("button");
       defaultButton.focus();
-    });
+      
+      modal.addEventListener("click", function(e) {
+        if (e.target != modal) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        defaultButton.focus();
+      });
 
-    var onKeyDown = function(e) {
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      if (e.ctrlKey || e.metaKey || e.shiftKey) {
-        e.preventDefault();
-      }
-      //check escape
-      if (e.keyCode == 27) {
-        modal.remove();
-        editor.focus();
-        if (callback) callback();
-      }
-    };
-    
-    var onKeyPress = function(e) {
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      //allow Enter to trigger clicks
-      if (e.keyCode != 13) {
-        e.preventDefault();
-      }
-      buttons.forEach(function(options) {
-        if (typeof options == "string") return;
-        if (options.shortcut && options.shortcut == String.fromCharCode(e.charCode)) {
+      var onKeyDown = function(e) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        if (e.ctrlKey || e.metaKey || e.shiftKey) {
+          e.preventDefault();
+        }
+        //check escape
+        if (e.keyCode == 27) {
           modal.remove();
           editor.focus();
-          if (callback) callback(options.value);
+          if (callback) callback();
+          ok();
         }
-      });
-    }
-
-    var clickButton = function(e) {
-      var target = e.target;
-      if (!target.matches("button")) return;
-      modal.remove();
-      var value;
-      try {
-        value = JSON.parse(target.value);
-      } catch (err) {
-        //do nothing
-        value = target.value;
+      };
+      
+      var onKeyPress = function(e) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        //allow Enter to trigger clicks
+        if (e.keyCode != 13) {
+          e.preventDefault();
+        }
+        buttons.forEach(function(options) {
+          if (typeof options == "string") return;
+          if (options.shortcut && options.shortcut == String.fromCharCode(e.charCode)) {
+            modal.remove();
+            editor.focus();
+            if (callback) callback(options.value);
+            ok(options.value);
+          }
+        });
       }
-      if (callback) callback(value);
-      editor.focus();
-    };
-    
-    modal.onkeydown = onKeyDown;
-    modal.onkeypress = onKeyPress;
-    modal.onclick = clickButton;
 
+      var clickButton = function(e) {
+        var target = e.target;
+        if (!target.matches("button")) return;
+        modal.remove();
+        var value;
+        try {
+          value = JSON.parse(target.value);
+        } catch (err) {
+          //do nothing
+          value = target.value;
+        }
+        if (callback) callback(value);
+        ok(value);
+        editor.focus();
+      };
+      
+      modal.onkeydown = onKeyDown;
+      modal.onkeypress = onKeyPress;
+      modal.onclick = clickButton;
+
+    });
   };
-
 });

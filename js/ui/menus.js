@@ -172,8 +172,7 @@ define([
       dialog(
         inflate.getHTML("templates/about.html", {
           version: chrome.runtime.getManifest().version
-        }),
-        ["ok"]
+        })
       );
     });
   });
