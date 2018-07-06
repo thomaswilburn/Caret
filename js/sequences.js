@@ -1,21 +1,18 @@
 define([
   "command",
-  "settings!sequences",
-  "util/manos"
-], function(command, Settings, M) {
+  "settings!sequences"
+], function(command, Settings) {
 
-  command.on("*", function(cmd, argument, callback) {
-    Settings.load("sequences", function() {
-      var sequences = Settings.get("sequences");
-      if (cmd in sequences) {
-        M.serial(sequences[cmd], function(item, next) {
-          if (typeof item == "string") {
-            item = { command: item }
-          }
-          command.fire(item.ace ? "ace:command" : item.command, item.argument || item.ace, next);
-        });
+  command.on("*", async function(cmd, argument, callback) {
+    var sequences = await Settings.get("sequences");
+    
+    if (!(cmd in sequences)) return
+    for (var item of sequences[cmd]) {
+      if (typeof item == "string") {
+        item = { command: item }
       }
-    });
+      await command.fire(item.ace ? "ace:command" : item.command, item.argument || item.ace);
+    }
   });
 
 });

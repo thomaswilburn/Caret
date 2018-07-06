@@ -40,14 +40,6 @@ DOM (loaded automatically by ID). Exposes the following methods:
    Returns a promise that resolves with the filled template as a DOM
    element.
 
-manos.js
---------
-
-A lightweight library for handling async code, this serves as the "hands
-of fate" for your callbacks. Provides ``serial()`` and ``map()`` for
-async array manipulation, and ``pton()`` and ``deferred`` for working
-with native ES6 Promises. Mostly unused now that we're on async/await.
-
 template.js
 -----------
 

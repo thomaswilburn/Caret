@@ -29,14 +29,14 @@ define([
   var fire = async function(command, argument, callback = function() {}) {
     if (!commands[command]) return broadcast.forEach(f => f.apply(null, arguments));
     var registry = commands[command].slice();
-    registry.forEach(async function(entry) {
+    for (var entry of registry) {
       var result = await entry.callback(argument);
       //immediately call back if sync-style return value was provided
       if (typeof result !== "undefined" || entry.sync) {
         //console.info("Immediate return from " + name, result);
         callback.call(null, result);
       }
-    });
+    };
   };
   
   var register = function(command, listener, sync) {

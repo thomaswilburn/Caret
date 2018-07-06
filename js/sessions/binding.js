@@ -2,9 +2,8 @@ define([
     "command",
     "sessions/state",
     "sessions/addRemove",
-    "ui/contextMenus",
-    "util/manos"
-  ], function(command, state, addRemove, contextMenus, M) {
+    "ui/contextMenus"
+  ], function(command, state, addRemove, contextMenus) {
     
   /*
   This module returns a function that will bind for event delegation to the
