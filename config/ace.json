@@ -81,7 +81,7 @@
     { "name": "handlebars", "label": "Handlebars", "extensions": ["handlebars", "hbs", "tpl", "mustache"] },
     { "name": "haskell", "label": "Haskell", "extensions": ["hs"] },
     { "name": "haxe", "label": "haXe", "extensions": ["haxe", "hx"] },
-    { "name": "html", "label": "HTML", "extensions": ["html", "htm", "htmls", "shtml", "ctp", "xhtml"] },
+    { "name": "html", "label": "HTML", "extensions": ["html", "htm", "htmls", "shtml", "ctp", "xhtml", "vue"] },
     { "name": "ini", "label": "Windows INI", "extensions": ["ini", "cfg", "prefs"] },
     { "name": "io", "label": "Io", "extensions": ["io"] },
     { "name": "jack", "label": "Jack", "extensions": ["jack"] },
