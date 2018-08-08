@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.12
+------
+
+Add support for .vue files (treated as HTML).
+
 1.8.11
 ------
 
