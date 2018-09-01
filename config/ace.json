@@ -45,7 +45,7 @@
     { "name": "ada", "label": "Ada", "extensions": ["adb", "ada"] },
     { "name": "apache_conf", "label": "Apache Config", "extensions": ["htaccess", "htgroups", "htpasswd", "conf"] },
     { "name": "asciidoc", "label": "AsciiDoc", "extensions": ["asciidoc", "adoc", "asc"] },
-    { "name": "assembly_x86", "label": "X86 Assembly", "extensions": ["asm"] },
+    { "name": "assembly_x86", "label": "X86 Assembly", "extensions": ["asm", "das"] },
     { "name": "autohotkey", "label": "AutoHotkey", "extensions": ["ahk"] },
     { "name": "batchfile", "label": "Batch File", "extensions": ["bat", "cmd"] },
     { "name": "c_cpp", "label": "C/C++", "extensions": ["c", "cpp", "h", "cc", "ino", "cxx", "hh", "hpp"] },
