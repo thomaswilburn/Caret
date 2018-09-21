@@ -72,7 +72,7 @@ define([
     var tab = sessions.getCurrent();
     if (!tab.file) return;
     var data = await tab.file.read();
-    tab.setValue(data);
+    editor.setValue(data);
     tab.modified = false;
     tab.modifiedAt = new Date();
     sessions.renderTabs();
