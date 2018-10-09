@@ -35,9 +35,23 @@ define([
     if (!files.slice) {
       files = [ files ];
     }
-    files = files.map(async function(entry) {
+    
+    // create mapping of existing file paths to tabs
+    var existingPaths = {};
+    var openTabs = sessions.getAllTabs();
+    openTabs.forEach(async t => {
+      if (!t.file || t.file.virtual) return;
+      var path = await t.file.getPath();
+      existingPaths[path] = t;
+    });
+    
+    files.map(async function(entry) {
       var f = new File(entry);
       var data = await f.read();
+      var path = await f.getPath();
+      if (existingPaths[path]) {
+        return sessions.setCurrent(existingPaths[path]);
+      }
       sessions.addFile(data, f);
     });
 
