@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.13
+------
+
+Caret will now check for existing tabs when opening a file, and switch to that if found instead of opening a duplicate.
+
 1.8.12
 ------
 
