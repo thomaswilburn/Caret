@@ -147,6 +147,7 @@
     { "name": "swift", "label": "Swift", "extensions": ["swift"] },
     { "name": "svg", "label": "SVG", "extensions": ["svg"] },
     { "name": "tcl", "label": "Tcl", "extensions": ["tcl"] },
+    { "name": "terraform", "label": "Terraform", "extensions": ["tf"] },
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
     { "name": "textile", "label": "Textile", "extensions": ["textile"] },
     { "name": "toml", "label": "Toml", "extensions": ["toml"] },
