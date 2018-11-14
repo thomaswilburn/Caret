@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.14
+------
+
+Updated to the newest version of Ace. Added Terraform syntax highlighting.
+
 1.8.13
 ------
 
