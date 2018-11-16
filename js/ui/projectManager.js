@@ -492,7 +492,7 @@ define([
       var completed = project.folders.map(async function(folder) {
         var entry = await chromeP.fileSystem.restoreEntry(folder.retained);
         //remember, you can only restore project directories you'd previously opened
-        if (!entry) return c();
+        if (!entry) return;
         var path = await chromeP.fileSystem.getDisplayPath(entry);
         var node = new FSNode(entry);
         node.path = path;
