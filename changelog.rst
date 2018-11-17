@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.15
+------
+
+Fix an async bug in project manager panel.
+
 1.8.14
 ------
 
