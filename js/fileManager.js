@@ -153,7 +153,7 @@ define([
   command.on("session:insert-from-file", async function() {
     var f = new File();
     await f.open();
-    var text = f.read();
+    var text = await f.read();
     editor.execCommand("insertstring", text);
   });
   
