@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.16
+------
+
+Fix an async bug in "insert from file" functionality.
+
 1.8.15
 ------
 
