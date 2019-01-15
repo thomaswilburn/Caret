@@ -73,16 +73,15 @@ define([
   };
 
   var testFont = function(family) {
-    if (family) {
-      let canvas = document.createElement("canvas");
-      let context = canvas.getContext("2d");
-      let error = testFontExistence(family, context) || testFontMetrics(family, context);
-      if (error) {
-        // circular dependency, so require this dynamically
-        require(["ui/dialog"], dialog => dialog(i18n.get(error)));
-      }
+    if (!family) return
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    var error = testFontExistence(family, context) || testFontMetrics(family, context);
+    if (error) {
+      // circular dependency, so require this dynamically
+      require(["ui/dialog"], dialog => dialog(i18n.get(error)));
     }
-  }
+  };
 
   var testFontExistence = function(family, context) {
     // If the font exists, the "iiii" text will be rendered in that font in both
@@ -91,12 +90,12 @@ define([
     // and in a proportional font in the second, and since "i" is typically much
     // wider in a monospace font than in a similarly sized proportional one,
     // width1 will not equal width2.
-    context.font = "72px '" + family + "', monospace";
-    let width1 = family && context.measureText("iiii").width;
-    context.font = "72px '" + family + "', serif";
-    let width2 = family && context.measureText("iiii").width;
+    context.font = `72px '${family}', monospace`;
+    var width1 = family && context.measureText("iiii").width;
+    context.font = `72px '${family}', serif`;
+    var width2 = family && context.measureText("iiii").width;
     return Math.abs(width1 - width2) > 1 ? "errorMissingFont" : null;
-  }
+  };
 
   var testFontMetrics = function(family, context) {
     // If the font is monospace and has no kerning or ligatures, the "WWWWiAfV"
@@ -106,10 +105,10 @@ define([
     // will not equal width2. Also, if the font supports kerning or ligatures
     // (as Chrome OS's "Noto Sans Mono" monospace font did at some point),
     // "VAfi" will be narrower than iAfV" and width1 will also not equal width2.
-    context.font = "72px '" + family + "'";
-    let width1 = family && context.measureText("WWWWiAfV").width;
-    context.font = "72px '" + family + "'";
-    let width2 = family && context.measureText("iiiiVAfi").width;
+    context.font = `72px '${family}'`;
+    var width1 = family && context.measureText("WWWWiAfV").width;
+    context.font = `72px '${family}'`;
+    var width2 = family && context.measureText("iiiiVAfi").width;
     return Math.abs(width1 - width2) > 1 ? "errorProportionalFont" : null;
   };
   
