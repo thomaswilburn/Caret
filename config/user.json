@@ -10,7 +10,8 @@
 
   // editor options
   "showWhitespace": false, //show whitespace characters (spaces, tabs, returns)
-  "showMargin": false,
+  "showMargin": false,//set to true to display a right margin line
+  "marginColumn": false, //where to display the margin line or false to use wrapLimit or 80
   "scrollPastEnd": true, //allow the editor to scroll past the end of the document
   "trimTrailingWhitespace": true, //run "Trim Trailing Whitespace" on save
   "trimEmptyLines": false, //should the trim whitespace command also truncate empty lines?
@@ -19,7 +20,7 @@
   "indentation": 2, //indentation size
   "useTabs": false, //will turn off Ace's setUseSoftTabs() option and use tab characters instead
   "wordWrap": true,
-  "wrapLimit": false, //Set to the number of characters you want or false for full window
+  "wrapLimit": false, //set to the number of characters you want or false for full window
   "lineEndings": "auto", //newline format - "windows", "unix", or "auto"
 
   //only fixed-width fonts supported, for now

@@ -47,7 +47,7 @@ define([
     });
     editor.setBehavioursEnabled(!userConfig.disableBehaviors);
     editor.setShowPrintMargin(userConfig.showMargin || false);
-    editor.setPrintMarginColumn(userConfig.wrapLimit || 80);
+    editor.setPrintMarginColumn(userConfig.marginColumn || userConfig.wrapLimit || 80);
     editor.setShowInvisibles(userConfig.showWhitespace || false);
     editor.setHighlightActiveLine(userConfig.highlightLine || false);
     
