@@ -62,7 +62,7 @@ define([
       editor.container.style.fontFamily = family;
     }
     
-    testFontMetrics(userConfig.fontFamily || "monospace");
+    testFont(userConfig.fontFamily);
     defaultFontSize();
     ace.config.loadModule("ace/ext/language_tools", function() {
       editor.setOptions({
@@ -72,20 +72,45 @@ define([
     });
   };
 
-  var testFontMetrics = function(family = "monospace") {
-    var tester = document.createElement("span");
-    tester.style.position = "absolute";
-    tester.style.fontFamily = family;
-    document.body.appendChild(tester);
-    tester.innerHTML = "W";
-    var { width: a } = tester.getBoundingClientRect();
-    tester.innerHTML = "i";
-    var { width: b } = tester.getBoundingClientRect();
-    if (Math.abs(a - b) > 1) {
-      // circular dependency, so require this dynamically
-      require(["ui/dialog"], dialog => dialog(i18n.get("errorProportionalFont")));
+  var testFont = function(family) {
+    if (family) {
+      let canvas = document.createElement("canvas");
+      let context = canvas.getContext("2d");
+      let error = testFontExistence(family, context) || testFontMetrics(family, context);
+      if (error) {
+        // circular dependency, so require this dynamically
+        require(["ui/dialog"], dialog => dialog(i18n.get(error)));
+      }
     }
-    document.body.removeChild(tester);
+  }
+
+  var testFontExistence = function(family, context) {
+    // If the font exists, the "iiii" text will be rendered in that font in both
+    // cases below and width1 will equal width2. If the font doesn't exist,
+    // however, that text will be rendered in a monospace font in the first case
+    // and in a proportional font in the second, and since "i" is typically much
+    // wider in a monospace font than in a similarly sized proportional one,
+    // width1 will not equal width2.
+    context.font = "72px '" + family + "', monospace";
+    let width1 = family && context.measureText("iiii").width;
+    context.font = "72px '" + family + "', serif";
+    let width2 = family && context.measureText("iiii").width;
+    return Math.abs(width1 - width2) > 1 ? "errorMissingFont" : null;
+  }
+
+  var testFontMetrics = function(family, context) {
+    // If the font is monospace and has no kerning or ligatures, the "WWWWiAfV"
+    // text in the first case will be the same width as the "iiiiVAfi" text in
+    // the second case, and width1 will equal width2. If the font is
+    // proportional, however, "WWWW" will me much wider than "iiii" and width1
+    // will not equal width2. Also, if the font supports kerning or ligatures
+    // (as Chrome OS's "Noto Sans Mono" monospace font did at some point),
+    // "VAfi" will be narrower than iAfV" and width1 will also not equal width2.
+    context.font = "72px '" + family + "'";
+    let width1 = family && context.measureText("WWWWiAfV").width;
+    context.font = "72px '" + family + "'";
+    let width2 = family && context.measureText("iiiiVAfi").width;
+    return Math.abs(width1 - width2) > 1 ? "errorProportionalFont" : null;
   };
   
   var defaultFontSize = function(c = noop) {
