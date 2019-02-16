@@ -168,7 +168,7 @@ define([
     var text = editor.getSession().getValue();
     var lines = text.split("\n").length;
     var characters = text.length;
-    var words = text.match(/\b\S+\b/g);
+    var words = text.match(/([\u0080-\uFFFF\w]\u0027?)+/g);
     words = words ? words.length : 0;
     command.fire("status:toast", i18n.get("editorWordCount", characters, words, lines));
     c();
