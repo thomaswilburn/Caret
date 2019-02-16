@@ -25,7 +25,7 @@ installed first, then follow these steps:
 0. Clone this repo to your local machine
 1. Run ``npm install`` to get the development dependencies (Grunt, LESS,
    and some other packages)
-2. Start ``grunt``, which will generate the CSS files from the LESS
+2. Run ``npm run build``, which will generate the CSS files from the LESS
    source
 3. Visit ``chrome://extensions`` and enable Developer Mode.
 4. Still on the extensions page, click the button marked "Load unpacked

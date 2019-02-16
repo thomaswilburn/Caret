@@ -31,10 +31,15 @@ define([
     session.applySettings(mode);
   });
 
+  var previousTab = null;
   var renderTabs = function() {
     var tabContainer = document.querySelector(".tabs");
     var contents = "";
     var current = editor.getSession();
+    if (previousTab !== current) {
+      previousTab = current.path ? current : null;
+      command.fire("session:active-tab", current);
+    }
     tabContainer.innerHTML = "";
     state.tabs.forEach(function(tab, i) {
       var element = tab.render(i);
