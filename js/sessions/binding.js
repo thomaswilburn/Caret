@@ -4,7 +4,7 @@ define([
     "sessions/addRemove",
     "ui/contextMenus"
   ], function(command, state, addRemove, contextMenus) {
-    
+
   /*
   This module returns a function that will bind for event delegation to the
   tab container. Most of it is support for drag/drop.
@@ -13,7 +13,7 @@ define([
   var enableTabDragDrop = function() {
     var tabContainer = document.querySelector(".tabs");
     var draggedTab = null;
-    
+
     tabContainer.addEventListener("dragstart", function(e) {
       if (!e.target.matches(".tab")) return;
       e.target.style.opacity = 0;
@@ -30,7 +30,7 @@ define([
         e.target.classList.remove("dragging");
       };
     });
-    
+
     tabContainer.addEventListener("dragover", function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -42,7 +42,7 @@ define([
         if (tab) tab.classList.add("hovering");
       }
     });
-    
+
     //cancel hover appearance when leaving the tab bar
     tabContainer.addEventListener("drag", function(e) {
       var tabCoords = tabContainer.getBoundingClientRect();
@@ -55,7 +55,7 @@ define([
       var hovered = tabContainer.querySelector(".hovering");
       if (hovered) hovered.classList.remove("hovering");
     });
-    
+
     tabContainer.addEventListener("drop", function(e) {
       if (!draggedTab) return;
       e.stopPropagation();
@@ -94,9 +94,9 @@ define([
       }
       command.fire("session:render");
     });
-    
+
   };
-  
+
   var enableTabMiddleClick = function() {
     var tabContainer = document.querySelector(".tabs");
     tabContainer.addEventListener("mousedown", function(e) {
@@ -106,12 +106,17 @@ define([
       command.fire("session:close-tab", e.target.getAttribute("argument"));
     });
   };
-  
+
   var closeTabsRight = async function(tabID) {
     tabID = tabID || state.tabs.indexOf(editor.getSession());
     for (var i = state.tabs.length - 1; i > tabID; i--) {
       await addRemove.remove(i);
     }
+  };
+
+  var copyFilePath = function(tabIndex) {
+    var tabPath = state.tabs[tabIndex].path;
+    return window.navigator.clipboard.writeText(tabPath);
   };
 
   var enableDblClickNewTab = function() {
@@ -127,7 +132,8 @@ define([
 
   contextMenus.register("Close", "closeTab", "tabs/:id", args => command.fire("session:close-tab", args.id));
   contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", args => closeTabsRight(args.id));
-  
+  contextMenus.register("Copy file path", "copyFilePath", "tabs/:id", args => copyFilePath(args.id));
+
   return function() {
     enableTabDragDrop();
     enableTabMiddleClick();
