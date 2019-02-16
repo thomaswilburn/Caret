@@ -64,7 +64,8 @@ define([
     tab: null,
     id: null,
     label: null,
-    setEntry: function(entry) {
+    displayPath: null,
+    setEntry: async function(entry) {
       this.entry = entry;
       this.label = entry.name;
       this.isDirectory = entry.isDirectory;
@@ -90,9 +91,9 @@ define([
         reader.readEntries(collect);
       };
 
-      var complete = function() {
+      var complete = async function() {
         self.children = [];
-        entries.forEach(function(entry) {
+        var walking = entries.map(async function(entry) {
           //skip dot dirs, but not files
           if (!Settings.get("user").showHiddenDirectories) {
             if (entry.name[0] == "." && entry.isDirectory) return;
@@ -103,6 +104,7 @@ define([
           }
 
           var node = new FSNode(entry);
+          node.displayPath = await chromeP.fileSystem.getDisplayPath(entry);
           self.children.push(node);
           if (node.isDirectory) {
             inc++;
@@ -110,6 +112,7 @@ define([
             tick(function() { node.walk(blacklist, check); });
           }
         });
+        await Promise.all(walking);
         check();
       };
       reader.readEntries(collect);
@@ -304,6 +307,7 @@ define([
         } else {
           var nodeData = {
             path: node.entry.fullPath,
+            displayPath: node.displayPath,
             contextMenu: context.makeURL("file", node.entry.fullPath.replace(/[\/\\]/g, "@")),
             className: current.path && current.path.endsWith(node.entry.fullPath) ? "active-file" : "",
             label: node.label
@@ -536,8 +540,9 @@ define([
       tree.querySelectorAll(".active-file").forEach(element => element.classList.remove("active-file"));
       if (!tab || !tab.path) return;
 
-      var projectArgument = tab.path.replace(/^.*\/Caret\//, "/Caret/");
-      var matchingFile = tree.querySelector('a[argument="' + projectArgument + '"]')
+      // handle escaping backslashes in Windows paths
+      var path = tab.path.replace(/\\/g, `\\\\`);
+      var matchingFile = tree.querySelector('a[path="' + path + '"]');
       if (!matchingFile) return;
 
       matchingFile.classList.add("active-file");
@@ -556,7 +561,7 @@ define([
   command.on("project:clear", pm.clearProject.bind(pm));
   command.on("session:active-tab", pm.changeActiveTab.bind(pm));
 
-  context.register("Remove from Project", "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
+  context.register(i18n.get("projectRemoveDirectory"), "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
 
   var setAutoHide = function() {
     var hide = Settings.get("user").autoHideProject;

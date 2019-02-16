@@ -102,6 +102,7 @@
   "dialogUnsaved": { "message": "$1 has unsaved work." },
 
   "projectNoCurrentProject": { "message": "No project currently open." },
+  "projectRemoveDirectory": { "message": "Remove from project" },
 
   "paletteExecuting": { "message": "Executing $1..." },
 
@@ -134,5 +135,10 @@
   "searchFindAll": { "message": "Find All" },
 
   "errorMissingFont": { "message": "The font you've selected isn't available to Caret, which can only use fonts installed on your system. A default font will be used instead." },
-  "errorProportionalFont": { "message": "The custom font you've selected may cause problems with Caret's editing component, which only supports monospaced fonts (where the letters are all the same width). If you experience cursor issues, please reset the fontFamily setting in your user preferences." }
+  "errorProportionalFont": { "message": "The custom font you've selected may cause problems with Caret's editing component, which only supports monospaced fonts (where the letters are all the same width). If you experience cursor issues, please reset the fontFamily setting in your user preferences." },
+
+  "tabClose": { "message": "Close" },
+  "tabCloseRight": { "message": "Close tabs to the right" },
+  "tabCopyPath": { "message": "Copy file path" }
+
 }

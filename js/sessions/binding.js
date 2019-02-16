@@ -2,8 +2,9 @@ define([
     "command",
     "sessions/state",
     "sessions/addRemove",
-    "ui/contextMenus"
-  ], function(command, state, addRemove, contextMenus) {
+    "ui/contextMenus",
+    "util/i18n"
+  ], function(command, state, addRemove, contextMenus, i18n) {
 
   /*
   This module returns a function that will bind for event delegation to the
@@ -130,9 +131,9 @@ define([
 
   command.on("session:close-to-right", closeTabsRight);
 
-  contextMenus.register("Close", "closeTab", "tabs/:id", args => command.fire("session:close-tab", args.id));
-  contextMenus.register("Close tabs to the right", "closeTabsRight", "tabs/:id", args => closeTabsRight(args.id));
-  contextMenus.register("Copy file path", "copyFilePath", "tabs/:id", args => copyFilePath(args.id));
+  contextMenus.register(i18n.get("tabClose"), "closeTab", "tabs/:id", args => command.fire("session:close-tab", args.id));
+  contextMenus.register(i18n.get("tabCloseRight"), "closeTabsRight", "tabs/:id", args => closeTabsRight(args.id));
+  contextMenus.register(i18n.get("tabCopyPath"), "copyFilePath", "tabs/:id", args => copyFilePath(args.id));
 
   return function() {
     enableTabDragDrop();

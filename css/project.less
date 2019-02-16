@@ -58,6 +58,7 @@
     color: inherit;
     white-space: nowrap;
     border-radius: 2px;
+    border-left: 1px solid transparent;
 
     &:hover {
       text-decoration: underline;
@@ -73,10 +74,8 @@
 
     &.active-file {
       background: @background;
-      border-bottom: 2px solid @accent;
+      border-left: 1px solid @accent;
       color: @foreground;
-      font-weight: bold;
-      padding: 3px 4px;
     }
   }
 
