@@ -173,7 +173,7 @@ define([
         file.onWrite = this.watchProjectFile.bind(this);
         try {
           var f = await file.restore(retained.id);
-          var data = await file.read();  
+          var data = await file.read();
           this.projectFile = file;
           this.loadProject(JSON.parse(data));
         } catch(err) {
@@ -258,6 +258,7 @@ define([
         editor.resize();
       }, 500);
 
+      var current = editor.getSession();
       var tree = this.element.querySelector(".tree");
       this.pathMap = {};
       if (this.directories.length == 0 && !this.loading) {
@@ -304,6 +305,7 @@ define([
           var nodeData = {
             path: node.entry.fullPath,
             contextMenu: context.makeURL("file", node.entry.fullPath.replace(/[\/\\]/g, "@")),
+            className: current.path && current.path.endsWith(node.entry.fullPath) ? "active-file" : "",
             label: node.label
           };
           var a = inflate.get("templates/projectFile.html", nodeData)
@@ -529,6 +531,17 @@ define([
       return Object.keys(this.pathMap);
     },
     
+    changeActiveTab: function(tab) {
+      var tree = this.element.querySelector(".tree");
+      tree.querySelectorAll(".active-file").forEach(element => element.classList.remove("active-file"));
+      if (!tab || !tab.path) return;
+
+      var projectArgument = tab.path.replace(/^.*\/Caret\//, "/Caret/");
+      var matchingFile = tree.querySelector('a[argument="' + projectArgument + '"]')
+      if (!matchingFile) return;
+
+      matchingFile.classList.add("active-file");
+    },
     
   };
 
@@ -541,6 +554,7 @@ define([
   command.on("project:open", pm.openProjectFile.bind(pm));
   command.on("project:edit", pm.editProjectFile.bind(pm));
   command.on("project:clear", pm.clearProject.bind(pm));
+  command.on("session:active-tab", pm.changeActiveTab.bind(pm));
 
   context.register("Remove from Project", "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
 
