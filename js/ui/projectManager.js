@@ -118,7 +118,7 @@ define([
       reader.readEntries(collect);
     }
   };
-  
+
   // min / max sidebar width
   var MIN_WIDTH = 100;
   var MAX_WIDTH = 500;
@@ -354,20 +354,20 @@ define([
         }
         editor.focus();
       });
-      
+
       // make sure width is not set in element `style`
       this.element.style.width = null;
-  
+
       var handle = this.element.querySelector('.project-resizer');
-      
+
       this.startResize = this.startResize.bind(this);
       this.stopResize = this.stopResize.bind(this);
       this.resize = this.resize.bind(this);
-      
+
       handle.addEventListener('mousedown', this.startResize);
-      
+
     },
-    
+
 
     startResize: function (e) {
       // do not resize when 'autohide' is on
@@ -534,7 +534,7 @@ define([
     getPaths: function() {
       return Object.keys(this.pathMap);
     },
-    
+
     changeActiveTab: function(tab) {
       var tree = this.element.querySelector(".tree");
       tree.querySelectorAll(".active-file").forEach(element => element.classList.remove("active-file"));
@@ -547,7 +547,41 @@ define([
 
       matchingFile.classList.add("active-file");
     },
-    
+
+    searchForFile: function(directories, filePath) {
+      return directories.reduce((match, directory) => {
+        if (!filePath.startsWith(directory.displayPath)) return match;
+        if (filePath === directory.displayPath) return match.concat(directory);
+
+        if (directory.children) {
+          const childMatches = this.searchForFile(directory.children, filePath);
+          return match.concat(directory, childMatches)
+        }
+
+        return match.concat(directory);
+      }, []);
+    },
+
+    revealInSideBar: function(tab) {
+      var selectedTab = sessions.getAllTabs()[tab.id];
+      if (!selectedTab) return;
+
+      var expansionsAdded = false;
+      var revealPath = selectedTab.path;
+      this.directories.forEach((directory) => {
+        if (!revealPath.startsWith(directory.path)) return;
+        var match = this.searchForFile(directory.children, revealPath);
+
+        match.forEach((node) => {
+          if (!node.isDirectory) return;
+          expansionsAdded = true;
+          this.expanded[node.entry.fullPath] = true;
+        });
+      });
+
+      if (expansionsAdded) this.render();
+    },
+
   };
 
   var pm = new ProjectManager(document.querySelector(".project"));
@@ -560,6 +594,7 @@ define([
   command.on("project:edit", pm.editProjectFile.bind(pm));
   command.on("project:clear", pm.clearProject.bind(pm));
   command.on("session:active-tab", pm.changeActiveTab.bind(pm));
+  command.on("session:reveal-in-side-bar", pm.revealInSideBar.bind(pm));
 
   context.register(i18n.get("projectRemoveDirectory"), "removeDirectory", "root/directory/:id", pm.removeDirectory.bind(pm));
 
