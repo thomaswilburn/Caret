@@ -139,6 +139,7 @@
 
   "tabClose": { "message": "Close" },
   "tabCloseRight": { "message": "Close tabs to the right" },
-  "tabCopyPath": { "message": "Copy file path" }
+  "tabCopyPath": { "message": "Copy file path" },
+  "tabRevealInSideBar": { "message": "Reveal in side bar" }
 
 }
