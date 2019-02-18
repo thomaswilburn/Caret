@@ -5,7 +5,7 @@ define([
     "util/chromePromise",
     "util/aceLoad!js/ace/keybinding-vim.js"
   ], function(Settings, command, editor, chromeP) {
-  
+
   var keycodes = {
     9: "Tab",
     13: "Return",
@@ -27,10 +27,11 @@ define([
     220: "\\",
     222: "'"
   };
-  
+
   var defaultAceCommands = ace.require("./commands/default_commands").commands;
   var AceCommandManager = ace.require("./commands/command_manager").CommandManager;
   var vimHandler = ace.require("ace/keyboard/vim").handler;
+  var Range = ace.require("ace/range").Range;
 
   //back-compat: we now use Ace-style bindings (Ctrl-X) instead of Vim-style (^-x)
   var normalizeKeys = function(config) {
@@ -49,7 +50,7 @@ define([
     }
     return converted;
   };
-  
+
   //need to auto-bind Ace keys, remove Ace conflicts
   var bindAce = async function() {
     var platform = await chromeP.runtime.getPlatformInfo();
@@ -77,10 +78,10 @@ define([
     if (Settings.get("user").emulateVim) {
       editor.setKeyboardHandler(vimHandler);
     }
-  };
+  }
   command.on("init:startup", bindAce);
   command.on("init:restart", bindAce);
-  
+
   //we have to listen on keydown, because keypress will get caught by the window manager
   window.addEventListener("keydown", function(e) {
     var char = String.fromCharCode(e.keyCode);
@@ -113,7 +114,101 @@ define([
       command.fire(action.command, action.argument);
     }
   });
-  
+
+  // Return command when the line is to be cut or copied
+  // Only do this if no characters have been selected
+  var getLineCutCopyCommand = function(e) {
+    if (!e.metaKey && !e.ctrlKey) return;
+    if (!editor.selection.isEmpty()) return;
+
+    var char = String.fromCharCode(e.keyCode).toLowerCase();
+    var commands = {
+      c: "copy",
+      x: "cut"
+    };
+    return commands[char];
+  };
+
+  var resetPosition = (command, session) => (
+    command === 'cut' ? resetCutPosition(session) : resetCopyPosition()
+  );
+
+  // Reset the selection position to where the user had previously selected to
+  // copy the row
+  var resetCopyPosition = () => (position, index) => {
+    var row = position.row;
+    var column = position.column;
+    var newRange = new Range(row, column, row, column);
+    var action = index === 0 ? 'setRange' : 'addRange';
+    editor.selection[action](newRange);
+  };
+
+  // Reset the selection position to the end of the next row now that the row
+  // has been cut
+  var resetCutPosition = (session) => (position, index) => {
+    var row = position.row - index;
+    var column = session.getLine(row).length;
+    var newRange = new Range(row, column, row, column);
+    var action = index === 0 ? 'setRange' : 'addRange';
+    editor.selection[action](newRange);
+  };
+
+  var createOrExtendRange = function(start, end, previousRange) {
+    const range = new Range(start.row, start.column, end.row, end.column);
+
+    // If the ranges intersect, create a new combined range
+    if (previousRange && previousRange.intersects(range)) {
+      const previous = previousRange.start;
+      return new Range(previous.row, previous.column, end.row, end.column);
+    }
+
+    return range;
+  };
+
+  var getRange = function(isLastRow, session, position, previousRange) {
+    // Last row selection needs to select from the end of the previous row to
+    // the end of the current row
+    if (isLastRow) {
+      var previousRowColumn = session.getLine(position.row - 1).length;
+      var column = session.getLine(position.row).length;
+      var start = { row: position.row - 1, column: previousRowColumn };
+      var end = { row: position.row, column: column };
+      return createOrExtendRange(start, end, previousRange);
+    }
+
+    // Row selection needs to select from the start of the current row to the
+    // start of the next row
+    var start = { row: position.row, column: 0 };
+    var end = { row: position.row + 1, column: 0 };
+    return createOrExtendRange(start, end, previousRange);
+  };
+
+  // Support copying and cutting entire lines
+  window.addEventListener("keydown", function(e) {
+    var command = getLineCutCopyCommand(e);
+    if (!command) return;
+
+    var session = editor.getSession();
+
+    // Select the entire line
+    var previousRange = null;
+    var positions = editor.selection.getAllRanges().map(function(range) {
+      var position = Object.assign({}, range.start);
+      var isLastRow = position.row + 1 === session.getLength();
+      var range = getRange(isLastRow, session, position, previousRange);
+      editor.selection.addRange(range);
+      previousRange = range;
+      return position;
+    });
+
+    // Run matching command
+    e.preventDefault();
+    document.execCommand(command);
+
+    // Reset selection to original position or close to for cut lines
+    positions.forEach(resetPosition(command, session));
+  });
+
   // cancel esc, but only on keyup
   window.addEventListener("keyup", function(e) {
     if (e.keyCode == 27) e.preventDefault();
