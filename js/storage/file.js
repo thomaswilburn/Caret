@@ -48,6 +48,9 @@ define([
         };
         self.entry.file(function(f) {
           reader.readAsText(f);
+        }, function(err) {
+          console.error("File read error!");
+          fail(err);
         });
       });
     },
