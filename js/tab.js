@@ -86,7 +86,11 @@ define([
       delete this.syntaxMode;
       this.detectSyntax();
     }
-    await this.file.write(content);
+    try {
+      await this.file.write(content);
+    } catch(err) {
+      dialog(err.message);
+    }
     this.modifiedAt = new Date();
     this.modified = false;
     this.setPath();
