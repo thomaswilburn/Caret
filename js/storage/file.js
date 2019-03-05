@@ -88,6 +88,9 @@ define([
             writer.write(blob);
           };
           writer.truncate(0);
+        }, function(err) {
+          console.error(err);
+          fail(err);
         });
       });
     },
