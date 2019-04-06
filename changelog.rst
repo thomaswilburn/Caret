@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.17
+------
+
+Fix a potential bug in the project view when files disappeared before Caret was opened. Add "reveal in sidebar" to tabs, and show the active file in the project sidebar. Provide an option to copy the file path.
+
 1.8.16
 ------
 
