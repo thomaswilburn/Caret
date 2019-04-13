@@ -63,7 +63,7 @@
   //Wildly eccentric? You might like Vim keybindings.
   "emulateVim": false,
   
-  //jsHint settings are applied on opening a JS file
+  //jsHint settings are applied on opening a JS file. You may need to restart Caret for changes to take effect.
   "jsHint": {},
 
   // You can set syntax options here. Not all options supported yet.
