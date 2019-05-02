@@ -243,7 +243,7 @@ define([
 
     //filter some Ace commands for UI purposes
     var isRecording = false;
-    command.on("ace:togglemacro", function(c) {
+    command.on("ace:togglemacro", function(c = noop) {
       isRecording = !isRecording;
       editor.execCommand("togglerecording");
       editor.focus();
