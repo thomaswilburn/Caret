@@ -10,7 +10,7 @@ define([
   command.on("init:restart", () => targets = Settings.get("api"));
 
   command.on("api:execute", async function(id, c = noop) {
-    if (!id in targets) return c();
+    if (!( id in targets )) return c();
     var config = targets[id];
     var message = {};
     //shallow-copy config message, just in case
