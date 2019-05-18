@@ -101,7 +101,6 @@
     { "name": "logiql", "label": "LogiQL", "extensions": ["logic", "lql"] },
     { "name": "lsl", "label": "LSL", "extensions": ["lsl"] },
     { "name": "lua", "label": "Lua", "extensions": ["lua", "love"] },
-    { "name": "lucene", "label": "Lucene", "extensions": ["lucene"] },
     { "name": "makefile", "label": "Make", "extensions": ["make"] },
     { "name": "markdown", "label": "Markdown", "extensions": ["md", "markdown"] },
     { "name": "mask", "label": "Mask", "extensions": ["mask"] },
