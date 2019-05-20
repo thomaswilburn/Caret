@@ -16,7 +16,7 @@ component, it offers:
 More information, links to Caret in the Chrome Web Store, and an
 external package file are available at http://thomaswilburn.net/caret.
 Documentation can be found in the
-`wiki <https://github.com/thomaswilburn/Caret/wiki>`__.
+`wiki <https://github.com/thomaswilburn/Caret/wiki>`_.
 
 You can also load Caret from source code, either to hack around on or
 to try the absolute bleeding edge. You'll need to have Node and NPM
