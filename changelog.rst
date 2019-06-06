@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.20
+------
+
+Updated Ace, which adds several new file syntax types. Add support for OpenHab and Salesforce files. Add the ability to change the line height in the editor.
+
 1.8.17
 ------
 
