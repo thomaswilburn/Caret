@@ -64,6 +64,7 @@ define([
     
     testFont(userConfig.fontFamily);
     defaultFontSize();
+    editor.container.style.lineHeight = userConfig.lineHeight || 1;
     ace.config.loadModule("ace/ext/language_tools", function() {
       editor.setOptions({
         enableBasicAutocompletion: userConfig.autocomplete || false,

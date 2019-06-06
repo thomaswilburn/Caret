@@ -25,6 +25,7 @@
   //only fixed-width fonts supported, for now
   "fontFamily": "",
   "fontSize": 13,
+  "lineHeight": 1,
 
   //Web workers are used for code hinting in PHP, JavaScript, and JSON.
   //We don't yet have a way to set the worker options, but you can disable it.
