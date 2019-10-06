@@ -41,6 +41,7 @@
         "application/json",
         "application/x-shellscript",
         "application/xml",
+        "message/rfc822",
         "text/*"
       ]
     }
