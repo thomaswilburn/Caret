@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.21
+------
+
+Updated Ace to the newest build. Added support for FSharp files. Added the e-mail MIME type to the manifest. Updated the Swedish translation (Thanks, Rasmus!).
+
 1.8.20
 ------
 
