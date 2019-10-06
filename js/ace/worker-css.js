@@ -3919,8 +3919,13 @@ var Properties = {
     "grid-row"                      : 1,
     "grid-rows"                     : 1,
     "grid-row-align"                : "start | end | center | stretch",
+    "grid-row-gap"                  : 1,
     "grid-row-span"                 : "<integer>",
     "grid-row-sizing"               : 1,
+    "grid-template"                 : 1,
+    "grid-template-areas"           : 1,
+    "grid-template-columns"         : 1,
+    "grid-template-rows"            : 1,
     "hanging-punctuation"           : 1,
     "height"                        : "<margin-width> | <content-sizing> | inherit",
     "hyphenate-after"               : "<integer> | auto",
@@ -4168,6 +4173,7 @@ function PropertyValuePart(text, line, col){
             case "ch":
             case "vh":
             case "vw":
+            case "fr":
             case "vmax":
             case "vmin":
                 this.type = "length";
@@ -4756,7 +4762,7 @@ TokenStream.prototype = mix(new TokenStreamBase(), {
             ident = this.readName(reader.read());
             value += ident;
 
-            if (/^em$|^ex$|^px$|^gd$|^rem$|^vw$|^vh$|^vmax$|^vmin$|^ch$|^cm$|^mm$|^in$|^pt$|^pc$/i.test(ident)){
+            if (/^em$|^ex$|^px$|^gd$|^rem$|^vw$|^vh$|^fr$|^vmax$|^vmin$|^ch$|^cm$|^mm$|^in$|^pt$|^pc$/i.test(ident)){
                 tt = Tokens.LENGTH;
             } else if (/^deg|^rad$|^grad$/i.test(ident)){
                 tt = Tokens.ANGLE;
