@@ -1,19 +1,18 @@
 {
-  "loading": {
-    "message": "lade&hellip;"
+  "minimize": { "message": "Minimieren" },
+  "maximize": { "message": "Maximieren" },
+  "close": { "message": "Schließen" },
+  "loading": { "message": "lade&hellip;"
   },
   "aboutWrittenBy": {
     "message": "Von <a href=\"http://thomaswilburn.net\" target=_blank>Thomas Wilburn</a>"
   },
-  "aboutHomePage": {
-    "message": "Startseite"
-  },
-  "aboutSupport": {
-    "message": "Unterstützung"
-  },
+  "aboutHomePage": { "message": "Startseite" },
+  "aboutSupport": { "message": "Unterstützung" },
   "aboutLicense": {
-    "message": "Caret ist unter einer GPL Lizenz verfügbar, was bedeutet, dass der <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>Quellcode</a> zur freien Benutzung und Veränderung verfügbar ist. Wenn Sie Caret nutzvoll finden, erwägen Sie eine Spende an den <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fond zum Ende von Software Patenten</a> der Free Software Foundation."
+    "message": "Caret ist unter einer GPL Lizenz verfügbar, was bedeutet, dass der <a href=\"https://github.com/thomaswilburn/Caret\" target=_blank>Quellcode</a> zur freien Benutzung und Veränderung verfügbar ist. Wenn du Caret nutzvoll findest, erwäge eine Spende an den <a href=\"http://endsoftwarepatents.org/donate\" target=_blank>Fond zum Beenden von Software Patenten</a> der Free Software Foundation."
   },
+  
   "menuFile": { "message": "Datei" },
   "menuNewFile": { "message": "Neue Datei" },
   "menuOpenFile": { "message": "Datei öffnen" },
@@ -33,7 +32,7 @@
   "menuSelectLine": { "message": "Zeile markieren" },
   "menuSelectP": { "message": "Absatz markieren" },
   "menuSelectToMatch": { "message": "Zusammengehöriges markieren" },
-  "menuWrapToPrint": { "message": "Für Druckbegrenzung umbrechen" },
+  "menuWrapToPrint": { "message": "Auf Druckbereich umbrechen" },
   "menuFind": { "message": "Suchen" },
   "menuFindReplace": { "message": "Suchen und Ersetzen" },
   "menuFindNext": { "message": "Nächster Treffer" },
@@ -43,7 +42,7 @@
   "menuTabsToSpaces": { "message": "Konvertiere Tabs zu Leerzeichen" },
   "menuSpacesToTabs": { "message": "Konvertiere Leerzeichen zu Tabs" },
   "menuSetNewline": { "message": "Zeilenvorschub-Modus festlegen" },
-  "menuTrimWhitespace": { "message": "Anhängendes Leerzeichen entfernen" },
+  "menuTrimWhitespace": { "message": "Anhängende Leerzeichen entfernen" },
   "menuJoinLines": { "message": "Zeilen zusammenfügen" },
   "menuSortLines": { "message": "Zeilen sortieren" },
   "menuSplitLine": { "message": "Zeilen trennen" },
@@ -60,7 +59,7 @@
   "menuGoToRef": { "message": "Gehe zu Verweis" },
   "menuCommandPalette": { "message": "Öffne Befehlszeile" },
   "menuToggleMacro": { "message": "Makro Aufzeichnung Ein/Aus" },
-  "menuReplayMacro": { "message": "Makro Wiederholen" },
+  "menuReplayMacro": { "message": "Makro wiederholen" },
   "menuWordCount": { "message": "Wortzählung" },
   
   "menuProject": { "message": "Projekt" },
@@ -93,18 +92,19 @@
   "menuCheckForUpdates": { "message": "Nach Aktualisierungen suchen" },
   "menuAboutCaret": { "message": "Über Caret" },
   
-  "dialogModifiedBackground": { "message": "Diese Datei wurde seit dem letzten Speicherzeitpunkt geändert. Möchten Sie sie neu laden?" },
-  "dialogModifiedUnsaved": { "message": "$1 wurde geändert.\nMöchten Sie die Änderungen speichern?" },
+  "dialogModifiedBackground": { "message": "Diese Datei wurde seit dem letzten Speichern geändert. Soll sie erneut geladen werden?" },
+  "dialogModifiedUnsaved": { "message": "$1 wurde geändert.\nSollen die Änderungen gespeichert werden?" },
   "dialogCancel": { "message": "Abbrechen" },
   "dialogOK": { "message": "OK" },
   "dialogReload": { "message": "Neu laden" },
   "dialogSave": { "message": "Speichern" },
   "dialogDiscard": { "message": "Verwerfen" },
-  "dialogUnsaved": { "message": "$1 beinhaltet ungespeicherte Änderungen." },
+  "dialogUnsaved": { "message": "$1 enthält ungespeicherte Änderungen." },
   
   "projectNoCurrentProject": { "message": "Kein Projekt geöffnet." },
+  "projectRemoveDirectory": { "message": "Aus dem Projekt entfernen" },
   
-  "paletteExecuting": { "message": "Führe $1 aus&hellip;" },
+  "paletteExecuting": { "message": "$1 wird ausgeführt&hellip;" },
   
   "fileLoaded": { "message": "$1 geladen, $2 bytes" },
   "fileAutosaving": { "message": "Auto-Speichere alle Tabs&hellip;" },
@@ -113,20 +113,33 @@
   
   "recordingMacro": { "message": "Zeichne Makro auf&hellip;" },
   "setSyntax": { "message": "Setze Syntax: $1" },
-  "setTheme": { "message": "Setze Theme: $1" },
+  "setTheme": { "message": "Setze Thema: $1" },
+  "selectSyntax": { "message": "Syntax auswählen" },
+  "selectTheme": { "message": "Thema auswählen" },
   
   "notificationUpdateAvailable": { "message": "Caret: Aktualisierung verfügbar" },
-  "notificationUpdateDetail": { "message": "Ein Update auf Version $1 ist Verfügbar. Möchten Sie die Aktualisierung jetzt ausführen und Caret neu starten?" },
+  "notificationUpdateDetail": { "message": "Ein Update auf Version $1 ist Verfügbar. Soll Caret aktualisiert werden und neu starten?" },
   "notificationNoUpdateTitle": { "message": "Keine Aktualisierungen verfügbar" },
   "notificationNoUpdateDetail": { "message": "Momentan sind keine Aktualisierungen für Caret vorhanden." },
-  "notificationUpdateOK": { "message": "Ja, Aktualisieren und Neustarten" },
+  "notificationUpdateOK": { "message": "Ja, aktualisieren und neu starten" },
   "notificationUpdateWait": { "message": "Nein, danke" },
   "notificationUpdated": { "message": "Caret wurde aktualisiert" },
-  "notificationUpdatedDetail": { "message": "Aktuelle Version: $1. Klicken Sie, um die Änderungshistorie im Chrome Web Store anzusehen." },
+  "notificationUpdatedDetail": { "message": "Aktuelle Version: $1. Klicken, um die Änderungshistorie anzusehen." },
 
   "searchDisplayQuery": { "message": "Suche nach: $1\n" },
   "searchTabName": { "message": "Ergebnisse: $1" },
-  "searchNoDirectories": { "message": "\nKeine Dateien durchsucht. Sie müssen Ihrem Projekt erst ein Verzeichnis hinzufügen." },
+  "searchNoDirectories": { "message": "\nKeine Dateien durchsucht. Dem Projekt muß zuerst ein Verzeichnis hinzufügt werden." },
   "searchSummary": { "message": "\n\n$1 Treffer gefunden. $2 Dateien durchsucht." },
-  "searchCancelled": { "message": "\nSuche wurde abgebrochen. Sie können die Höchstzahl an zulässigen Suchergebnissen in den Benutzereinstellungen ändern." }
+  "searchCancelled": { "message": "\nSuche wurde abgebrochen. Die Höchstzahl an zulässigen Suchergebnissen kann in den Benutzereinstellungen geändert werden." }
+  "searchMatchCase": { "message": "Schreibweise vergleichen" },
+  "searchFindAll": { "message": "Finde alle" },
+
+  "errorMissingFont": { "message": "Die ausgewählte Schriftart steht Caret nicht zur Verfügung, da nur im System installierte Schriftarten verwendet werden können. Stattdessen wird eine Standardschriftart verwendet." },
+  "errorProportionalFont": { "message": "Die von Ihnen ausgewählte benutzerdefinierte Schriftart kann Probleme mit der Bearbeitungskomponente von Caret verursachen, die nur dicktengleiche Schriftarten unterstützt (bei denen alle Buchstaben dieselbe Breite haben). Wenn Cursorprobleme auftreten, setzen Sie die fontFamily-Einstellung in den Benutzereinstellungen zurück." },
+
+  "tabClose": { "message": "Schließen" },
+  "tabCloseRight": { "message": "Tabs nach rechts schließen" },
+  "tabCopyPath": { "message": "Dateipfad kopieren" },
+  "tabRevealInSideBar": { "message": "In der Seitenleiste anzeigen" }
+
 }
