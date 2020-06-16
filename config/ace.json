@@ -152,6 +152,7 @@
     { "name": "tex", "label": "TeX", "extensions": ["tex"] },
     { "name": "textile", "label": "Textile", "extensions": ["textile"] },
     { "name": "toml", "label": "Toml", "extensions": ["toml"] },
+    { "name": "tsx", "label": "TSX", "extensions": ["tsx"] },
     { "name": "twig", "label": "Twig", "extensions": ["twig"] },
     { "name": "typescript", "label": "TypeScript", "extensions": ["ts", "typescript", "str"] },
     { "name": "vala", "label": "Vala", "extensions": ["vala"] },
