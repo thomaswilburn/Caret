@@ -130,7 +130,7 @@
   "searchTabName": { "message": "Ergebnisse: $1" },
   "searchNoDirectories": { "message": "\nKeine Dateien durchsucht. Dem Projekt muß zuerst ein Verzeichnis hinzufügt werden." },
   "searchSummary": { "message": "\n\n$1 Treffer gefunden. $2 Dateien durchsucht." },
-  "searchCancelled": { "message": "\nSuche wurde abgebrochen. Die Höchstzahl an zulässigen Suchergebnissen kann in den Benutzereinstellungen geändert werden." }
+  "searchCancelled": { "message": "\nSuche wurde abgebrochen. Die Höchstzahl an zulässigen Suchergebnissen kann in den Benutzereinstellungen geändert werden." },
   "searchMatchCase": { "message": "Schreibweise vergleichen" },
   "searchFindAll": { "message": "Finde alle" },
 
