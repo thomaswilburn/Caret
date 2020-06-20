@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.8.24
+------
+
+Added French translation (thanks, Jérôme). Added Croatian and updated German translations (thanks to milotype). Added TSX to the language modes.
+
 1.8.21
 ------
 
