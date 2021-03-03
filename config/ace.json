@@ -111,6 +111,7 @@
     { "name": "mel", "label": "MEL", "extensions": ["mel"] },
     { "name": "mushcode", "label": "MUSHCode", "extensions": ["mc", "mush"] },
     { "name": "mysql", "label": "MySQL", "extensions": ["sql", "mysql"] },
+    { "name": "nim", "label": "Nim", "extensions": ["nim", "nims"] },
     { "name": "nix", "label": "Nix", "extensions": ["nix"] },
     { "name": "objectivec", "label": "Objective-C", "extensions": ["obc", "m", "mm"] },
     { "name": "ocaml", "label": "OCaml", "extensions": ["ml", "mli"] },
