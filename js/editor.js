@@ -137,7 +137,7 @@ define([
   command.on("init:startup", init);
   command.on("init:restart", reset);
   
-  command.on("editor:theme", function(theme, c) {
+  command.on("editor:theme", function(theme, c = noop) {
     editor.setTheme("ace/theme/" + theme);
     themes.value = theme;
     editor.focus();
