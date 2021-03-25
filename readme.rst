@@ -32,6 +32,3 @@ installed first, then follow these steps:
    extension..." and select the directory containing Caret's
    manifest.json.
 
-If you use Caret and would like to show your appreciation, please
-consider donating to the `FSF's Fund to End Software
-Patents <https://my.fsf.org/civicrm/contribute/transact?reset=1&id=17>`__.
