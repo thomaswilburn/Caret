@@ -1,3 +1,5 @@
+*NOTE: With Google planning to remove Chrome Apps from its browser and OS in June of 2022, Caret is no longer under active development. I'm not accepting new pull requests or issues.*
+
 Caret
 =====
 
